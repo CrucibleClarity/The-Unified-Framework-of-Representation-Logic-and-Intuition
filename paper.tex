@@ -11,7 +11,12 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
+\ifdefined\XeTeXinterchartokenstate
+  % XeLaTeX: unicode-math (loaded by acmart) supplies the amssymb glyphs
+\else
+  \usepackage{amssymb}
+\fi
 \usepackage{booktabs}
 \usepackage{microtype}
 
@@ -194,7 +199,7 @@ a fast intuition path is obtained at reduced inference cost. In the Riemann dire
 the projection drops the imaginary (analytic-content) direction while preserving the
 real-axis symmetry; the retained structure is navigable by the compiled intuition
 channel. The author's original framing is the \emph{Worn-Zhe-Yue method}
-(基点构造诱导下的数学空间穿折越证明方法): ``数学空间的穿越、折越'' (crossing, folding,
+(the basepoint-construction-induced worn-fold-cross method for mathematical space): ``piercing through, folding, and transcending of mathematical space''
 transcending of mathematical space).
 
 The token economy of the formalization ($\approx$700k tokens, 99.2\% context-cache
@@ -231,8 +236,6 @@ surrounding geometry.
 Levinson/Conrey) as mathlib theorems; extend the Worn-Zhe-Yue method to other
 projection-induced fast paths.
 
-\acks{The author thanks DeepSeek for the Lean formalization and for its insistence on
-the honest boundary that the Riemann hypothesis remains unproved.}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
