@@ -63,5 +63,5 @@ of the functional-equation symmetry.
 
 ## Provenance
 
-Zenodo DOI: 10.5281/zenodo.21897167 (full paper)
-Zenodo DOI: 10.5281/zenodo.21896990 (technical record)
+Zenodo DOI: [DOI withheld for double-blind review] (full paper)
+Zenodo DOI: [DOI withheld for double-blind review] (technical record)
