@@ -52,6 +52,5 @@ C025 Euler product = ζ, zero-free region
 
 ## Provenance
 
-- Full paper: Zenodo DOI 10.5281/zenodo.21897167
-- Technical record: Zenodo DOI 10.5281/zenodo.21896990
+- Published record (DOI) will be linked after acceptance (double-blind)
 - Anonymous artifact repository (double-blind): github.com/CrucibleClarity/The-Unified-Framework-of-Representation-Logic-and-Intuition
