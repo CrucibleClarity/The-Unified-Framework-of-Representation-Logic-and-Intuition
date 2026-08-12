@@ -1,7 +1,7 @@
 name = "formal"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Formal", "FormalTests"]
+defaultTargets = ["Formal"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -16,9 +16,6 @@ rev = "v4.32.2"
 
 [[lean_lib]]
 name = "Formal"
-
-[[lean_lib]]
-name = "FormalTests"
 
 [[lean_exe]]
 name = "bench"
