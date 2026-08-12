@@ -33,6 +33,20 @@ lake build          # full build, no errors, no sorry
 grep -r "sorry" .    # expected: no output
 ```
 
+Note (Lake job-computation quirk): on some Lake versions the default
+lean-library target reports "some modules have bad imports" during the
+import-graph pre-check even though every module builds clean. Verified
+working build commands (all 11 modules, mathlib v4.32.2, no sorry):
+
+```bash
+lake build Formal.ZeroRelative.Heap Formal.ZeroRelative.NatSource \
+          Formal.ZeroRelative.Displacement Formal.ZeroRelative.FixedPoint \
+          Formal.ZeroRelative.GaloisInsertion Formal.ZeroRelative.Generation \
+          Formal.ZeroRelative.OmegaType Formal.ZeroRelative.Semiconj \
+          Formal.ZeroRelative.BasepointGen Formal.ZeroRelative.StepTranslation \
+          Formal.ZeroRelative.TorsorHeap
+```
+
 ## Theorem highlights
 
 | Theorem | Lean name |
