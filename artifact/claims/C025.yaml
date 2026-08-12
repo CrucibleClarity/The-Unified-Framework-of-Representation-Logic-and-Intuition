@@ -1,0 +1,83 @@
+id: C025
+title: "Euler product convergence & zero relation — 欧拉乘积收敛 (Re s > 1): ∏_p(1-p⁻ˢ)⁻¹ = Σ 1/n^s; 与非平凡零点的关系 (Re ≥ 1 无零点)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ζ(s) 的欧拉乘积表示 (KNOWN: 欧拉 1737), mathlib 组合:
+    - zetaEulerF: f(n) = 1/n^s 完全乘法 (ℕ →*₀ ℂ);
+    - zetaEulerF_norm: ‖f n‖ = n^(-Re s);
+    - zeta_euler_product: 1 < re s ⟹ ∏'_p (1 - 1/p^s)⁻¹ = ∑'_n 1/n^s
+      (EulerProduct.eulerProduct_completely_multiplicative_tprod +
+      Complex.summable_one_div_nat_cpow)。
+    与非平凡零点的关系 (KNOWN, 经典分析数论):
+    - riemannZeta_euler_product: mathlib 官方 ζ (解析延拓) 与欧拉乘积
+      拼接: riemannZeta s = ∏'_p (1-1/p^s)⁻¹ (Re > 1);
+    - riemannZeta_ne_zero_of_one_le_re: Re ≥ 1 无零点 — 欧拉乘积域是
+      零点的禁区, 非平凡零点被赶出 Re ≥ 1, 只能待在临界带
+      0 < Re < 1;
+    - mathlib 有完整黎曼 ζ (riemannZeta, RiemannHypothesis : Prop,
+      riemannZetaZeros) — 黎曼猜想 = ∀ s, riemannZeta s = 0 → 非平凡
+      → s ≠ 1 → s.re = 1/2 (C019-C022 的临界线位置的官方陈述, 未证)。
+  formal_math: |
+    ℂ 上 (mathlib):
+    (1) zeta_euler_product: 1 < re s →
+        ∏' p : Nat.Primes, (1 - 1/(p:ℂ)^s)⁻¹ = ∑' n, 1/(n:ℂ)^s
+    (2) riemannZeta_euler_product: 1 < re s →
+        riemannZeta s = ∏' p : Nat.Primes, (1 - 1/(p:ℂ)^s)⁻¹
+    (3) riemannZeta_ne_zero_of_one_le_re: 1 ≤ s.re → riemannZeta s ≠ 0
+
+objects:
+  - "riemannZeta (mathlib 官方 ζ, 解析延拓)"
+  - "欧拉乘积 ∏'_p (1-p⁻ˢ)⁻¹ (收敛到 ζ, Re > 1)"
+  - "RiemannHypothesis (mathlib 官方黎曼猜想陈述)"
+objects_note: null
+definitions_used: ["EulerProduct.eulerProduct_completely_multiplicative_tprod (mathlib)", "Complex.summable_one_div_nat_cpow (mathlib)", "riemannZeta (mathlib)", "RiemannHypothesis (mathlib)", "natCast_mul_natCast_cpow (mathlib)"]
+
+assumptions:
+  - "Re s > 1 (级数/乘积收敛域)"
+conclusion: "欧拉乘积 ∏_p(1-p⁻ˢ)⁻¹ 在 Re > 1 收敛并等于 ζ 级数 (= riemannZeta); 欧拉乘积域是无零点区域, 非平凡零点只能待在临界带 0 < Re < 1"
+
+known_special_cases:
+  - "s = 2: ζ(2) = π²/6 (欧拉, 未求值)"
+closest_known_results:
+  - "欧拉乘积 (KNOWN, 欧拉 1737)"
+  - "ζ 在 Re ≥ 1 无零点 (KNOWN, 素数定理的前提)"
+  - "C013 (部分和), C023 (素数圆乘积 p⁴, 单个素数非欧拉乘积)"
+literature_queries:
+  - "Euler product Riemann zeta nonvanishing"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收; 收敛域 Re > 1 由 mathlib 级数理论覆盖"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaEulerProduct.lean"
+  theorem_name: |
+    zetaEulerF / zetaEulerF_norm / zeta_euler_product /
+    riemannZeta_euler_product / riemannZeta_ne_zero_of_one_le_re
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 欧拉乘积与无零点区域是经典"
+  - "黎曼猜想 (RiemannHypothesis) 未证 — 本 claim 只到无零点区域与拼接"
+  - "零点 ↔ 素数分布 (显式公式) 未形式化"
+
+evidence_for:
+  - "Lean: 5 个定理全证 (无 sorry), 全量 lake build 通过 (3631 jobs)"
+evidence_against: []
+
+next_action: "(1) 欧拉乘积取对数: log ζ = Σ_p Σ_k p⁻ᵏˢ/k (素数连接); (2) 或收尾"
+
+notes: "欧拉乘积正式建成 (Re > 1 收敛 = riemannZeta), 与非平凡零点关系: 无零点区域 (Re ≥ 1), 零点在临界带, 黎曼猜想 = RiemannHypothesis (官方 Prop, 未证)。全部 KNOWN。"
