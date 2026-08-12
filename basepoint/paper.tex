@@ -1,0 +1,265 @@
+%% CPP 2026 Submission (double-blind) — Lean Formalization of Basepoint-Relative Structure
+%% Compile: pdflatex + bibtex (acmart)
+%% ANONYMOUS: no author, no affiliation, no DOI, no repo link.
+\documentclass[sigconf,anonymous]{acmart}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\ifdefined\XeTeXinterchartokenstate
+  % XeLaTeX: unicode-math (loaded by acmart) supplies the amssymb glyphs
+\else
+  \usepackage{amssymb}
+\fi
+\usepackage{booktabs}
+\usepackage{amsthm}
+\newtheorem{observation}{Observation}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\usepackage{microtype}
+
+\begin{document}
+
+\title{Basepoint-Relative Stability and Codomain Drift: A Machine-Checked Heap-Theoretic Account of Relativity in Generated Structure}
+
+\author{}
+\affiliation{%
+  \institution{}}
+\email{}
+
+\date{}
+
+\begin{abstract}
+We report a complete formalization, in Lean 4 + mathlib, of a heap-theoretic account
+of how the choice of a basepoint stabilizes relative structure while drifting the
+codomain of generated objects (claims C001--C010; all PROVED; novelty: KNOWN for the
+classical baseline, with an original transport theorem; no \texttt{sorry}; full
+\texttt{lake build} passes). The core is the classical heap retract (C004): an abelian
+heap $H$ recovers an abelian group $G_e = (H, +_e, e)$ at any basepoint $e$, where
+$x +_e y := [x, e, y]$; different basepoints give different (isomorphic) groups ---
+\textit{codomain drift}. The basepoint-change map $T_{e \to f}(x) := [x, e, f]$ is an
+automorphism on any heap (C006), transporting the step translation. The \textit{relative}
+content is basepoint-independent: the displacement space $D(H)$ of equivalence classes
+$(e,a) \sim (f,b) \Longleftrightarrow b = [a, e, f]$ (C007) does not depend on any
+basepoint --- \textit{relative stability}. We then study endogenous generation
+(C008--C010): under a generation law $\Gamma: e \mapsto \sigma_e$, the least fixed
+point / minimal closure $\mathrm{Chain}(\sigma_e, e)$ is $e$-independent for pure-heap
+terms (R011): any homomorphism $T_{e \to f}$ preserves the evaluation of terms, so
+$\mathrm{Chain}(\sigma_f, f) = T_{e \to f}(\mathrm{Chain}(\sigma_e, e))$. The paper's
+conclusion is a precise dichotomy: \textbf{basepoint choice stabilizes relative
+structure while drifting the codomain, with $T$ as the isomorphism bridge}.
+\end{abstract}
+
+\keywords{Lean, formalization, heap, torsor, basepoint, group retract, transport, generation}
+
+\maketitle
+
+\section{Introduction}
+
+A structure often becomes a \textit{pointed} object only after the choice of a
+basepoint: a set becomes a pointed set, a heap becomes a group after selecting an
+element, a torsor becomes a group action after choosing a base. The question behind
+this paper is not \textit{whether} such choices matter, but \textit{how} they matter:
+which properties are stable under basepoint change (relative), and which drift
+(codomain). We formalize this in Lean 4 + mathlib using heaps --- the unpointed
+algebra of a ternary operation $[x, y, z]$ satisfying the heap laws --- because a heap
+carries no canonical basepoint, so the choice is a genuine, visible degree of freedom.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A machine-checked formalization (C001--C010, no \texttt{sorry}) of the heap
+retract, transport under basepoint change, and the displacement space.
+\item An original transport theorem (C006): $T_{e \to f}$ is an automorphism on any
+heap, with $T_{e \to f}(\tau_{e,a}(x)) = \tau_{f, T_{e \to f}(a)}(T_{e \to f}(x))$.
+\item The endogenous generation result (C010, R011): pure-heap minimal closures are
+transport-covariant --- $\mathrm{Chain}(\sigma_f, f) = T_{e \to f}(\mathrm{Chain}(\sigma_e, e))$.
+\item A buildable artifact (Lean 4, mathlib v4.32.2, full \texttt{lake build}).
+\end{enumerate}
+
+\paragraph{Honest boundary.} The classical heap/torsor results are KNOWN; the
+transport and generation results (C006, C010/R011) are the project's original
+contributions, formalized and checked. No claim is made beyond the heap-theoretic
+algebra.
+
+\section{Preliminaries: heaps and basepoint retraction}
+
+\begin{definition}[heap]\label{def:heap}
+A heap is a set $H$ with a ternary operation $[\,\cdot\,,\cdot\,,\cdot\,] : H \to H \to H \to H$
+satisfying the heap laws (para-associativity, identity, commutation). A heap is
+\textit{abelian} if it satisfies the additional commutation law.
+\end{definition}
+
+\begin{theorem}[heap retract, C004, KNOWN]\label{thm:retract}
+Let $H$ be an abelian heap and $e : H$ a chosen basepoint. Define
+$x +_e y := [x, e, y]$. Then $(H, +_e, e)$ is an abelian group: $+_e$ is associative
+and commutative, $e$ is the identity, and every $x$ has inverse $[e, x, e]$.
+Conversely, a group $(G, +, 0)$ yields a heap $[x, y, z] := x - y + z$.
+\end{theorem}
+\emph{Formalization.} \texttt{add\_assoc}, \texttt{add\_comm}, \texttt{add\_left\_id},
+\texttt{add\_right\_id}, \texttt{add\_left\_neg}, \texttt{add\_right\_neg}, and
+\texttt{heap\_retract\_group\_laws}.
+
+\begin{observation}[codomain drift]\label{obs:drift}
+For $e \neq f$, the recovered groups $G_e$ and $G_f$ are \textit{different} group
+structures on the same carrier $H$. This is the \textit{codomain drift}.
+\end{observation}
+
+\section{Transport under basepoint change (C006)}
+
+\begin{definition}[basepoint-change map]\label{def:transport}
+For basepoints $e, f : H$, define $T_{e \to f}(x) := [x, e, f]$.
+\end{definition}
+
+\begin{theorem}[$T$ is an automorphism, C006]\label{thm:aut}
+On any heap $H$ (not necessarily abelian), $T_{e \to f}$ is a bijection, and for all
+$x, y, z$:
+\[
+T_{e \to f}([x, y, z]) = [T_{e \to f}(x), T_{e \to f}(y), T_{e \to f}(z)].
+\]
+\end{theorem}
+\emph{Formalization.} \texttt{transport\_is\_aut}.
+
+\begin{theorem}[transport of step translation, C006]\label{thm:transport}
+For fixed endpoint $a$, the step translation $\tau_{e,a}(x) := [x, e, a] = x +_e a$
+transports under basepoint change:
+\[
+T_{e \to f}(\tau_{e,a}(x)) = \tau_{f, T_{e \to f}(a)}(T_{e \to f}(x)).
+\]
+The step at $e$ with endpoint $a$, viewed from $f$, is the step at $f$ with the
+transported endpoint $T_{e \to f}(a)$.
+\end{theorem}
+\emph{Formalization.} \texttt{step\_transport}.
+
+\begin{corollary}[group isomorphism]\label{cor:isom}
+Basepoint change induces an isomorphism $G_e \cong G_f$: the codomain drifts, but the
+drift is a structural isomorphism.
+\end{corollary}
+
+\section{Displacement space: relative stability (C007)}
+
+\begin{definition}[displacement equivalence]\label{def:displ}
+On $H \times H$, define $(e, a) \sim (f, b)$ iff $b = [a, e, f]$, i.e.,
+$b = T_{e \to f}(a)$. Intuitively, $(e,a)$ and $(f,b)$ denote the ``same relative
+displacement'' viewed from different basepoints.
+\end{definition}
+
+\begin{theorem}[equivalence, C007]\label{thm:equiv}
+$\sim$ is an equivalence relation on $H \times H$ (reflexive, symmetric, transitive);
+transitivity relies on the associativity of heap composition.
+\end{theorem}
+\emph{Formalization.} \texttt{dispRel\_is\_equivalence} (refl/symm/trans).
+
+\begin{definition}[displacement space]\label{def:D}
+Let $D(H) := (H \times H)/{\sim}$ be the quotient. An element of $D(H)$ is an
+equivalence class of basepoint-endpoint pairs under ``same displacement''.
+\end{definition}
+
+\begin{theorem}[recovery, C007]\label{thm:recover}
+Choosing any basepoint $e$ gives a bijection $[e, \cdot] : D(H) \to G_e$. Thus $D(H)$
+is \textit{basepoint-independent} as an abstract object (relative stability), while
+each concrete presentation $D(H) \to G_e$ depends on $e$ (codomain drift). In
+classical terms, $D(H)$ is the translation group / acting group of the torsor.
+\end{theorem}
+\emph{Formalization.} \texttt{displacement\_coord\_bijective}.
+
+\begin{corollary}[the dichotomy]\label{cor:dichotomy}
+\textbf{Basepoint choice stabilizes relative structure ($D(H)$ is $e$-independent)
+while drifting the codomain ($G_e$ varies with $e$).}
+\end{corollary}
+
+\section{Endogenous generation (C008--C010)}
+
+\subsection{No presupposed counting (C008, C009)}
+
+\begin{definition}[finitary reachability, C008, baseline]\label{def:finitary}
+\texttt{Relation.TransGen} $r$ $a$ $b$ means $b$ is reachable from $a$ by a
+\textit{finite number} of steps --- a number $n \in \mathbb{N}$. Since counting is
+exactly the object to be explained, any construction using \texttt{TransGen}
+presupposes what the theory aims to derive. Hence finitary reachability is
+\textit{downgraded to a baseline}.
+\end{definition}
+
+\begin{definition}[minimal closure, C009, main version]\label{def:minclosure}
+For a generation law $\Gamma$ with $\sigma_e : H \to H$, define
+\[
+\mathrm{Chain}(\sigma_e, e) := \bigcap \{ C \subseteq H \mid e \in C \land \sigma_e(C) \subseteq C \}.
+\]
+This is the least fixed point / minimal $S$-closed substructure containing the
+basepoint, defined without any appeal to $\mathbb{N}$ as an indexing set.
+\end{definition}
+
+\subsection{The general theorem: generation is transport-covariant (C010, R011)}
+
+\begin{theorem}[R011, transport-covariance of pure-heap generation]\label{thm:R011}
+Let $\Gamma : H \to (H \to H)$ be a generation law on pure-heap terms: $\sigma_e(x)$
+is a term built only from $[\cdot,\cdot,\cdot]$, with leaves in $\{e, x\}$, containing
+no literal constant (in particular no literal $0$). Then, for any basepoints $e, f$,
+\[
+\mathrm{Chain}(\sigma_f, f) = T_{e \to f}(\mathrm{Chain}(\sigma_e, e)).
+\]
+\end{theorem}
+\emph{Formalization.} \texttt{chain\_transport\_eq}.
+
+\begin{corollary}[closure-type independence, C010]\label{cor:closure}
+The isomorphism type of $\mathrm{Chain}(\sigma_e, e)$ does not depend on $e$: all
+generated structures from pure-heap laws are basepoint-independent up to isomorphism.
+\end{corollary}
+
+\begin{remark}[the 0-dependence was spurious]\label{rem:zero}
+An earlier family of laws $\sigma_e(x) = [x, x, [x, e, 0]] = x - e$ contains the
+literal $0$. In a pure heap, $0$ is not endogenous --- it is itself a basepoint choice.
+Using $0$ secretly privileges a basepoint, violating ``no privileged basepoint.''
+Hence the observed basepoint-dependent branching of closure types is not a pure-heap
+phenomenon; it disappears once the law is restricted to pure-heap terms (R011).
+\end{remark}
+
+\section{Discussion: the dichotomy as a mechanism}
+
+The claim is that ``basepoint-relative stability and codomain drift'' is not a defect
+but the \textit{mechanism} by which relative structure is stabilized while concrete
+codomains vary:
+\begin{itemize}
+\item \textbf{Stability}: $D(H)$, the displacement space, and
+$\mathrm{Chain}(\sigma_e, e)$, the generated structure, are basepoint-independent up
+to isomorphism.
+\item \textbf{Drift}: $G_e$, the recovered group, and the concrete terms $\sigma_e$,
+vary with $e$.
+\item \textbf{Transport}: $T_{e \to f}$ is the bridge, exhibiting the drift as an
+isomorphism, making stability and drift compatible.
+\end{itemize}
+
+\section{Related work}
+
+Heaps (also called grouds / flock / truss) are classical (Wagner, Baer, Prüfer);
+the heap-retract-to-group construction is standard. Torsors (torsors / principal
+homogeneous spaces) recover a group action after choosing a base; the displacement
+space is the acting group. Our contribution is the machine-checked formalization and
+the transport-covariance theorem (C006, R011), which makes the dichotomy precise.
+
+\section{Conclusion}
+
+An abelian heap recovers a group at any basepoint (C004); different basepoints give
+different (isomorphic) groups --- codomain drift (C006). The displacement space $D(H)$
+is basepoint-independent --- relative stability (C007). Under endogenous generation
+restricted to pure-heap terms, the minimal closure is exactly transported by basepoint
+change (C010, R011), and the natural-number-like representation is a \textit{conclusion},
+not an input (C009). The dichotomy --- \textit{basepoint choice stabilizes relative
+structure while drifting the codomain, with $T$ as the isomorphism bridge} --- is
+formalized throughout in Lean 4 / mathlib, claims C001--C010, all PROVED, no
+\texttt{sorry}.
+
+\paragraph{Future work.} Formalize the connection to torsor theory at the mathlib
+level; extend the transport-covariance theorem to non-heap structures with a
+basepoint-relative generation law.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
