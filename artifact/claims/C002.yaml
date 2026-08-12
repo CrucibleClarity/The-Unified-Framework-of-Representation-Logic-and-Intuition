@@ -1,0 +1,82 @@
+id: C002
+title: "Least fixed point is preserved under order-isomorphic semiconjugacy"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: true
+  seed: false
+branch: order_theoretic_fixed_points
+
+statement:
+  informal: |
+    若 T : L_e → L_f 是 complete lattice 之间的 order isomorphism 且 semiconjugates
+    单调映射 F_e, F_f（T∘F_e = F_f∘T），则 T 保持最小不动点：
+    T (lfp F_e) = lfp F_f。
+    侧支反例 (order embedding 不足) 见 counterexample_search。
+    注意: 本 claim 属于 order-theoretic fixed-point 分支 (模型 IV), 非核心
+    "同一 unpointed carrier 不同 basepoint" 问题。核心问题见 SCOPE.md。
+  formal_math: |
+    Let L_e, L_f : Type with [CompleteLattice]. Let F_e : L_e →o L_e,
+    F_f : L_f →o L_f. Let T : L_e ≃o L_f (order isomorphism).
+    If ∀ x, T (F_e x) = F_f (T x) (semiconjugacy), then
+    T (F_e.lfp) = F_f.lfp.
+
+objects: ["L_e : Type* [CompleteLattice]", "L_f : Type* [CompleteLattice]", "F_e : L_e →o L_e", "F_f : L_f →o L_f", "T : L_e ≃o L_f"]
+definitions_used: ["OrderHom.lfp", "OrderIso", "Function.Semiconj"]
+
+assumptions:
+  - "T : L_e ≃o L_f  (order isomorphism)"
+  - "∀ x, T (F_e x) = F_f (T x)  (semiconjugacy)"
+conclusion: "T (F_e.lfp) = F_f.lfp"
+
+known_special_cases:
+  - "T = id, L_e = L_f: 平凡"
+  - "T 是反序 (order anti-isomorphism): lfp 变 gfp"
+  - "T 仅 order embedding (非满): 侧支反例 (lfp 不必保持), 见 counterexample_search"
+closest_known_results:
+  - "C003: fixed-point fusion 沿 lower adjoint (本 claim 为其特例, order iso 是 Galois connection 特例)"
+  - "Order isomorphism preserves order-theoretic constructions (sInf, etc.)"
+  - "Knaster–Tarski lfp 是 prefixpoint 集的 sInf"
+literature_queries:
+  - "order isomorphism preserves least fixed point"
+  - "lfp invariant under conjugacy complete lattice"
+
+counterexample_search:
+  status: done
+  search_space: "order embedding 非 order isomorphism 的 T (L_e=单点, L_f=2 元素链)"
+  smallest_checked_size: "|L_e|=1, |L_f|=2"
+  result: |
+    侧支反例 (order embedding 不足, 证明"embedding+semiconjugacy 不充分"):
+    L_e = 单点 {⊥}, F_e = id, lfp F_e = ⊥.  L_f = {0 < 1}, F_f = id, lfp F_f = 0.
+    T : L_e → L_f, T ⊥ = 1.  T 是 order embedding 且 semiconjugacy 成立,
+    但 T (lfp F_e) = 1 ≠ 0 = lfp F_f.
+    机制: T 不保持 bottom (T ⊥ = 1 ≠ 0), F_e/F_f 均为 identity.
+    注意: 该反例只证"embedding 不充分", 不证"order isomorphism 必要"——
+    事实上 C003 (Galois connection) 证明比 order isomorphism 弱得多的假设也充分,
+    故 order isomorphism 并非必要.
+    另注意: 此反例属模型 IV (order bottom), 非核心问题.
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/FixedPoint.lean"
+  theorem_name: "ZeroRelative.lfp_of_orderIso_semiconj / gfp_of_orderIso_semiconj / pre_fixedPoints_image_of_orderIso_semiconj"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "mathlib 已有等价 lemma（确认：是，OrderIsoClass.map_sInf 直接支撑）"
+  - "order isomorphism 情形由 sInf 保持推出（已形式化）"
+  - "必须区分 order embedding (反例证不充分) 与 order isomorphism (充分)；且不宣称 iso 必要 (C003 否证)"
+
+evidence_for:
+  - "lfp f = sInf {a | f a ≤ a} (mathlib OrderHom.lfp)"
+  - "order isomorphism 保持 sInf (mathlib OrderIsoClass.map_sInf)"
+  - "Lean 接受 formal/Formal/ZeroRelative/FixedPoint.lean (lfp + gfp)，依赖链无 sorry"
+  - "侧支反例: order embedding 情形不成立 (experiments/counterexamples/C002_order_embedding_lfp.py 已验证)"
+  - "C003: Galois connection 假设更弱也充分, 否证 order isomorphism 的必要性"
+evidence_against: []
+
+next_action: "已形式化并封存为 KNOWN 基线 (order iso 情形)。C002 = C003 (fixed-point fusion) 的特例。作为 order-theoretic fixed-point 分支的教学基线 (warm-up + embedding 反例), 不再扩张；转向核心问题 (模型 III, 见 SCOPE.md)"
+notes: "方向 C 候选问题族 C-C2 的反例基线。核心结论: (1) order iso 充分 (KNOWN, 且为 C003 μ-fusion 特例); (2) embedding 不充分 (反例); (3) iso 不必要 (C003 弱假设充分)。评审 (docs/其他AI评审/C002反例审查) 确认反例有效并修正两处过度推断: 不宣称 iso 必要, reflection 本就含于 embedding。"
