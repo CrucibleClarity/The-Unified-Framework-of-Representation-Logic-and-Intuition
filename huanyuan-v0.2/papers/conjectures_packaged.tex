@@ -1,0 +1,512 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{一个神经病的直觉形式泛化猜测}\label{ux4e00ux4e2aux795eux7ecfux75c5ux7684ux76f4ux89c9ux5f62ux5f0fux6cdbux5316ux731cux6d4b}
+
+\begin{quote}
+外行瞎说, 真信这玩意你也是神经病。 --- 作者自述 (2026-08-12)
+\end{quote}
+
+\subsection{Conjectures on Basepoint-Relative Structure and the
+Worn-Zhe-Yue (穿折越)
+Method}\label{conjectures-on-basepoint-relative-structure-and-the-worn-zhe-yue-ux7a7fux6298ux8d8a-method}
+
+\begin{quote}
+\textbf{DOI}: 10.5281/zenodo.21901857 (v1.1; v1.0:
+10.5281/zenodo.21897996) \textbf{版本}: v1.1 (2026-08-12, 新增 LaTeX 源)
+\textbf{状态}: 15 条猜想, 逐条按数学研究纪律评估 (认识论标签 + 7
+步序第一/二关) \textbf{方法基础}: 基点穿折越 (Worn-Zhe-Yue) ---
+基点构造诱导下的投影结构穿折越证明方法。 源于 heap/torsor
+基点相对性形式化 (Lean 4, C001-C025) 与统一框架 (表示/逻辑/直觉)。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{摘要}\label{ux6458ux8981}
+
+本清单记录 15 条猜想, 将基点相对性结构 (基点稳定相对结构而漂移值域,
+位移空间 D(H) 基点无关) 推广到物理与元方法论。每条猜想标注认识论标签,
+并给出文献对照 (KNOWN / NO\_PRIOR\_RESULT\_FOUND) 与 7
+步序进度。核心统一主张:
+
+\begin{quote}
+高维结构的投影 (基点选择) 产生可感知差异; 结构本身经基点变换保持
+(穿折越)。 观测 = 基点交互; 结构信息在基点无关的不变量中;
+多样基点观测揭示结构。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{猜想清单}\label{ux731cux60f3ux6e05ux5355}
+
+\subsubsection{C-PH1 黑洞视界: 信息 = 投影结构丢失,
+非视界编码}\label{c-ph1-ux9ed1ux6d1eux89c6ux754c-ux4fe1ux606f-ux6295ux5f71ux7ed3ux6784ux4e22ux5931-ux975eux89c6ux754cux7f16ux7801}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (物理意义 OPEN)
+\item
+  \textbf{主张}: 物质穿过事件视界时, 信息与结构未丢失,
+  而是脱离人类可感知表示 --- 投影结构丢失。信息在高维结构中保持对称性。
+\item
+  \textbf{对照}: 全息原理 (信息编码在边界) 立场相反; 悖论 OPEN。
+\item
+  \textbf{论文映射}: 投影恢复定理 (丢失结构不可还原, 对称性方向可还原)。
+\end{itemize}
+
+\subsubsection{C-PH2 对称性破缺 = 高维投影丢失;
+穿折越还原原始对称性}\label{c-ph2-ux5bf9ux79f0ux6027ux7834ux7f3a-ux9ad8ux7ef4ux6295ux5f71ux4e22ux5931-ux7a7fux6298ux8d8aux8fd8ux539fux539fux59cbux5bf9ux79f0ux6027}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE
+\item
+  \textbf{主张}: 物理空间对称性破缺源于高维结构的投影丢失
+  (对称性被基点选择掩盖); 穿折越可还原原始对称性维度。
+\item
+  \textbf{对照}: NO\_PRIOR\_RESULT\_FOUND。
+\item
+  \textbf{论文映射}: C007 (D(H) 基点无关) + R011 (transport 协变)。
+\end{itemize}
+
+\subsubsection{C-MA3
+极限是高维圆投影的不可穷尽错觉}\label{c-ma3-ux6781ux9650ux662fux9ad8ux7ef4ux5706ux6295ux5f71ux7684ux4e0dux53efux7a77ux5c3dux9519ux89c9}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: 字面 DISPROVED (标准数学内) / 紧化 KNOWN
+\item
+  \textbf{主张 (修正)}: ``极限不存在''为假 (ε-δ 完备);
+  紧化把无穷远纳入有限结构; 无穷是基点/表示的相对性质 (C007)。
+\item
+  \textbf{对照}: 一点紧化/射影紧化/黎曼球面 KNOWN; 反例已完成。
+\end{itemize}
+
+\subsubsection{C-MA4 非欧几何 =
+基点移动/投影产生的结构}\label{c-ma4-ux975eux6b27ux51e0ux4f55-ux57faux70b9ux79fbux52a8ux6295ux5f71ux4ea7ux751fux7684ux7ed3ux6784}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: KNOWN RESULT (自 19 世纪末)
+\item
+  \textbf{主张}: 双曲/椭圆几何可由射影构造 + 基点选择给出
+  (Klein/Poincaré)。
+\item
+  \textbf{对照}: arXiv:1611.01065, 1406.7309。已证, 不得当新结果。
+\item
+  \textbf{贡献边界}: 穿折越方法给射影构造代数机制 (重述, 非新定理)。
+\end{itemize}
+
+\subsubsection{C-PH5 错觉艺术家脑信号 →
+构造空间的脑信号语法}\label{c-ph5-ux9519ux89c9ux827aux672fux5bb6ux8111ux4fe1ux53f7-ux6784ux9020ux7a7aux95f4ux7684ux8111ux4fe1ux53f7ux8bedux6cd5}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (实验方向)
+\item
+  \textbf{主张}: 对比错觉艺术家与普通人脑电,
+  可找到构造空间的脑信号语法。
+\item
+  \textbf{对照}: NO\_PRIOR\_RESULT\_FOUND; 位置/网格细胞 KNOWN (Nobel
+  2014)。
+\item
+  \textbf{注意}: 证据收集方向, 不产生数学新定理。
+\end{itemize}
+
+\subsubsection{C-META6 直觉输出不可对比还原结构;
+各学科需建立直觉→结构→形式观测法}\label{c-meta6-ux76f4ux89c9ux8f93ux51faux4e0dux53efux5bf9ux6bd4ux8fd8ux539fux7ed3ux6784-ux5404ux5b66ux79d1ux9700ux5efaux7acbux76f4ux89c9ux7ed3ux6784ux5f62ux5f0fux89c2ux6d4bux6cd5}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (元方法论)
+\item
+  \textbf{主张}: 直接观测直觉的各模态输出 (空间/画面/文字/感知),
+  无法通过对比还原 结构; 须以形式层合成构造为引导,
+  诱导直觉探索出形式化结构。
+\item
+  \textbf{对照}: NO\_PRIOR\_RESULT\_FOUND; 归纳偏差/发现式学习 KNOWN
+  (邻近)。
+\item
+  \textbf{论文映射}: 三通道框架的跨学科泛化主张。
+\end{itemize}
+
+\subsubsection{C-PH7 隧穿/超光速交互 = 高维直觉快速路径;
+穿折越可形式化解析}\label{c-ph7-ux96a7ux7a7fux8d85ux5149ux901fux4ea4ux4e92-ux9ad8ux7ef4ux76f4ux89c9ux5febux901fux8defux5f84-ux7a7fux6298ux8d8aux53efux5f62ux5f0fux5316ux89e3ux6790}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (OPEN)
+\item
+  \textbf{主张}: 隧穿/非局域关联是物质经高维结构的快速路径;
+  观测数据恢复穿折越 过程可形式化解析。
+\item
+  \textbf{对照}: 表观超光速 KNOWN (MacColl-Hartman, arXiv:2205.15375);
+  无信号定理 是边界 (非局域性不传信息)。
+\end{itemize}
+
+\subsubsection{C-PH8 时间 = 物理对称性方向;
+时间方向信息丢失是量子退火快路径原理}\label{c-ph8-ux65f6ux95f4-ux7269ux7406ux5bf9ux79f0ux6027ux65b9ux5411-ux65f6ux95f4ux65b9ux5411ux4fe1ux606fux4e22ux5931ux662fux91cfux5b50ux9000ux706bux5febux8defux5f84ux539fux7406}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (OPEN)
+\item
+  \textbf{主张}: 时间本身是物理对称性方向, 部分时间方向投影结构丢失;
+  量子退火快 路径 = 时间对称性穿折越 (计算量全量, 仅时间方向上未感知)。
+\item
+  \textbf{对照}: T-symmetry / CPT 定理 KNOWN; T 非精确需弱化 (CP 破坏 ⟹
+  T 破坏)。
+\end{itemize}
+
+\subsubsection{C-PH9 信息与承载信息的结构同时出现
+(虚无中首现结构的观测)}\label{c-ph9-ux4fe1ux606fux4e0eux627fux8f7dux4fe1ux606fux7684ux7ed3ux6784ux540cux65f6ux51faux73b0-ux865aux65e0ux4e2dux9996ux73b0ux7ed3ux6784ux7684ux89c2ux6d4b}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: OBSERVATION (Lean AbsoluteRelative 分支) + CONJECTURE
+  (延伸)
+\item
+  \textbf{主张}: 极限虚无起点下, 首次结构出现时, 信息 (可区分性)
+  与承载结构 (内部 observable) 同时出现。Lean 已形式化: R004
+  (Permission-existence gap), R006 (Derivation 零信息包装), S004
+  (Process-Content 非等价), S005 (Symmetry/ Information 分离)。
+\item
+  \textbf{对照}: 信息 = 区分性 (Shannon KNOWN); Lean no-go 形式
+  NO\_PRIOR\_RESULT\_FOUND。
+\end{itemize}
+
+\subsubsection{C-PH10 动态基点: 观测影响量子态 =
+基点交互投影}\label{c-ph10-ux52a8ux6001ux57faux70b9-ux89c2ux6d4bux5f71ux54cdux91cfux5b50ux6001-ux57faux70b9ux4ea4ux4e92ux6295ux5f71}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (OPEN)
+\item
+  \textbf{主张}: 观测 = 基点交互; 量子态现象 = 高维结构的多重投影
+  (引力透镜式), 跟随基点移动 (基点动态,
+  非固定)。基点轨迹是潜在新数学对象。
+\item
+  \textbf{对照}: 测量问题 OPEN; 退相干 KNOWN (不解决测量问题);
+  基点动态化 NO\_PRIOR\_RESULT\_FOUND。
+\item
+  \textbf{可检验}: 弱/连续测量提供基点轨迹实验载体。
+\end{itemize}
+
+\subsubsection{C-META11
+各学科引力透镜多重投影诊断}\label{c-meta11-ux5404ux5b66ux79d1ux5f15ux529bux900fux955cux591aux91cdux6295ux5f71ux8bcaux65ad}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (元方法论)
+\item
+  \textbf{主张}: 任何学科应寻找本学科的多重投影现象
+  (同一现象多种矛盾定义); 多重性 = 形式/结构/直觉三层不适配的症状,
+  穿折越可消解。
+\item
+  \textbf{对照}: 不可通约性 KNOWN (Kuhn/Feyerabend, arXiv:2205.10551);
+  基点诊断法 NO\_PRIOR\_RESULT\_FOUND。
+\item
+  \textbf{范例}: 非欧几何多模型 = 同一射影结构基点变化 (历史确证)。
+\end{itemize}
+
+\subsubsection{C-META12 量变不产生质变; 多样基点观测 \textgreater{}
+同法重复; 经历 ≠
+经验}\label{c-meta12-ux91cfux53d8ux4e0dux4ea7ux751fux8d28ux53d8-ux591aux6837ux57faux70b9ux89c2ux6d4b-ux540cux6cd5ux91cdux590d-ux7ecfux5386-ux7ecfux9a8c}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (元方法论)
+\item
+  \textbf{主张}: 固定基点重复观测不揭示新结构 (量变不产生质变, C007
+  数学内核); 多样基点观测 (盲人摸象式) 经穿折越整合 \textgreater{}
+  同法重复; 经历 ≠ 经验 (经验 = 基点多样化 + 穿折越整合的形式化结构)。
+\item
+  \textbf{对照}: 探索/利用权衡 KNOWN (RL); 辩证法量变质变 KNOWN
+  (立场对立); NO\_PRIOR\_RESULT\_FOUND (穿折越归因)。
+\end{itemize}
+
+\subsubsection{C-META13 Church 教训:
+经验性判断须在形式化结构下实施}\label{c-meta13-church-ux6559ux8bad-ux7ecfux9a8cux6027ux5224ux65adux987bux5728ux5f62ux5f0fux5316ux7ed3ux6784ux4e0bux5b9eux65bd}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: OBSERVATION + CONJECTURE (元方法论)
+\item
+  \textbf{主张}: Lambda 演算正确顺序 = 基点 → 后继 → 自然数; 但 Church
+  编码将直觉的 自然数感知越过形式化围栏, 直接预设后继的迭代次数是自然数
+  (循环论证)。 推广: 经验性判断须在形式化结构下实施 --- 直觉提供候选,
+  形式化结构收束验证。
+\item
+  \textbf{对照}: Church 编码 KNOWN; 循环性批评是构造数学传统
+  (NO\_PRIOR\_RESULT\_FOUND 在所检索来源); 项目 AGENTS.md 纪律已固化
+  (2026-08-07)。
+\item
+  \textbf{自省}: 本清单自身即高风险案例 --- 搞对了是运气好,
+  搞错再来才是常态 (诚实边界)。
+\end{itemize}
+
+\subsubsection{C-META14 奥卡姆剃刀导向同质化重复;
+形式化既不能过严也不能过松}\label{c-meta14-ux5965ux5361ux59c6ux5243ux5200ux5bfcux5411ux540cux8d28ux5316ux91cdux590d-ux5f62ux5f0fux5316ux65e2ux4e0dux80fdux8fc7ux4e25ux4e5fux4e0dux80fdux8fc7ux677e}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: CONJECTURE (元方法论)
+\item
+  \textbf{主张}: 剃刀的机械应用导向同质化重复 (剃掉多样基点实体,
+  压缩直觉探索); 形式化强度是可调参数, 探索期宽松/成熟期收束; 判据 =
+  \textbf{剃冗余, 不剃多样性} (实体是否贡献基点无关信息 D(H) 新方向,
+  C007)。
+\item
+  \textbf{量化等价 (OBSERVATION, 项目实证)}: 剃刀 = 大模型量化精度丢失
+  --- 合理剃刀 = 无损量化 (int8 QAT 3.68x 压缩判定 1.000 零损失,
+  本仓库实证); 过度剃刀 = 过度 量化 (q1 事后量化崩, 结构丢失)。量化 =
+  权重投影到格点, 精度丢失 = 投影结构 丢失 (C-PH1 同源)。
+\item
+  \textbf{对照}: 剃刀形式化 KNOWN (arXiv:2004.05269; Kolmogorov
+  复杂度版); 深度学习 几何剃刀 KNOWN (2111.15090); ``过度剃刀→同质化''
+  NO\_PRIOR\_RESULT\_FOUND。
+\end{itemize}
+
+\subsubsection{C-PH11 基点移动 vs 引力空间结构变化;
+方向与基点移动方向的统一}\label{c-ph11-ux57faux70b9ux79fbux52a8-vs-ux5f15ux529bux7a7aux95f4ux7ed3ux6784ux53d8ux5316-ux65b9ux5411ux4e0eux57faux70b9ux79fbux52a8ux65b9ux5411ux7684ux7edfux4e00}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{标签}: KNOWN (微分几何) + CONJECTURE (物理统一主张, OPEN)
+\item
+  \textbf{主张}: 基点移动的数学 = 平行移动 (联络/和乐, KNOWN); 引力 =
+  时空几何 (KNOWN)。猜想: 引力 = 基点穿折越的连续版本 (T\_\{e→f\}
+  沿路径积分); 物理学须在 \textbf{方向} (切向量) 与\textbf{基点移动方向}
+  (平行移动) 上统一 (纤维丛水平/竖直分解);
+  最终可能需要\textbf{无法表达的最初基点}思想实验 (无基点结构首现机制,
+  关联 C-PH9)。
+\item
+  \textbf{对照}: 平行移动/和乐/曲率 KNOWN (arXiv:1003.4591); 等价原理
+  KNOWN; ``引力=穿折越连续化'' NO\_PRIOR\_RESULT\_FOUND。
+\item
+  \textbf{可检验}: 穿折越不变量应对应引力场不变量; 若纯重述无新预测 →
+  降为 OBSERVATION。
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{汇总表}\label{ux6c47ux603bux8868}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ID
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+猜想
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+标签
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+现状
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+C-PH1 & 黑洞信息 = 投影结构丢失, 非视界编码 & CONJECTURE (OPEN) &
+①②完成; 对立全息原理 \\
+C-PH2 & 对称性破缺 = 高维投影丢失, 穿折越还原 & CONJECTURE & ①②完成;
+无先例 \\
+C-MA3 & 极限 = 高维圆投影错觉 & DISPROVED (字面) / KNOWN (紧化) &
+④反例完成 \\
+C-MA4 & 非欧几何 = 基点移动投影 & KNOWN RESULT & 已证; 贡献 =
+代数机制重述 \\
+C-PH5 & 错觉艺术家脑信号 → 空间构造语法 & CONJECTURE & ①②完成;
+实验方向 \\
+C-META6 & 直觉输出不可对比还原结构 & CONJECTURE & ①②完成; 三通道泛化 \\
+C-PH7 & 隧穿/超光速 = 高维快速路径 & CONJECTURE (OPEN) & ①②完成;
+无信号定理边界 \\
+C-PH8 & 时间 = 对称性方向; 退火快路径 & CONJECTURE (OPEN) & ①②完成; T
+非精确需弱化 \\
+C-PH9 & 信息与结构同时出现 & OBSERVATION + CONJECTURE & Lean 已证
+(R004/R006/S004/S005) \\
+C-PH10 & 动态基点: 观测影响量子态 & CONJECTURE (OPEN) & ①②完成;
+基点轨迹新对象 \\
+C-META11 & 各学科引力透镜多重投影诊断 & CONJECTURE & ①②完成;
+非欧几何范例 \\
+C-META12 & 量变不产生质变; 经历≠经验 & CONJECTURE & ①②完成; D(H) 内核 \\
+C-META13 & Church 教训: 经验须在形式化结构下实施 & OBSERVATION +
+CONJECTURE & ①②完成; 项目纪律已固化 \\
+C-META14 & 奥卡姆剃刀导向同质化; 形式化不能过严过松 & CONJECTURE &
+①②完成; 剃冗余不剃多样性 \\
+C-PH11 & 基点移动 vs 引力空间结构变化; 方向与基点移动方向统一 &
+KNOWN+CONJECTURE & ①②完成; 平行移动/和乐是内核 \\
+\end{longtable}
+
+\subsection{7 步序进度}\label{ux6b65ux5e8fux8fdbux5ea6}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ID
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+①形式陈述
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+②文献检索
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+③小例子
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+④反例搜索
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+⑤简化假设
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+⑥Lean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+⑦推广
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+C-PH1 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-PH2 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-MA3 & ✅ & ✅ & --- & ✅ & --- & --- & 禁 \\
+C-MA4 & ✅ & ✅ & --- & ⏳ & --- & --- & 禁 \\
+C-PH5 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-META6 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-PH7 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-PH8 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-PH9 & ✅ & ✅ (Lean 部分已证) & ⏳ & 部分 ✅ & ⏳ & ✅ & 禁 \\
+C-PH10 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-META11 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-META12 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-META13 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-META14 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+C-PH11 & ✅ & ✅ & ⏳ & ⏳ & ⏳ & --- & 禁 \\
+\end{longtable}
+
+\begin{quote}
+⑥标 --- = 物理/元方法论猜想不可 Lean 形式化 (C-PH9 的 Lean
+观测部分已证)。 纪律: 前 6 步未完成禁止推广 (⑦)。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{方法与文献}\label{ux65b9ux6cd5ux4e0eux6587ux732e}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{方法}: 基点穿折越 (Worn-Zhe-Yue) ---
+  基点构造诱导下的数学空间穿折越证明方法。
+\item
+  \textbf{Lean 形式化}: heap/torsor 基点相对性 (C001-C010) +
+  AbsoluteRelative 分支 (R001-R007, S001-S005) + 黎曼方向 (C011-C025),
+  全部 \texttt{lake\ build} 通过, 无 sorry。
+\item
+  \textbf{检索来源}: arXiv (api.arxiv.org), 逐条标注 KNOWN /
+  NO\_PRIOR\_RESULT\_FOUND。
+\item
+  \textbf{诚实边界}: 所有 CONJECTURE 均无数学证明; C-MA4 为已知结果;
+  C-MA3 字面表述 已被证伪 (ε-δ 反例); C-PH9 仅 Lean 观测部分已形式化。
+\end{itemize}
+
+\end{document}
