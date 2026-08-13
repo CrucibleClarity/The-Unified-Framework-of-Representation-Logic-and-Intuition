@@ -1,0 +1,85 @@
+id: C019
+title: "Zero-position parameterization & critical line as circle — 零点位置的轴参数化; 临界线在蜷曲 (反演) 下是圆心 (1,0) 的圆"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ζ 的零点在瞎tm平移反演轴视角下的位置参数化 (OBSERVATION/KNOWN,
+    纯代数位置, 不涉及 ζ 的分析值):
+    一、零点位置:
+    - critical_line_points: proj z = 1/2 ⟺ z = lift(1/2) + t·J —
+      临界线 (非平凡零点猜想) = 假复数轴位置 1/2 + 真复数轴任意 t;
+    - real_axis_points: z.b = 0 ⟺ z 在假复数轴 (抬升轴) 上 —
+      平凡零点 (真复数轴 = 0, 假复数轴负偶整数) 全在假复数轴上;
+    - nontrivial_zero_position: 假复数轴 1/2 ∧ 真复数轴非零 = 临界线
+      剔除平凡点。
+    二、临界线是圆 (用户洞察: 1/2 竖线在蜷曲下是圆):
+    - critical_line_is_circle: z = 1/2 + t·J ⟹ norm (recip z - 1) = 1
+      — 临界线 (竖直线) 在反演 (蜷曲, C015) 下 = 圆心 (1,0) 半径 1
+      的圆, 正是"以 (1,0) 为球心的球面";
+    - 圆经过 0 (z = ∞, 无限远被蜷曲卷回原点) 和 2 (z = 1/2);
+    - 竖直线两端 (±∞) 蜷曲为同一点 ⟹ 直线闭合为圆 (无限=有限)。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) critical_line_points: proj z = 1/2 ↔ ∃ t : ℝ, z = lift (1/2) + lift t * J
+    (2) real_axis_points: z.b = 0 ↔ ∃ r : ℝ, z = lift r
+    (3) nontrivial_zero_position: proj z = 1/2 ∧ z.b ≠ 0 ↔
+        ∃ t : ℝ, t ≠ 0 ∧ z = lift (1/2) + lift t * J
+    (4) critical_line_is_circle: ∀ t : ℝ, norm (recip (lift (1/2) + lift t * J) - lift 1) = 1
+
+objects:
+  - "临界线 {lift(1/2) + t·J : t ∈ ℝ} (非平凡零点猜想的位置)"
+  - "圆心 (1,0) 半径 1 的圆 (临界线的反演像)"
+  - "假复数轴 (抬升轴, 平凡零点的载体)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "recip (C013)", "norm (C014)", "lift", "J", "proj"]
+
+assumptions:
+  - "C011/C013/C014/C015 构造"
+  - "位置参数化为代数事实, 不声称 ζ 在这些位置取 0 (分析未做)"
+conclusion: "零点位置: 非平凡 (猜想) = 假复数轴 1/2 + 真复数轴自由 (临界线); 平凡 = 真复数轴 0 + 假复数轴负偶。临界线在蜷曲下 = 圆心 (1,0) 半径 1 的圆 (经过 0 和 2)"
+
+known_special_cases:
+  - "临界线圆经过 0 (∞ 卷回) 和 2 (z = 1/2 的反演像)"
+  - "t = 0: z = 1/2 的平凡点 (临界线上真复数轴为 0 的点)"
+closest_known_results:
+  - "圆反演把直线映成圆 (KNOWN, 经典几何)"
+  - "函数方程对称轴 Re(s) = 1/2 (KNOWN)"
+  - "C013 (临界线/1/2 对称中心), C015 (蜷曲性), C018 (反射平方根)"
+literature_queries:
+  - "circle inversion line to circle critical line"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收; 位置参数化覆盖全部 t ∈ ℝ"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    critical_line_points / real_axis_points / nontrivial_zero_position /
+    critical_line_is_circle
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "全部 KNOWN: 圆反演、函数方程对称都是经典"
+  - "位置参数化不是零点存在性/ζ 值证明 (分析未做)"
+  - "临界线圆 (圆心 1) 与素数圆 (圆心 0) 不同: 一个经过 0, 一个围绕 0"
+
+evidence_for:
+  - "Lean: 4 个定理全证 (无 sorry), 全量 lake build 通过 (2224 jobs)"
+evidence_against: []
+
+next_action: "(1) 素数圆与临界线圆的关系 (圆心 0 的素数圆 vs 圆心 (1,0) 的临界线圆); (2) 欧拉乘积/收敛性 (若继续 ζ 方向)"
+
+notes: "零点位置的两轴参数化 + 临界线蜷曲为圆 (圆心 (1,0), 经过 0 和 2)。全部 KNOWN, 观测锚点。"
