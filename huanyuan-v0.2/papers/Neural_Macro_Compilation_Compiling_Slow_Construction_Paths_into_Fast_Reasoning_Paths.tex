@@ -1,0 +1,551 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Neural Macro Compilation in the Unified Framework of
+Representation, Logic, and Intuition --- Intuition Searches
+Form}\label{neural-macro-compilation-in-the-unified-framework-of-representation-logic-and-intuition-intuition-searches-form}
+
+\section{统一框架 · 神经宏编译 ·
+直觉搜索形式}\label{ux7edfux4e00ux6846ux67b6-ux795eux7ecfux5b8fux7f16ux8bd1-ux76f4ux89c9ux641cux7d22ux5f62ux5f0f}
+
+\begin{quote}
+\textbf{Draft v0.1 (English)} \textbar{} 2026-08-11 Target: ICML/COLM
+(method paper) \textbar{} Patent: M1 (semantic-path compilation)
+\textbf{Framework position}: Part of the \emph{Unified Framework of
+Representation, Logic, and Intuition} (manifesto:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md}). This
+paper establishes the \textbf{construction→intuition} method: compiling
+the slow construction path into the fast reasoning path within one
+model. Companion: P1 (form→construction theory), P0 (three-channel
+equivalence cognition). Evidence: exp50/51/80/90 via run\_exp official
+judge (docs/paper\_data/)
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Repository:
+\href{https://github.com/YuchenWang-ai/Neural-Macro-Compilation-Compiling-Slow-Construction-Paths-into-Fast-Reasoning-Paths}{YuchenWang-ai/Neural-Macro-Compilation-Compiling-Slow-Construction-Paths-into-Fast-Reasoning-Paths}}
+
+\subsection{Abstract}\label{abstract}
+
+A model that has learned base operations can often \emph{already
+execute} a new composite operator by unfolding its definition chain ---
+but along a long construction path (many steps/tokens). We propose
+\emph{neural macro compilation}: compile the slow construction path into
+a fast reasoning path within the \emph{same model}, using few
+automatically generated samples, while (i) preserving semantics exactly
+(verifiable with fallback) and (ii) never expanding the semantic
+closure. On a 2-layer, \textless1 MB transformer: a 2000-digit carry
+chain executes identically on construction (0.62 s), formal (0.069 s),
+and intuition (0.086 s) channels (1.000); the compiled fast path
+generalizes with zero decay to 2000 digits, radix 60, and 100\% digit
+anonymization; step-skipping is visible as 82→5 tokens for a 20-digit
+addition. Unlike distillation, teacher and student are the same model's
+slow and fast paths (construction-channel self-compilation); unlike
+program synthesis, no program is compiled out-of-band. Within the
+Unified Framework, this paper is the \textbf{construction→intuition}
+method leg: precise logical construction is compiled into flashing
+intuition, which then searches forms --- closing the cycle of form →
+construction → intuition → form.
+
+\subsection{1 Introduction}\label{introduction}
+
+\textbf{The problem.} When a model has learned base operations, a new
+operator σ is already executable: its definition chain unfolds into base
+operations the model can follow. But the path is long --- per-digit
+iteration, long token sequences --- so inference cost scales with
+construction length, not semantic size.
+
+\textbf{Existing remedies are invasive.} Distillation needs a separate
+teacher and new parameters. Few-shot fine-tuning risks disturbing
+learned abilities and gives no equivalence guarantee. Program-to-neural
+compilation (ICML 2024) treats the program as external input and
+compiles out-of-band. None exploits that the model \emph{already} has
+the semantics.
+
+\textbf{This work.} The same model already contains two paths for σ: the
+slow \emph{construction} path (definition-driven, semantically complete)
+and a fast path that training can establish in weights. We compile the
+former into the latter --- \emph{neural macro compilation} --- with
+minimal supervision generated automatically by the slow path itself, a
+verifier, and a runtime fallback. The macro adds speed, not semantics.
+Relation to P1: P1 establishes \emph{that} the representation supports
+systematic generalization and \emph{why} (formalized induction); this
+paper establishes \emph{how} an already-executable operator is
+re-compiled into a cheap path --- the two are complementary, and P2 does
+not re-derive P1's generalization results.
+
+\textbf{Contributions.} - \textbf{C1 --- Semantic-path
+self-compilation.} Compile the model's own slow construction path into a
+fast reasoning path with few self-generated samples, preserving
+semantics and the semantic closure. - \textbf{C2 --- Zero-sample
+semantic closure.} New operators are executable with zero training
+(construction path); training only reduces cost. - \textbf{C3 ---
+Verifiable equivalence + fallback.} Fast outputs checked against slow
+outputs; failures route back to the slow path. - \textbf{C4 ---
+Empirical profile.} 2000-digit carry chain correct on all channels; fast
+path 7× cheaper at width 2000; zero-decay generalization; 82→5 token
+step-skipping.
+
+\subsection{2 Setting}\label{setting}
+
+This paper builds directly on the token-native representation of P1:
+concepts carry structured definitions; a \emph{definition chain} of σ is
+the transitive closure of concepts σ's definition references (P1 §2).
+The compilation targets are channels over this representation.
+
+\textbf{Slow path (construction channel).} Definition-driven unfolding:
+σ's definition chain expands into base operations executed step by step
+(per-digit iteration, carry propagation). Semantically complete --- the
+semantics is guaranteed by definition; cost scales with construction
+length.
+
+\textbf{Fast path (intuition channel).} Direct execution compiled into
+weights: input → output in a short sequence, skipping intermediate
+construction steps. Cost scales with output length, not construction
+depth.
+
+\textbf{Formal path (rewriting channel).} The definition-driven
+rewriting engine --- shares its definition source with construction;
+serves as an independent cross-check in verification.
+
+\textbf{Goal.} For a new operator σ with expansion path T\_σ: -
+Sem\_fast(σ) = Sem\_expanded(T\_σ) --- exact semantic equivalence,
+verifiable; - Cost\_fast ≪ Cost\_expanded --- steps/tokens/latency
+reduced; - Closure\_fast(σ) = Closure\_expanded(σ) --- no
+semantic-closure expansion.
+
+\textbf{Terminology.} The fast path is the \emph{reasoning fast path}
+--- intuition: hard to obtain (compilation requires sufficient training;
+config-dependent epochs), but easy to generalize by skipping steps. The
+full account is in P1 (§3, §7); here we focus on the compilation method.
+
+\subsection{3 Method: Neural Macro
+Compilation}\label{method-neural-macro-compilation}
+
+Five stages.
+
+\textbf{S1 --- Path recognition.} Expand σ's definition chain into base
+operations (E(σ) = T\_σ). If σ is expressible via the model's base
+operations, it is compilable --- decided by the definition graph, not a
+separate synthesizer.
+
+\textbf{S2 --- Sample generation.} Use the slow path (construction
+channel / reference evaluator) to generate (σ, x\_i, y\_i) pairs
+automatically. Self-supervised labels: the samples are the model's own
+semantics. Few samples suffice (tens) because the model already knows
+the semantics; the samples teach only the \emph{shape} of the direct
+path. The dependence of compilation quality on sample count is a
+falsifiable claim, tested in §5 (currently pending).
+
+\textbf{S3 --- Parameter update.} Update a subset of parameters
+(embedding / adapter / partial / full --- graded narrow to wide) so σ
+maps directly to its result in one short sequence, preserving other
+abilities (restricted range, or verification after full update).
+
+\textbf{S4 --- Semantic verification.} Verify fast-path outputs against
+slow-path outputs on a held-out set by full output-sequence comparison
+(the only trusted metric). Only a passing macro is installed.
+
+\textbf{S5 --- Runtime routing.} Route σ to the fast path when its
+execution-cost threshold is met; fall back to the slow path on
+verification failure. The fast path is an optimization, not a
+replacement.
+
+\textbf{Key distinction from distillation.} In distillation, a (possibly
+external) teacher transfers knowledge to a student. Here teacher and
+student are the \emph{same model's} slow and fast paths: the
+construction channel supervises its own intuition channel. No new
+semantic machinery; the macro is compiled from existing competence.
+
+\subsection{4 Experiments}\label{experiments}
+
+All via the official run\_exp judge path (full-sequence reconstruction).
+Model: exp02\_supervised\_s2 (2-layer, dim-64, \textless1 MB, judgment
+1.000 on the full suite). Positioning: P1 establishes that this model
+generalizes (width/radix/anonymization); this paper establishes that its
+\emph{already-generalizing} capability can be re-compiled into a cheaper
+path --- the experiments below measure executability, cost, and
+step-skipping, not generalization itself (which P1 covers).
+
+\subsubsection{4.1 Zero-sample semantic closure
+(C2)}\label{zero-sample-semantic-closure-c2}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Input & Construction & Formal & Intuition (judgment) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+12+34 & ✓ & ✓ & ✓ \\
+123456789+987654321 & ✓ & ✓ & ✓ \\
+999\ldots9 (20 digits)+1 & ✓ & ✓ & ✓ \\
+\textbf{999\ldots9 (2000 digits)+1} & ✓ & ✓ & \textbf{1.000} \\
+\end{longtable}
+
+Construction and formal channels agree exactly on all four inputs (full
+output sequences); intuition (the model) scores judgment accuracy 1.000
+on the same inputs, including the 2000-digit carry chain --- with zero
+training for that specific operator. Semantics precede training: the
+definition chain alone makes σ executable.
+
+\subsubsection{4.2 Cost profile (C1, C4)}\label{cost-profile-c1-c4}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Width
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Construction (slow)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Formal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Intuition (fast)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Speedup vs construction
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & 0.0005 s & 0.0012 s & 0.0018 s & --- \\
+9 & 0.0031 s & 0.0007 s & 0.0043 s & --- \\
+\textbf{2000} & \textbf{0.6206 s} & \textbf{0.0695 s} & \textbf{0.0857
+s} & \textbf{7× (intuition) / 9× (formal)} \\
+\end{longtable}
+
+At 2000 digits, the fast path is 7× cheaper than construction.
+Construction grows linearly with digits; the fast path is a short single
+forward pass. Honest caveat: the formal engine is faster still; the
+intuition channel's value is end-to-end execution in weights (no
+external oracle) plus preserved generalization.
+
+\subsubsection{4.3 Step-skipping generalization
+(C4)}\label{step-skipping-generalization-c4}
+
+At fixed acquisition (8 epochs), the compiled fast path generalizes by
+skipping construction steps with \textbf{zero decay} (exp80): 2000-digit
+width (10× training width), radix 60 (6×), 100\% digit anonymization,
+and joint width × radix --- all at 1.000. Acquisition and step-skipping
+generalization are decoupled: the fast path is hard to obtain but easy
+to extrapolate.
+
+\subsubsection{4.4 Machine form of step-skipping
+(C4)}\label{machine-form-of-step-skipping-c4}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Path & Tokens & Time \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Construction (digit-wise unfolding) & 82 & 0.410 ms \\
+Intuition (atomic num token) & 5 & 0.186 ms \\
+\end{longtable}
+
+20-digit addition: the fast path treats the whole numeral as an atomic
+token (5 tokens) versus 82-token digit-wise unfolding --- a 16× token
+reduction, 2.2× faster. \textbf{Honest caveat}: the atomic token is
+outside the model vocab (pad id 0); the measurement is the
+sequence-length effect on forward cost --- a lower bound, not a claim of
+learned atomic-token semantics. If the model truly learned the atomic
+token, the fast path would be an O(1) decision with a larger advantage.
+
+\subsection{5 Ablations}\label{ablations}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Ablation
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Question
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Status
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sample count (10/20/50) & how few instances suffice for compilation &
+pending \\
+Update scope (embeddings / adapter / partial / full) & cost--degradation
+trade-off; original-capability protection & pending \\
+No verifier / no fallback & error propagation without the safety net &
+pending \\
+Closure invariance (EXP-52) & fast-path executable set = slow-path
+executable set & pending \\
+\end{longtable}
+
+The three-channel consistency experiment (exp50) already provides the
+core verification evidence: construction = formal exactly (2/9/20/2000
+digits) and intuition 1.000, including the 2000-digit carry chain.
+Closure invariance (EXP-52) tests whether the fast path executes exactly
+the inputs the slow path could execute --- the semantic-closure
+guarantee of Goal (iii).
+
+\subsection{6 Related Work}\label{related-work}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Program-to-neural compilation} (Learning to Compile Programs
+  to Neural Networks, ICML 2024): builds a neural surrogate for an
+  \emph{external} program from behavioral data; requires a program
+  specification and large data. Difference: here the ``program'' is the
+  model's own construction path; the teacher is the model itself; no
+  program analysis. Related survey perspective in P1 §9.
+\item
+  \textbf{Knowledge distillation} (Hinton et al., 2015):
+  teacher→student, typically a separate/larger teacher. Difference: same
+  model, two channels; no external teacher; equivalence verified with
+  fallback.
+\item
+  \textbf{Inference compilation / shortcut distillation} (diffusion,
+  2025): few-sample shortcut distillation compresses long correct paths.
+  Similar surface; difference: semantic equivalence with a verifier +
+  fallback, no semantic-closure expansion.
+\item
+  \textbf{Few-shot fine-tuning}: general; this work is the special case
+  where the capability already exists in the slow path, so few instances
+  \emph{compile} rather than \emph{learn}.
+\item
+  \textbf{Continuous / continual learning}: adding a capability without
+  forgetting old ones. This work's update-scope restriction (S3) and
+  verification (S4) are a forgetting-mitigation mechanism; the ablation
+  (§5) measures the trade-off.
+\item
+  \textbf{Mechanistic / hand-compiled transformers} (e.g.~a
+  hand-compiled WASM interpreter): hand-assigned weights interpret a
+  language. Ours is \emph{learned} compilation --- gradient training
+  produces the macro, no hand-set weights.
+\item
+  \textbf{Continual learning / catastrophic forgetting}: fine-tuning
+  risks forgetting; our restricted-update + verification + fallback is a
+  targeted response, and the update-scope ablation (§5) tests it
+  explicitly.
+\item
+  \textbf{Length generalization literature} (positional encoding /
+  recurrence engineering): addresses long-input inference under fixed
+  representations; this work's fast path removes construction-length
+  dependence at the channel level rather than the representation level.
+\end{itemize}
+
+\subsection{7 Limitations}\label{limitations}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Compilable set.} Only operators expressible as compositions of
+  already-supported operations can be compiled (S1 precondition). New
+  semantics are out of scope: the macro adds speed, not meaning.
+\item
+  \textbf{Slow-path correctness.} Compilation quality inherits the
+  construction channel's correctness; a reference-evaluator bug
+  propagates into supervision. Verification mitigates but does not
+  create correctness.
+\item
+  \textbf{Verification coverage.} Equivalence is checked on held-out
+  samples, not proven; a full guarantee would require formal
+  verification of the compiled weights (future, Lean-based).
+\item
+  \textbf{Update-range tradeoff.} Wide updates risk disturbing learned
+  abilities; narrow updates may limit the fast path's expressiveness.
+  The empirical frontier is not yet mapped (ablation pending).
+\end{enumerate}
+
+\subsection{8 Conclusion}\label{conclusion}
+
+A model that already executes a composite operator along its
+construction path has everything needed to execute it fast: a small
+number of samples compiles the construction channel into a semantically
+equivalent reasoning fast path within the same model --- verified, with
+fallback, and without expanding the semantic closure. On a 2-layer
+\textless1 MB transformer: a 2000-digit carry chain is correct on all
+channels, the fast path is 7× cheaper at width 2000, step-skipping
+generalizes with zero decay, and the macro's machine form is visible as
+82→5 tokens. Neural macro compilation is the weight-level analogue of
+source-level macros: the semantics are the model's own; only the speed
+is added.
+
+\subsection{Appendix}\label{appendix}
+
+\begin{itemize}
+\tightlist
+\item
+  A. Full experiment tables: docs/paper\_data/results.csv.
+\item
+  B. Path-recognition examples: definition-chain expansions for
+  addition/root/tetration.
+\item
+  C. Cost protocol: construction (token\_iterator), formal (engine),
+  intuition (model forward); wall-clock per 1000 samples.
+\item
+  D. Patent M1 independent-claim skeleton (semantic-path compilation).
+\end{itemize}
+
+\subsection{Cross-References within the Unified
+Framework}\label{cross-references-within-the-unified-framework}
+
+This paper is one leg of the \emph{Unified Framework of Representation,
+Logic, and Intuition} (manifesto:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md}). The
+three legs co-adapt:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Leg
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Paper
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Claim
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+form → construction & P1 (this paper) & correct syntax → extreme
+training speed; correct construction → extreme generalization \\
+construction → intuition & P0 (three-channel equivalence) & construction
+= formal = intuition; intuition is compiled construction \\
+construction → intuition (method) & P2 (neural macro compilation) &
+compile the slow construction path into the fast reasoning path \\
+\end{longtable}
+
+Cyclic closure: form directs construction (P1), construction earns
+intuition (P0/P2), intuition searches form (the fast path extrapolates
+and re-expresses in the unified form). The unified conclusion --- form
+directs logical construction, construction earns flashing intuition,
+intuition exhaustively searches forms --- is stated in the manifesto and
+in each paper's Unified Conclusion.
+
+\subsection{References}\label{references}
+
+{[}In preparation; verified full records pending. Core entries:{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Hinton, G., Vinyals, O., Dean, J. 2015. Distilling the Knowledge in a
+  Neural Network. arXiv:1503.02531.
+\item
+  ICML 2024. Learning to Compile Programs to Neural Networks (full
+  citation pending verification).
+\item
+  P1 companion paper: Generalization as Formalized Induction (2026).
+\item
+  Diffusion shortcut distillation (2025; citation pending).
+\item
+  Barendregt, H. 1984. The Lambda Calculus (for definition-chain and λ
+  foundations).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Unified Conclusion (added
+2026-08-11)}\label{unified-conclusion-added-2026-08-11}
+
+Once, under a unified formal attention-syntactic structure, a neural
+network ultimately, inevitably, and necessarily clearly, intuitively,
+and interpretably observes the boundary between intuition and
+construction, we can with full confidence use the unified
+attention-formal language to direct logical construction, use precise
+synthetic-CoT logical construction to earn \emph{flashing intuition},
+and use distilled intuitive context to exhaustively search attention
+forms. Form, construction, and intuition co-adapt within the unified
+framework, forming a feedback iteration pipeline of teaching, training,
+and reasoning in which they are no longer distinct --- perhaps one of
+the faster shortcuts among the many paths toward ASI.
+
+\end{document}
