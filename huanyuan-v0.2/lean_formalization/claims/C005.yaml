@@ -1,0 +1,97 @@
+id: C005
+title: "Torsor-heap correspondence: directed constructions and exact round trips"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    Heap 与 AddTorsor 之间有两条定向构造 + 两个 object-level round trip:
+    (方向 A) 给定 [AddCommGroup G] [AddTorsor G P]: 定义 P 上 heap
+    [x,y,z] := (x -ᵥ y) +ᵥ z。验证 [_,_,_] 满足 abelian heap 公理。
+    (方向 B) 给定 AbelianHeap H 与选点 e: C004 已得 (H, +_e, e) 是 abelian group
+    G_e，其中 x +_e y = [x,e,y]，逆 -_e y = [e,y,e]。
+    (方向 C) 定义候选 vadd/vsub (g +ᵥ x := g +_e x, x -ᵥ y := x +_e -_e y) 并证明其
+      满足 AddTorsor 的两条核心 cancellation laws (heap_retract_torsor_cancel);
+      结合 C004 的 group action laws, 可构造 self-torsor。
+      注: 未实际构造完整 AddTorsor G_e H instance (需 AddAction+VSub+Nonempty),
+      仅验证核心 cancellation laws; ledger 声明与 Lean 实际检查强度一致。
+    ★ Round-trip 1 (C005a): H → G_e → induced heap 严格恢复原 heap，
+      [x,y,z]' = (x -_e y) +_e z = [x,y,z]（三元运算相等，非仅同构）。
+      key: x -_e y = [x,e,[e,y,e]] = [x,y,e]，再 [x,y,e]+_e z = [[x,y,e],e,z] = [x,y,z]。
+    ★ Round-trip 2 (C005b): AddTorsor G P → Heap → retract at e 得到的群
+      经 φ_e x := x -ᵥ e 规范同构于 G（carrier 可能不同, 仅 canonical iso）。
+      ★ 严格说: φ_e 是"相对于所选基点 e 的规范同构" (canonical relative to e)——
+      它依赖 e∈P, 不是 torsor P 无条件 canonical 给出 P≅G。这正表达:
+      torsor 本身没有 origin; 选 origin 后才得到与作用群的具体 identification。
+  formal_math: |
+    (DirA) Let [AddCommGroup G] [AddTorsor G P]. Define heapH : P → P → P → P by
+    heapH x y z := (x -ᵥ y) +ᵥ z   [additive form of x·y⁻¹·z].
+    Claim: heapH satisfies AbelianHeap axioms.
+    (DirB) Let H : Type with [AbelianHeap H], e : H. x +_e y := [x,e,y],
+    -_e y := [e,y,e]. Claim: (H, +_e, e) is AddCommGroup (C004).
+    (RoundTrip1) [x,y,z]' := (x -_e y) +_e z = [x,y,z].  (exact recovery)
+    (RoundTrip2) φ_e : P → G, φ_e x := x -ᵥ e, gives G_e ≅ G (φ_e (x +_e y) = φ_e x + φ_e y).
+
+objects: ["G : Type* [AddCommGroup]", "P : Type* [AddTorsor G P]", "H : Type* [AbelianHeap H]", "e : H"]
+definitions_used: ["AddTorsor", "AbelianHeap", "AddCommGroup"]
+
+assumptions:
+  - "方向A: [AddCommGroup G] [AddTorsor G P]"
+  - "方向B/C + RoundTrip1: [AbelianHeap H] 且 e : H"
+  - "RoundTrip2: [AddCommGroup G] [AddTorsor G P] 且 e : P"
+conclusion: "两方向分别成立；RoundTrip1 精确恢复原 heap；RoundTrip2 得规范同构（非相等）"
+
+known_special_cases:
+  - "方向A 特例: P = G (群自身 torsor), heap 操作 x - y + z 即标准 heap of group"
+  - "方向B 特例: H 来自群 (H,+), 选 e=0 恢复原群 G_0 = H"
+  - "RoundTrip1: 验证精确恢复 (Lean: heap_retract_induced_heap_eq)"
+  - "RoundTrip2: φ_e x = x -ᵥ e 是 G_e ≅ G 的规范同构 (Lean: torsor_retract_group_iso)"
+closest_known_results:
+  - "C004 (heap retract 恢复群)"
+  - "经典: heap of a group (Wagner); 固定一点 e 后 [x,e,y] 恢复 group"
+  - "mathlib Mathlib.Algebra.Torsor.Basic (AddTorsor typeclass 正式 API; 旧路径 Mathlib.Algebra.AddTorsor.* deprecated)"
+literature_queries:
+  - "torsor induces heap ternary operation"
+  - "heap retract recovers group exactly"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "KNOWN baseline; RoundTrip1 精确恢复 (Lean 验证), RoundTrip2 规范同构"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/TorsorHeap.lean"
+  theorem_name: |
+    ZeroRelative.torsor_induces_abelianHeap (DirA) /
+    ZeroRelative.heap_retract_torsor_cancel (DirC 消去律) /
+    ZeroRelative.heap_retract_induced_heap_eq (RoundTrip1) /
+    ZeroRelative.torsor_retract_group_iso (RoundTrip2)
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "mathlib 用 Mathlib.Algebra.Torsor.* (AddTorsor typeclass 未 deprecated, 位于此; 仅旧路径 Mathlib.Algebra.AddTorsor.* deprecated)"
+  - "方向A abelian heap 需 [AddCommGroup G] (vsub_vadd_comm 依赖加法交换性) — 数学上正确: heap 交换性 ⇔ 群交换性"
+  - "Torsor outParam G 需显式绑定 (instance 推断失败已解决)"
+  - "方向C 用 Prop 型 cancellation 律而非完整 AddTorsor instance (需 AddAction+VSub+Nonempty); formal statement 与 Lean 实际检查强度一致"
+
+evidence_for:
+  - "DirA: torsor_induces_abelianHeap — (x -ᵥ y) +ᵥ z (additive) / (x/ₛ y)•z (multiplicative) 满足 heap 4 公理"
+  - "DirC: heap_retract_torsor_cancel — retract 群 vsub/vadd 满足 AddTorsor 两条消去律"
+  - "RoundTrip1: heap_retract_induced_heap_eq — retract_sub_eq ([x,e,[e,y,e]]=[x,y,e]) 后 (x-_e y)+_e z = [x,y,z] 精确恢复原 heap"
+  - "RoundTrip2: torsor_retract_group_iso — φ_e x = x -ᵥ e 保持 retract 加法且为双射 (右逆 g ↦ g +ᵥ e)"
+  - "Lean 接受全部, 依赖链无 sorry (649 jobs 全构建通过)"
+  - "已用 Mathlib.Algebra.Torsor.*"
+evidence_against: []
+
+next_action: "C005 完成 (含两个 round-trip baseline)。下一步: C006 (basepoint-dependent successor S_e 的生成规则与换基点 semiconjugacy)"
+
+notes: "评审修正已全部落实: (1) RoundTrip1 数学修正: H→G_e→induced heap 严格恢复原 heap (原 ledger 误写'仅 heap-isomorphic', 已改正, Lean 验证); (2) RoundTrip2: AddTorsor→heap→retract 得 canonically isomorphic 到 G 的群 (φ_e x = x-ᵥ e), 且措辞改为'相对于所选基点 e 的规范同构'——它依赖 e, 不是 torsor 无条件 canonical; (3) 方向A 记号修正: (x -ᵥ y) +ᵥ z (群元素在前, mathlib 记号), 类型用 [AddCommGroup G]; (4) 方向C formal statement 改为'定义候选 vadd/vsub 并证明两条 cancellation laws (可结合 C004 构造 self-torsor)', 与 Lean 实际检查一致 (不声称已验证完整 AddTorsor instance); (5) AddTorsor deprecated 表述精确化: typeclass 未 deprecated, 位于 Mathlib.Algebra.Torsor.*, 仅旧路径 deprecated。核心答案: 选择 e 没有创造 heap 的相对结构, 只是把相对结构 trivialize 成二元群 (control group for future research)。"
