@@ -1,0 +1,112 @@
+id: C011
+title: "Complex axis by projection — 真复数轴的投影构造: 高维旋转代数投影产生复数; 基点漂移与实数轴位置在投影下不可观测"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: true
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ★ 首次形式化"复平面的真实构造" (docs/关于黎曼猜想的思考.md 假设): 复数轴
+    是某高维结构中 "-1" 在人类数学空间 (实数轴) 的投影; 根号 = 投影的逆。
+    构造 (ComplexAxis.lean, DEFINITION + OBSERVATION):
+    - 高维结构 = 二维旋转代数 a + bJ (≅ ℂ, 矩阵表示 [[a,-b],[b,a]]), 乘法 =
+      复数乘法; J = 90° 旋转, J² = -1: 高维中 -1 有平方根 (w = J, √(-1)
+      投影前存在)。
+    - 投影 π(a+bJ) = a 保加法不保乘法: π(J·J) = -1 ≠ π(J)·π(J) = 0 —
+      开方/旋转信息在投影中丢失。
+    - 根号 = 投影的逆: 实数轴上 -1 无平方根 (∀t, t² ≠ -1); 抬升 lift 到高维
+      后 J·J = lift(-1) 开方可行; lift 保加乘 (实数轴是子代数)。
+    - 基点漂移: 复平面上定义自然数 ⟹ λ 基点落在复数轴, 不在原点 0 而是 i
+      (= J, 或 i 的变换 b·J)。投影把基点 i 显示为 0 ("原点假象" — 基点真实
+      位置被投影丢失); 后继 σ(x) = x+1 在投影下是实数轴 +1; 任意纯虚基点
+      (proj e = 0) 的 Chain(succ, e) 投影都是含 0 且 +1 封闭的同一结构
+      (基点漂移在投影下不可观测)。
+    - 实数轴可疑性: "实数轴" = 过原点 0 的实方向线 axisLine 0, 只是
+      ComplexAxis 里无数同样像数轴的线之一: 过任意纯虚基点 ⟨0,b⟩ 的线
+      投影都是完整 ℝ (ℝ ≃ axisLine b, 线上投影双射); 线的位置 (过 0 还是
+      过 i) 投影下不可观测 — 实数轴不是结构事实, 是投影等价类, 本质是
+      另一根被压扁的复数轴 (与 J 丢失、基点漂移同一机制)。
+  formal_math: |
+    structure ComplexAxis := {a : ℝ, b : ℝ}
+    mul (a₁+b₁J)(a₂+b₂J) := (a₁a₂-b₁b₂) + (a₁b₂+a₂b₁)J;  J := ⟨0,1⟩
+    proj(x) := x.a;  lift(t) := ⟨t,0⟩;  succ(x) := x + 1;  basepoint := J
+    axisLine(b) := {⟨0,b⟩ + lift t : t ∈ ℝ};  realAxis := axisLine 0
+    Theorem (Lean-verified, no sorry):
+    (1) J*J = -1;  proj_add: proj(x+y) = proj x + proj y;  proj_J: proj J = 0
+    (2) proj_mul_not_preserved: proj(J·J) ≠ proj J * proj J
+    (3) sqrt_neg_one_exists_high: ∃w, w*w = -1;  sqrt_neg_one_not_exists_axis:
+        ∀t:ℝ, t*t ≠ -1;  lift_add/lift_mul;  lift_neg_one_sqrt: J*J = lift(-1)
+    (4) basepoint_proj: proj basepoint = 0;  proj_succ: proj(succ x) = proj x + 1;
+        zero_in_proj_chain: 0 ∈ proj '' Chain succ basepoint;
+        proj_chain_succ_closed: π(Chain) 对 +1 封闭;
+        proj_chain_basepoint_independent: ∀e, proj e = 0 → 同一投影结构
+    (5) axisLine_eval_proj: proj(⟨0,b⟩ + lift t) = t;
+        axisProjEquiv: ℝ ≃ {x // x ∈ axisLine b};
+        axisLine_proj_independent: proj '' axisLine b1 = proj '' axisLine b2;
+        realAxis_indistinguishable_from_i_line: proj '' realAxis = proj '' axisLine 1
+
+objects:
+  - "ComplexAxis (高维结构: 二维旋转代数 a + bJ)"
+  - "J (90° 旋转, 高维中 -1 的平方根)"
+  - "proj (投影到实数轴, 取标量部分)"
+  - "lift (抬升: 实数轴嵌入高维结构)"
+  - "basepoint = i = J (漂移基点)"
+  - "succ (实轴方向后继 σ(x) = x+1)"
+  - "Chain succ basepoint (最小 σ-闭结构, 无 Nat primitive)"
+  - "axisLine b (过纯虚基点 ⟨0,b⟩ 的实方向线)"
+definitions_used: ["ComplexAxis", "mul (复数乘法)", "J", "proj", "lift", "succ", "Chain (C009 v2)", "axisLine", "realAxis"]
+
+assumptions:
+  - "ℝ 作为标量域给定 (人类数学空间的数轴)"
+  - "高维结构 = 二维 (相对数轴高一维)"
+conclusion: "复平面可由'高维旋转代数 + 投影'构造: 投影丢失开方/旋转/基点位置信息; 投影视角下基点漂移与实数轴位置不可观测 — 实数轴只是被压扁的复数轴"
+
+known_special_cases:
+  - "过 i 的线 (axisLine 1) 与实数轴 (axisLine 0) 投影相同"
+  - "任何纯虚基点 e (proj e = 0) 的 Chain(succ,e) 投影都是含 0 且 +1 封闭的同一结构"
+closest_known_results:
+  - "ℂ 的标准矩阵表示 (旋转-缩放 2×2 矩阵) (KNOWN)"
+  - "代数扩张 ℂ = ℝ[i]/(i²+1) (KNOWN)"
+  - "C010 (transport/投影下结构不变性基线)"
+literature_queries:
+  - "complex numbers as rotation-scaling matrices"
+  - "projection algebra quotient complex construction"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定义, 无猜想; 核心性质全部 Lean 验收"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry), 无反例搜索需求"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    ComplexAxis.J_sq / proj_add / proj_J / proj_lift / lift_add / lift_mul /
+    proj_mul_not_preserved / sqrt_neg_one_exists_high / sqrt_neg_one_not_exists_axis /
+    lift_neg_one_sqrt / basepoint_proj / pure_imag_proj / proj_succ /
+    zero_in_proj_chain / proj_chain_succ_closed / proj_chain_basepoint_independent /
+    axisLine_eval_proj / axisLine_proj_all / axisLine_proj_injective /
+    axisProjEquiv / axisLine_proj_independent / realAxis_indistinguishable_from_i_line
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "投影视角是组织方式, 非新结构 — 复平面本身是标准 ℂ (KNOWN), 不冒充新颖"
+  - "不得把'投影下不可观测'误读为'高维中不存在': 基点位置、线的位置在高维结构中是结构事实, 只有投影视图丢失"
+  - "'实数轴是假复数轴'是投影视图下的陈述, 不涉及实数本身的构造"
+  - "实数轴嵌入 lift 保加乘 (子代数) 不代表实数轴闭合于开方 — 轴内 -1 无平方根"
+
+evidence_for:
+  - "Lean: J_sq / proj_mul_not_preserved / sqrt_neg_one_not_exists_axis / lift_neg_one_sqrt / proj_succ / proj_chain_basepoint_independent / axisProjEquiv / axisLine_proj_independent 全证 (无 sorry)"
+  - "全量 lake build 通过 (Formal 1930 jobs)"
+evidence_against: []
+
+next_action: "(1) 真复数轴的乘法生成律迭代: σ_z(w) = z·w 的 Chain (无 Nat primitive), 观察轴上整数位; (2) 轴上整数位与素数的观测 (接 PrimeDriftPositions); (3) 表示定理: π(Chain succ i) ≅ ℕ (结论用 Nat, 定义无 Nat)"
+
+notes: "首次形式化'复平面的真实构造'(投影视角)。核心链条: 高维旋转代数 (J²=-1) → 投影 (丢 J/开方/基点位置) → 投影视图: 自然数看似从 0 出发、实数轴看似唯一 — 均是不可观测的假象。与 C010 (投影/transport 下结构不变性) 衔接。"
