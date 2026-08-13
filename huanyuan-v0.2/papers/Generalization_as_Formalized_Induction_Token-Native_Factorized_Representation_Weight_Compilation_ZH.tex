@@ -1,0 +1,874 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{统一框架中的泛化作为归纳形式化: Token 原生因子化表示与权重编译
+---
+形式指导构造}\label{ux7edfux4e00ux6846ux67b6ux4e2dux7684ux6cdbux5316ux4f5cux4e3aux5f52ux7eb3ux5f62ux5f0fux5316-token-ux539fux751fux56e0ux5b50ux5316ux8868ux793aux4e0eux6743ux91cdux7f16ux8bd1-ux5f62ux5f0fux6307ux5bfcux6784ux9020}
+
+\section{Generalization as Formalized Induction in the Unified Framework
+of Representation, Logic, and Intuition --- Form Directs
+Construction}\label{generalization-as-formalized-induction-in-the-unified-framework-of-representation-logic-and-intuition-form-directs-construction}
+
+\begin{quote}
+\textbf{中文版 v0.1} \textbar{} 2026-08-11 (翻译自英文版) 目标:
+NeurIPS/ICML/ICLR (理论 + 实证) \textbf{框架定位}:
+属于《表示、逻辑、直觉的统一框架》(纲领:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md})。本文确立
+\textbf{形式→构造} 环节。姊妹篇: P0 (三通道等价), P2 (神经宏编译)。
+证据: \texttt{docs/paper\_data/} (全部实验经 run\_exp 官方判定评估)
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Repository:
+\href{https://github.com/YuchenWang-ai/Generalization-as-Formalized-Induction-Token-Native-Factorized-Representation-and-Weight-Compilation}{YuchenWang-ai/Generalization-as-Formalized-Induction-Token-Native-Factorized-Representation-and-Weight-Compilation}}
+
+\subsection{摘要}\label{ux6458ux8981}
+
+我们提出: 系统化泛化不是神经网络的涌现或先验能力,
+而是归纳的形式化。要对概念 A 泛化, A 必须被精确定义, 且 A
+定义链中的每个概念都必须被充分训练; 充分训练是一个关系属性 ---
+同一上位概念下的平行概念同时训练、错误答案样例、搭配覆盖 ---
+而非数量属性。我们在一个 token 原生表示 (六层投影: 公设 B、概念 C、符号
+S、语法 G、呈现 P、箭头 A) 中操作化这一主张,
+其中概念自由度按其对称性因子化, 执行由 token 定义驱动
+(零硬编码求值器)。一个 2 层、\textless1 MB 的 transformer 泛化到任意宽度
+(2000 位加法, 准确率 1.000)、未见进制 ({[}3..9{]}, OOD
+0.998)、未见域与联合笛卡尔 OOD --- 简单算术套件约 2000 样本/3 epochs,
+完整逻辑-算术套件约 6000 样本/8 epochs。符号置换不变性成立 (26080
+次数字重命名下 0.996→0.987), 三个执行通道 --- 构造、直觉、形式重写 ---
+语义等价 (2000 位进位链上 1.000), 构成计算三元论 (Computational
+Trinitarianism) 的神经实现。我们强调直觉是推理快路径: 它难以获得
+(获得需要配置相关轮数 --- 简单套件 3, 完整逻辑-算术套件 8),
+但一旦形成便通过跳步轻易泛化, 从输入直接跳到输出、越过中间构造步骤, 在
+2000 位宽度、60 进制、100\%
+数字匿名化上零衰减。获得与跳步泛化解耦。逐概念学习曲线呈尖锐双峰 ---
+一个概念要么被编译 (epoch 3 时 100\%) 要么没有 (0\%, 更多轮数也不修复)
+--- 这是机制级签名: 定义精确的语法产生极快训练 (形式→构造), 定义贫乏的
+token 永不泛化。在统一框架内, 本文是 \textbf{形式→构造} 环节:
+正确语法产生极端训练速度; 正确构造产生极端泛化 (OOD);
+正确泛化编译为极端直觉 (推理快路径)。
+
+\subsection{1 引言}\label{ux5f15ux8a00}
+
+\textbf{问题。} 组合泛化 (Lake et al., 2017; Keysers et al., 2020)
+是一个充分记录的现象:
+模型有时对训练中不存在的组合给出正确响应。然而文献问的是模型\emph{是否}泛化,
+而不是泛化\emph{如何}产生。三种默认立场主导: (i) 泛化是涌现/先验能力;
+(ii) 泛化来自规模化的数据工程; (iii) 相关结构必须由外部程序提供
+(神经-符号混合、程序合成)。每种默认立场都预先承诺一种机制,
+却不解释所观察到的模式。在数学哲学中, 这是旧争论的再现: 柏拉图主义
+(结构先验存在, 有待发现)、直觉主义 (存在 = 可构造性, Brouwer)、形式主义
+(数学 = 符号游戏, Hilbert) --- 每一种都为结构预先承诺了一个来源。
+
+与此同时, 主流路线 --- ``先有数学语言, 再 tokenize, 再训练'' ---
+预设了原始项。λ-演算固定变量/抽象/应用 (Barendregt 1984); Church
+编码\emph{实现}任何概念但抹去了表示中的所有结构边界 ---
+在编码表面上训练的模型可以记住函数表,
+却无法访问使分布外组合变容易的结构。一个具体实例是 ``神经 λ-演算'' 程序
+(Flach, Moreira \& Lamb 2023): 一个 seq2seq Transformer 在带 de Bruijn
+索引的标准 λ 语法上训练执行 β-归约, 在布尔项上达到 97.7\% ---
+但泛化局限于其训练过的 λ-项分布; 没有宽度/进制/阶数外推, 没有符号置换,
+没有概念形成。这正是本文论证不完整的 ``λ-tokenize-then-train''
+路线。我们对 λ-迭代的内部结构分析 (f\^{}\{m+n\} = f\^{}m ∘ f\^{}n;
+Church 零不是基点; 在初始性下迭代成为万有性质) 表明:
+相关结构在数学中真实存在, 但被编码\emph{抹去} --- 必须重新暴露在表示中,
+学习者才能使用它。
+
+\textbf{我们做什么。} 我们走相反路线。我们把系统化泛化当作工程目标:
+它被\emph{生产}出来, 而非被假设。生产机制是归纳的形式化 --- 概念 A
+恰好当 (i) A 被精确定义且 (ii) A 定义链中的每个概念都被充分训练时泛化,
+其中充分性是关系性的 (平行概念、错误答案、搭配)。我们构建一个 token
+原生表示, 使这些条件可检验, 并证明最小 transformer 因此几乎免费地泛化。
+
+\textbf{贡献} (每一条都是可证伪的主张; 命题 G0, G1, G2, G4, G5 与 R 在
+§3 陈述):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{C1 (理论) --- 泛化作为归纳形式化。} 系统化泛化不是涌现/先验的:
+  定义完备性 (G1) 与关系充分性 (G2) 是充分的。反先验主张经验上可证伪
+  (定义贫乏的 token 即使数据充足也不泛化)。
+\item
+  \textbf{C2 (系统) --- Token 原生因子化表示。} 六层投影 (B/C/S/G/P/A),
+  自由度按对称性因子化, 零硬编码求值器; ``定义精度''变得可检验
+  (无悬空引用、循环证书、覆盖审计)。
+\item
+  \textbf{C3 (实证) --- 最小模型系统化泛化。} 一个 2 层、\textless1 MB
+  transformer: 任意宽度 (2000 位, 1.000), 未见进制 (OOD 0.998), 未见域,
+  联合 OOD; 符号置换不变性 (0.987); 三通道语义等价 (1.000)。样本数: 约
+  2000 (简单) / 约 6000 (完整套件); epochs 3 (简单) / 8 (完整)。
+\item
+  \textbf{C4 (机制) --- 权重编译。} 训练把定义驱动的构造通道编译进权重;
+  监督排除答案轨迹, 因此模型学习结构而非复制展开。产物是\emph{直觉 ---
+  推理快路径}: 难以获得, 但易通过跳步泛化。
+\item
+  \textbf{C5 (认识论) --- 三通道等价。} 构造 / 直觉 /
+  形式重写在相同输入上两两语义等价 --- 计算三元论的神经实现
+  (一个系统执行通道之间的等价, 而非逻辑系统之间的等价)。
+\end{itemize}
+
+\subsection{2 问题设定}\label{ux95eeux9898ux8bbeux5b9a}
+
+\textbf{系统化泛化。} 对训练中不存在的组合给出正确响应的能力,
+其中组合跨越独立自由度: 宽度 × 进制 × 算子阶数 × 域 ×
+嵌套深度。我们在这些维度上测试外推, 从不测试内插。
+
+\textbf{分布内 vs OOD。} 若自由度的取值组合出现在训练中则为分布内,
+否则为 OOD。单维外推 (宽度超出训练长度; 训练中不存在的进制;
+阶数超出最高训练阶) 与联合外推 (笛卡尔积的未见点) 都测试。主要指标:
+\emph{判定准确率} --- 最终真值 token 的完整输出序列重建 (唯一可信指标;
+位置级准确率可掩盖结构错误, 例如聚焦配置伪影上 0.904 的位置分数但 0.000
+的判定准确率)。全部评估使用单一官方 run\_exp 判定路径。
+
+\textbf{记号与约定。} \emph{概念} (token) 是意义单位; \emph{定义}
+是概念内容的结构化陈述, 五种形式 (显式、归纳、递归、公设、隐式)。A
+的\emph{定义链} 是 A 定义所引用概念的传递闭包。概念的\emph{充分训练}
+指关系覆盖: 它与平行概念、负例、搭配一起参与。\emph{判定} 是完整输出序列
+(表达式、结果、真值); \emph{判定准确率} 是完整重建正确的比例。
+
+\textbf{语法。} 表达式语法是数据驱动的 (G 层 gtoken 排列 + P 层呈现),
+槽位 arg/fn/args/binder/body, 节点类型
+atom/application/equality/binary\_connective/unary\_connective/quantified/eos。数字是
+{[}符号、进制、基数{]} 内蕴向量与数字序列的组合; 任何进制可表示
+(无需单字符名)。命题沿 gtoken/ptoken 组装的序列判定。
+
+\subsection{3 理论:
+形式化归纳}\label{ux7406ux8bba-ux5f62ux5f0fux5316ux5f52ux7eb3}
+
+我们把理论陈述为六个可证伪命题 (G0, G1, G2, G4, G5 与
+R)。每一条都是关于泛化何时、如何产生的断言; 每一条由 §6 实验与 §8
+消融支持。
+
+\textbf{G0 (认识论根基) --- 泛化是归纳的形式化。}
+\emph{概念能力没有先验或先验的生成: 任何对概念泛化的能力必须被生产,
+而非被假设。} 经验上可证伪: 若概念能力是先验的, 定义贫乏的概念仍会泛化;
+但它们不泛化 --- 贫乏词汇表需要多一个数量级的训练才能收敛 (40 vs 3
+epochs, §8), 真正欠定义的 token 永不泛化。EXP-61 量化边界: 在完整套件中,
+移除定义形式样本 (定律+定义) 使 e3 准确率几乎不变 (精确 0.295 vs 模糊
+0.271), 两个变体都在 e10 收敛 --- 定义精度对训练速度的杠杆只在极端匮乏
+(全词汇表贫乏) 下决定, 而非在部分移除定义样本时。根基:
+这是反柏拉图主义/反天赋主义立场 (Brouwer 构造主义的机器形式; 对立立场为
+Fodor 1975; Chomsky 1959)。
+
+\textbf{G1 (定义完备性)。} \emph{要对概念 A 泛化, (i) A
+的定义必须精确且完备, 且 (ii) A
+定义链中的每个概念都必须被充分训练。两个条件都必要; 各自单独不充分。}
+证据: 只有单个训练实例的定义链 token (value\_three)
+在覆盖增加前不被学到; 定义贫乏的词汇表需要 40 epochs vs 精确词汇表的 3
+(§8)。定义形式遵循 Aczel 1977, Gupta 2023, Belnap 1993。
+
+\textbf{G2 (关系充分性)。} \emph{充分训练是关系属性, 而非数量属性: (i)
+同一上位概念下的平行概念同时训练使概念间关系成为显式学习信号; (ii)
+错误答案训练 (负例, 包括结构相同-结果错误) 定义概念不是什么; (iii)
+搭配训练覆盖每个参与 token 的相邻搭配至阈值以上。} 证据:
+移除一个门族的监督使该门崩塌到 0.000, 且\emph{使所有其他门从 1.0 退化到
+0.833} (§8); 增加负例覆盖把关系从 0.000 提升到 0.958。
+
+\textbf{G4 (模态分离)。} \emph{对应感知-意义-表达,
+模型输入、逻辑与输出被分配独立语法; 能指与所指在 token 层分离。} 证据:
+把一个符号赋给两个语义包装器使训练崩塌 (§8)。扎根于符号学 (Saussure
+1916; Frege 1892) 与抽象/具体语法分离。
+
+\textbf{G5 (直觉/推理分离)。} \emph{直觉是推理快路径: 难以获得
+(获得需要配置相关轮数), 但易通过跳步泛化 --- 它从输入直接跳到输出,
+越过中间构造步骤。} 证据: 完整套件获得需要 8 epochs (exp53),
+而跳步泛化在 2000 位、60 进制、100\% 匿名化下零衰减 (exp80) ---
+获得与跳步泛化解耦 (§6)。
+
+\textbf{G5b (位置敏感性分离直觉与逻辑; 2026-08-11)。}
+\emph{直觉通道位置不敏感 (对 token/位置混乱鲁棒); 逻辑通道位置敏感
+(需要确定的位置-语义映射)。} 这来自两个观察。第一, EXP-80 的 100\%
+数字匿名化在 1.000 显示编译快路径忽略符号/位置细节、提取结构关系。第二,
+EXP-61h (干预探测, §8) 显示逻辑通道\emph{不能}容忍位置歧义:
+一个算子位置有两个同义 token 时模型归一化到单一 token (V2same: c0=1.000,
+c1=0.000) --- 结构要求确定位置; 一个位置三个候选时 (V3diff/V3mix)
+判定崩塌 (0.250)。位置扫描确认直觉侧: 在 V3mix (两个同义 and token +
+一个 or token) 下, 存活的 or token 在三个算子位置 ({[}op{]}AB,
+A{[}op{]}B, AB{[}op{]}) 的每一个上都得 0.750 ---
+保留的语义位置不敏感。这解释了一个熟悉的认知现象:
+打乱句子的字母不影响理解 (直觉通道位置不敏感),
+然而\emph{刻意注意}打乱的文本以重新推导其逻辑会使其失去意义
+(逻辑通道需要确定位置)。直觉是编译的结构 (位置自由); 逻辑是展开的结构
+(位置绑定) --- 对 G5 的机制性解读。
+
+\textbf{R (三通道等价)。} \emph{一个系统对同一数学对象表现出三个执行通道
+--- 构造通道 (展开的、定义驱动的扩张), 直觉通道 (编译的权重执行),
+形式通道 (定义驱动的重写) --- 且它们两两语义等价: 构造可被编译为直觉,
+两者都与形式重写一致。} 这是计算三元论的神经实现 (Curry--Howard: 程序 =
+证明 = 类型), 等价发生在同一系统的执行通道之间而非逻辑之间。证据: 2000
+位进位链上, 构造 = 形式完全一致, 直觉 1.000 (§6)。
+
+\subsection{4 表示系统}\label{ux8868ux793aux7cfbux7edf}
+
+\textbf{六层投影。} 一个 token 是一个对象; 六个 JSON 投影是它的投影。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+层
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+实体
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+角色
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+B 公设 & baseloop & 公设端点; 定义链溯源的终点 \\
+C 概念 & derive & 五种定义形式 (显式/归纳/递归/公设/隐式) \\
+S 符号 & symbol & 能指 (字形 → maps\_to 多对多; 歧义保留,
+由上下文收敛) \\
+G 语法 & gtoken & 排列方法 (槽位/归约); 语法本身是 token \\
+P 呈现 & presentation & 具体记法 (符号/优先级/结合性); 一个概念,
+多种记法 \\
+A 箭头 & arrow & 概念间的有向关系 (域提升、迭代链、对偶) \\
+\end{longtable}
+
+变换只依赖 token; 知识存在于 token/语法数据;
+代码读取并执行。这是零硬编码纪律。六层投影是表示的形式化而非新逻辑:
+它分离能指与所指 (Saussure 1916; Frege 1892), 使排列成为可定义对象 (van
+Wijngaarden 1965; Ford 2004; Rendel \& Ostermann 2010),
+分离绑定结构与语法 (de Bruijn 1972; Fiore--Plotkin--Turi 1999; Gabbay \&
+Pitts 2002), 把概念关系编码为一等箭头 (Goguen et al.~1977; Mac Lane
+1971)。
+
+\textbf{自由度。} 概念是坐标 (d1,\ldots,dk), 而非孤立 token: 迭代阶数
+(succ→+→×→\^{}→↑↑), 对偶/方向 (逆: succ/pred, power/root, +/−), 域
+(自然/整数/有理/实数/复数), 记法 (符号/进制/基数)。
+
+\textbf{对称性。} 迭代对称: iterate(direction, level, operator)
+是高阶算子; F\_\{n+1\}(a,b) = Iterate(F\_n, a, b)。结构上, 迭代是复合
+(f\^{}\{m+n\} = f\^{}m ∘ f\^{}n): 它产生幺半群, 再范畴,
+再半共轭下的函子与自然变换 --- 从 λ-迭代到范畴论的标准路线 (Lambek 1968;
+Mac Lane 1971; 我们的 λ-基点迭代研究)。对偶对称: 逆箭头 (power↔root),
+对称族 (neg/scale/root; complement/parallel\_sum 为 De Morgan 对偶;
+translation/inversion 为模群)。域提升: 强制转换作为箭头
+(concept=coercion 检索, 零硬编码), 风格上对应代数结构间的典型包含 (Mac
+Lane 1971; Adámek et al.~2004)。
+
+\textbf{复合与迭代。} 排列在 G 层; 组装只读数据; SKI 组合子是 gtoken
+(归约规则在数据中)。迭代是算子上的算子; 迭代链成员资格沿 A 层箭头发现
+(ARROW\_REGISTRY), 从不经名字硬编码。通用求值器对纯链成员用迭代归约处理,
+对特殊对称成员 (translation/inversion/differential) 用委托对称求值 ---
+token 进, token 出。这镜像迭代的定义结构 (操作式 → 初始性下的万有性质;
+Lambek 1968; Goguen et al.~1977), 以数据而非代码保存。
+
+\textbf{域/进制表示。} 进制是\emph{对象}, 而非结构常数: 数字是
+{[}符号、进制、基数{]} × 数字向量; 一套权重处理任何进制
+(进制作为输入参数)。这遵循位置记法的标准分析 (进制是表示的参数,
+不是数的参数 --- 见我们的数制调研); 记法可扩展 (分数/根号/虚数单位),
+而数字 token 序列保持数字排列
+(从不''直接按值'')。不同的语义包装器需要不同符号 --- 运算嵌套
+``(\ldots)'' vs 表示嵌套 ``{[}\ldots{]}'' --- 违反的模态分离使训练崩塌
+(见 §8); 这呼应具体/抽象语法之间的 parse/render 分离 (Rendel \&
+Ostermann 2010; Fiore--Plotkin--Turi 1999)。
+
+\subsection{5 权重编译}\label{ux6743ux91cdux7f16ux8bd1}
+
+\textbf{数据生成。} 样本是定义的实例化。概念携带五种定义形式之一
+(显式、归纳、递归、公设、隐式), 遵循定义的标准理论 (Aczel 1977; Gupta
+2023; Belnap 1993; Suppes 1957): 归纳定义立于最小闭包,
+隐式定义立于保守性与可消去性。合成器 (配置驱动) 组合: balanced / trace /
+numeral\_split / fill / choose / definition / arrow / law /
+logic\_nested / logic\_arith / logic\_interdef / coercion / deep\_nest /
+extrap / cartesian / radix / neg。充分性 (G2) 要求: 平行概念一起训练
+(关系成为学习信号), 错误答案 (负例, 包括结构相同-结果错误), 搭配覆盖
+(相邻对覆盖 ≥ 3)。序列从不手写; 组装遵循 gtoken/ptoken (手写序列被标记为
+``missing-token'' 信号)。
+
+\textbf{参考求值器。} 通用求值器从 token 定义计算:
+逻辑/比较真值表、算术迭代链、对称族、素性 --- 全部从定义读取。构造通道
+(token\_iterator) 与形式通道 (重写引擎) 共享同一定义源,
+这是三通道一致性的基础。
+
+\textbf{训练。} 一个 2 层、dim-64 transformer (\textless1 MB)。两个目标:
+正样本上的位置交叉熵, 以及区分正确与错误判定的有效性交叉熵
+(模型不能仅复制输入 --- 它必须判定)。样本数与收敛是配置相关的:
+简单算术套件约 2000 样本 / 3 epochs; 完整逻辑-算术套件约 6000 样本 / 8
+epochs (exp53 曲线)。
+
+\textbf{评估纪律。} 判定准确率 --- 最终真值 token 的完整输出序列重建 ---
+是唯一可信指标; 位置级准确率可掩盖结构错误。每个实验 (包括消融)
+使用单一官方评估路径,
+因为评估分支的分叉会静默地使比较失效。位置覆盖被当作独立自由度
+(训练中从未见过的语法槽位即使定义完备也不泛化)。诊断: 逐 token 泛化
+(双峰, §6)、epoch 曲线、崩溃元凶 (哪个 token
+最常破坏判定)、覆盖审计。这些使 ``定义完备性'' 与 ``关系充分性'' 在
+token 级可检验, 而非聚合分数。
+
+\textbf{为何输入排除答案轨迹。} 监督只包含判定真值 (正确/错误),
+从不是逐步展开。若给轨迹, 模型可以复制展开 (序列克隆); 不给轨迹,
+它必须从定义归纳计算结构并编译进权重。学习即编译。编译产物是直觉:
+推理快路径。
+
+\subsection{6 实验}\label{ux5b9eux9a8c}
+
+所有运行使用单一官方 run\_exp 流水线
+(配置/指标/模型/样本/视图归档)。报告判定准确率。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+实验
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+结果 (判定准确率)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+完整套件, seed s1/s2 (9 逻辑门 + 算术) & 1.000 / 1.000
+(\textasciitilde6000 样本, 8 epochs) \\
+简单算术套件 (arith\_multi\_type) & 1.000 (\textasciitilde2000 样本, 3
+epochs) \\
+带监督的 imply (定义+位置+判定) & 0.996 \\
+2000 位加法外推 & 1.000 \\
+未见进制 {[}3..9{]} × 20 位 & OOD 0.998 \\
+未见域 / 算子阶 (加法↔乘法) & 泛化; 超算子阶覆盖不完整 (见局限) \\
+联合笛卡尔 OOD (宽度 × 进制 × 嵌套) & 1.000 (exp80 joint) \\
+符号置换 (exp41: 26080 次数字重命名) & 0.996→0.987 \\
+三通道一致性 (exp50: 2000 位进位链) & 1.000 \\
+快/慢路径成本 (exp51: 2000 位) & 构造 0.62s / 直觉 0.086s (7×) / 形式
+0.069s (9×) \\
+收敛曲线 (exp53: epochs 1/2/3/5/8) & 0.001/0.214/0.244/0.781/0.996 \\
+跳步零衰减 (exp80: 2000 位 / 60 进制 / 100\% 匿名 / 联合) & 1.000 \\
+跳步机器形式 (exp90: 20 位加法) & 构造 82 token/0.410ms → 直觉 5
+token/0.186ms (2.2×; 诚实下界, itoken 在词表外) \\
+状态传播 (exp70: 2000 位进位与借位链) & 1.000 --- 真实逐位状态传播, 权重
+≈ 程序 \\
+位置敏感性 (exp61h: 一个算子位置的同义 token) & 2 token → 归一化 (c0
+1.000 / c1 0.000); 3 token → 崩塌 (0.250) --- 逻辑位置敏感 \\
+排列自由 (记法: 前缀 vs 中缀 vs 混合) & 统一记法 → 相同可学性 (完整 1.0;
+低训练 0.677); 双位置混合 (同算子前缀+中缀) 提升训练 (0.948 vs 0.852);
+imply 判定位置覆盖 +0.019 --- 排列自由, 覆盖决定 \\
+\end{longtable}
+
+\textbf{关键实验。}
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{宽度}: 训练宽度 ≤ L, 测试 2000 位 --- 长度无关, 反驳函数表记忆。
+\item
+  \emph{进制}: 进制是输入参数, 而非结构常数 --- 反驳十进制记忆。
+\item
+  \emph{阶/域}: 加法↔乘法阶外推成功; 超算子阶 (幂/根/幂塔) 未完全覆盖,
+  因为进制-基数生成对天文数值溢出 --- 见局限。迭代链结构经 A 层箭头学习,
+  而非逐算子表。
+\item
+  \emph{符号置换 (exp41)}: 10 个数字概念 token 的随机置换 (26080
+  次重命名, 结构保留), 在原始 token 上测试 --- 不变性
+  0.996→0.987。模型学的是结构关系 (后继/迭代/进位), 而非数字语义。与
+  exp80 的 100\% 匿名化 1.000 结合, 这是对 ``数学知识即记忆''
+  的最强反驳。
+\item
+  \emph{三通道 (exp50)}: 构造 = 形式完全一致 (2/9/20/2000 位); 直觉
+  1.000 包括 2000 位进位链 (999\ldots9+1) --- 真实状态传播, 权重 ≈
+  程序。
+\item
+  \emph{跳步零衰减 (exp80)}: 固定获得 (8 epochs) 下, 外推距离增加无衰减
+  --- 2000 位 (10× 宽度), 60 进制 (6×), 100\% 数字匿名化,
+  联合宽度×进制全部 1.000。获得与跳步泛化解耦。
+\item
+  \emph{跳步机器形式 (exp90)}: 直觉路径把 20 位数字当作原子 num token (5
+  token), 对比构造路径的 82-token 逐位展开。诚实警示: itoken
+  在模型词表外 (pad id 0); 测量的是序列长度对前向成本的影响
+  (下界)。若模型真正学会 itoken 语义, 直觉路径将是 O(1) 决策且优势更大。
+\end{itemize}
+
+\textbf{逐 token 泛化: 极端双峰分布。} 聚合学习曲线 (exp53)
+是尖锐双峰的逐 token 曲线的并集:
+
+\begin{itemize}
+\tightlist
+\item
+  学到的概念在 epoch 3 达 100\%, 无渐变过渡;
+\item
+  未学到的概念停在 0\%, 更多轮数\emph{不}修复;
+\item
+  中间态 (30\%, 50\%) 基本不存在。
+\end{itemize}
+
+聚合曲线的表观渐升因此是逐 token ``开关开启'' 的叠加:
+每个概念要么被编译进权重 (100\%) 要么没有 (0\%)。这是编译论 (C4)
+的机制级签名。它也使泛化失败可归因: 未学到的项指向概念本身
+(其定义精度或依赖/覆盖), 而非 ``训练不足'' --- 与 C1 及全文使用的 token
+级诊断 (逐 token 准确率、崩溃元凶、覆盖审计) 一致。
+
+\subsection{7 语义路径编译}\label{ux8bedux4e49ux8defux5f84ux7f16ux8bd1}
+
+\textbf{零样本即可执行。} 新算子 σ 的语义闭包由其定义链保证: 从未见过 σ
+的基础模型仍可沿展开路径 T\_σ 执行 (构造通道) --- 正确,
+但长。语义闭包不依赖训练。
+
+\textbf{少量样本构建推理快路径。} 少量样本编译语义等价的直觉通道:
+Sem\_fast(σ) = Sem\_expanded(T\_σ) (可验证, 带回退); Cost\_fast
+\textless{} Cost\_expanded。直觉通道不扩展语义闭包 ---
+它解决执行成本问题, 而非新语义问题。与经典蒸馏不同,
+教师和学生是\emph{同一模型}的构造通道与直觉通道 (构造通道自编译),
+配验证器与回退。
+
+\textbf{术语。} 直觉是\emph{推理快路径}。它难以获得 (充分训练;
+配置相关轮数), 但易通过跳步泛化: 它从输入直接跳到输出,
+越过中间构造步骤。速度是它作为推理路径的本性, 而非独立优化;
+跳步是其向外泛化的机制。诚实警示: 形式引擎 (eval\_op) 绝对速度更快 (2000
+位时 0.069s vs 0.086s); 直觉通道的价值是端到端执行 (无外部 oracle)
+与保留的跳步泛化。
+
+\subsection{8 消融}\label{ux6d88ux878d}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+消融
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+结果
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+支持
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+自由度: 因子化 (numeral\_v4 正确) vs 纠缠/错误对称 & 纠缠使泛化崩塌 &
+G4/C1 \\
+平行概念移除 (exp20a/b: 删除 iff/xor 或 and/or 监督) & 总体 0.798/0.814;
+删除门 0.000; \textbf{其他门 1.0→0.833} --- 互训链 (De Morgan 对偶 /
+逆箭头) 断裂 & G2 \\
+符号置换 (exp41) & 0.996→0.987 & G4 \\
+三通道一致性 (exp50) & 构造=形式=直觉 (2000 位进位链, 1.000) & R/C5 \\
+收敛曲线 (exp53) & 单调; 完整套件 8 epochs 收敛 --- 支持
+``直觉难以获得'' & G5 \\
+负例覆盖 (neg 9→15) & neg 0.000→0.958 & G2 \\
+定义链 token 未覆盖 (value\_three, 1 样本) & 不学到; 覆盖后学到 & G1 \\
+定义贫乏 (词汇表 153) & 需要 40 epochs & G0/G1 \\
+定义形式消融 (EXP-61: 精确 vs 模糊, 移除定律+定义) & e3 0.295 vs 0.271
+(精确略高); \textbf{两者 e10→1.000} --- 完整套件中定义结构只给边际
+(非决定) 训练速度增益; 决定增益需要极端匮乏 (词汇表 153) & G0/G1 \\
+包装器符号混合 (``( )'' vs ``{[} {]}'' 同符号) & 训练崩塌 & G4 \\
+判定 vs 位置 (聚焦配置) & 位置 0.904 → 判定 0.000 (伪影) & 指标纪律 \\
+位置歧义 (EXP-61h: 一个算子位置两个同义 token) & 归一化到单一 token
+(c0=1.000, c1=0.000); 3 候选 → 崩塌 (0.250) --- 逻辑位置敏感 & G5b \\
+\textbf{普通表示基线} (EXP-C1: 进制固定 / 迭代隐藏 / 纠缠) & pending &
+C1 \\
+\end{longtable}
+
+\textbf{普通表示基线 (EXP-C1)。} 决定性对照: 相同模型、相同数据预算,
+但表示被去因子化。我们逐步摧毁自由度因子化并观察外推崩塌:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+对照
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+摧毁的因子化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+结果
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+C1d 因子化 (exp02, 参考) & 无 & 零衰减外推 (exp80: 1.000) \\
+C1b 迭代隐藏 (已完成) & 迭代结构未暴露
+(移除定律幂/根/幂塔、迭代/逆箭头、阶梯) & 总体 0.745 (Δ0.25);
+\textbf{root 0.000, 幂塔 0.000} --- 高层算子崩塌; \textbf{power 1.000}
+(可从乘法推导: 2\^{}3 = 2×2×2); 加法/乘法 1.000 \\
+C1a 进制固定 (重新设计中) & 进制成为结构常数 (只训练 base-10,
+无进制/基数参数) & pending --- 预期: 未见进制 (base 16/60) 崩塌;
+首次尝试 (剥离进制 token) 过度摧毁数字表示 (0.003), 正在重新设计以保持
+base-10 可计算同时移除进制自由度 \\
+C1c 纠缠 (pending) & 复合概念合并进单一 token (自由度融合) & pending ---
+预期: 新组合崩塌 \\
+\end{longtable}
+
+\textbf{C1b 分析。} 迭代隐藏结果是定义链论 (G1) 的精确证据:
+崩塌的算子恰是那些定义链真正依赖迭代结构的算子 (root = 幂迭代之逆; 幂塔
+= 下一层的幂迭代), 而 power
+存活因为它可从乘法归约。迭代自由度的因子化因此是阶数外推的\emph{原因}
+--- 不是对所有算子均匀, 而恰是那些定义需要它的算子。这比
+``因子化普遍有用'' 更尖锐。
+
+\textbf{方法论纪律 (来自一个撤回的实验)。} 一个早期的零监督蕴含实验
+(EXP-10, 0-IMPLY) 被完全撤回: 其报告的 ``语义涌现'' (裸真值表 0.75 /
+深嵌套 0.938) 是最后 token 评估加语法错位的伪影
+(评估分支不一致使所有变体产生相同结果)。在官方完整序列判定下, 蕴含得
+0.000; 根因: 位置错位加样本数不足。我们记录教训 ---
+完整序列重建是唯一可信指标; 评估必须用单一官方流水线;
+位置覆盖是独立自由度 --- 蕴含的正确路径是三重 定义+位置+判定 监督
+(0.996)。撤回的实验贡献方法论纪律, 而非证据。
+
+\subsection{9 相关工作}\label{ux76f8ux5173ux5de5ux4f5c}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{λ-演算与形式系统族。} 被解释的对象, 而非基准: 原始项被预设
+  (变量/抽象/应用); Church 编码抹去结构。``神经 λ-演算'' 程序 (Flach,
+  Moreira \& Lamb 2023) 例示 λ-tokenize-then-train 路线 --- 一个 seq2seq
+  Transformer 在 de Bruijn 索引 λ 语法上训练执行 β-归约,
+  泛化局限于训练分布。迭代的结构性解读 --- 迭代是复合 (f\^{}\{m+n\} =
+  f\^{}m ∘ f\^{}n), Church 零不是基点, 范畴论把迭代变成万有性质 ---
+  在我们的内部研究 (λ-基点迭代 → 范畴论) 中详细展开; 标准基础: Lambek
+  1968 (完备范畴不动点定理), Goguen et al.~1977 (初始代数语义),
+  Martin-Löf 1984 (直觉主义类型论), Fiore--Plotkin--Turi 1999
+  (抽象语法与变量绑定)。
+\item
+  \textbf{定义理论与定义形式。} 五种定义形式 (显式 / 归纳 / 递归 / 公设
+  / 隐式) 遵循 Gupta 2023 (SEP ``Definitions'') 与 Belnap 1993 (``On
+  Rigorous Definitions''); 归纳定义按 Aczel 1977;
+  隐式定义需要保守性与可消去性 (Suppes 1957; Gupta--Belnap 1993
+  修正理论); 证明助手 (Lean, Rocq, Isabelle)
+  中的定义机制。没有先验系统把概念定义与语法定义统一在一个模式中 ---
+  这是本工作填补的空白。
+\item
+  \textbf{符号学与能指/所指分离。} Saussure 1916 (任意性、差异原则);
+  Peirce 的符号三元; Frege 1892 (Sinn/Bedeutung); Harnad 1990
+  (符号接地)。多对多符号↔概念映射的维护逻辑遵循 WordNet (Miller 1990;
+  Fellbaum 1998), 词义消歧 (Navigli 2009), 与 SKOS (Miles \& Bechhofer
+  2009)。我们的 S 层把歧义操作化为一等且上下文收敛的,
+  如我们的符号-概念映射调研所论证。
+\item
+  \textbf{语法作为可定义对象与语法工程。} W-语法 (van Wijngaarden 1965;
+  ALGOL 68 1975); 解析表达式语法 (Ford 2004);
+  统一解析与美化的可逆语法描述 (Rendel \& Ostermann 2010);
+  带显式解码器的类型化具体语法
+  (我们的语法作为可定义对象调研)。这激励原生语法设计: 语法本身是 token。
+\item
+  \textbf{变量绑定与作用域。} de Bruijn 1972 (无名哑元); 高阶抽象语法
+  (Pfenning \& Elliott 1988; Harper--Honsell--Plotkin 1993 LF; McDowell
+  \& Miller 2002); 名义逻辑 (Gabbay \& Pitts 2002); locally nameless
+  (Charguéraud 2012)。绑定元数与作用域验证 (我们的 G 层) 遵循这些;
+  位置/作用域覆盖是独立自由度。
+\item
+  \textbf{系统化泛化。} Lake et al.~2017; Keysers et al.~2020 (COGS);
+  SCAN。这些记录现象; 本工作提供成因 (泛化为何、何时成立)
+  作为形式化归纳。
+\item
+  \textbf{神经-符号算术模块。} NALU/NAU (固定算子集);
+  本工作对新算子用统一参数集与零样本语义闭包。
+\item
+  \textbf{长度泛化。} 固定表示下的位置编码与循环细化工程;
+  本工作在表示层移除长度依赖。
+\item
+  \textbf{表示学习。} 解缠/组合结构化表示研究表示长什么样;
+  本工作研究表示如何决定可学性, 把表示设计当作贡献。
+\item
+  \textbf{程序到神经编译。} Learning to Compile Programs to Neural
+  Networks (ICML 2024); 推理编译; 捷径蒸馏。区别: 同模型构造通道自编译,
+  不扩展语义闭包, 验证器 + 回退。
+\item
+  \textbf{双过程认知。} Kahneman (System 1/2) 为 G5 奠基:
+  直觉作为推理快路径。
+\item
+  \textbf{数学哲学 --- 三通道等价。} 数学结构全部是先有技术 (de Bruijn
+  1972; 组合逻辑; Bourbaki 结构主义; 范畴论; Mizar/Lean/Isabelle),
+  明确不主张。主张只是三通道等价 ---
+  构造/直觉/形式重写在单系统内互相可编译 --- 计算三元论的神经实现
+  (Curry--Howard: 程序 = 证明 = 类型),
+  等价在执行通道之间而非逻辑之间。立场: 反柏拉图主义 ---
+  直觉是编译的构造, 非天生。
+\item
+  \textbf{反天赋主义。} Fodor (思想语言) 与 Chomsky (普遍语法)
+  是对立立场; 提供了经验反证 (定义贫乏的 token 不泛化)。
+\end{enumerate}
+
+\subsection{10 局限}\label{ux5c40ux9650}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{序列化 (位置偏置)。} 位置覆盖是独立自由度:
+  训练中从未覆盖的语法槽位即使定义完备也不泛化。自回归生成中位置依赖不可完全移除。
+\item
+  \textbf{有限资源。} 权重/样本/epoch 上界存在; 收敛是配置相关的 (简单
+  3, 完整 8 --- exp53); 超算子结果可能天文数字大,
+  因此判定负例用带溢出保护的小域。
+\item
+  \textbf{算子阶覆盖不完整。} 超出训练阶的超算子阶 (幂/根/幂塔)
+  未完全评估: 进制-基数生成对天文结果溢出,
+  因此只测量加法↔乘法阶外推。这是覆盖局限, 不是负结果。同样, 符号置换
+  (exp41) 只置换数字概念; 完整算子符号置换 pending。
+\item
+  \textbf{受支持演算 ≠ 无限制数学。} 只覆盖有形式化定义 (五种定义形式内)
+  的结构; 不主张一般数学或自主概念发现; 新概念仍需手工定义登记。
+\item
+  \textbf{值空间/表示。} 目前是布尔判定与计数结构; 完整值空间
+  (分数/复数) 部分连通; 数字-值侧未完全开放。
+\item
+  \textbf{直觉是统计的, 非保证。} 直觉通道统计性地执行结构定位;
+  语义等价需要验证器/回退 (构造通道) 作后盾。
+\end{enumerate}
+
+\subsection{11 结论}\label{ux7ed3ux8bba}
+
+\begin{itemize}
+\tightlist
+\item
+  泛化是归纳的形式化 (§3): 定义完备性 (G1) 加关系充分性 (G2)
+  在最小模型中产生系统化泛化 --- 可工程化、可复现。其逐概念学习曲线双峰
+  (编译 vs 未编译), 使失败可归因于定义与覆盖, 而非训练量。
+\item
+  表示是贡献: 因子化的自由度把泛化变成低复杂度学习问题;
+  泛化写进表示的几何, 而非留给模型发现。去因子化对照 (EXP-C1b)
+  确认因果角色: 隐藏迭代结构恰使那些定义依赖它的算子崩塌 (root, 幂塔),
+  而可归约的 (power) 存活。
+\item
+  权重编译: 训练把构造编译为直觉; 监督排除轨迹,
+  因此学的是结构。直觉是推理快路径 (G5) --- 难以获得, 易通过跳步泛化,
+  在宽度、进制、匿名化上零衰减。
+\item
+  三通道等价 (R): 构造/直觉/形式重写在神经实现中互相可编译 (exp50: 2000
+  位进位链, 三通道全部 1.000) --- 数学基础百年分裂的工程统一。
+\item
+  未来: 更大域; 自主概念形成 (从数据归纳新定义); 跨模态
+  (符号置换的扩展)。
+\end{itemize}
+
+\subsection{附录}\label{ux9644ux5f55}
+
+\begin{itemize}
+\tightlist
+\item
+  A. 完整实验表: 配置/seed/判定逐 token 不足/结论
+  (docs/paper\_data/results.csv)。
+\item
+  B. 语法: 完整 gtoken/ptoken 清单 (数据驱动源); 呈现示例 (add\_infix,
+  and\_infix, not\_prefix, succ\_prefix)。
+\item
+  C. 更多示例: 训练样本序列 (numeral\_split, law, 三通道输入,
+  判定序列)。
+\item
+  D. 训练配置: 完整 JSON (exp02 套件: synth.samples 组成 + judge +
+  train)。
+\item
+  E. Lean 证明: 定义链完备性 (无悬空引用、循环证书)
+  与三通道等价的编译正确性 --- 纪律验证, 非新数学主张。
+\end{itemize}
+
+\subsection{统一框架内的交叉引用}\label{ux7edfux4e00ux6846ux67b6ux5185ux7684ux4ea4ux53c9ux5f15ux7528}
+
+本文是《表示、逻辑、直觉的统一框架》(纲领:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md})
+的一条腿。三条腿相互适配:
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+腿 & 论文 & 主张 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+形式 → 构造 & P1 (本文) & 正确语法 → 极快训练; 正确构造 → 极强泛化 \\
+构造 → 直觉 & P0 (三通道等价) & 构造 = 形式 = 直觉; 直觉是编译的构造 \\
+构造 → 直觉 (方法) & P2 (神经宏编译) & 把慢构造路径编译为快推理路径 \\
+\end{longtable}
+
+循环闭合: 形式指导构造 (P1), 构造获得直觉 (P0/P2), 直觉搜索形式
+(快路径外推并再表达于统一形式)。统一结论 --- 形式指导逻辑构造,
+构造获得闪念直觉, 直觉穷举搜索形式 ---
+在纲领与每篇论文的统一结论中陈述。
+
+\subsection{参考文献}\label{ux53c2ux8003ux6587ux732e}
+
+{[}书目进行中; 引用来自项目跨学科调研
+(docs/语法调研/)。完整记录待核实。{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Aczel, P. 1977. An Introduction to Inductive Definitions. Handbook of
+  Mathematical Logic.
+\item
+  Adámek, J., Herrlich, H., Strecker, G. 2004. Abstract and Concrete
+  Categories.
+\item
+  Barendregt, H. 1984. The Lambda Calculus: Its Syntax and Semantics.
+\item
+  Belnap, N. 1993. On Rigorous Definitions.
+\item
+  Charguéraud, A. 2012. The Locally Nameless Representation. JAR.
+\item
+  de Bruijn, N. G. 1972. Lambda Calculus Notation with Nameless Dummies.
+\item
+  Fiore, M., Plotkin, G., Turi, D. 1999. Abstract Syntax and Variable
+  Binding. LICS.
+\item
+  Flach, J. M., Moreira, Á. F., Lamb, L. C. 2023. Towards a Neural
+  Lambda Calculus: Neurosymbolic AI Applied to the Foundations of
+  Functional Programming. arXiv:2304.09276.
+\item
+  Fodor, J. 1975. The Language of Thought.
+\item
+  Ford, B. 2004. Parsing Expression Grammars. POPL.
+\item
+  Frege, G. 1892. Über Sinn und Bedeutung.
+\item
+  Gabbay, M. J., Pitts, A. M. 2002. A New Approach to Abstract Syntax
+  with Variable Binding. FAC.
+\item
+  Goguen, J., Thatcher, J., Wagner, E., Wright, J. 1977. Initial Algebra
+  Semantics and Continuous Algebras. JACM.
+\item
+  Gupta, A. 2023. Definitions. Stanford Encyclopedia of Philosophy.
+\item
+  Gupta, A., Belnap, N. 1993. The Revision Theory of Truth.
+\item
+  Harper, R., Honsell, F., Plotkin, G. 1993. A Framework for Defining
+  Logics. JACM.
+\item
+  Harnad, S. 1990. The Symbol Grounding Problem. Physica D.
+\item
+  Kahneman, D. 2011. Thinking, Fast and Slow.
+\item
+  Keysers, D. et al.~2020. Measuring Compositional Generalization: A
+  Comprehensive Method. ICLR.
+\item
+  Lake, B., Ullman, T., Tenenbaum, J., Gershman, S. 2017. Building
+  Machines That Learn and Think Like People. BBS.
+\item
+  Lambek, J. 1968. A Fixpoint Theorem for Complete Categories. Math. Z.
+\item
+  Mac Lane, S. 1971. Categories for the Working Mathematician.
+\item
+  Martin-Löf, P. 1984. Intuitionistic Type Theory. Bibliopolis.
+\item
+  McDowell, R., Miller, D. 2002. Reasoning with Higher-Order Abstract
+  Syntax in a Logical Framework. ACM TOCL.
+\item
+  Miles, A., Bechhofer, S. 2009. SKOS Reference. W3C.
+\item
+  Miller, G. et al.~1990. Introduction to WordNet.
+\item
+  Navigli, R. 2009. Word Sense Disambiguation: A Survey. ACM CSUR.
+\item
+  Pfenning, F., Elliott, C. 1988. Higher-Order Abstract Syntax. PLDI.
+\item
+  Rendel, T., Ostermann, K. 2010. Invertible Syntax Descriptions.
+  Haskell Symposium.
+\item
+  Saussure, F. de. 1916. Cours de linguistique générale.
+\item
+  Suppes, P. 1957. Introduction to Logic.
+\item
+  van Wijngaarden, A. 1965. Orthogonal Design and Description of a
+  Formal Language.
+\item
+  {[}更多调研来源记录: Burris \& Sankappanavar 1981 (Universal Algebra);
+  Kripke 1963 (Modal Logic); Hamblin 1973 (Questions); Groenendijk \&
+  Stokhof 1984; Kamp 1981 (DRT); Ogden \& Richards 1923 (The Meaning of
+  Meaning); Cruse 2000; Kilgarriff 1997; Cajori 1928 (A History of
+  Mathematical Notations); Putnam 1975 (The Meaning of ``Meaning'');
+  Rosch 1973 (Natural Categories); Enderton 2001; Hodges 1993 (Model
+  Theory); Gentzen 1934/35; Prawitz 1965; Russell 1905 (On Denoting); Li
+  \& Vitányi 2008 (Kolmogorov Complexity); Fiore \& Szamozvancev 2022;
+  Crary \& Harper 2006.{]}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{统一结论 (2026-08-11
+增补)}\label{ux7edfux4e00ux7ed3ux8bba-2026-08-11-ux589eux8865}
+
+当我们在统一的形式化注意力语法结构下,
+最终不可避免地、必然地通过神经网络清晰、直观、可解释地观察到直觉与构造的边界时,
+我们就可以有充足的信心: 用统一的注意力形式语言指导逻辑构造, 用精确的合成
+CoT 逻辑构造获得 \emph{闪念直觉},
+用蒸馏的直觉上下文穷举注意力形式。形式、构造、直觉在统一框架下相互适配,
+组成再不分彼此的教学、训练、推理的反馈迭代管线 --- 这也许是我们通往 ASI
+的众多路径中, 相对较快的一条捷径。
+
+\end{document}
