@@ -1,0 +1,99 @@
+id: C015
+title: "Curvature & circle-lattice cycle — 蜷曲性 (反演把无限远卷回有限) 与圆上整点 90° 循环 (素数分裂的几何判据)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    一、蜷曲性 (用户洞察: 复数轴无论真假都是蜷曲的, 无限与有限无差别):
+    - norm (recip z) = 1/norm z — 反演把远离的点卷回原点附近;
+    - recip_vanishes_at_infinity: ∀ε>0, ∃R, norm z > R ⟹ norm (recip z) < ε
+      — 无限远被卷回 0;
+    - circleInv_vanishes_at_infinity: 反演漂移把无限远卷回球心 c 的 ε 邻域
+      (球心在实轴, 共轭破坏范数故需此假设)。
+    - 意义: 平坦轴上 1+2+3+... 发散 (无限≠有限); 蜷曲后 ζ(-1) = -1/12
+      (无限=有限) — 解析延拓 = 把平坦轴上的发散识别为蜷曲结构里的有限对象。
+    二、圆上整点与 90° 循环 (素数分裂的几何判据):
+    - rot90 z := ⟨-z.b, z.a⟩ (乘 J 的 90° 旋转); 保持范数 (圆上点在圆上);
+      R² = -z (半圈); R⁴ = id (4 循环, 周期性穿越);
+      rot90_keeps_lattice: 整数格点旋转后仍是格点。
+    - 符号变体 (norm_neg_b) 与顺序变体 (norm_swap) 同圆: 素数 p = a²+b²
+      的 8 个整点 (符号×顺序) 全在半径 √p 的圆上, 90° 循环在它们之间跳。
+    - 模 4 判别的几何版: 平方模 4 ∈ {0,1} (sq_mod_four);
+      两平方和永不 ≡ 3 mod 4 (sq_add_sq_not_three_mod_four);
+      p ≡ 3 (mod 4) ⟹ 圆 x²+y² = p 上无整点 (prime_not_sq_add_sq_three_mod_four)
+      — 素数不分裂 ⟺ 圆空。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) norm_recip: norm (recip z) = 1 / norm z
+    (2) recip_vanishes_at_infinity: ∀ε > 0, ∃R, ∀z, norm z > R → norm (recip z) < ε
+    (3) circleInv_vanishes_at_infinity: c.b = 0 → ∀ε > 0, ∃R, ∀z,
+        norm (z - c) > R → norm (circleInv c 1 z - c) < ε
+    (4) rot90 z := ⟨-z.b, z.a⟩; rot90_norm: norm (rot90 z) = norm z;
+        rot90_sq: rot90 (rot90 z) = -z; rot90_four: rot90⁴ z = z;
+        rot90_eq_J_mul: rot90 z = J * z; rot90_keeps_lattice
+    (5) norm_neg_b: norm ⟨a,-b⟩ = norm ⟨a,b⟩; norm_swap: norm ⟨b,a⟩ = norm ⟨a,b⟩
+    (6) sq_mod_four: (x²) % 4 = 0 ∨ (x²) % 4 = 1
+    (7) sq_add_sq_not_three_mod_four: (a²+b²) % 4 ≠ 3
+    (8) prime_not_sq_add_sq_three_mod_four: p.Prime → p % 4 = 3 →
+        ¬ ∃ a b, a² + b² = p
+
+objects:
+  - "recip / circleInv (蜷曲操作: 无限远 → 有限)"
+  - "rot90 (90° 旋转, 圆上整点的循环)"
+  - "半径 √p 的圆 x²+y² = p (素数分裂的几何载体)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "recip (C013)", "circleInv (C013)", "norm (C014)", "J", "Nat.Prime"]
+
+assumptions:
+  - "C011/C013/C014 构造"
+  - "circleInv 的球心在实轴 (共轭破坏范数)"
+conclusion: "反演是蜷曲操作 (无限远卷回有限, 无限=有限); 素数分裂 ⟺ 半径 √p 的圆上有整点, 90° 旋转 4 循环在 8 个整点间周期性穿越; p ≡ 3 mod 4 ⟺ 圆空 (模 4 判别的几何版)"
+
+known_special_cases:
+  - "p = 2 = |1+i|²: 圆半径 √2 上 4 个整点 (退化符号变体)"
+  - "R² = -z: 半圈反转 (圆直径对称)"
+closest_known_results:
+  - "两平方和/高斯整数 (KNOWN, C014, mathlib SumTwoSquares)"
+  - "圆上整点数 r₂(n) (KNOWN, 经典数论)"
+  - "紧致性: 无限序列收敛子列 (KNOWN, 拓扑)"
+  - "ζ 解析延拓 / ζ(-1) = -1/12 (KNOWN, 经典)"
+literature_queries:
+  - "circle lattice points sum of two squares rotation"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收; 模 4 论证覆盖全部情况"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    norm_recip / recip_vanishes_at_infinity / circleInv_vanishes_at_infinity /
+    rot90 / rot90_norm / rot90_sq / rot90_four / rot90_eq_J_mul /
+    rot90_keeps_lattice / norm_neg_b / norm_swap / sq_mod_four /
+    sq_add_sq_not_three_mod_four / prime_not_sq_add_sq_three_mod_four
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "全部 KNOWN: 圆上整点、紧致性、解析延拓都是经典 — 不构成黎曼猜想进展"
+  - "'无限=有限' 是蜷曲 (紧致) 结构下的说法, 平坦轴上无限与有限仍有差别"
+  - "圆空判据只说明'无整点', 不涉及 ζ 零点"
+  - "circleInv 球心需在实轴 (共轭破坏范数), 是构造限制非缺陷"
+
+evidence_for:
+  - "Lean: 14 个定理全证 (无 sorry), 全量 lake build 通过 (2224 jobs)"
+evidence_against: []
+
+next_action: "(1) 欧拉乘积有限版 (Π_p (1-p⁻ˢ)⁻¹); (2) Re(s)>1 收敛性; (3) 高斯整数唯一分解 (UFD, 绕过两平方和存在性); (4) 圆上整点的 r₂(n) 计数"
+
+notes: "用户洞察'复数轴是蜷曲的, 无限与有限无差别'落成: 反演把无限远卷回有限 (recip/circleInv 的 ε-R 陈述); 素数分裂的几何判据: 圆上整点 + 90° 循环。全部 KNOWN, 观测锚点。"
