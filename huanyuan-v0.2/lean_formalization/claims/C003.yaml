@@ -1,0 +1,79 @@
+id: C003
+title: "Least-fixed-point fusion along a lower adjoint (fixed-point fusion theorem)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: true
+  seed: false
+branch: order_theoretic_fixed_points
+
+statement:
+  informal: |
+    设 l : L_e → L_f, u : L_f → L_e 构成 Galois connection（伴随 l ⊣ u，
+    l a ≤ b ↔ a ≤ u b），F_e : L_e →o L_e, F_f : L_f →o L_f 单调。
+    若 l 单向 semiconjugates F_e 到 F_f（∀ x, l (F_e x) = F_f (l x)），
+    则 l 保持最小不动点：l (lfp F_e) = lfp F_f。
+    这是经典的 fixed-point fusion (μ-fusion) 定理，非新结果。
+    注意: lower adjoint l 天然保 suprema, upper adjoint u 天然保 infima,
+    故"l 不保 sInf 仍成立"不是发现 (本就不该期待)。
+  formal_math: |
+    Let L_e, L_f : Type with [CompleteLattice]. Let F_e : L_e →o L_e,
+    F_f : L_f →o L_f. Let l : L_e → L_f, u : L_f → L_e with GaloisConnection l u.
+    If ∀ x, l (F_e x) = F_f (l x), then l (F_e.lfp) = F_f.lfp.
+
+objects: ["L_e : Type* [CompleteLattice]", "L_f : Type* [CompleteLattice]", "F_e : L_e →o L_e", "F_f : L_f →o L_f", "l : L_e → L_f", "u : L_f → L_e"]
+definitions_used: ["OrderHom.lfp", "GaloisConnection"]
+
+assumptions:
+  - "GaloisConnection l u  (adjunction l ⊣ u)"
+  - "∀ x, l (F_e x) = F_f (l x)  (one-sided semiconjugacy / fusion condition)"
+conclusion: "l (F_e.lfp) = F_f.lfp"
+
+known_special_cases:
+  - "l 与 u 互为逆: 退化为 order isomorphism (C002, 本 claim 的特例)"
+  - "GaloisInsertion: 本 claim 的特例 (gi.gc 即 GaloisConnection)"
+  - "F_e = F_f = id: 平凡"
+closest_known_results:
+  - "fixed-point fusion / μ-fusion theorem (Cousot-Cousot abstract interpretation; Bird-de Moor / Backhouse fusion rule; 经典序论标准结果)"
+  - "C002 (order isomorphism 情形) = 本 claim 的特殊情形"
+  - "Tarski fixed point theorem 对 prefixpoint 集 (lfp = sInf prefixpoints)"
+literature_queries:
+  - "fixed point fusion theorem Galois connection"
+  - "mu-fusion lower adjoint"
+  - "Cousot Cousot abstract interpretation fixed point"
+
+counterexample_search:
+  status: done
+  search_space: "有限链 (ne,nf ≤ 4) 全部单调自映射 + 全部 Galois insertion + 单向 semiconjugacy (insertion 版); Galois connection 版由证明保证"
+  smallest_checked_size: "ne=1..4, nf=ne..4"
+  result: |
+    枚举 196 个实例零反例。证明机制即经典 μ-fusion:
+    (1) l a (a = lfp F_e) 是 F_f 不动点 (fusion 条件), 故 F_f.lfp ≤ l a;
+    (2) 对 F_f prefixpoint b, 用 counit l (u b) ≤ b + F_f 单调 + fusion 条件得
+    l (F_e (u b)) ≤ b, 由伴随性 F_e (u b) ≤ u b, 故 u b 是 F_e prefixpoint,
+    a ≤ u b, 再由伴随性 l a ≤ b;
+    (3) 故 l a 是最小 prefixpoint = F_f.lfp.
+    (无数学反例; 结构本身即 fusion 定理)
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/GaloisInsertion.lean"
+  theorem_name: "ZeroRelative.lfp_of_galoisConnection_semiconj (主) / lfp_of_galoisInsertion_semiconj (特例)"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "mathlib 已有等价 lemma (检查: GaloisConnection 用于证明; 独立推导了经典结果)"
+  - "经典定理重复推导风险 (确认: 是, fixed-point fusion, novelty=KNOWN)"
+  - "l 需保底? (证明只用伴随性, 不需 l⊥=⊥_f)"
+
+evidence_for:
+  - "枚举 196 实例零反例 (experiments/finite_models/C003_galois_insertion_lfp.py)"
+  - "Lean 接受 lfp_of_galoisConnection_semiconj, 依赖链无 sorry"
+  - "文献审计 (docs/其他AI评审/C003审查与研究重定向建议.md): 确认为经典 fixed-point fusion"
+evidence_against: []
+
+next_action: "已封存为 KNOWN baseline discovery。不再削弱 fusion 条件。作为 fixed-point 基线供后续引用, 转向 basepoint → induced algebra → induced recursion 主线"
+notes: "评审确认: C003 = 经典 fixed-point fusion (μ-fusion) 定理的 Galois connection 形式, KNOWN。C002 为其特例。证明流水线 (猜想→反例→更强定理→Lean→文献审计发现是经典) 本身成功验证了研究方法的有效性。形式证明 ≠ 数学新颖性, 已记取。"
