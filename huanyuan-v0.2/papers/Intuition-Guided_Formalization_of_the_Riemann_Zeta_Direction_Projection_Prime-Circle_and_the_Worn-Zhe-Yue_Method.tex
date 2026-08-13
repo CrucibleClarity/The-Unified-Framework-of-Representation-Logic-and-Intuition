@@ -1,0 +1,684 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Intuition-Guided Formalization of the Riemann ζ Direction:
+Projection Construction, Prime-Circle Geometry, and the Worn-Zhe-Yue
+Method}\label{intuition-guided-formalization-of-the-riemann-ux3b6-direction-projection-construction-prime-circle-geometry-and-the-worn-zhe-yue-method}
+
+\textbf{Complete research paper (full elements)} --- 完整研究论文
+
+\emph{2026-08-12 · Lean 4 / mathlib v4.32.2 · Claims C011--C025}
+
+\textbf{DOI:
+\href{https://doi.org/10.5281/zenodo.21897167}{10.5281/zenodo.21897167}}
+
+\textbf{Repository:
+\href{https://github.com/YuchenWang-ai/Unified_Framework_Representation_Logic_Intuition}{YuchenWang-ai/Unified\_Framework\_Representation\_Logic\_Intuition}}
+
+\textbf{Technical record companion:
+\href{https://doi.org/10.5281/zenodo.21896990}{10.5281/zenodo.21896990}}
+(C011--C025 technical record,
+\texttt{riemann\_direction\_formalization})
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{quote}
+\textbf{Statement attribution}: Every statement in this paper about what
+is \emph{not proved} --- ``does not claim a proof of the Riemann
+hypothesis'', ``all results are restatements of known facts'', ``novelty
+= KNOWN'', ``RiemannHypothesis remains unproved'', ``critical-line
+geometry is not a claim about zeros'' --- is content insisted by
+DeepSeek, the model that drafted this paper. These non-proof statements
+are the model's insistence; the author's own claim is the formalization
+work itself (C011--C025, all \texttt{lake\ build}-verified) and the
+Worn-Zhe-Yue methodology (§9, the author's own framing).
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Abstract}\label{abstract}
+
+We present a complete study of the Riemann ζ direction through
+\emph{intuition-guided formalization}: a chain of formalizations in Lean
+4 + mathlib (claims C011--C025, all PROVED, novelty: KNOWN, no sorry,
+full \texttt{lake\ build} passes) that is navigated by an intuition
+chain --- the complex axis is the projection of ``−1'' in a
+higher-dimensional structure; primes land on translated integer points;
+1/2 is the symmetry center of the inversion--translation dual; the
+complex axis is curled; primes are lattice points on a circle. The
+formalized results form three layers: (I) the projection construction of
+the complex plane (\texttt{ComplexAxis}, basepoint drift, projection
+recovery --- Theorems 4.6--4.7), (II) the circle structure of primes
+(sums of two squares, the unique 8-point orbit, conjugate pairing,
+splitting into Gaussian primes), and (III) the Euler product (∏\_p (1 −
+p⁻ˢ)⁻¹ = Σ 1/n\^{}s = \texttt{riemannZeta\ s} for Re(s) \textgreater{}
+1) with the zero-free region (Re ≥ 1). From the formalized mechanism of
+projection-induced structure loss (Theorem 4.7: lost structure is not
+recoverable; symmetry directions are recoverable), we distill a proof
+methodology named by the author the \emph{Worn-Zhe-Yue (穿折越) method}
+--- basepoint-construction-induced piercing--folding--transcendence of
+mathematical space: deliberately and precisely constructing a projection
+that excises the uncountable divergent structure outside the tractable
+axis while preserving symmetry directions, thereby obtaining a fast
+intuition path at lower inference cost. Methodological data: the
+formalization consumed ≈700k tokens with 99.2\% context-cache
+retransmission (net new content \textless{} 1\%), an efficiency record
+for intuition-guided formalization. All statements about what is
+\emph{not} proved are DeepSeek's insistence (attribution header); the
+author's claims are the formalization itself and the Worn-Zhe-Yue
+methodology.
+
+\subsection{1. Introduction}\label{introduction}
+
+\subsubsection{1.1 Background}\label{background}
+
+The Riemann hypothesis --- all nontrivial zeros of the Riemann zeta
+function ζ lie on the critical line Re(s) = 1/2 --- has been open since
+1859 (Riemann 1859). Its surrounding infrastructure is classical and
+fully established: the functional equation, the zero-free region Re(s) ≥
+1, the trivial zeros, and the Euler product over primes. Partial
+evidence is numerical: the first 10\^{}13 zeros have been verified to
+lie on the critical line (Gourdon 2004, building on van de Lune, te
+Riele \& Winter 1986), and positive-density results place
+\textasciitilde41\% of zeros there (Levinson 1974; Conrey 1989). Yet the
+assertion itself remains analytically open.
+
+In parallel, interactive theorem proving has reached the point where
+classical analytic number theory can be formalized: mathlib (Lean's
+mathematical library, v4.32.2) contains a formal \texttt{riemannZeta},
+the official statement \texttt{RiemannHypothesis}, the functional
+equation, and the Euler-product identity in the half-plane of
+convergence.
+
+\subsubsection{1.2 Motivation: the intuition fast-path as
+navigation}\label{motivation-the-intuition-fast-path-as-navigation}
+
+The hypothesis under test in this work is not about ζ directly but about
+\emph{how} mathematics is navigated: the \emph{intuition fast-path} is
+not merely a token-saving inference device but can serve as correct
+navigation of mathematical structure. To test this, an intuition chain
+was proposed, each link later formalized in Lean:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  the complex axis is the projection of ``−1'' in a higher-dimensional
+  structure (projection of a high-dimensional rotation algebra);
+\item
+  primes land on translated integer points;
+\item
+  1/2 is the symmetry center of the inversion--translation dual;
+\item
+  the complex axis is curled (infinity and finiteness are
+  indistinguishable);
+\item
+  primes are lattice points on a circle;
+\item
+  a prime circle, rotated once, is paired.
+\end{enumerate}
+
+Each intuition was formalized in sequence as claims C011--C025; every
+formalization is a correct restatement of classical mathematics
+(novelty: KNOWN), all PROVED in Lean with no \texttt{sorry}.
+
+\subsubsection{1.3 Contributions}\label{contributions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{A complete formalized chain toward the Riemann ζ direction}
+  (C011--C025, all PROVED, \texttt{lake\ build} full pass, no sorry), in
+  three layers: projection construction of the complex plane; the circle
+  structure of primes; the Euler product and zero relations.
+\item
+  \textbf{The projection construction of the complex plane} --- a
+  self-built \texttt{ComplexAxis} (two-dimensional rotation algebra): J²
+  = −1 before projection, basepoint drift, projection equivalence
+  classes, and the recovery theorem (lost structure irrecoverable;
+  symmetry directions recoverable, Theorems 4.6--4.7).
+\item
+  \textbf{The circle structure of primes} --- sums of two squares, the
+  unique 8-point orbit on the prime circle (Gaussian-integer UFD),
+  conjugate pairing, splitting into conjugate Gaussian primes --- the
+  geometric building block of the Euler product over the complex plane.
+\item
+  \textbf{Euler product and zero relations} --- for Re(s) \textgreater{}
+  1, the Euler product equals the ζ series equals mathlib's official
+  \texttt{riemannZeta}; Re ≥ 1 is zero-free (C025).
+\item
+  \textbf{The Worn-Zhe-Yue method} (§9) --- a proof methodology
+  distilled from the formalized mechanism of projection-induced
+  structure loss: basepoint-construction-induced
+  piercing--folding--transcendence (穿折越) of mathematical space,
+  yielding a fast intuition path at lower inference cost.
+\item
+  \textbf{A token-economy audit} (§8) --- ≈700k tokens, 99.2\%
+  context-cache retransmission, net new content \textless{} 1\%.
+\end{enumerate}
+
+\subsubsection{1.4 Honest boundary (as insisted by
+DeepSeek)}\label{honest-boundary-as-insisted-by-deepseek}
+
+As DeepSeek insists: all results have novelty = KNOWN (restatements of
+classical mathematics); the Riemann hypothesis (RiemannHypothesis) and
+the twin-prime conjecture are neither proved nor touched; and this
+paper's ``critical-line geometry'' is an algebraic restatement of the
+symmetry axis of the functional equation, not a claim about zeros. The
+author's claim is limited to the formalization work and the Worn-Zhe-Yue
+methodology (the framing of which is the author's own, §9.4).
+
+\subsubsection{1.5 Paper structure}\label{paper-structure}
+
+§2 preliminaries (the \texttt{ComplexAxis} framework); §3 result layer I
+(prime-circle structure); §4 result layer II (curling and critical-line
+geometry); §5 result layer III (Euler product and zero relations); §6
+relation to the Riemann hypothesis; §7 related work; §8 methodology
+(intuition-guided formalization and token economy); §9 the Worn-Zhe-Yue
+method; §10 discussion within the Unified Framework; §11 conclusion;
+appendices (theorem inventory, claims).
+
+\subsection{2. Preliminaries: the ComplexAxis
+framework}\label{preliminaries-the-complexaxis-framework}
+
+\textbf{Definition 2.1} (higher-dimensional structure).
+\texttt{ComplexAxis\ :=\ \{⟨a,\ b⟩\ :\ a,\ b\ ∈\ ℝ\}}, with
+multiplication (a₁+b₁J)(a₂+b₂J) = (a₁a₂−b₁b₂) + (a₁b₂+a₂b₁)J (isomorphic
+to the matrix representation of ℂ), J = ⟨0,1⟩.
+
+\textbf{Theorem 2.2} (the square-root role of J, C011). J·J = −1: in the
+higher-dimensional structure, −1 has a square root (√(−1) exists before
+projection).
+
+\textbf{Definition 2.3} (projection and lifting). proj ⟨a,b⟩ = a (drops
+the rotation component); lift t = ⟨t, 0⟩ (embedding of the real axis).
+
+\textbf{Theorem 2.4} (projection drops structure, C011). proj preserves
+addition but not multiplication: proj(J·J) = −1 ≠ proj(J)·proj(J) = 0;
+on the real axis −1 has no square root, but it exists in the higher
+dimension.
+
+\textbf{Theorem 2.5} (basepoint drift, C011). The basepoint is J (i);
+proj i = 0 (origin illusion); all purely-imaginary basepoints ⟨0,b⟩
+project to 0; basepoint drift is unobservable under projection (any
+purely-imaginary basepoint yields the same projected successor chain).
+
+\textbf{Theorem 2.6} (the real axis is a projection equivalence class,
+C011). The real-direction line through any purely-imaginary basepoint
+projects to the full ℝ (ℝ ≅ axisLine b); the ``position'' of the real
+axis is unobservable under projection.
+
+\subsection{3. Result layer I: the circle structure of
+primes}\label{result-layer-i-the-circle-structure-of-primes}
+
+\textbf{Theorem 3.1} (sums of two squares, C014, citing mathlib's
+Fermat). A prime p ≢ 3 (mod 4) is the norm of some point of ComplexAxis
+(norm z = a²+b² = p).
+
+\textbf{Theorem 3.2} (unique orbit on the prime circle, C017). For a
+prime p ≡ 1 (mod 4), the circle x²+y² = p has exactly 8 lattice points
+(sign × order variants): the representation as a sum of two squares is
+unique up to sign and order. Proof: Gaussian-integer UFD (norm-prime ⟹
+irreducible; Euclid's lemma; units \{±1, ±i\} enumerated).
+
+\textbf{Theorem 3.3} (lattice-point structure on the circle, C015-C016).
+The 90° rotation (×J) is a 4-cycle (R⁴ = id) preserving norm and
+lattice; the 8 points are 4 conjugate pairs (conj involution), each pair
+on the same circle; lattice points are closed under multiplication
+(Gaussian-integer ring); norm is multiplicative.
+
+\textbf{Theorem 3.4} (prime-circle product, C023). The product of the 8
+lattice points is p⁴ (4 conjugate pairs × norm p); two successors of i
+equal −1 (J² = −1, half-turn), and the 4-cycle closes.
+
+\textbf{Theorem 3.5} (splitting structure, C024). A prime p ≡ 1 (mod 4)
+splits into a conjugate Gaussian-prime pair p = π·π̄; the 8 points are
+the 4 associates of π (multiplied by units \{±1, ±J\}) union the 4
+associates of π̄; associates preserve norm. This is the building block of
+the Euler product over the Gaussian number field.
+
+\textbf{Theorem 3.6} (pairing, C020/C023). The conjugate pairs are
+(a,b)↔(a,−b), etc., 4 pairs; the circle of the prime 2 and the
+critical-line circle intersect at 1±i (the Gaussian decomposition
+point).
+
+\subsection{4. Result layer II: curling and critical-line
+geometry}\label{result-layer-ii-curling-and-critical-line-geometry}
+
+\textbf{Theorem 4.1} (curling, C015). The inversion recip z = conj
+z/\textbar z\textbar² curls infinity back to finiteness: for every ε
+\textgreater{} 0 there is R such that \textbar z\textbar{}
+\textgreater{} R ⟹ \textbar recip z\textbar{} \textless{} ε; recip is an
+involution (recip² = id); \textbar recip z\textbar{} =
+1/\textbar z\textbar. This is the geometric mechanism of analytic
+continuation (of the ζ(−1) = −1/12 kind).
+
+\textbf{Theorem 4.2} (critical-line position, C019). The positional form
+of a nontrivial zero (conjectural, as DeepSeek insists): the imaginary
+axis at 1/2 plus a nonzero real-axis offset; the critical-line condition
+Re(s) = 1/2 ⟺ 1−s = conj s.
+
+\textbf{Theorem 4.3} (the critical line is a circle, C019). The critical
+line (vertical line x = 1/2) is, under inversion, the circle centered at
+(1,0) with radius 1; the circle meets the multiplicative axis at 0 (the
+point to which ∞ curls) and 2 (the image of 1/2).
+
+\textbf{Theorem 4.4} (the circle of nontrivial zeros equals the
+critical-line circle, C022). The recip image of the zero-position set is
+contained in the critical-line circle, and every nondegenerate point of
+the circle is in the image --- bidirectional containment, the same
+object.
+
+\textbf{Theorem 4.5} (symmetry structure of 1/2, C013/C018). The
+reflection s ↦ 1−s centered at 1/2 is the square of a transformation:
+φ(z) = iz + (1−i)/2, φ∘φ = reflection --- the square root of 180°
+symmetry is the 90° rotation (i).
+
+\textbf{Theorem 4.6} (the genuine zero-point view, C023 ff.). After
+inversion, the 8 points of the prime circle pair to 1/p each, four pairs
+to p⁻⁴; recip is a second-order multiplicative inverse axis (r ↦ 1/r);
+moving the basepoint to 1/2 makes the real-part axis the line through
+1/2; dimensional reduction: the kernel of proj is the true complex axis
+(J direction), while the imaginary-axis information is lossless.
+
+\textbf{Theorem 4.7} (recoverability of projection). \textbf{Lost
+structure is not recoverable; symmetry directions are recoverable:} -
+Not recoverable: i and −i project identically (proj ⟨0,1⟩ = proj ⟨0,−1⟩
+= 0) --- the projection value cannot uniquely determine the preimage;
+the information of the imaginary-axis direction (which contains the
+imaginary parts of zeros) is lost and cannot be recovered; -
+Recoverable: the real-axis ± symmetry is preserved (proj (lift (−r)) =
+−(proj (lift r)); lift is injective) --- the symmetric positions of 1
+and −1 and the basepoint position (real part) are recoverable.
+
+Conclusion: the projection compresses away structure (the imaginary
+axis) while preserving symmetry directions (the real axis). This theorem
+is the formal core of the Worn-Zhe-Yue method (§9).
+
+\subsection{5. Result layer III: Euler product and zero
+relations}\label{result-layer-iii-euler-product-and-zero-relations}
+
+\textbf{Theorem 5.1} (Euler-product convergence, C025). f(n) = 1/n\^{}s
+is completely multiplicative; for Re(s) \textgreater{} 1: ∏\_p (1 −
+p⁻ˢ)⁻¹ = ∑\_n 1/n\^{}s. Proof: mathlib
+\texttt{eulerProduct\_completely\_multiplicative\_tprod} +
+\texttt{Complex.summable\_one\_div\_nat\_cpow} (1 \textless{} re s ⟹ Σ
+1/n\^{}s converges).
+
+\textbf{Theorem 5.2} (identification with mathlib's official ζ, C025).
+\texttt{riemannZeta\ s\ =\ ∏\_p\ (1\ −\ p⁻ˢ)⁻¹} for Re(s) \textgreater{}
+1 --- mathlib's analytic continuation agrees with the Euler product.
+
+\textbf{Theorem 5.3} (zero-free region, C025). For Re(s) ≥ 1,
+\texttt{riemannZeta\ s\ ≠\ 0} --- the Euler-product domain is a
+forbidden zone for zeros (each factor is nonzero, hence the product is
+nonzero). Nontrivial zeros can lie only in the critical strip 0
+\textless{} Re(s) \textless{} 1.
+
+\textbf{Theorem 5.4} (verifying zeros lie on the circle, conditional).
+s.re = 1/2 ⟹ ‖1/s − 1‖ = 1: numerically verified zeros (real part 1/2,
+external fact) lie on the critical-line circle. The external numerical
+fact (the first 10\^{}13 zeros) is itself not in Lean (DeepSeek insists
+on recording this boundary).
+
+\subsection{6. Relation to the Riemann hypothesis (as insisted by
+DeepSeek)}\label{relation-to-the-riemann-hypothesis-as-insisted-by-deepseek}
+
+Proved (surrounding infrastructure): definitions (riemannZeta,
+RiemannHypothesis, the zero set), the functional equation, the zero-free
+region (Re ≥ 1), the trivial zeros, and equivalent geometric
+restatements of the critical line (line ⟺ reflection condition ⟺
+circle).
+
+Not proved (the assertion itself --- DeepSeek's insistence): that all
+nontrivial zeros satisfy Re(s) = 1/2. Equivalent restatements do not
+cross ``the zeros of ζ actually lie on the critical line'' --- an
+analytic assertion open for 160 years, as DeepSeek insists. Known
+partial results: \textasciitilde41\% of zeros on the critical line
+(Levinson/Conrey), first 10\^{}13 zeros verified numerically (external).
+
+\subsection{7. Related Work}\label{related-work}
+
+\textbf{Numerical verification of the Riemann hypothesis.} The first
+10\^{}13 zeros on the critical line were verified by Gourdon (2004),
+extending van de Lune, te Riele \& Winter (1986). These external facts
+are used in Theorem 5.4 as the conditional premise; they are not in Lean
+(boundary recorded per DeepSeek's insistence).
+
+\textbf{Formalization of analytic number theory.} mathlib formalizes the
+Riemann zeta function (\texttt{riemannZeta}), its functional equation,
+and the official statement \texttt{RiemannHypothesis}. Our formalization
+reuses mathlib's definitions and theorems
+(e.g.~\texttt{eulerProduct\_completely\_multiplicative\_tprod},
+\texttt{Complex.summable\_one\_div\_nat\_cpow}, Fermat's two-squares
+theorem, Gaussian-integer UFD) rather than re-deriving them --- the
+mathlib-first discipline.
+
+\textbf{Intuition-guided formalization.} The literature on proof
+assistants increasingly studies AI-assisted theorem proving
+(e.g.~premise selection, tactic prediction); our contribution is
+orthogonal: an \emph{intuition chain} (natural-language navigation of
+mathematical structure) formalized item by item, with the token economy
+of the process recorded as methodological data (§8).
+
+\textbf{The Unified Framework.} This paper is part of the \emph{Unified
+Framework of Representation, Logic, and Intuition}: form directs
+construction, construction earns intuition, intuition searches form. The
+intuition chain here is the ``construction earns intuition'' phase
+applied to a concrete mathematical direction; the Worn-Zhe-Yue method
+(§9) is the ``intuition searches form'' phase --- the fast path,
+obtained by deliberate structure loss, navigates new structure directly.
+
+\subsection{8. Methodology: intuition-guided formalization and token
+economy}\label{methodology-intuition-guided-formalization-and-token-economy}
+
+The formalization consumed ≈700k tokens, 1,009 model requests (12
+hours), 220 MB transferred, 99.2\% context-cache retransmission, net new
+content \textless{} 1\%. Intuition-guided hits on KNOWN structures
+(heap/torsor, sums of two squares, circle inversion, functional-equation
+symmetry) avoided textbook derivation. Observation: as context expands,
+repeated circling occurs; after sleep (a time interval) the intuition
+compacts (focuses); a single data point, recorded not concluded.
+
+\textbf{Observation 1 (projection loss is the mechanism of the fast
+path).} Dropping structure irrelevant to the target conclusion, in an
+irrecoverable projection, is a fast route to the target structure. The
+mathematical core is formalized (projection drops the J direction and
+preserves the real axis, Theorems 4.6/4.7); ``fast path'' itself is an
+efficiency statement (this session's data: after dimensional reduction
+the real-axis structure is clear, §8). Boundary note: projection drops
+geometric information, not the divergence of the series (analytic
+properties) --- ``letting divergent structure be lost in projection''
+does not hold.
+
+\textbf{Observation 2 (precise construction is a precondition).} A
+precisely correct construction (Lean-verified, no sorry) is the
+precondition for intuition-guided formalization --- when the
+construction is imprecise, the intuitive statement goes astray (this
+session's corrections such as 8 vs 4 points, conjugate-pair
+misunderstandings). This is a normative observation, recorded not
+proved.
+
+\textbf{Observation 3 (comparison of cardinalities).} The cardinalities
+of the information lost and retained --- the projection kernel (J
+direction) and the remainder (real axis) --- are both equipotent to ℝ
+(both uncountable, \texttt{kernelEquivReal},
+\texttt{realAxisEquivReal}); the ``countable vs uncountable'' comparison
+does not occur between lost and retained; it holds between primes
+(countable, \texttt{primes\_countable}) and continuous points on a
+circle (uncountable).
+
+\subsection{9. The Worn-Zhe-Yue method
+(基点构造诱导下的数学空间穿折越证明方法)}\label{the-worn-zhe-yue-method-ux57faux70b9ux6784ux9020ux8bf1ux5bfcux4e0bux7684ux6570ux5b66ux7a7aux95f4ux7a7fux6298ux8d8aux8bc1ux660eux65b9ux6cd5}
+
+\subsubsection{9.1 Definition}\label{definition}
+
+\textbf{Definition 9.1} (Worn-Zhe-Yue method). The
+\emph{basepoint-construction-induced 穿折越 (worn-fold-cross, ``穿 =
+pierce through, 折 = fold, 越 = transcend'') method for mathematical
+space} is the proof methodology of deliberately and precisely
+constructing the projection of structure loss: a projection is
+constructed so that (i) the divergent structure of uncountable problems
+--- the part that hosts analytic divergence and uncomputable content ---
+is irrecoverably excised outside human mathematics, while (ii) the
+symmetry directions on the tractable axis are preserved; the retained
+structure is then directly navigable by a \emph{fast intuition path} at
+a \emph{lower neural-network inference cost}.
+
+\subsubsection{9.2 Mechanism (formal core)}\label{mechanism-formal-core}
+
+The mechanism is formalized in Theorem 4.7 (recoverability of
+projection):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Excised} (irrecoverable): the J-direction (imaginary-axis)
+  structure --- the kernel of proj --- which hosts the parts of the
+  problem (analytic divergence, uncomputable content, the imaginary
+  parts of zeros) that are \emph{not} needed for the retained target.
+  Once projected, this structure cannot be recovered (i and −i project
+  identically).
+\item
+  \textbf{Preserved} (recoverable): the real-axis ± symmetry and the
+  basepoint position (real part) --- the symmetry directions --- which
+  are exactly what the target conclusion requires (lift is injective;
+  sign symmetry is preserved).
+\end{itemize}
+
+The projection therefore \emph{compresses away structure while
+preserving symmetry directions} --- the same object viewed as (a) the
+geometric mechanism of the fast path (Observation 1, §8) and (b) the
+dimensional-reduction core of the complex-plane construction (Theorem
+4.6).
+
+\subsubsection{9.3 Why it is a ``method'' (not just a
+theorem)}\label{why-it-is-a-method-not-just-a-theorem}
+
+The content of the method is \emph{constructive choice}: given a problem
+whose difficulty lives in a divergent/uncountable direction, one may
+\emph{choose a basepoint construction} (a projection) such that the
+retained axis carries the symmetry structure needed for the conclusion,
+and the excised direction carries what is not needed. The choice is
+deliberate and precise --- it is not ``approximation'', not ``ignoring
+hard parts'', and not analytic continuation (which keeps divergence
+structure; the projection excises it). The cost reduction is measurable:
+the retained structure is directly navigable by the compiled intuition
+channel at reduced inference cost (token economy, §8; the fast intuition
+path of the Unified Framework).
+
+\subsubsection{9.4 Author's original words (the author's own words, not
+an opinion of
+DeepSeek)}\label{authors-original-words-the-authors-own-words-not-an-opinion-of-deepseek}
+
+我称之为基点构造诱导下的数学空间穿折越证明方法。数学空间的穿越、折越。这脑袋被门夹过多少遍才能想到的玩意，就该有个奇幻+科幻的名字。
+
+The author takes responsibility for the framing; DeepSeek's contribution
+is the formalization, and its honesty about the unproved status is
+acknowledged.
+
+\subsubsection{9.5 Scope and limits}\label{scope-and-limits}
+
+The claim, if any, is limited to the methodology of
+\emph{projection-induced structure loss as a route to a cheap fast
+path}; it is not a claim that the Riemann hypothesis is proved. The
+method is demonstrated on one direction (the ζ direction); its general
+applicability to other problems is a research question, not an
+established result. The projection excises geometric information, not
+analytic properties (boundary note, Observation 1): ``letting divergent
+structure be lost in projection'' does not hold for the series itself
+--- the excision is of the \emph{unneeded} structure, chosen so that the
+retained axis suffices for the target.
+
+\subsection{10. Discussion: the Unified Framework and the
+position-sensitivity of
+intuition}\label{discussion-the-unified-framework-and-the-position-sensitivity-of-intuition}
+
+\textbf{Positioning.} This paper is one leg of the \emph{Unified
+Framework of Representation, Logic, and Intuition} (manifesto:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md}). The
+intuition chain (projection construction → prime circles → Euler
+product) is ``construction earns intuition'' applied to a concrete
+mathematical direction; the Worn-Zhe-Yue method is ``intuition searches
+form'' --- the fast path, obtained by deliberate structure loss,
+navigates new structure directly.
+
+\textbf{Anti-Platonist reading.} The intuition channel is compiled
+construction, not an a priori faculty. The intuition chain was not
+``discovered'' in a platonic sense; it was \emph{earned} by the
+construction: each link was formalized, corrected (8 vs 4 points;
+conjugate-pair misunderstandings), and only the corrected constructions
+supported the next intuition. The Worn-Zhe-Yue method makes the same
+point at the methodology level: the fast path is \emph{constructed} (by
+deliberate projection choice), not found.
+
+\textbf{The projection as the mechanism of the fast path.} Theorems
+4.6--4.7 give the fast path a precise mathematical mechanism:
+irrecoverable loss of the unneeded direction + preservation of the
+symmetry directions. This matches the token-economy datum (§8): after
+dimensional reduction, the retained structure is clear, and the model's
+path to it is short.
+
+\subsection{11. Conclusion}\label{conclusion}
+
+We presented a complete formalized study of the Riemann ζ direction,
+navigated by an intuition chain and verified in Lean 4 + mathlib
+(C011--C025, all PROVED/KNOWN, no sorry, full \texttt{lake\ build}): the
+projection construction of the complex plane (with the recovery
+theorem), the circle structure of primes (the 8-point orbit, conjugate
+pairing, Gaussian splitting), and the Euler product with the zero-free
+region. From the formalized mechanism of projection-induced structure
+loss we distilled the Worn-Zhe-Yue method: deliberately and precisely
+constructing the projection that excises the divergent uncountable
+structure while preserving symmetry directions, yielding a fast
+intuition path at lower inference cost --- the author's own methodology
+framing, with the formalization as DeepSeek's contribution. The
+assertion of the Riemann hypothesis itself is unproved (DeepSeek's
+insistence, §6); the value of this work is the formalized chain itself
+and the demonstrated methodology: precise construction earns intuition,
+and intuition, shaped by deliberate structure loss, navigates form.
+
+\subsection{Appendix A: theorem inventory
+(Lean)}\label{appendix-a-theorem-inventory-lean}
+
+\begin{itemize}
+\tightlist
+\item
+  ComplexAxis.lean: J\_sq, proj family, lift family, basepoint family,
+  axisLine family, recip family (recip\_mul\_self, recip\_lift,
+  norm\_recip, recip\_involutive), rot90 family, conj family, norm
+  family (norm\_mul), prime\_two\_axis, prime\_sq\_add\_sq\_unique,
+  mul\_conj, J\_pow\_two/four, isUnit4, associates,
+  variants\_are\_associates, recip\_conj\_pair, critical\_line family,
+  primeCircle/criticalCircle family, halfBasepoint family,
+  proj\_kernel\_J, real\_axis\_preserved\_by\_proj,
+  proj\_not\_recoverable, proj\_recoverable\_symmetry,
+  projection\_recovery\_theorem, lift\_injective, kernelEquivReal,
+  realAxisEquivReal, primes\_countable, proj\_surjective, dimension\_one
+\item
+  ZetaEulerProduct.lean: zetaEulerF, zetaEulerF\_norm,
+  zeta\_euler\_product, riemannZeta\_euler\_product,
+  riemannZeta\_ne\_zero\_of\_one\_le\_re, verified\_zero\_on\_circle
+\item
+  Build: \texttt{lake\ build} full pass (3631 jobs), no sorry.
+\end{itemize}
+
+\subsection{Appendix B: claims}\label{appendix-b-claims}
+
+claims/ZeroRelative/C011.yaml .. C025.yaml (one YAML per claim,
+containing statement/formalization/novelty).
+
+\subsection{References}\label{references}
+
+\begin{itemize}
+\tightlist
+\item
+  Riemann, B. 1859. Über die Anzahl der Primzahlen unter einer gegebenen
+  Größe.
+\item
+  van de Lune, J., te Riele, H. J. J., Winter, D. T. 1986. On the zeros
+  of the Riemann zeta function in the critical strip. IV. Math. Comp.
+\item
+  Levinson, N. 1974. More than one third of zeros of Riemann's
+  zeta-function are on σ = 1/2. Adv. Math.
+\item
+  Conrey, J. B. 1989. More than two fifths of the zeros of the Riemann
+  zeta function are on the critical line. J. reine angew. Math.
+\item
+  Gourdon, X. 2004. The 10\^{}13 first zeros of the Riemann Zeta
+  function, and zeros computation at very large height.
+\item
+  The mathlib community. Lean 4 mathematical library (v4.32.2):
+  riemannZeta, RiemannHypothesis, functional equation, Euler product,
+  Fermat's two-squares theorem, Gaussian-integer UFD.
+\item
+  The Unified Framework of Representation, Logic, and Intuition
+  (manifesto).
+  YuchenWang-ai/Unified\_Framework\_Representation\_Logic\_Intuition.
+\item
+  Technical record companion (C011--C025):
+  riemann\_direction\_formalization, DOI 10.5281/zenodo.21896990.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{统一结论 (Unified
+Conclusion)}\label{ux7edfux4e00ux7ed3ux8bba-unified-conclusion}
+
+当我们在统一的形式化注意力语法结构下,
+最终不可避免地、必然地通过神经网络清晰、直观、可解释地观察到直觉与构造的边界时,
+我们就可以有充足的信心: 用统一的注意力形式语言指导逻辑构造, 用精确的合成
+CoT 逻辑构造获得 \emph{闪念直觉},
+用蒸馏的直觉上下文穷举注意力形式。形式、构造、直觉在统一框架下相互适配,
+组成再不分彼此的教学、训练、推理的反馈迭代管线 --- 这也许是我们通往 ASI
+的众多路径中, 相对较快的一条捷径。
+
+\end{document}
