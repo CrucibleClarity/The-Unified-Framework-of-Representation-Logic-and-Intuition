@@ -1,0 +1,106 @@
+id: R186
+title: "R186 (2026-08-13): ★R184 逻辑回补 — 对称对观测的基点唯一性: 孪生对 (p, p+2) 的对称基点唯一 (对称方程 (p+2)-b = -(p-b) 唯一解 b = p+1, 预言中点 + 定位无错误基点, 补全 R172 只声明对称性未证唯一); 哥德巴赫中心唯一 (q-n = -(p-n) ⟺ 2n = p+q ⟺ n = (p+q)/2, 补全 R170); R184 证明逻辑过程 (预言正确基点/召唤/定位错误基点) 回补 R170/R172"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "回顾之前的证明环节看看有没有能用这个补充完善的"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。回顾之前证明, 用 R184 逻辑补全.
+
+    ★ 唯一论点: R170/R172 的对称对基点只声明对称性, 未证基点唯一
+       性 — R184 逻辑 (预言正确基点/召唤/定位错误基点) 补全:
+       对称方程唯一解 ⟹ 正确基点唯一 ⟹ 无错误基点.
+
+    ★ 回补内容:
+       - R172 孪生对: 命题 P(b): b 是孪生对 (p, p+2) 的对称基点
+         ((p+2)-b = -(p-b)). 预言正确基点: b = p+1 (中点). 定位
+         错误基点: 对称方程 2b = 2p+2 唯一解 b = p+1 — 无错误基点.
+         召唤: 中点对称 (R172 twin_pair_symmetric).
+       - R170 哥德巴赫: 中心 n 满足 q-n = -(p-n) ⟺ 2n = p+q ⟺
+         n = (p+q)/2 唯一 (center_fixed 已有; 补全唯一性).
+
+    ★ 结论: R184 证明逻辑过程 (预言正确基点/召唤/定位错误基点) 可
+       回补早期证明 — 对称对观测的基点唯一性.
+
+  formal_math: |
+    -- ★对称基点唯一 (预言+定位):
+    theorem symmetric_basepoint_unique (p b : ℝ) :
+      (p + 2) - b = -(p - b) ↔ b = p + 1
+    -- 召唤正确基点 (中点对称):
+    theorem symmetric_basepoint_summoned (p : ℝ) :
+      (p + 2) - (p + 1) = -(p - (p + 1))
+    -- ★哥德巴赫中心唯一:
+    theorem goldbach_center_unique (p q n : ℝ) :
+      q - n = -(p - n) ↔ 2 * n = p + q
+    -- 全景:
+    theorem basepoint_retrofit_perspective (p b : ℝ) :
+      ((p + 2) - b = -(p - b) ↔ b = p + 1) ∧
+      ((p + 2) - (p + 1) = -(p - (p + 1)))
+
+objects:
+- symmetric_basepoint_unique
+- symmetric_basepoint_summoned
+- goldbach_center_unique
+- basepoint_retrofit_perspective
+definitions_used:
+- 对称基点唯一性
+- 预言正确基点 = 中点/中心
+- 定位错误基点 = 无 (对称方程唯一解)
+
+assumptions:
+- 孪生对关于中点对称 (R172)
+- 哥德巴赫中心 n (R170 center_fixed)
+- 对称方程唯一解 ⟹ 无错误基点 (R184)
+conclusion: "筑基篇系列方法论固化之三完成: R184 逻辑回补 — 对称对观测的基点唯一性: 孪生对 (p, p+2) 的对称基点唯一 (对称方程 (p+2)-b = -(p-b) 唯一解 b = p+1, 预言中点 + 定位无错误基点, 补全 R172); 哥德巴赫中心唯一 (q-n = -(p-n) ⟺ 2n = p+q, 补全 R170)。4 个新定理全部只锚筑基篇定理 (R170/R172/R184) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '孪生对 (3, 5): 基点 b = 4 = p+1 (唯一)'
+- '哥德巴赫 p+q = 10: 中心 n = 5 = (p+q)/2 (唯一)'
+closest_known_results:
+- R184 PatBasepointProof (证明逻辑过程)
+- R172 PatTwinPrime (孪生对对称性)
+- R170 PatGoldbach (哥德巴赫中心)
+literature_queries:
+- symmetric pair basepoint uniqueness
+- midpoint unique solution symmetry equation
+
+counterexample_search:
+  status: done
+  search_space: 对称方程 (p+2)-b = -(p-b) 是否真唯一解 b = p+1;
+    哥德巴赫 q-n = -(p-n) 是否真 ⟺ 2n = p+q
+  smallest_checked_size: null
+  result: 枚举 p, b 对称条件 ⟹ b = p+1 全过 (唯一解); 哥德巴赫
+    中心唯一全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatBasepointProofRetrofit.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatBasepointProofRetrofit.symmetric_basepoint_unique / .symmetric_basepoint_summoned / .goldbach_center_unique / .basepoint_retrofit_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称对称基点不唯一 — 已证唯一 (对称方程唯一解)
+- 把对称性声明当唯一性证明 — 已补: 唯一性定理
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'symmetric_basepoint_unique: linarith — 唯一解 b = p+1'
+- 'symmetric_basepoint_summoned: ring — 中点对称召唤'
+- 'goldbach_center_unique: linarith — 中心唯一'
+- 'basepoint_retrofit_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: R184 逻辑回补完成; 后续可继续回补其他证明的基点
+  唯一性/存在性环节'
+notes: '用户要求回顾之前证明找可补全环节: R170/R172 对称对基点只声明
+  对称性未证唯一性 — R184 逻辑补全: 对称方程唯一解 ⟹ 正确基点唯一
+  ⟹ 无错误基点 (预言中点 + 定位无错误 + 召唤)。'
