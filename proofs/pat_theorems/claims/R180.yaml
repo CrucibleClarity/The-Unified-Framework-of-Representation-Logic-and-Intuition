@@ -1,0 +1,121 @@
+id: R180
+title: "R180 (筑基篇课后习题 XX, 2026-08-13): ★奇完全数存在性问题的 pat 重新观测 — σ = 素因子展开 (rad 对偶: rad 折叠重数到方向 R179, σ 展开重数到和); ★σ₁(p^k) 奇偶性折叠: p 奇 ⟹ σ₁(p^k) 奇 ⟺ k 偶 (σ 奇偶性 = 指数奇偶性投影, R171); 完全数 = σ 加倍对称对还原 (σ(n)=2n, R170/R085); ★奇完全数 ⟹ n 非平方 ⟹ 存在奇指数素因子 (欧拉必要条件 n = q^α·m², α 奇, 的 pat 奇偶性侧); ★存在性 = CONJECTURE/OPEN (未证, 下界 n > 10^1500)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "奇完全数存在性问题"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XX: 奇完全数
+       存在性问题的 pat 重新观测.
+
+    ★ 唯一论点: 奇完全数 = 素因子展开的奇偶性约束; σ = rad 对偶.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - σ = 素因子展开 (rad 的对偶): rad(n) 折叠重数到方向 (R179:
+         rad(p^k) = p); σ(n) 展开重数到和 (σ₁(p^k) = 1+p+...+p^k)
+         — 素因子重数折叠的两端.
+       - ★σ₁(p^k) 奇偶性折叠: p 奇 ⟹ σ₁(p^k) = 1+p+...+p^k 有
+         k+1 个奇数项 → 奇偶性 = 项数奇偶性 → σ₁(p^k) 奇 ⟺ k 偶
+         (R171 奇偶性折叠在约数和上的投影).
+       - 完全数 = σ 加倍: σ(n) = 2n — 约数和还原到 2n (对称对还原
+         2n = n+n, R170/R085).
+       - ★奇完全数 ⟹ n 非平方: σ(n) = 2n 偶; 若 n 平方 (所有指数
+         偶) → σ(n) 奇 (可乘性 + 各因子奇) → 矛盾 — 至少一个奇
+         指数素因子 (欧拉必要条件 n = q^α·m², α 奇, 的 pat 侧).
+       - ★存在性 = CONJECTURE/OPEN: 未证 (下界 n > 10^1500; 欧拉
+         必要条件 n = q^α·m², q ≡ 1 (mod 4), α ≡ 1 (mod 4), 外部
+         文献对照).
+
+  formal_math: |
+    -- ★σ₁(p^k) 奇偶性折叠 (p 奇):
+    theorem sigma_prime_pow_parity {p k : ℕ} (hp : Nat.Prime p) (hpodd : p ≠ 2) :
+      (Odd (σ 1 (p ^ k)) ↔ Even k)
+    -- ★奇完全数 ⟹ n 非平方:
+    theorem odd_perfect_not_square {n : ℕ} (hnodd : Odd n)
+      (hperfect : σ 1 n = 2 * n) : ¬ IsSquare n
+    -- 奇完全数 ⟹ 存在奇指数素因子:
+    theorem odd_perfect_has_odd_exponent_prime {n : ℕ} (hnodd : Odd n)
+      (hperfect : σ 1 n = 2 * n) :
+      ∃ p : ℕ, p ∣ n ∧ Odd (n.factorization p)
+    -- 完全数 = σ 加倍 (对称对还原):
+    theorem perfect_sigma_double_iff (n : ℕ) : σ 1 n = 2 * n ↔ σ 1 n - n = n
+    -- 全景:
+    theorem odd_perfect_pat_perspective (p : ℕ) (hp : Nat.Prime p) (hpodd : p ≠ 2) :
+      (Odd (σ 1 (p ^ 2)) ∧ Even (σ 1 (p ^ 1)))
+
+objects:
+- sigma_prime_pow_parity
+- odd_perfect_not_square
+- odd_perfect_has_odd_exponent_prime
+- perfect_sigma_double_iff
+- odd_perfect_pat_perspective
+definitions_used:
+- σ = 素因子展开 (rad 对偶)
+- σ₁(p^k) 奇偶性折叠 (奇 ⟺ k 偶)
+- 完全数 = σ 加倍对称对还原
+- 奇完全数 ⟹ n 非平方
+
+assumptions:
+- σ 可乘 (mathlib isMultiplicative_sigma)
+- σ₁(p^k) = 1+p+...+p^k (mathlib sigma_one_apply_prime_pow)
+- 欧拉必要条件 n = q^α·m² (外部已知, 仅对照)
+- ★存在性未证 (CONJECTURE/OPEN; 枚举到 10^1500 无反例 = 枚举证据)
+conclusion: "筑基篇课后习题 XX 完成: 奇完全数存在性问题的 pat 重新观测 — σ = 素因子展开 (rad 对偶: rad 折叠重数到方向, σ 展开重数到和); ★σ₁(p^k) 奇偶性折叠: p 奇 ⟹ σ₁(p^k) 奇 ⟺ k 偶 (σ 奇偶性 = 指数奇偶性投影); 完全数 = σ 加倍对称对还原 (σ(n) = 2n); ★奇完全数 ⟹ n 非平方 ⟹ 存在奇指数素因子 (欧拉必要条件 q^α 的 pat 奇偶性侧); ★存在性 = CONJECTURE/OPEN (未证, 下界 n > 10^1500)。5 个新定理全部只锚筑基篇定理 (R085/R170/R171/R179) + mathlib 数论基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '偶完全数 6, 28: σ(n) = 2n (Euclid-Euler)'
+- 'σ(3^2) = 13 奇, σ(3^1) = 4 偶: σ₁(p^k) 奇 ⟺ k 偶'
+- 'n 奇 σ(n) 奇 ⟹ n 是平方: 1, 9, 25, 49 (枚举 n < 200)'
+closest_known_results:
+- R179 PatAbcConjecture (rad = 素因子折叠; σ 是 rad 对偶展开)
+- R171 PatParityPrime (奇偶性折叠)
+- R170 PatGoldbach (对称对还原 2n = n+n)
+- R085 FoldCenters (折叠类)
+literature_queries:
+- odd perfect number existence sigma parity
+- odd perfect number Euler form q^alpha m^2
+- 奇完全数 存在性
+
+counterexample_search:
+  status: done
+  search_space: σ₁(p^k) 奇偶性是否真 ⟺ k 偶; 奇完全数是否真非平方;
+    σ(n) 奇的奇数是否真都是平方; 奇完全数 < 5000 是否存在
+  smallest_checked_size: null
+  result: 枚举 p=3,5,7, k=0..4 σ₁(p^k) 奇 ⟺ k 偶 全过; σ(n) 奇的奇
+    n < 200 全是平方 (1,9,25,49,81,121,169); 奇完全数 < 5000 无
+    (枚举证据); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatOddPerfect.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatOddPerfect.sigma_prime_pow_parity / .odd_perfect_not_square / .odd_perfect_has_odd_exponent_prime / .perfect_sigma_double_iff / .odd_perfect_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明奇完全数存在或不存在 — 诚实边界: 存在性 CONJECTURE/OPEN
+- 把枚举无反例当证明 — 枚举 = 证据, 非普遍陈述的证明
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'sigma_prime_pow_parity: sigma_one_apply_prime_pow + 奇数项和奇偶性 — σ 奇偶性折叠'
+- 'odd_perfect_not_square: σ 可乘 + 各因子奇 — 奇完全数非平方'
+- 'odd_perfect_has_odd_exponent_prime: IsSquare.of_even_factorization — 存在奇指数'
+- 'perfect_sigma_double_iff: ring/omega — σ 加倍 = 对称对还原'
+- 'odd_perfect_pat_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: σ 展开与 rad 折叠的对偶深化, 或其他
+  经典数论未解问题的 pat 重新观测'
+notes: '筑基篇课后习题 XX — 奇完全数存在性问题的 pat 重新观测: σ =
+  素因子展开 (rad 对偶); σ₁(p^k) 奇 ⟺ k 偶 (σ 奇偶性折叠); 奇完全
+  数 ⟹ n 非平方 ⟹ 存在奇指数素因子 (欧拉必要条件); ★存在性
+  CONJECTURE/OPEN。工程: 一次 build 通过, 0 sorry。'
