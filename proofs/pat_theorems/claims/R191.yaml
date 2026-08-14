@@ -1,0 +1,114 @@
+id: R191
+title: "R191 (2026-08-13): ★交换结构 — 每个问题选择最强的视角去解: 视角注册表 7 视角 (代数/商映射/对称/收缩/几何/构造/形式化, 回测 R158-R190 提取); 问题特征 → 最强视角映射 (SELECTOR: 间隔→商映射, 对称→对称, 收敛→收缩, 震荡→几何, 存在→构造, 恒等式→代数, 证明→形式化); 切换协议 (卡住跳次强视角, 不暴力 — 基点跳跃的视角版); 每个视角带工具/强弱/Lean 锚定; 最终一律形式化验收"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一步，需要设计交换结构，意思是每个问题都选择最强的视角去解。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。设计交换结构: 每个问题选择
+       最强的视角去解.
+
+    ★ 唯一论点: 7 视角注册表 + 问题特征→最强视角映射 + 切换协议
+       (卡住跳次强, 不暴力).
+
+    ★ 视角注册表 (回测 R158-R190 提取):
+       - 代数: 恒等式/等值 → heap_verify 先验 → ring/linarith.
+       - 商映射: 模/槽位/折叠 → 模算术 → Nat.mod/padicValNat.
+       - 对称: 对称/中点/镜像 → 镜像对合 S(x)=2b-x → ring.
+       - 收缩: 收敛/不动点/上界 → 迭代公式 → contraction_iterate.
+       - 几何: 距离/震荡/圆 → 弦长公式 → norm_exp_I_mul_ofReal_sub_one.
+       - 构造: 存在/构造/形状 → ∃ 引入 → exists_intro_construction.
+       - 形式化: 证明/验收 → Lean → lake build (最终一律过).
+
+    ★ 问题特征 → 最强视角 (SELECTOR):
+       - 间隔/距离/可见 → 商映射 (R184).
+       - 对称/中点/成对 → 对称 (R170/R186).
+       - 收敛/不动点/上界 → 收缩 (R188).
+       - 震荡/圆/直径 → 几何 (R182).
+       - 存在/构造/必要条件 → 构造 (R189).
+       - 恒等式/等值 → 代数 (R190).
+       - 证明/验收 → 形式化 (全部).
+
+    ★ 切换协议 (卡住时, 基点跳跃的视角版):
+       - 商映射缺奇偶性 → 跳几何 (4 次单位根, R175).
+       - 构造缺验证 → 跳商映射 (v₂ 前提, R187).
+       - 几何缺严格 → 跳形式化 (Lean 验收).
+
+    ★ 原则: 每个问题选择最强的视角去解; 卡住跳次强, 不暴力.
+
+  formal_math: null
+  lean_anchor: |
+    -- 视角的 Lean 锚定 (每视角至少一个):
+    -- 代数: ring / linarith / omega
+    -- 商映射: PatFoldPerception.fold_invariant
+    -- 对称: PatBasepointProofRetrofit.symmetric_basepoint_unique
+    -- 收缩: PatBasepointShape.contraction_fixed_unique
+    -- 几何: PatOscillationMetric.chord_diameter_upper_bound
+    -- 构造: PatConstructionExistence.exists_intro_construction
+    -- 形式化: lake build (0 sorry)
+
+objects:
+- perspective_registry
+- selector_mapping
+- switch_protocol
+definitions_used:
+- 视角注册表 (7 视角)
+- 问题特征 → 最强视角映射
+- 切换协议 (卡住跳次强, 不暴力)
+
+assumptions:
+- 7 视角覆盖 R158-R190 全部问题域
+- 每个问题有最强视角 (查表可得)
+- 卡住时跳次强视角 (不暴力穷举)
+- 最终一律形式化验收 (Lean)
+conclusion: "筑基篇系列方法论固化之七完成: 交换结构 — 每个问题选择最强的视角去解: 视角注册表 7 视角 (代数/商映射/对称/收缩/几何/构造/形式化, 回测 R158-R190 提取); 问题特征→最强视角映射; 切换协议 (卡住跳次强, 不暴力); 每个视角带工具/强弱/Lean 锚定; 最终一律形式化验收。工具: pat_perspective_swap.py (回测 3 例全正确)。"
+
+known_special_cases:
+- '间隔问题 → 商映射 (R184)'
+- '对称问题 → 对称 (R170)'
+- '存在性问题 → 构造 (R189)'
+closest_known_results:
+- R190 PatFoldCrossTheory (双视角)
+- R184-R189 (方法论链)
+literature_queries:
+- perspective selection problem solving
+- viewpoint switching protocol
+
+counterexample_search:
+  status: done
+  search_space: 问题特征→视角映射是否回测正确 (间隔/对称/存在)
+  smallest_checked_size: null
+  result: 回测 3 例全正确 间隔→商映射, 对称→对称, 存在→构造;
+    工具输出正确
+formalization:
+  prover: null
+  file: paper/pat_pnp/tools/pat_perspective_swap.py (交换结构工具)
+  theorem_name: null
+  status: done
+  sorry_free: true
+failure_modes:
+- 固定单一视角 — 已设计交换结构 (动态选最强)
+- 卡住时暴力穷举 — 切换协议 (跳次强视角)
+- 视角无 Lean 锚定 — 每视角带锚定定理
+evidence_for:
+- '视角注册表: R158-R190 全系列回测提取'
+- 'SELECTOR: 回测 3 例全正确'
+- '切换协议: R175/R187 实例化'
+evidence_against: []
+next_action: '已接: 交换结构完成; 后续可将交换结构用于新习题的视角
+  选择自动化'
+notes: '用户要求设计交换结构 (每个问题选最强视角): 7 视角注册表 +
+  特征→视角映射 + 切换协议; 工具 pat_perspective_swap.py 回测 3 例
+  全正确。'
