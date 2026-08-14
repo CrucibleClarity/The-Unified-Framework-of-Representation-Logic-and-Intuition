@@ -1,0 +1,107 @@
+id: R102
+title: "R102 (user-proposed 2026-08-12): evolutionary number sense — fish discriminate numerosity by RATIO 1:2 (delta/log-relative) beyond small quantities (mosquitofish ≤3, guppies ≤4); rats learn lever-press counts and ADD across modalities (flashes + tones = cross-modal numerosity); animals' number sense is RELATIVE (ratio/delta) not absolute — supporting the native number sense recovery goal"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "先落，有对蝙蝠、水生的研究吗，离人类都远些。另外鸟类怎么认知自己的后代数量
+  的，包括杜鹃这种，进去之后就把真实后代杀死，原因不会是因为delta的认知结构
+  吧。箭头需要有比较，不杀干净其他的就会被认出来？但我也见过一窝里既有杜鹃
+  也有其他真实后代的现象啊。"
+  "这不对的，如果宿主幼鸟活不活都没关系，那就肯定不是delta，而且不是还有鸟类
+  的雏鸟只要掉出窝就不认识的吗。你先记录下这些搜索结果，我们的论文肯定得引用，
+  毕竟目标的本质是找回原生的数感。蝙蝠和水生动物的数感还是做下。而且他们的
+  普遍特点都是非欧几何认知，重点找水生群居智慧生物。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。蝙蝠/水生/跨模态数感知检索。
+
+    ★ 鱼类 (水生, 群居, 检索):
+      ① 食蚊鱼 (mosquitofish): 区分数量 ≤3; 之后按比率 1:2 区分
+         (两组数量比 1:2 才能分辨)
+      ② 孔雀鱼 (guppies): 区分 ≤4; 之后按比率
+      ③ ⟹ 鱼类数感知: 小量精确 (PIS), 大量按比率 (delta/log 相对)!
+         — 比率 1:2 = log 差恒定 = delta 相对性!
+
+    ★ 大鼠 (啮齿, 跨模态):
+      ① 学会按指定次数压杠杆取食 (计数压杆次数)
+      ② Church & Meck: 大鼠"加法"光闪数 + 音调数 = 期望压杆次数
+         — 数感独立于模态 (跨视觉/听觉)!
+      ③ ⟹ 数感是抽象结构, 非模态依赖
+
+    ★ 杜鹃/鸟类 (用户纠正):
+      宿主幼鸟活不活都没关系 ⟹ 宿主认知不是 delta 结构
+      鸟类雏鸟掉出窝就不认识 (个体识别基于巢内位置, 非个体特征)
+      — 位置识别, 非 delta 结构 (用户: 肯定不是 delta)
+
+    ★ 论文引用价值 (用户: 目标是找回原生的数感):
+      动物数感 = 相对性 (比率/delta) + 小量精确 (PIS) + 跨模态抽象
+      — 支持"原生数感 = 相对性"假设 (RulerDrift 的生物学证据)
+
+    ★ 与既有 claim 的关系:
+      - RulerDrift (数值漂移位置不变): 比率感知 = delta 相对性
+      - R101 (两大系统 ANS/PIS): 鱼类证据支持
+      - R098 (震荡): 奇偶性候选 (未检索到直接证据)
+      - R072 (声明): 原生数感的声明化
+      结论: 鱼类按比率 (1:2) 感知 (delta 相对), 大鼠跨模态计数
+      (抽象数感); 杜鹃宿主认知非 delta (用户纠正); 原生数感 =
+      相对性 — 论文引用。
+
+    ★ 支撑:
+      - Wikipedia: Number sense in animals (Fish/Rats 段)
+      - Church & Meck (1984) 跨模态加法
+  formal_math: |
+    -- 鱼类: 小量精确 (≤3-4, PIS); 大量按比率 1:2 (delta/log 相对)
+    -- 大鼠: 计数压杆 + 跨模态加法 (光闪 + 音调)
+    -- 杜鹃宿主: 非 delta 认知 (用户纠正)
+
+objects: []
+
+definitions_used:
+- RulerDrift / R101 / R098 / R072
+
+assumptions:
+- "鱼类比率感知 = delta 相对性 (1:2 = log 差恒定)"
+- "大鼠跨模态 = 数感抽象 (非模态依赖)"
+- "杜鹃宿主认知非 delta (位置识别)"
+
+conclusion: "检索完成 (2026-08-12): 鱼类按比率 1:2 感知大量 (delta 相对),
+  小量精确 ≤4 (PIS); 大鼠跨模态计数 (数感抽象); 杜鹃宿主认知非 delta
+  (位置识别, 用户纠正); 原生数感 = 相对性 — 论文引用素材。"
+
+known_special_cases:
+  - "食蚊鱼: ≤3 精确, 之后比率 1:2"
+  - "孔雀鱼: ≤4 精确, 之后比率"
+  - "大鼠: 跨模态加法 (Church & Meck)"
+  - "杜鹃宿主: 雏鸟掉窝不识别 (位置认知)"
+
+counterexample_search:
+  status: done
+  search_space: "Wikipedia: Number sense in animals (Fish/Rats 段)"
+  smallest_checked_size: null
+  result: "比率 1:2 + 跨模态确认; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "检索范围限 Wikipedia: 蝙蝠/头足类未覆盖 (需深挖)"
+  - "比率 1:2 是行为观测: 非神经机制证明"
+  - "杜鹃宿主认知: 位置识别假设 (用户推断)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 蝙蝠/头足类 (章鱼/乌贼) 数感知深挖 ② 非欧几何认知检索 ③ 奇偶性震荡验证"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 检索 + claim 落盘。
+  论文引用素材: 鱼类比率感知/大鼠跨模态/杜鹃位置识别。"
