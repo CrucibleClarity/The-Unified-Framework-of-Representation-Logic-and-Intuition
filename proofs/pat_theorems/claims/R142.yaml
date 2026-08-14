@@ -1,0 +1,130 @@
+id: R142
+title: "R142 (user-proposed 2026-08-12): ★基点 0 视角: 自然数 ↔ 单相位数的映射关系 (含发散/收敛映射) + 素数环相同操作 — 自然数 = 基点 0 出发单位方向的单相位链 (patChain 0 1 n = n); 发散映射: 层数 = 值/d (ψ_div), 素数幂链 log(p^k) = k·log p (R097/R089); 收敛映射: 相位蜷曲到圆 + 单位根量化 (ψ_conv, R055/R141); 素数环: 素数圆 |z| = √p + 素数幂链蜷曲; 合数 = 多相位 (R112)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "我要看基点0视角下，自然数到单相位数的映射关系，以及单相位数在自然数上的
+  映射关系（包括发散映射与收敛映射） 然后那个素数环做相同的操作。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。基点 0 视角的双向映射形式化。
+
+    ★ 映射 (每环锚到已证 claim):
+      ① 自然数 → 单相位 (φ): 自然数 n = 基点 0 出发、单位方向 d = 1 的
+         单相位链第 n 层 — patChain 0 1 n = n (R137 pat_n_is_monophase;
+         R091: 单相位 = {n·d}; R070: Nat = Chain(0); RulerDelta: 基点 =
+         delta 的锚)
+      ② 单相位 → 自然数, 发散映射 (ψ_div): 层数 = 值/d — (n·d)/d = n
+         (R091: 标量列; R067: 数值 = 基点投影); log 版 (素数幂链):
+         log(p^k) = k·log p (R097: 素数幂链 = 单相位; R089: log 把乘法
+         基点 1 漂移到加法基点 0)
+      ③ 单相位 → 自然数, 收敛映射 (ψ_conv): 相位蜷曲到圆 + 单位根量化 —
+         自然数 n 的相位 2π·n/T 量化到单位根 n 槽环, 误差 ≤ π/N
+         (R138/R055 蜷曲; R141 phase_quantizable: |x - round x| ≤ 1/2;
+         R059: 单位根 n 槽环)
+      ④ 素数环相同操作: 素数幂链 {p^k} 经 log 是单相位 (R097), 蜷曲到圆
+         (R055); 素数圆 |z| = √p (C016/C017: 高斯整数/素数圆单轨道;
+         R109: 折叠类 0 = 素数圆圆心); 合数 = 多相位 (R112: p^a·p^b =
+         p^(a+b) 相位向量加法)
+
+    ★ 验证结论: 用户要求成立 — 基点 0 视角双向映射: 自然数 = 单位方向
+       单相位链 (φ), 发散映射 (层数提取 ψ_div) + 收敛映射 (蜷曲量化
+       ψ_conv); 素数环相同操作 (素数幂链单相位 + 素数圆 + 合数多相位)。
+
+  formal_math: |
+    -- 自然数 = 基点 0 单位方向单相位链:
+    theorem nat_is_monophase_chain (n : ℕ) :
+      patChain 0 1 n = (n : ℝ)
+    -- 发散映射 ψ_div: 层数 = 值/d:
+    theorem monophase_layer_extract (n d : ℝ) (hd : d ≠ 0) :
+      (n * d) / d = n
+    -- 素数幂链 = 单相位 (log 视角):
+    theorem prime_power_log_layer (p : ℝ) (k : ℕ) :
+      Real.log (p ^ k) = (k : ℝ) * Real.log p
+    -- 收敛映射 ψ_conv: 自然数相位量化到单位根格点:
+    theorem nat_phase_quantized (T : ℝ) (N : ℕ) (hN : 0 < N) (n : ℕ)
+      (hθ₁ : 0 ≤ 2 * Real.pi * (n : ℝ) / T)
+      (hθ₂ : 2 * Real.pi * (n : ℝ) / T ≤ 2 * Real.pi) :
+      ∃ j : ℕ, j ≤ N ∧
+        |2 * Real.pi * (n : ℝ) / T - 2 * Real.pi * (j : ℝ) / N| ≤ Real.pi / N
+    -- 素数环: 素数幂链蜷曲 (R055):
+    theorem prime_power_curls (p T : ℝ) (hT : T ≠ 0) (k : ℕ) :
+      Complex.exp (2 * Real.pi * ((((k : ℝ) * Real.log p) + T) / T) * Complex.I) =
+        Complex.exp (2 * Real.pi * ((k : ℝ) * Real.log p / T) * Complex.I)
+    -- 素数圆 |z| = √p:
+    theorem prime_circle_norm (p θ : ℝ) (hp : 0 ≤ p) :
+      ‖(Real.sqrt p : ℂ) * Complex.exp (θ * Complex.I)‖ = Real.sqrt p
+    -- 合数 = 多相位 (R112):
+    theorem composite_polyphase (p a b : ℕ) :
+      (p ^ a) * (p ^ b) = p ^ (a + b)
+
+objects:
+- nat_is_monophase_chain
+- monophase_layer_extract
+- prime_power_log_layer
+- nat_phase_quantized
+- prime_power_curls
+- prime_circle_norm
+- composite_polyphase
+
+definitions_used:
+- R137 PatConstruction (patChain/pat_n_is_monophase) / R091 (单相位 = {n·d}) / R070 (Nat = Chain(0)) / R067 (数值 = 基点投影) / R097 (素数幂链 = 单相位) / R089 (log 基点漂移) / R138/R055 (蜷曲到圆) / R141 phase_quantizable (单位根量化) / R059 (单位根 n 槽环) / C016/C017 (素数圆) / R109 (折叠类 0 = 素数圆圆心) / R112 (多相位 = 素因子多重集)
+
+assumptions:
+- "基点 0 = 加法基点 (自然数链的锚, R062/R070)"
+- "自然数 = 单位方向 d = 1 的单相位链 (R137)"
+- "发散映射: 层数 = 值/d (R091 标量列)"
+- "收敛映射: 相位蜷曲 + 单位根量化 (R055/R141)"
+- "素数幂链经 log = 单相位 (R097/R089)"
+
+conclusion: "用户要求成立 (2026-08-12): 基点 0 视角双向映射 — 自然数 n =
+  基点 0 单位方向单相位链第 n 层 (φ); 发散映射 ψ_div (层数 = 值/d,
+  素数幂链 log(p^k) = k·log p); 收敛映射 ψ_conv (相位蜷曲到圆 + 单位根
+  量化, 误差 ≤ π/N); 素数环相同操作 (素数幂链单相位 + 蜷曲 + 素数圆
+  |z| = √p + 合数多相位)。"
+
+known_special_cases:
+  - "自然数: patChain 0 1 n = n (单位方向单相位链)"
+  - "发散: (n·d)/d = n; log(p^k) = k·log p (素数幂链)"
+  - "收敛: 相位量化到单位根, 误差 ≤ π/N (R141)"
+  - "素数环: |√p·exp(θ·I)| = √p; 素数幂链蜷曲 (R055)"
+  - "合数: p^a·p^b = p^(a+b) (多相位, R112)"
+
+counterexample_search:
+  status: done
+  search_space: "映射代数验证 (链恒等式/层数提取/log 层/量化/蜷曲/素数圆/多相位, Lean 验证)"
+  smallest_checked_size: null
+  result: "7/7 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatMapping.lean
+  theorem_name: nat_is_monophase_chain, monophase_layer_extract, prime_power_log_layer, nat_phase_quantized, prime_power_curls, prime_circle_norm, composite_polyphase
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "发散映射是层数提取: 数值 = 基点投影 (R067/RulerDrift: 数值漂移, delta 类稳定)"
+  - "收敛映射是量化: 误差 ≤ π/N 非精确 (R059/R060)"
+  - "素数幂链蜷曲限 log 定义域: p > 0 (log 全定义 ℝ, 值任意)"
+  - "素数圆 |z| = √p: 半径由 p 决定 (C016/C017)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 与 R143 组合: 自然数 = 1 轴 (pat) 单相位链, 相位锁定 = 1 与 i 的互锁 ② 映射接入 RulerNumeral (格点 → 位序列) ③ 六集群神经层: 自然数/素数输入 = 圆上量化格点"
+
+notes: "观点归属: 用户 (2026-08-12) 提出查看映射需求 (原话原封保存); assistant
+  执行 Lean 形式化 (PatMapping.lean, 7 定理 0 sorry, lake build PASS) + claim
+  落盘。基点 0 视角: 自然数 = 单位方向单相位链; 素数环 = 素数幂链单相位。"
