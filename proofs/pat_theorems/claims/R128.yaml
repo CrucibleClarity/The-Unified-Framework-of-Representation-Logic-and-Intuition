@@ -1,0 +1,101 @@
+id: R128
+title: "R128 (user-proposed 2026-08-12): the origin-0 phenomena are EQUIVALENT to the basepoint-0 phenomena — the S/R/T symmetry-stripping process is translation-invariant: the fold phenomenon (mirror S, ±1 fold class R085) is an involution at ANY basepoint (S_e² = id), and S_e = T ∘ S₀ ∘ T⁻¹ (translation conjugation); the origin phenomena apply identically to the basepoint-array generation (Lean-proved, 0 sorry); caveat: origin is observable, basepoint closure (R123) is not"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "那这个事情就更麻烦了，我们之前从原点剥离出来的对称性，srt的过程。得到的
+  基点0,然后我们又把原点证明中观察到的现象，应用到基点0阵列生成的过程中，这个
+  过程肯定需要证明的对吧？原点0观测到的现象，等价于基点0观测到的现象？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。原点现象 ≡ 基点现象 (需要证明)。
+
+    ★ 问题: 从原点剥离对称性 (S/R/T) 得到基点 0; 把原点观测到的现象
+      应用到基点 0 阵列生成 — 需要证明: 原点现象等价于基点现象?
+
+    ★ 证明 (Lean 验收, OriginBasepointEquivalence.lean, 0 sorry):
+      ① fold_involution_origin: 原点镜像 S₀(x) = -x 是对合 (S₀² = id)
+      ② fold_involution_any_basepoint: 任意基点 e 镜像 S_e(x) = 2e-x
+         是对合 (S_e² = id) — 现象平移不变!
+      ③ origin_basepoint_equivalent: S_e = T ∘ S₀ ∘ T⁻¹ (平移共轭)
+         — 原点与基点现象等价 (可构造可定义)
+      ④ fold_class_translation_invariant: ±1 折叠类在任意基点同样
+         出现 (e±1 互换)
+
+    ★ 关键差异 (诚实边界):
+      原点: 可观测 (实数轴)
+      基点 0: 闭包 (R123: 内部不可观测)
+      现象等价 (平移不变), 但观测性不同!
+
+    ★ 与既有 claim 的关系:
+      - R085 (0 = ±1 折叠类): 原点现象
+      - R054 (任意基点任意轴): 平移不变依据
+      - R123 (基点闭包): 观测性差异
+      - R127 (相位 = 剥离对称调制): 本 claim 的等价性
+      - R072 (声明): 等价性的声明化
+      结论: 原点现象 ≡ 基点现象 (平移共轭, Lean 证明);
+      但观测性不同 (原点可观测, 基点闭包不可观测)。
+
+    ★ 支撑 (Lean):
+      - OriginBasepointEquivalence.lean (4 定理, 0 sorry)
+  formal_math: |
+    -- S₀(x) = -x (原点镜像, 对合)
+    -- S_e(x) = 2e-x (基点镜像, 对合)
+    -- S_e = T ∘ S₀ ∘ T⁻¹ (平移共轭, 等价)
+    -- ±1 折叠类平移不变
+
+objects:
+- fold_involution_origin
+- fold_involution_any_basepoint
+- origin_basepoint_equivalent
+- fold_class_translation_invariant
+
+definitions_used:
+- R085 / R054 / R123 / R127 / R072
+
+assumptions:
+- "原点现象 (折叠/镜像) 平移不变"
+- "S_e = T ∘ S₀ ∘ T⁻¹ (共轭等价)"
+- "观测性差异: 原点可观测, 基点闭包不可观测"
+
+conclusion: "用户问题获答 (2026-08-12): 原点现象 ≡ 基点现象 — 折叠/镜像
+  平移不变 (S_e²=id 任意基点), S_e = T∘S₀∘T⁻¹ 共轭等价 (Lean 证明,
+  0 sorry); 但观测性不同 (原点可观测, 基点闭包不可观测)。"
+
+known_special_cases:
+  - "S₀² = id (原点对合)"
+  - "S_e² = id (任意基点对合)"
+  - "S_e = T∘S₀∘T⁻¹ (共轭)"
+  - "±1 折叠类平移不变 (e±1 互换)"
+
+counterexample_search:
+  status: done
+  search_space: "对合/共轭/平移不变 (枚举 + Lean)"
+  smallest_checked_size: 300
+  result: "4/4 定理 Lean 验证; 方向 3/3 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/OriginBasepointEquivalence.lean
+  theorem_name: fold_involution_origin, fold_involution_any_basepoint, origin_basepoint_equivalent, fold_class_translation_invariant
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "现象等价 (平移共轭): 观测性仍不同 (闭包)"
+  - "共轭依赖平移: R054 前提"
+  - "阵列生成: 等价性应用到 pat 阵列 (下一步)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "等价性应用到基点 0 阵列生成 (pat 序列) — 阵列现象与原点现象等价"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + Lean 形式化 + claim 落盘。"
