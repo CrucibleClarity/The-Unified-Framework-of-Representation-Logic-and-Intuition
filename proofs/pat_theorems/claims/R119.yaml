@@ -1,0 +1,104 @@
+id: R119
+title: "R119 (user-proposed 2026-08-12): the self-inverse construction returns to basepoint 0 via the structure's OWN reciprocity — slot-swapping the self-application app(p0,p0) leaves it unchanged (parameters coincide, the two slots indistinguishable); the self-application is SELF-INVERSE (internal reciprocity, NOT an external inverse operator — R118's leftInv was wrong: it introduced a new direction/symmetry); the reciprocity is anchored at p0"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "我这个是用互逆的方法构造返回基点0的机构，你那个inverse是引入了一个新的方向
+  和对称性，inverse完不一定回到基点0！！！"
+  (重复两遍, 强调纠正)
+  ★ 确认 (2026-08-12): "是的，因为本质上，我们构造的inverseapp 和inverse，
+    几乎是完全相似的概念。" — 互逆 (swapSlots) 与逆 (inverse) 本质同构,
+    仅实现不同: 互逆 = 结构固有 (槽位互换), 逆 = 外部算符。
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。R118 的纠正: 互逆方法 vs 外部逆运算。
+
+    ★ 纠正 (R118 错误):
+      R118 引入 leftInv (外部逆运算) — 新方向/新对称性
+      用户: inverse 完不一定回到基点 0!
+      正确: 互逆方法 — 结构自身的互逆 (无外部算符)
+
+    ★ 互逆构造 (验证):
+      swapSlots (槽位互换) = app 结构的固有对称性 (非新算符)
+      app(p0,p0) 参数重合 ⟹ 槽位互换不变:
+        swapSlots(app(p0,p0)) = app(p0,p0) (自逆!)
+      自应用 = 自逆结构 (互逆内部化)
+      唯一参数 p0 ⟹ 互逆锚定在基点
+
+    ★ 核心定理 (Lean 验收, SelfInverseBasepoint.lean, 无 sorry):
+      ① swap_slots_self_app: 槽位互换自应用不变
+      ② self_app_self_inverse: 自应用 = 自逆 (内部互逆)
+      ③ reciprocity_anchored_basepoint: 互逆锚定基点 (双槽都 p0)
+      ④ self_app_reciprocity_general: 一般自应用互逆 (参数重合)
+      ⑤ reciprocity_internal: 互逆是结构固有 (非外部算符)
+
+    ★ 与既有 claim 的关系:
+      - R118 (奇异性-基点): 本 claim 纠正其 leftInv 错误
+      - R113 (自应用构造): p1 = app(p0,p0)
+      - R117 (相位重合): 基点 = 汇聚点
+      - R072 (声明): 互逆方法的声明化
+      结论: 返回基点 0 靠结构自身互逆 (槽位互换自逆), 非外部
+      逆运算; 自应用参数重合 ⟹ 自逆 ⟹ 锚定基点。
+
+    ★ 支撑 (Lean):
+      - SelfInverseBasepoint.lean (5 定理, 0 sorry)
+  formal_math: |
+    -- 互逆: swapSlots(app a b) = app b a (结构固有)
+    -- 自逆: swapSlots(app p0 p0) = app p0 p0 (参数重合)
+    -- 锚定: 唯一参数 p0 ⟹ 互逆回到基点 (无外部逆)
+
+objects:
+- swap_slots_self_app
+- self_app_self_inverse
+- reciprocity_anchored_basepoint
+- self_app_reciprocity_general
+- reciprocity_internal
+
+definitions_used:
+- R118 / R113 / R117 / R072
+
+assumptions:
+- "互逆 = 槽位互换 (结构固有对称, 非外部算符)"
+- "自应用参数重合 ⟹ 自逆"
+- "互逆锚定在基点 p0"
+
+conclusion: "用户纠正成立 (2026-08-12): 返回基点 0 用互逆方法 — 槽位互换
+  (结构固有对称), 非外部逆运算 (R118 leftInv 错误已弃); 自应用
+  参数重合 ⟹ 自逆 ⟹ 互逆锚定基点。"
+
+known_special_cases:
+  - "swapSlots(app(p0,p0)) = app(p0,p0) (自逆)"
+  - "swapSlots(app(pk,pk)) = app(pk,pk) (一般自逆)"
+  - "互逆内部化: 无外部逆算符"
+
+counterexample_search:
+  status: done
+  search_space: "槽位互换/自逆/锚定 (Lean 验证)"
+  smallest_checked_size: null
+  result: "5/5 定理 Lean 验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/SelfInverseBasepoint.lean
+  theorem_name: swap_slots_self_app, self_app_self_inverse, reciprocity_anchored_basepoint, self_app_reciprocity_general, reciprocity_internal
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "外部逆算符 (R118 leftInv): 引入新方向/对称 — 弃用"
+  - "互逆 = 槽位互换: 结构固有 (非新算符)"
+  - "自应用自逆: 参数重合 (锚定基点)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "互逆方法接入 R072; 与 R118 组合 (奇异性-基点闭环)"
+
+notes: "观点归属: 用户 (2026-08-12) 提出纠正 (原话原封保存, 两遍强调); assistant
+  执行 Lean 形式化 + claim 落盘。R118 的 leftInv 错误已弃用。"
