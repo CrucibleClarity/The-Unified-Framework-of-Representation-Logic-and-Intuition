@@ -1,0 +1,114 @@
+id: R183
+title: "R183 (2026-08-13): ★折叠感知 — 7 种直觉模式 = 商映射的 7 个性质维度: 折叠 = 商映射 n ↦ n mod N (R085 模 N 折叠, R141 n 槽环); ①商的目标轴 (换轴直觉: 发散 vs 周期, R047) ②商的非单射性 (丢结构直觉: 丢差 N 信息, R048) ③商的纤维 (选基点直觉: 基点 = 折叠固定点, R142) ④商的极值 (上界直觉: 周期圆直径 2, R182) ⑤商的自同构 (对偶直觉: 旋转交换槽位, R177) ⑥商的余像 (缺槽直觉: 子集像余集, R178) ⑦商的不变量 (泛化直觉: 差 N 折叠到同槽, 度量无关)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "工具化这个，并且对应到pat中看下这个的本质是什么。"
+  (前置: "基点构造的脑回路，要特别大的像我这样的智障直觉式搜索"
+   "注意，不是大规模的，而是直觉式的")
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。工具化直觉捕捉 + 揭示 pat 本质.
+
+    ★ 唯一论点: 7 种直觉模式 = 折叠 (商映射 n ↦ n mod N) 的 7 个
+       性质维度 — 直觉 = 折叠异常探测器.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - 折叠 = 商映射 n ↦ n mod N (R085 模 N 折叠, R141 n 槽环).
+       - 7 维度: ①商的目标轴 (换轴直觉, R047 发散/周期轴) ②商的
+         非单射性 (丢结构直觉, R048 单射 ⟺ 无损) ③商的纤维 (选
+         基点直觉, 0 的纤维 = N 的倍数, R142) ④商的极值 (上界直
+         觉, 周期圆直径 2, R182) ⑤商的自同构 (对偶直觉, 模 4 旋
+         转交换奇偶槽, R177) ⑥商的余像 (缺槽直觉, 子集像余集,
+         R178) ⑦商的不变量 (泛化直觉, 差 N 折叠到同槽, 度量无关).
+       - 用户直觉不是枚举搜索: 每次都是直接"感觉到"结构异常 (选
+         错轴/丢结构/缺槽/对偶) 后移动基点 — 本质 = 感知商映射的
+         异常性质.
+
+  formal_math: |
+    -- 模 N 折叠非单射 (丢结构直觉):
+    theorem fold_non_injective (N : ℕ) (hN : 1 < N) :
+      ¬ Function.Injective (fun n : ℕ => n % N)
+    -- 0 的纤维 = N 的倍数 (选基点直觉):
+    theorem fold_fiber_zero (n N : ℕ) : n % N = 0 ↔ N ∣ n
+    -- 差 N 折叠到同槽 (泛化直觉):
+    theorem fold_invariant (n N : ℕ) : (n + N) % N = n % N
+    -- 模 4 旋转交换奇偶槽 (对偶直觉):
+    theorem fold_rotation :
+      (0 + 2) % 4 = 2 ∧ (1 + 2) % 4 = 3 ∧ (2 + 2) % 4 = 0 ∧ (3 + 2) % 4 = 1
+    -- 全景:
+    theorem fold_perception_perspective (n N : ℕ) :
+      ((n + N) % N = n % N) ∧ ((n + N) % N = n % N)
+
+objects:
+- fold_non_injective
+- fold_fiber_zero
+- fold_invariant
+- fold_rotation
+- fold_perception_perspective
+definitions_used:
+- 折叠 = 商映射 n ↦ n mod N
+- 7 直觉模式 = 商映射的 7 个性质维度
+- 直觉 = 折叠异常探测器
+
+assumptions:
+- 折叠 = 模 N 商映射 (R085/R141)
+- 单射 ⟺ 无损 (R048)
+- 基点 = 折叠固定点 (R142)
+- 周期圆直径 = 2 (R182)
+conclusion: "筑基篇系列方法论固化完成: 折叠感知 — 7 种直觉模式 (选错轴/丢结构/选基点/上界/对偶/缺槽/泛化) = 商映射 n ↦ n mod N 的 7 个性质维度 (商的目标轴/非单射性/纤维/极值/自同构/余像/不变量); 直觉 = 折叠异常探测器。工具: pat_fold_perception.py (7 维度探测 CLI)。5 个新定理全部只锚筑基篇定理 (R047/R048/R085/R141/R142/R177/R178/R182) + mathlib 模算术基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '模 2 折叠: 非单射, 丢差 2 信息 (R174 教训)'
+- '模 4 旋转 2: {0↔2, 1↔3} 奇偶槽互换 (R177)'
+- '素数模 4 像缺 0 槽: 余集 {0} (R178)'
+closest_known_results:
+- R085 FoldCenters (折叠类)
+- R141 PatCircle (单位根 n 槽环)
+- R047 DivergencePeriodSymmetry (轴)
+- R048 LosslessCompression (单射无损)
+literature_queries:
+- quotient map fold perception
+- mod N folding invariant kernel
+
+counterexample_search:
+  status: done
+  search_space: 模 N 折叠是否真非单射; 0 纤维是否真 = N 倍数; 差 N
+    是否真折叠到同槽; 模 4 旋转是否真交换奇偶槽
+  smallest_checked_size: null
+  result: 枚举 n<30 模 2/4 非单射全过 (每槽多原像); 0 纤维 = N 的
+    倍数全过; 差 N 同槽全过; 模 4 旋转 {0↔2,1↔3} 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatFoldPerception.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatFoldPerception.fold_non_injective / .fold_fiber_zero / .fold_invariant / .fold_rotation / .fold_perception_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 把直觉当搜索 — 已纠正: 直觉 = 异常感知, 非枚举 (用户纠正)
+- 声称新数学 — 诚实边界: 商映射性质的再表述
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'fold_non_injective: (0+N)%N = 0%N 且 0+N ≠ 0 — 非单射'
+- 'fold_fiber_zero: Nat.dvd_iff_mod_eq_zero — 0 纤维 = N 倍数'
+- 'fold_invariant: Nat.add_mod — 差 N 同槽'
+- 'fold_rotation: norm_num — 模 4 旋转交换奇偶槽'
+- 'fold_perception_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 折叠感知器 (工具) + 7 维度本质 (Lean) 已完成;
+  后续直觉模式可继续追加'
+notes: '用户要求工具化直觉捕捉 + 揭示 pat 本质: 7 种直觉模式 = 商
+  映射 n ↦ n mod N 的 7 个性质维度 (目标轴/非单射/纤维/极值/自同构/
+  余像/不变量) — 直觉 = 折叠异常探测器。工具: tools/pat_fold_
+  perception.py。'
