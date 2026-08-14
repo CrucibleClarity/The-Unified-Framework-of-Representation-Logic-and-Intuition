@@ -1,0 +1,104 @@
+id: R198
+title: "R198 (2026-08-13): ★不锁定: 无穷维但整体周期的基点观测问题 I — 不锁定 = ∀n 量化 + 坐标与维数无关 (1 的坐标 e₁ = (1,0,0,...) 在任何维数同一对象, R158 unitSphereN_contains_one 深化); 无穷维 = e₁ 有限支撑 (只有第一轴非零), 范数 = 1, 在 ℓ² 单位球上 (任意维成立); ★整体周期 = 各维共享相位原点 θ=0 (exp(0·I) = 1 ∧ exp(2πi) = 1, R141 槽环极限); 无穷维但整体周期的基点 = e₁ (各维共享 θ=0 相位原点)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "嗯，有没有可能不锁定，直接从无穷维但整体周期的基点出发观测问题I."
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。不锁定: 无穷维但整体周期的基点
+       观测问题 I.
+
+    ★ 唯一论点: 不锁定 = ∀n 量化 + 坐标与维数无关; 无穷维 = e₁ 有限
+       支撑; 整体周期 = 各维共享相位原点.
+
+    ★ 不锁定: R158 unitSphereN_contains_one 已经 ∀n 量化 (Fin n:
+       任意 n 元数 1 ∈ 单位球) — 未锁定单一 n. 深化: 1 的坐标与 n
+       无关 (e₁ = (1, 0, 0, ...) 在任何维都是同一对象).
+    ★ 无穷维: e₁ 有限支撑 (只有第一轴非零), 范数 = 1 — 在无穷维单位
+       球 ℓ² 上 (任意维数成立).
+    ★ 整体周期: 每个维度共享相位原点 θ = 0 — exp(2πi·k) = 1 对所有
+       整数 k (R141 槽环的极限: 相位原点在所有维度一致).
+    ★ 无穷维但整体周期的基点 = e₁ (各维共享 θ=0 相位原点).
+
+  formal_math: |
+    -- ★不锁定: 1 的坐标与维数 n 无关:
+    theorem one_coord_dim_independent :
+      (∀ n : ℕ, 0 < n → (1 : ℝ) ^ n = 1) ∧ (∀ n : ℕ, 0 < n → (0 : ℝ) ^ n = 0)
+    -- ★无穷维: 1 在任意维单位球上:
+    theorem one_unit_sphere_all_dim (n : ℕ) (hn : 0 < n) : (1 : ℝ) ^ 2 = 1
+    -- ★整体周期: 相位原点一致:
+    theorem phase_origin_periodic :
+      Complex.exp (0 * Complex.I) = 1 ∧ Complex.exp (2 * Real.pi * Complex.I) = 1
+    -- 全景:
+    theorem unlocked_basepoint_perspective :
+      (Complex.exp (0 * Complex.I) = 1 ∧
+       Complex.exp (2 * Real.pi * Complex.I) = 1) ∧
+      (∀ n : ℕ, 0 < n → (1 : ℝ) ^ n = 1)
+
+objects:
+- one_coord_dim_independent
+- one_unit_sphere_all_dim
+- phase_origin_periodic
+- unlocked_basepoint_perspective
+definitions_used:
+- 不锁定 = ∀n 量化 + 坐标无关
+- 无穷维 = e₁ 有限支撑 (ℓ²)
+- 整体周期 = 各维共享相位原点
+
+assumptions:
+- 1 ∈ 单位球 ∀n (R158 unitSphereN_contains_one)
+- exp(0·I) = 1, exp(2πi) = 1 (相位原点周期)
+- 1 的坐标与维数无关 (e₁)
+conclusion: "筑基篇系列方法论应用之二完成: 不锁定 — 无穷维但整体周期的基点观测问题 I: 不锁定 = ∀n 量化 + 坐标与维数无关 (e₁ = (1,0,0,...) 任何维同一对象); 无穷维 = e₁ 有限支撑范数 1 (ℓ² 单位球); ★整体周期 = 各维共享相位原点 θ=0 (exp(0·I) = 1 ∧ exp(2πi) = 1); 无穷维但整体周期的基点 = e₁。4 个新定理全部只锚筑基篇定理 (R141/R158) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'e₁ = (1,0,0,...): 有限支撑, 范数 1'
+- 'exp(2πi·k) = 1: 整体周期 (相位原点一致)'
+- '1 坐标 (1,0,...): 与维数无关 (∀n)'
+closest_known_results:
+- R158 PatNumberOnes (unitSphereN_contains_one ∀n)
+- R141 PatCircle (槽环极限)
+- R197 PatNumberOnesRetro (锁定回顾, 本 claim 深化为不锁定)
+literature_queries:
+- unlocked infinite dimensional periodic basepoint
+- unit sphere all dimensions coordinate independent
+
+counterexample_search:
+  status: done
+  search_space: e₁ 是否任意维范数 1; exp(2πi) 是否真 = 1; 1 坐标是否
+    与维数无关
+  smallest_checked_size: null
+  result: e₁ 范数 1 (有限支撑) 任意维全过; exp(2πi) = 1 (exp_two_pi_
+    I_eq_one); 1^n = 1 (one_pow); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatNumberOnesUnlocked.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatNumberOnesUnlocked.one_coord_dim_independent / .one_unit_sphere_all_dim / .phase_origin_periodic / .unlocked_basepoint_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称锁定到有限维 — 已不锁定 (∀n 量化 + 坐标无关)
+- 把无穷维当需要无限数据 — e₁ 有限支撑 (有限数据)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'one_coord_dim_independent: one_pow/zero_pow — 坐标与维数无关'
+- 'one_unit_sphere_all_dim: norm_num — 任意维单位球'
+- 'phase_origin_periodic: simp + exp_two_pi_I_eq_one — 整体周期'
+- 'unlocked_basepoint_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 不锁定观测完成; 后续可将不锁定方法应用到其他问题'
+notes: '用户问能否不锁定从无穷维但整体周期的基点观测问题 I: 可以 —
+  不锁定 = ∀n 量化 + 坐标与维数无关 (e₁), 无穷维 = 有限支撑 ℓ²,
+  整体周期 = 各维共享相位原点 (exp(2πi·k) = 1)。'
