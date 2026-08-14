@@ -1,0 +1,539 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Three-Channel Equivalence in the Unified Framework of
+Representation, Logic, and Intuition --- Construction Earns
+Intuition}\label{three-channel-equivalence-in-the-unified-framework-of-representation-logic-and-intuition-construction-earns-intuition}
+
+\section{统一框架 · 三通道等价 ·
+构造获得直觉}\label{ux7edfux4e00ux6846ux67b6-ux4e09ux901aux9053ux7b49ux4ef7-ux6784ux9020ux83b7ux5f97ux76f4ux89c9}
+
+\begin{quote}
+\textbf{Draft v0.1 (English)} \textbar{} 2026-08-11 Target: TMLR / COLM
+/ Cognition (theory + empirical) \textbf{Framework position}: Part of
+the \emph{Unified Framework of Representation, Logic, and Intuition}
+(manifesto:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md}). This
+paper establishes the \textbf{construction→intuition} cognition:
+construction, intuition, and formal rewriting are three equivalent
+execution channels of one system; intuition is compiled construction.
+Companion: P1 (form→construction, representation + generalization
+theory), P2 (construction→intuition method, compilation). Evidence:
+exp50 (three-channel consistency), exp41 (symbol permutation), exp80
+(step-skipping), exp53 (convergence). Single official run\_exp judge.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Repository:
+\href{https://github.com/YuchenWang-ai/Three-Channel-Equivalence-Construction-Intuition-and-Formal-Rewriting-in-One-Neural-System}{YuchenWang-ai/Three-Channel-Equivalence-Construction-Intuition-and-Formal-Rewriting-in-One-Neural-System}}
+
+\subsection{Abstract}\label{abstract}
+
+The century-old split in the foundations of mathematics --- intuitionism
+(a mathematical object exists iff it can be constructed), structuralism
+(an object is its position in a structure), and formalism (mathematics
+is a sign game) --- is mirrored in a single neural system as three
+execution channels for the same mathematical object. We show that, in a
+token-native representation, the \emph{construction} channel
+(definition-driven unfolding), the \emph{intuition} channel (compiled
+weight execution), and the \emph{formal} channel (definition-driven
+rewriting) are pairwise semantically equivalent: on a 2000-digit carry
+chain all three produce identical results (1.000). We argue this is the
+neural implementation of Computational Trinitarianism (Curry--Howard:
+programs = proofs = types), with the crucial difference that the
+equivalence holds between \emph{execution channels of one system} rather
+than between logics. We develop the epistemology: intuition is the
+reasoning fast path --- hard to obtain (config-dependent epochs), but
+easy to generalize by skipping construction steps; symbol permutation
+invariance (0.987) and zero-decay step-skipping (2000 digits, radix 60,
+100\% anonymization) establish that the intuition channel carries
+structure, not symbol semantics. Stance: anti-Platonist --- intuition is
+compiled construction, not innate. Within the Unified Framework, this
+paper is the \textbf{construction→intuition} cognition leg: correct
+construction yields intuition (compiled construction), and correct
+generalization compiles into flashing intuition (the fast reasoning
+path).
+
+\subsection{1 Introduction}\label{introduction}
+
+\textbf{The split.} In the foundations of mathematics, three answers
+compete for the question ``what is a mathematical object?'' Brouwer's
+intuitionism: an object exists iff it can be \emph{constructed}.
+Bourbaki's structuralism: an object is its \emph{position in a
+structure}. Hilbert's formalism: mathematics is a \emph{sign game}; an
+object is its role in a rewriting system. The dispute is usually
+presented as philosophical; in this paper we observe that it is also
+\emph{architectural} --- the three positions correspond to three ways a
+computing system can realize the same object.
+
+\textbf{The unification.} A single neural system over a token-native
+representation (P1) exhibits all three channels: - \emph{Construction}
+(intuitionism): unfold the definition chain, step by step --- existence
+by construction; - \emph{Intuition} (structuralism): compiled weights
+position the object directly --- existence by location in the learned
+structure; - \emph{Formal} (formalism): the definition-driven rewriting
+engine --- existence by the sign-manipulation rules.
+
+We show experimentally that the three channels are pairwise semantically
+equivalent on the same inputs (exp50: construction = formal exactly;
+intuition 1.000 on a 2000-digit carry chain). This is the neural
+implementation of Computational Trinitarianism --- Curry--Howard's
+programs = proofs = types --- but with a decisive difference: the
+equivalence is \emph{within one system's execution channels}, not
+between distinct logical systems.
+
+\textbf{Why this matters.} If construction, intuition, and formal
+rewriting agree on the same object, then the philosophical positions are
+not alternatives to be argued about but \emph{facets of a single
+realization}. The disagreement over ``what an object is'' becomes a
+disagreement over \emph{which channel to look through} --- and all
+channels answer the same way. The engineering content is the compilation
+relation: construction can be compiled into intuition (P2), and both
+agree with rewriting.
+
+\textbf{Contributions.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{C1 (Epistemology) --- Intuition is compiled construction.} The
+  intuition channel is not a third mysterious faculty; it is the
+  construction process compiled into weights. Anti-Platonist: no innate
+  structure, no a priori object.
+\item
+  \textbf{C2 (Empirics) --- Three-channel equivalence.} Construction =
+  formal exactly, and intuition 1.000 on the same inputs, including a
+  2000-digit carry chain (exp50).
+\item
+  \textbf{C3 (Empirics) --- Intuition carries structure, not symbols.}
+  Symbol permutation invariance (0.987, exp41) and zero-decay
+  step-skipping (exp80) show the intuition channel realizes the
+  structure of the objects, not their signifiers.
+\item
+  \textbf{C4 (Epistemology) --- Acquisition and step-skipping are
+  decoupled.} Intuition is hard to obtain (config-dependent epochs; 3
+  simple / 8 full, exp53) but easy to generalize by skipping
+  construction steps --- the two facts are not in tension.
+\end{itemize}
+
+\subsection{2 Three Positions, Three
+Channels}\label{three-positions-three-channels}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Position
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Object is
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Access
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Our channel
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Execution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intuitionism (Brouwer) & a construction & construct it & Construction &
+unfold definition chain, step by step \\
+Structuralism (Bourbaki) & a position & locate it & Intuition & compiled
+weights place it directly \\
+Formalism (Hilbert) & a sign game & play it & Formal & definition-driven
+rewriting \\
+\end{longtable}
+
+The three channels share a single definition source: the token-native
+representation (P1 §4). Construction and formal read the same
+definitions; intuition is a compiled image of the same definitions.
+Equivalence is therefore not a coincidence of three independent systems
+but a property of one system viewed through three channels.
+
+\textbf{Computational Trinitarianism.} Curry--Howard identifies
+programs, proofs, and types as the same thing under three presentations.
+Our claim is analogous: construction, intuition, and formal rewriting
+are the same computation under three presentations --- \emph{within one
+system}. The difference from Curry--Howard is the locus of equivalence:
+not ``program = proof = type'' as distinct entities, but ``one object's
+three execution paths agree.''
+
+\subsection{3 Intuition as Compiled
+Construction}\label{intuition-as-compiled-construction}
+
+\textbf{The claim.} The intuition channel is the construction process
+compiled into weights. Training (P1 §5) supervises the model with
+judgment outcomes while \emph{excluding answer traces}: the model cannot
+copy the unfolding; it must induce the computation from definitions and
+compile it. The compiled product is intuition --- the reasoning fast
+path.
+
+\textbf{Hard to obtain.} Compilation is not free. Acquisition is
+config-dependent: 3 epochs for the simple suite, 8 for the full
+logic-and-arithmetic suite (exp53). Until compilation completes, the
+intuition channel does not generalize (exp53: epochs 1--3 at 0.1--24\%).
+This is the \emph{obtain} side of the decoupling.
+
+\textbf{Easy to generalize.} Once compiled, the intuition channel
+generalizes by \emph{skipping construction steps}: it jumps from input
+to output over the intermediate unfolding. Zero decay out to 2000
+digits, radix 60, and 100\% digit anonymization (exp80). This is the
+\emph{generalize} side.
+
+\textbf{Decoupling (C4).} The two facts --- hard to obtain, easy to skip
+--- are not in tension. Obtaining requires compiling the structure
+(training); generalizing uses the compiled structure (inference). The
+theory of P1 explains both: definition completeness + relational
+sufficiency determine whether compilation succeeds; step-skipping is
+what compiled structure does on new inputs.
+
+\subsection{4 Experiments}\label{experiments}
+
+All via the official run\_exp judge path (full-sequence reconstruction).
+Model: exp02\_supervised\_s2 (2-layer, dim-64, \textless1 MB, judgment
+1.000 on the full suite).
+
+\subsubsection{4.1 Three-channel equivalence
+(C2)}\label{three-channel-equivalence-c2}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Input & Construction & Formal & Intuition \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+12+34 & ✓ & ✓ & ✓ \\
+123456789+987654321 & ✓ & ✓ & ✓ \\
+999\ldots9 (20 digits)+1 & ✓ & ✓ & ✓ \\
+\textbf{999\ldots9 (2000 digits)+1} & ✓ & ✓ & \textbf{1.000} \\
+\end{longtable}
+
+Construction = formal exactly on full output sequences (2/9/20/2000
+digits). Intuition scores 1.000 on the same inputs. The three channels
+realize the same computation.
+
+\subsubsection{4.2 Intuition carries structure, not symbols
+(C3)}\label{intuition-carries-structure-not-symbols-c3}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Symbol permutation (exp41)}: 26080 digit renamings during
+  training, tested on original symbols --- invariance 0.996→0.987. The
+  intuition channel realizes structural relations
+  (successor/iteration/carry), not digit signifiers.
+\item
+  \textbf{Step-skipping zero decay (exp80)}: 2000 digits / radix 60 /
+  100\% anonymization / joint, all 1.000. The compiled structure
+  extrapolates without decay.
+\item
+  \textbf{Machine form (exp90)}: 20-digit addition compiles 82
+  construction tokens into 5 intuition tokens --- the skip is visible in
+  the token stream. Honest caveat: the atomic token is outside the model
+  vocab (pad id 0); measurement is the sequence-length effect, a lower
+  bound.
+\end{itemize}
+
+\subsubsection{4.3 Acquisition--generalization decoupling
+(C4)}\label{acquisitiongeneralization-decoupling-c4}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+Epochs & 1 & 2 & 3 & 5 & 8 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Judgment acc (full suite) & 0.001 & 0.214 & 0.244 & 0.781 & 0.996 \\
+\end{longtable}
+
+Acquisition is monotone but config-dependent (8 epochs for the full
+suite). The same converged model then extrapolates with zero decay
+(§4.2). The ``hard to obtain'' and ``easy to skip'' facts coexist; they
+describe obtain (training) and generalize (inference), respectively.
+
+\subsection{5 Discussion}\label{discussion}
+
+\textbf{What the equivalence does not say.} We do not claim the three
+philosophical positions are identical in their epistemology; we claim
+they are equivalent as \emph{execution channels of one system}. The
+historical disagreement concerned the nature of mathematical truth; our
+claim concerns the architecture of a computing system that realizes
+mathematical objects. The philosophical positions are models of what a
+mathematical object is; we show one system can realize all three models
+of the same object consistently.
+
+\textbf{Anti-Platonism.} Intuition is compiled construction, not an a
+priori faculty. If mathematical structure were innate (Platonism /
+nativism), then definitionally-impoverished concepts would still
+generalize; they do not (P1 §8: an impoverished vocabulary requires an
+order of magnitude more training; genuinely under-defined tokens never
+generalize). The intuition channel's competence is earned by
+compilation, not endowed.
+
+\textbf{Positional vs constructive content.} Structuralism says an
+object is its position; the intuition channel locates the object in the
+learned structure. Intuitionism says an object is its construction; the
+construction channel unfolds it. The equivalence of the channels shows
+the two descriptions coincide --- for objects whose definitions are
+complete. This is the machine-level form of the old
+structuralist--intuitionist rapprochement.
+
+\subsection{6 Related Work}\label{related-work}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Computational Trinitarianism} (Curry--Howard): programs =
+  proofs = types. We extend the three-way identification to execution
+  channels of one neural system.
+\item
+  \textbf{Constructive mathematics / type theory} (Martin-Löf 1984;
+  Bishop): existence = constructibility. Our construction channel is its
+  machine form.
+\item
+  \textbf{Structuralism / Bourbaki; Gärdenfors conceptual spaces}:
+  object = position in a structure/geometry. Our intuition channel is
+  its neural realization.
+\item
+  \textbf{Formalism / Hilbert; rewriting systems}: object = sign
+  manipulation. Our formal channel is the definition-driven engine.
+\item
+  \textbf{Dual-process cognition} (Kahneman): System 1/2. Our
+  intuition/reasoning separation is the System 1/2 split with a
+  compilation account of how System 1 is built.
+\item
+  \textbf{Dual-systems in math cognition} (e.g.~number sense /
+  deliberate arithmetic): our three channels refine the two-system
+  picture with a verifiable equivalence.
+\end{itemize}
+
+\subsection{6.5 Mathematical-domain validation: the Riemann-direction
+case}\label{mathematical-domain-validation-the-riemann-direction-case}
+
+The three-channel account is not confined to arithmetic. In a companion
+formalization (Lean 4 / mathlib, claims C011--C025, all PROVED, novelty
+KNOWN, no sorry), the intuition chain ``the complex axis is a
+high-dimensional projection of −1; primes land on translated integer
+points; 1/2 is the inversion--translation symmetry center; the complex
+axis is curled'' was carried through all three channels:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Construction} (definition-driven): the ComplexAxis algebra (a
+  + bJ, J² = −1), projection proj⟨a,b⟩ = a, lifting, basepoint drift;
+\item
+  \textbf{Formal} (rewriting): Lean 4 proofs of projection
+  non-preservation, prime-circle structure (8 lattice points as a single
+  orbit under rotation × conjugation, via Gaussian-integer UFD),
+  Euler-product convergence (Re(s) \textgreater{} 1), and the
+  critical-line geometry;
+\item
+  \textbf{Intuition} (compiled structure): the same objects are reached
+  directly by the intuition chain, skipping textbook derivation.
+\end{itemize}
+
+\textbf{Projection recovery theorem} (\texttt{proj\_not\_recoverable} /
+\texttt{proj\_recoverable\_symmetry}, Lean-proved): \emph{lost structure
+is not recoverable; symmetry directions are recoverable.} Under
+projection, the imaginary-axis direction (i vs −i) is lost and cannot be
+recovered, while the real-axis sign symmetry (r vs −r) is preserved.
+This is the mathematical counterpart of EXP-61h (§4): the intuition
+channel is position-insensitive (it drops positional detail like
+projection drops the J direction) yet preserves semantic symmetry ---
+matching ``scrambled letters do not impede understanding; deliberate
+logic on the scramble loses meaning'' (G5b, P1). Projection is the
+mechanism of the fast path: dropping irrelevant structure irrecoverably
+is what makes the direct route cheap.
+
+\textbf{Token economy of intuition-guided formalization} (methodological
+data): the full C011--C025 formalization consumed ≈700k tokens, of which
+99.2\% were context-cache re-transmission; net new content \textless{}
+1\%. The intuition chain hit known structures directly (heap/torsor,
+sums of two squares, circle inversion, functional-equation symmetry),
+avoiding textbook derivation --- an efficiency datum for G5 at the token
+level, independent of the arithmetic experiments in §4.
+
+\subsection{7 Limitations}\label{limitations}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The equivalence is demonstrated on the supported calculus (formalized
+  definitions), not on all of mathematics.
+\item
+  The intuition channel is statistical, not guaranteed; equivalence is
+  verified (held-out) and falls back to construction, not proven.
+\item
+  The atomization result (exp90) is a sequence-length lower bound, not a
+  claim of learned atomic semantics.
+\end{enumerate}
+
+\subsection{8 Conclusion}\label{conclusion}
+
+The three positions of the foundations dispute --- construction,
+structure, sign --- are realized as three equivalent execution channels
+of one neural system. Construction = formal exactly; intuition agrees at
+1.000; the intuition channel carries structure, not symbols; and it is
+hard to obtain but easy to generalize by skipping steps. Intuition is
+compiled construction. A century-old split in the foundations of
+mathematics is, at least for a formalized calculus, an architectural
+fact about how many ways one system can realize the same object --- and
+all of them agree.
+
+\subsection{Appendix}\label{appendix}
+
+\begin{itemize}
+\tightlist
+\item
+  A. Full experiment tables: docs/paper\_data/results.csv.
+\item
+  B. Relation to P1 propositions (G0, G5, R) and P2 compilation.
+\item
+  C. Formal-verification direction (Lean): construction ≡ intuition ≡
+  formal, for the supported calculus.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Unified Conclusion (added
+2026-08-11)}\label{unified-conclusion-added-2026-08-11}
+
+Once, under a unified formal attention-syntactic structure, a neural
+network ultimately, inevitably, and necessarily clearly, intuitively,
+and interpretably observes the boundary between intuition and
+construction, we can with full confidence use the unified
+attention-formal language to direct logical construction, use precise
+synthetic-CoT logical construction to earn \emph{flashing intuition},
+and use distilled intuitive context to exhaustively search attention
+forms. Form, construction, and intuition co-adapt within the unified
+framework, forming a feedback iteration pipeline of teaching, training,
+and reasoning in which they are no longer distinct --- perhaps one of
+the faster shortcuts among the many paths toward ASI.
+
+\subsection{Cross-References within the Unified
+Framework}\label{cross-references-within-the-unified-framework}
+
+This paper is one leg of the \emph{Unified Framework of Representation,
+Logic, and Intuition} (manifesto:
+\texttt{Unified\_Framework\_Representation\_Logic\_Intuition.md}). The
+three legs co-adapt:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Leg
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Paper
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Claim
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+form → construction & P1 (this paper) & correct syntax → extreme
+training speed; correct construction → extreme generalization \\
+construction → intuition & P0 (three-channel equivalence) & construction
+= formal = intuition; intuition is compiled construction \\
+construction → intuition (method) & P2 (neural macro compilation) &
+compile the slow construction path into the fast reasoning path \\
+\end{longtable}
+
+Cyclic closure: form directs construction (P1), construction earns
+intuition (P0/P2), intuition searches form (the fast path extrapolates
+and re-expresses in the unified form). The unified conclusion --- form
+directs logical construction, construction earns flashing intuition,
+intuition exhaustively searches forms --- is stated in the manifesto and
+in each paper's Unified Conclusion.
+
+\end{document}
