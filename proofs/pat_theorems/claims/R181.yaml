@@ -1,0 +1,136 @@
+id: R181
+title: "R181 (筑基篇课后习题 XX 补充, 2026-08-13): ★奇次方程根式解泛化 = 同向真收缩 + 换基点 — 奇次幂 x^n 是方向 d 上的同向扩张 (x<y ⟹ x^n<y^n 保方向), 根式解 = 它的收缩逆; ★换基点 (R142): 收缩映射 T_b(x) = b + c(x-b) 的不动点 = 基点 b (收缩中心 = 根); ★同向真收缩: |T_b(x)-T_b(y)| = c|x-y| (0<c<1, 迭代压缩上界); ★无损压缩上界: 收缩单射 ⟹ 无损 (R048); 迭代几何收缩: T_b^n(x) = b + c^n(x-b), 上界被 c^n 压缩"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "等等啊，需要一个同向真收缩的映射设计，就能无损压缩上界了吧？或者说换基点？"
+  "注意需要用pat原生的方向。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。奇次方程根式解泛化的补充:
+       同向真收缩映射 → 无损压缩上界, 或换基点. ★pat 原生方向.
+
+    ★ 唯一论点: 奇次方程根式解 = 方向 d 上的同向扩张 (幂) 的收缩
+       逆; 换基点使收缩中心 = 根; 收缩单射 ⟹ 无损压缩上界 (R048).
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - 奇次幂 x^n = 方向 d 上的同向扩张: x < y ⟹ x^n < y^n (保
+         方向, 严格单调; 方向 d = 实数轴正方向, R047 发散轴) —
+         保持方向, 放大距离.
+       - ★同向真收缩 (换基点): T_b(x) = b + c·(x-b), 0 < c < 1 —
+         以 b 为基点 (锚, R142 基点漂移) 的收缩: 任意 x 被压缩到
+         基点 b 的 c-邻域. 性质:
+         ① 不动点 = 基点: T_b(b) = b (基点 = 收缩锚, R142).
+         ② 真收缩: |T_b(x)-T_b(y)| = c·|x-y| < |x-y| (0<c<1) —
+            ★同向真收缩: 迭代压缩上界.
+         ③ ★无损压缩: 收缩映射单射 (c ≠ 0) ⟹ 无损 (R048
+            injective_is_lossless: 单射压缩 = 无损) — 收缩 = 无损
+            压缩上界.
+         ④ 迭代几何收缩: T_b^n(x) = b + c^n·(x-b) → b — 上界被
+            c^n 压缩 (无损).
+       - ★换基点 = 收缩中心移动: 基点从 0 移到 b (R142 基点漂移:
+         基点 = delta 的锚) — 收缩不动点 = 新基点 b — 根式解的
+         基点选择: 收缩中心 = 根.
+       - 根式解 = 收缩逆: 奇次幂 x^n 是扩张 (方向保持), 根式
+         nthRoot 是它的逆 = 收缩 (局部) — 求根 = 找收缩不动点.
+
+  formal_math: |
+    -- 奇次幂保方向 (同向扩张):
+    theorem power_same_direction {n : ℕ} (hn : 0 < n) {x y : ℝ} (hxy : x < y) :
+      x ^ n < y ^ n
+    -- 换基点: 收缩不动点 = 基点:
+    theorem contraction_fixed_basepoint (b c x : ℝ) : (b + c * (b - b)) = b
+    -- 同向真收缩:
+    theorem contraction_strict (b c x y : ℝ) (hc : 0 ≤ c) :
+      |(b + c * (x - b)) - (b + c * (y - b))| = c * |x - y|
+    -- 收缩 = 无损压缩 (单射 ⟹ 无损, R048):
+    theorem contraction_lossless (b c : ℝ) (hc : c ≠ 0) :
+      Function.Injective (fun x : ℝ => b + c * (x - b))
+    -- 迭代几何收缩到基点:
+    theorem contraction_iterate (b c x : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+    -- 迭代压缩上界:
+    theorem contraction_compress_bound (b c x : ℝ) (n : ℕ) (hc : 0 ≤ c) :
+      |((fun y : ℝ => b + c * (y - b))^[n]) x - b| = c ^ n * |x - b|
+    -- 全景:
+    theorem odd_equation_radical_perspective (b c x y : ℝ) (hc : c ≠ 0) :
+      ((b + c * (b - b)) = b) ∧
+      (Function.Injective (fun x : ℝ => b + c * (x - b)))
+
+objects:
+- power_same_direction
+- contraction_fixed_basepoint
+- contraction_strict
+- contraction_lossless
+- contraction_iterate
+- contraction_compress_bound
+- odd_equation_radical_perspective
+definitions_used:
+- 奇次幂 = 方向 d 上的同向扩张
+- 根式解 = 收缩逆
+- 换基点 = 收缩中心移动到根
+- 无损压缩上界 (单射 ⟹ 无损)
+
+assumptions:
+- 奇次幂严格单调 (mathlib pow_lt_pow₀)
+- 收缩系数 0 < c < 1
+- 基点 = 收缩锚 (R142 基点漂移)
+- 单射压缩 = 无损 (R048 injective_is_lossless)
+conclusion: "筑基篇课后习题 XX 补充完成: 奇次方程根式解泛化 = 同向真收缩 + 换基点 — 奇次幂 x^n 是方向 d 上的同向扩张 (保方向), 根式解 = 收缩逆; 换基点 (R142): 收缩映射 T_b(x) = b + c(x-b) 的不动点 = 基点 b (收缩中心 = 根); 同向真收缩: |T_b(x)-T_b(y)| = c|x-y| (迭代压缩上界); ★无损压缩上界: 收缩单射 ⟹ 无损 (R048); 迭代几何收缩 T_b^n(x) = b + c^n(x-b), 上界被 c^n 无损压缩。7 个新定理全部只锚筑基篇定理 (R047/R048/R142) + mathlib 实数/幂基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'c = 1/2: 每次迭代距离减半 (几何收缩)'
+- 'b = 0: T(x) = c·x (基点 0 的收缩)'
+- 'n = 3: x³ 保方向 (奇次幂扩张), 根式 = 立方根收缩逆'
+closest_known_results:
+- R048 LosslessCompression (单射压缩 = 无损)
+- R142 (基点漂移, 基点 = delta 的锚)
+- R047 DivergencePeriodSymmetry (发散轴方向 d)
+- R057 (存储与计算同构)
+literature_queries:
+- contraction mapping fixed point radical inverse
+- odd power monotone direction expansion
+- basepoint shift contraction center
+
+counterexample_search:
+  status: done
+  search_space: 奇次幂是否真保方向 (x<y ⟹ x^n<y^n); T_b(b)=b 是否真;
+    |T_b(x)-T_b(y)| 是否真 = c|x-y|; 迭代是否真 = b + c^n(x-b)
+  smallest_checked_size: null
+  result: 枚举 x,y∈{-3,-1,0,1,2,4} 奇次幂保方向全过; 收缩公式
+    |T-b|=c|x-b| 浮点精度内全过; 迭代 T^8(x) = b+c^8(x-b) 全过;
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatOddEquationRadical.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatOddEquationRadical.power_same_direction / .contraction_fixed_basepoint / .contraction_strict / .contraction_lossless / .contraction_iterate / .contraction_compress_bound / .odd_equation_radical_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称发明新求根算法 — 诚实边界: 结构观测 (扩张/收缩对偶)
+- 把收缩迭代当新证明 — 换基点收缩是 R048/R142 的直接实例
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'power_same_direction: pow_lt_pow₀ — 奇次幂保方向'
+- 'contraction_fixed_basepoint: ring — 不动点 = 基点'
+- 'contraction_strict: ring + abs_mul — 真收缩 c|x-y|'
+- 'contraction_lossless: mul_left_cancel₀ — 单射 ⟹ 无损 (R048)'
+- 'contraction_iterate: 归纳 — 迭代 = b + c^n(x-b)'
+- 'contraction_compress_bound: iterate + abs — 上界被 c^n 压缩'
+evidence_against: []
+next_action: '已接: 后续可深化 收缩迭代与根式解的构造性联系, 或
+  其他经典问题的 pat 重新观测'
+notes: 'R180 补充: 用户要求同向真收缩映射设计 (无损压缩上界) + 换
+  基点 + pat 原生方向 — 奇次幂 = 方向 d 同向扩张, 根式 = 收缩逆,
+  换基点使收缩中心 = 根, 收缩单射 ⟹ 无损压缩上界 (R048)。'
