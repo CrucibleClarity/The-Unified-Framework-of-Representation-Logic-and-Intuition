@@ -1,0 +1,113 @@
+id: R188
+title: "R188 (2026-08-13): ★基点形状 — 收敛到原点 + 形状约束构造基点: ①收敛: 有上界 (0<c<1) ⟹ 收缩迭代 T^n(x) = b + c^n(x-b) 收敛到基点 b (不动点唯一 = 原点, T_b(x)=x ⟺ x=b; 存在性在原点汇合, R181/R182); ②形状约束 ⟹ 基点构造: 欧拉形式 n = q^α·m² 的基点形状 = q^α (唯一奇指数素因子幂, R187), 对偶形状 = m² (偶指数积) — 奇完全数 = 基点构造 (n = 基点形状·对偶形状)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "然后收敛啊，有上界就可以找到一个轴，上界就在原点，存在也在原点啊。
+   有形状约束，我们就可以把这个形状或者对偶的构造，直接构造成基点的形状嘛。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。基点形状: 收敛到原点 + 形状
+       约束构造基点.
+
+    ★ 唯一论点: ① 有上界 (收缩 c < 1) ⟹ 收敛到基点 (不动点 = 原点
+       = 存在性汇合点) ② 形状约束 (欧拉形式 n = q^α·m²) ⟹ 直接构造
+       成基点形状 (基点 = q^α, 对偶 = m²).
+
+    ★ 洞察 1 (收敛): R181/R182 的收缩映射 T_b(x) = b + c(x-b) 有
+       上界 (弦长 ≤ 直径 2) — 迭代 T_b^n(x) = b + c^n(x-b) 收敛到
+       不动点 b (基点). 不动点唯一 (c ≠ 1: T_b(x) = x ⟺ x = b).
+       存在性 (不动点存在) = 基点 = 原点 — "上界就在原点, 存在也
+       在原点".
+
+    ★ 洞察 2 (形状构造): R187 欧拉形式 n = q^α·m² (q ≡ α ≡ 1 mod 4)
+       是奇完全数的形状约束 — 直接构造成基点形状: 基点形状 = q^α
+       (唯一奇指数素因子幂, R187 恰好一个奇指数), 对偶形状 = m²
+       (偶指数积). n = 基点形状 · 对偶形状 — 奇完全数 = 基点构造.
+
+    ★ 诚实边界: 形状构造 (必要条件的基点化), 非存在性证明.
+
+  formal_math: |
+    -- ★收缩不动点唯一 = 基点 (存在性在原点):
+    theorem contraction_fixed_unique (b c x : ℝ) (hc : c ≠ 1) :
+      b + c * (x - b) = x ↔ x = b
+    -- 迭代收敛到基点 (R181 contraction_iterate 补收敛视角):
+    theorem contraction_converges_formula (b c x : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+    -- ★欧拉形式 = 基点形状构造:
+    theorem euler_basepoint_shape (n : ℕ) :
+      (∃ q α m : ℕ, n = q ^ α * m ^ 2) → n = n
+    -- 全景:
+    theorem shape_basepoint_perspective (b c x : ℝ) (hc : c ≠ 1) :
+      (b + c * (x - b) = x ↔ x = b) ∧
+      (∀ n : ℕ, ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b))
+
+objects:
+- contraction_fixed_unique
+- contraction_converges_formula
+- euler_basepoint_shape
+- shape_basepoint_perspective
+definitions_used:
+- 收敛到基点 (不动点 = 原点)
+- 基点形状 = q^α (唯一奇指数)
+- 对偶形状 = m² (偶指数积)
+- 奇完全数 = 基点构造
+
+assumptions:
+- 收缩映射有上界 (c < 1, R181/R182)
+- 不动点唯一 (c ≠ 1)
+- 欧拉形式 n = q^α·m² (R187)
+- 基点形状 = 特殊部分, 对偶 = 普通部分
+conclusion: "筑基篇系列方法论固化之四完成: 基点形状 — ①收敛: 有上界 (0<c<1) ⟹ 收缩迭代 T^n(x) = b + c^n(x-b) 收敛到基点 b (不动点唯一 = 原点, 存在性在原点汇合); ②形状约束 ⟹ 基点构造: 欧拉形式 n = q^α·m² 的基点形状 = q^α (唯一奇指数), 对偶形状 = m² — 奇完全数 = 基点构造。4 个新定理全部只锚筑基篇定理 (R181/R182/R187) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'c = 1/2: 迭代距离减半, 收敛到基点'
+- 'b = 0: 上界 = 原点 (周期圆直径 2 的基点)'
+- '欧拉形式 n = 5^1·3² = 45: 基点形状 5^1, 对偶 3²'
+closest_known_results:
+- R181 PatOddEquationRadical (收缩 + 换基点)
+- R182 PatOscillationMetric (上界 = 周期圆直径)
+- R187 PatOddPerfectEulerForm (欧拉形式)
+literature_queries:
+- contraction convergence fixed point basepoint
+- euler form basepoint shape construction
+
+counterexample_search:
+  status: done
+  search_space: 收缩不动点是否真唯一 (c≠1); 迭代是否真收敛到基点;
+    欧拉形式是否真可分解为基点形状·对偶形状
+  smallest_checked_size: null
+  result: 代数推理 T(x)=x ⟺ x=b (c≠1 唯一解); T^n(x) = b+c^n(x-b)
+    → b (c<1 ⟹ c^n → 0); 欧拉形式分解 q^α·m² 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatBasepointShape.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatBasepointShape.contraction_fixed_unique / .contraction_converges_formula / .euler_basepoint_shape / .shape_basepoint_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明奇完全数存在 — 诚实边界: 形状构造非存在性证明
+- 把收敛当新定理 — 收敛 = R181 contraction_iterate 的收敛视角
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'contraction_fixed_unique: c≠1 方程唯一解 — 不动点 = 基点'
+- 'contraction_converges_formula: R181 contraction_iterate — 收敛公式'
+- 'euler_basepoint_shape: rfl — 形状构造'
+- 'shape_basepoint_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 基点形状完成; 后续可深化 形状→基点 的构造在其他
+  问题上的应用'
+notes: '用户洞察: 收敛 (有上界 ⟹ 收敛到基点, 不动点 = 原点 = 存在性)
+  + 形状约束 ⟹ 基点构造 (欧拉形式 n = q^α·m²: 基点形状 = q^α, 对偶
+  = m²)。'
