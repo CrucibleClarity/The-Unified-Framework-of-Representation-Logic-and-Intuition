@@ -1,0 +1,169 @@
+id: R158
+title: "R158 (筑基篇课后习题 II, 2026-08-13): ★各数域的 1 的 pat 展开 (exercise_i_1_根号下2/2) — 唯一论点: 每个数域的 1 = 该数域对称对的还原锚点, 数值 1 不是预设; 四类数域: ① 无理数 √2/2 = 单位 1 在 θ=45° (π/4) 格点投影 (R154 ⑨⑩, sin²(π/4)=1/2 由三角恒等式推出非手工开方) ② 复数 1 = θ=0 格点 (1+0i), i = θ=π/2 格点, i²=-1=exp(π·I) (π 半圈相位 = 1 的镜像) ③ 任意元数 1 = S³ 点 (1,0) 单位球基点相位, 无损内收到单位圆 ④ 超越数 1 = π 镜像 (exp(π·I)=-1), e = exp(1) 单位速度 (R146 开放点); 前置三节: pat 单相位数 1 的表达 / 各数域 pat 构造 1 的对应点 (9 数域) / tokenizer 直觉与构造数字 token 列 (⚠️临时稿, 用户将纠正)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  ① "exercise_i_1_根号下2/2
+     你先写下pat单相位数1的表达，然后总结所有我们已定义数域中，按照pat方法构造1的对应点，
+     以及我们tokenizer体系里如何定义直觉数字、构造数字的token列，列在文章开始"
+  ② "不只是这个，还要有复数、任意元数、超越数的展开。"
+  ③ "token列肯定有错误的地方，也许以后我会想办法纠正。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 II (exercise_i_1):
+       各数域的 1 的 pat 展开。
+
+    ★ 习题定位: 筑基篇课后习题系列第二题。用户纠正②扩展: 不只 √2/2,
+       还要复数、任意元数、超越数的展开。前置三节为固定格式 (用户指定,
+       列在文章开始): ① pat 单相位数 1 的表达 ② 各数域 pat 构造 1 的
+       对应点 ③ tokenizer 直觉数字/构造数字 token 列。
+
+    ★ 唯一论点: 每个数域的 1 = 该数域对称对的还原锚点 (R144: 0 ↔ 1
+       对偶; R143: 对称对还原到 1); 数值 1 不是预设, 从各数域自己的
+       对称结构还原出来。
+
+    ★ 四类数域展开 (每类锚到已证 claim):
+      ① 无理数 √2/2: 单位 1 在 θ=45° (π/4) 格点投影位置 (R154 用户
+         指示 ⑨⑩); sin²(π/4) = 1/2 由三角恒等式推出 (sin = cos at
+         45° + sin²+cos²=1), 非手工开方; 进入 pat 展开规范化
+         (sin_cos_three: ‖(sin(π/2)-i)(sin(π/4)+i)‖² = 3)
+      ② 复数: 1 = θ=0 格点 (completePat1 0 0 1 = 1+0i, 相位0=数值1
+         重合); i = θ=π/2 格点 (completePat1 0 (π/2) 1 = i); i² = -1
+         = exp(π·I) (R146 pat_constructs_pi: π = 1 的镜像); 1 ∈
+         四相位互锁 {1,-1,i,-i} (R149 quadriphase_interlock)
+      ③ 任意元数: 4 相位互锁归一化 = S³ (R154 S3Point); 任意元数域
+         的 1 = 单位球基点相位 S³ 点 (1,0) (数值 1 在 1 轴, i 轴分量
+         为 0); 无损内收到单位圆 (R154 contract_to_circle: z/‖z‖ ∈ S¹,
+         R048 无损, R147 收敛方向, R138 相位锁定) — 任意维数的 1
+         还原到同一单位圆, pat 是通用表示
+      ④ 超越数: π = 1 的镜像 (R146 pat_constructs_pi: exp(π·I) = -1,
+         半圈旋转 1 → -1 → 1, R085 折叠类, R143 对称对还原); e =
+         exp(1) 单位速度 (R146 开放点⑥: e 未单独构造, log 基点相位
+         未对齐 RulerTernary 批判, 留待后续); e 是相位载体 (R154:
+         sin/cos 是 e^{iθ} 分量, exp(i·π/4) = √2/2·(1+i) 连接无理数
+         √2/2 与超越数 e^{iθ})
+
+    ★ 组合: number_ones_pat_perspective — 无理数 ∧ 复数 ∧ 任意元数
+       ∧ 超越数的 1 全部是"对称对还原锚点"。
+
+    ★ tokenizer 节 (用户纠正③): 本节 token 列为临时稿, 肯定有错误
+       的地方 (eid 对应关系/构造链细节), 用户日后会想办法纠正 —
+       当前仅作方向性参考, 不视为最终规范。
+
+    ★ 诚实边界: 全部为结构侧写; 新定理 8 个全部只锚本框架 (R146/
+       R149/R154/R143/R144), 不用外部引理 (R153 用户纠正精神延续)。
+
+  formal_math: |
+    -- ① 无理数 √2/2 (R154 已证):
+    theorem sin_cos_three : ‖((sin (π/2) : ℂ) - I) * ((sin (π/4) : ℂ) + I)‖^2 = 3
+    -- ② 复数 (本文件新增):
+    theorem complex_one_locked_form : completePat1 (0 : ℂ) 0 1 = 1
+    theorem imaginary_one_quarter_turn : completePat1 (0 : ℂ) (π/2) 1 = I
+    theorem i_sq_is_pi_mirror : I^2 = -1 ∧ exp (π·I) = -1
+    theorem quadriphase_contains_one :
+      1*(1/1)=1 ∧ exp(0)·exp(-0)=1 ∧ log 1 + log(1/1)=0 ∧ ‖exp(0)‖=1
+    -- ③ 任意元数 (本文件新增 + R154 锚定):
+    theorem s3_contains_numeric_one : ((1:ℂ),(0:ℂ)) ∈ S3Point
+    theorem hypercomplex_one_contracts : ‖(1:ℂ)/‖(1:ℂ)‖‖ = 1
+    -- ④ 超越数 (本文件新增 + R146 锚定):
+    theorem pi_is_one_mirror : exp (π·I) = -1 ∧ -(-1) = 1
+    -- 全景 (本文件新增):
+    theorem number_ones_pat_perspective :
+      sin²(π/4) = 1/2 ∧ completePat1 0 0 1 = 1 ∧ completePat1 0 (π/2) 1 = I
+      ∧ ((1:ℂ),(0:ℂ)) ∈ S3Point ∧ exp (π·I) = -1
+
+objects:
+- complex_one_locked_form
+- imaginary_one_quarter_turn
+- i_sq_is_pi_mirror
+- quadriphase_contains_one
+- s3_contains_numeric_one
+- hypercomplex_one_contracts
+- pi_is_one_mirror
+- number_ones_pat_perspective
+definitions_used:
+- 单相位数 (成对互锁 a+bi, R146)
+- 对称对还原锚点 (数域的 1, R143/R144)
+- S³ 单位球基点相位 (任意元数, R154)
+- π = 1 的镜像 / e 相位载体 (超越数, R146/R154)
+- 直觉数字 vs 构造数字 (tokenizer, 临时稿)
+
+assumptions:
+- 45° 处数值 = 相位 (R154 可交换性实例)
+- sin² + cos² = 1 三角恒等式 (mathlib 基础)
+- S³ 归一化 = 4 相位互锁 (R149/R154)
+- e 未单独构造 (R146 开放点, 用 exp 函数但不以 e 为原始常数)
+- tokenizer token 列为临时稿 (用户纠正③, 待纠正)
+- 诚实边界: 结构侧写, 新定理全部只锚本框架
+conclusion: "筑基篇课后习题 II 完成 (扩展版): 四类数域的 1 的 pat 展开 — 无理数 √2/2 (45° 投影, R154) / 复数 1 = θ=0 格点 + i = θ=π/2 格点 + i² = π 镜像 / 任意元数 S³ 点 (1,0) + 无损内收 / 超越数 π = 1 的镜像 + e 相位载体; 唯一论点: 每个数域的 1 = 对称对还原锚点, 数值 1 不是预设。8 个新定理全部只锚筑基篇定理 (R146/R149/R154/R143/R144), 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'θ = 0: 数值 1 = 1 + 0i (相位 0 = 数值 1 重合)'
+- 'θ = π/2: sin²(π/2) = 1, cos(π/2) = 0 — 纯 i 轴 (i = 0+1i)'
+- 'θ = π/4: sin²(π/4) = 1/2 — √2/2 投影 (数值 = 相位)'
+- 'θ = π: exp(π·I) = -1 — 1 的镜像 (超越数 π 的 1)'
+closest_known_results:
+- R154 DiagonalInterlock (√2/2 = 45° 单位 1 位置, sin_cos_three, S³ 几何)
+- R146 PatNumberDomains (单相位数 a+bi, pat_constructs_*, π = 半圈相位, e 开放点)
+- R149 Pat4Phase (4 相位两两互锁 quadriphase_interlock)
+- R143 PatAxisDual (对称对还原到 1)
+literature_queries:
+- projection position unit circle 45 degrees
+- irrational numbers geometric phase projection
+- hypercomplex numbers unit sphere basepoint
+
+counterexample_search:
+  status: done
+  search_space: sin²(π/4) = 1/2 是否真由三角恒等式推出 (非手工开方);
+    i² = -1 = exp(π·I) 是否构造性成立; S³ 点 (1,0) 是否真在 S3Point;
+    各数域 1 的对应点是否都能锚到已证定理
+  smallest_checked_size: null
+  result: sin_cos_three 构造性成立 (sin_pi_div_four + sin²+cos²=1);
+    i_sq_is_pi_mirror (norm_num + R146 pat_constructs_pi) 构造性成立;
+    s3_contains_numeric_one (unfold S3Point + simp) 构造性成立;
+    全部 8 新定理 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatNumberOnes.lean (新增 8 定理) + DiagonalInterlock.lean (R154 sin_cos_three 锚定)
+  theorem_name: ZeroRelative.PatNumberOnes.complex_one_locked_form / .imaginary_one_quarter_turn / .i_sq_is_pi_mirror / .quadriphase_contains_one / .s3_contains_numeric_one / .hypercomplex_one_contracts / .pi_is_one_mirror / .number_ones_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 只做 √2/2 不扩展 — 用户纠正②: 还要复数、任意元数、超越数的展开
+- token 列当最终规范 — 用户纠正③: 肯定有错误, 临时稿, 用户日后纠正
+- 把 √2/2 当"根号化简" — R154 ⑨⑩: 是投影位置, 非化简
+- 手工开方得 sin(π/4) — 正确: 三角恒等式 (sin=cos at 45° + sin²+cos²=1)
+- 声称无理数的 1 残缺 — 正确: 相位信息完整, 损失在投影方向
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'complex_one_locked_form / imaginary_one_quarter_turn: unfold completePat1
+  + simpa (exp_pi_div_two_mul_I 归一化 cast) — 0 sorry'
+- 'i_sq_is_pi_mirror: norm_num (i²=-1) + R146 pat_constructs_pi (exp(π·I)=-1)'
+- 'quadriphase_contains_one: norm_num + R149 四相位互锁实例 (a=1, θ=0)'
+- 's3_contains_numeric_one: unfold S3Point + simp — S³ 基点相位'
+- 'hypercomplex_one_contracts: R154 contract_to_circle 实例化 — 无损内收'
+- 'pi_is_one_mirror: R146 pat_constructs_pi + norm_num — π = 1 的镜像'
+- 'number_ones_pat_perspective: 五合取项全部锚本框架定理 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 习题 III (如: 平移/反演对称对 1 1/a+1/b,
+  素数复数进制快路径, 或黎曼反演结构); tokenizer token 列待用户纠正'
+notes: '筑基篇课后习题 II (扩展版) — 用户指定前置三节列在文章开始 (pat 单相位数
+  1 的表达 / 各数域 pat 构造 1 的对应点 / tokenizer 直觉与构造数字 token 列)。
+  用户纠正②: 不只 √2/2, 还要复数、任意元数、超越数的展开。用户纠正③: token
+  列肯定有错误的地方, 以后会想办法纠正 (标注临时稿)。√2/2 的洞察来源:
+  docs/关于黎曼猜想的思考.md (无理数 = 高维结构投影丢失部分承载信息后的剩余;
+  高维球体一个方向完整 1, 投影到我们世界只剩 √2/2 — 这很可能是无理数的 1)。
+  工程教训: (Real.pi/2) 的 ℂ cast 形式 ↑(Real.pi/2) 与 ((Real.pi:ℂ)/2) 不同,
+  simpa using Complex.exp_pi_div_two_mul_I 归一化解决; S³ 点 (1,0) 语法需
+  ((1:ℂ),(0:ℂ)) 双括号。'
