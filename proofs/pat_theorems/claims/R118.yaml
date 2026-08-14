@@ -1,0 +1,98 @@
+id: R118
+title: "R118 (user-proposed 2026-08-12): the singularity-basepoint relation — inverse(app(p0,p0)) = p0: the self-application p1 = app(p0,p0) (parameters coincide) is the SINGULAR case of application; its inverse cannot distinguish the identical parameters and collapses to the basepoint p0; the singularity anchors at basepoint 0 (app(p0,p0) → inverse → p0, the loop closes); generalized: inverse(app(pk,pk)) = pk"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "下一个问题，奇异性与基点0的关系   p0 inverseapp(p0(p0)) = p0"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。奇异性与基点 0 的关系。
+
+    ★ 等式: p0 = inverse(app(p0,p0))
+      自应用 p1 = app(p0,p0) (参数重合) = 应用的奇异情形
+      逆 (提取参数对) 无法区分相同参数 ⟹ 坍缩到 p0 (基点)
+
+    ★ 数学内容 (验证):
+      ① 左逆: leftInv(app(a,b)) = a (提取第一参数)
+      ② 自应用: app(p0,p0) 参数重合 — 逆无法区分顺序 (奇异)
+      ③ inverse(app(p0,p0)) = p0 (唯一可提取参数 = 基点)
+      ④ 推广: inverse(app(pk,pk)) = pk (自应用逆 = 自身)
+      ⑤ 闭环: app(p0,p0) → inverse → p0 (基点收束)
+
+    ★ 核心定理 (Lean 验收, SingularityBasepoint.lean, 无 sorry):
+      ① left_inverse_app: 左逆提取第一参数
+      ② self_app_inverse_basepoint: inverse(app(p0,p0)) = p0
+      ③ singular_anchor_basepoint: 奇异性锚定基点 (且 p1 ≠ p0)
+      ④ self_app_inverse_general: 一般自应用逆 = 自身
+
+    ★ 与既有 claim 的关系:
+      - R117 (基点相位叠加重合): 基点 = 汇聚点 (相位 0)
+      - R116 (空迭代家族): 基点层的无数投影
+      - R114 (p3 配对): 自应用结构
+      - R113 (基点层): p0 = basepointLayer
+      - R072 (声明): 奇异性-基点关系的声明化
+      结论: 自应用 (参数重合 = 奇异) 的逆 = 基点 0;
+      奇异性锚定在基点 (闭环)。
+
+    ★ 支撑 (Lean):
+      - SingularityBasepoint.lean (4 定理, 0 sorry)
+  formal_math: |
+    -- 左逆: leftInv(app a b) = a
+    -- 奇异: app(p0,p0) 参数重合, 逆坍缩到 p0
+    -- inverse(app(p0,p0)) = p0 (基点闭环)
+    -- 一般: inverse(app(pk,pk)) = pk
+
+objects:
+- left_inverse_app
+- self_app_inverse_basepoint
+- singular_anchor_basepoint
+- self_app_inverse_general
+
+definitions_used:
+- R117 / R116 / R114 / R113 / R072
+
+assumptions:
+- "自应用 = 参数重合 = 奇异情形"
+- "逆无法区分相同参数 (坍缩到唯一参数)"
+- "奇异性锚定在基点 0"
+
+conclusion: "用户等式成立 (2026-08-12): inverse(app(p0,p0)) = p0 — 自应用
+  (参数重合, 奇异) 的逆坍缩到基点; 奇异性锚定在基点 0 (闭环);
+  一般化 inverse(app(pk,pk)) = pk。"
+
+known_special_cases:
+  - "inverse(app(p0,p0)) = p0 (自应用逆 = 基点)"
+  - "leftInv(app(a,b)) = a (左逆提取第一参数)"
+  - "inverse(app(pk,pk)) = pk (一般自应用)"
+
+counterexample_search:
+  status: done
+  search_space: "左逆/自应用逆/基点闭环 (枚举 + Lean)"
+  smallest_checked_size: null
+  result: "4/4 定理 Lean 验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/SingularityBasepoint.lean
+  theorem_name: left_inverse_app, self_app_inverse_basepoint, singular_anchor_basepoint, self_app_inverse_general
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "左逆提取第一参数: 非对称 (顺序敏感)"
+  - "自应用奇异: 逆坍缩 (参数不可区分)"
+  - "基点闭环: inverse(p1) = p0 (奇异锚定基点)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "奇异性-基点关系接入 R072; 与 R117 (相位重合) 组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + Lean 形式化 + claim 落盘。"
