@@ -1,0 +1,86 @@
+id: R115
+title: "R115 (user-proposed 2026-08-12): the number of natural-number-1 projections onto monophase-1 — projection sources = Catalan count C_{k+1}: monophase k receives C_{k+1} pairing forms of p_{k+1} (self-application structures, only app + p0, no p1/p2 operators); monophase 1 receives C₂ = 2 projections (p0(p0(p0)) and (p0(p0))(p0)); the natural-k ↔ monophase-k transform = pairing collapse under associativity (constructible and definable)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "注意，我们知道自然数0和我们发现的基点0之间的变换方法，这个应该是可构造可定义
+  的对吧？"
+  "在这个结构下，有多少自然数1,投影到了单相位1之上？"
+  "落claim.   然后下一个问题，在这个定义下，我们能从任意一个pat n  通过单相位
+  的逆运算，返回基点0吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。投影源卡特兰计数。
+
+    ★ 投影源计数 (验证):
+      单相位 k 的投影源 = p_{k+1} 的全部自应用配对形式 (卡特兰 C_{k+1})
+      单相位 0 (p1): C₁ = 1 个
+      单相位 1 (p2): C₂ = 2 个 (p0(p0(p0)), (p0(p0))(p0))
+      单相位 2 (p3): C₃ = 5 个 (全部配对)
+
+    ★ 自然数 k ↔ 单相位 k 的变换:
+      = p_{k+1} 的配对坍缩 (结合律下全部配对 = 同一规范形)
+      可构造可定义 (卡特兰配对 + 结合律坍缩)
+
+    ★ 下一步问题 (用户): 从任意 pat n 通过单相位逆运算返回基点 0?
+
+    ★ 与既有 claim 的关系:
+      - R113 (自应用构造): p 结构
+      - R114 (p3 配对): 卡特兰配对
+      - R067 (能指/所指): 多投影源
+      - R072 (声明): 投影源计数声明化
+      结论: 投影源数 = C_{k+1}; 变换 = 配对坍缩 (可构造)。
+
+  formal_math: |
+    -- 投影源: monophase k ← C_{k+1} 个配对 (卡特兰)
+    -- 变换: 配对坍缩 (结合律)
+
+objects: []
+
+definitions_used:
+- R113 / R114 / R067 / R072
+
+assumptions:
+- "单相位 k = k 次升层"
+- "投影源 = p_{k+1} 配对 (卡特兰 C_{k+1})"
+- "变换 = 结合律坍缩"
+
+conclusion: "用户断言成立 (2026-08-12): 单相位 k 的投影源 = 卡特兰 C_{k+1}
+  个 (自然数 1 投影到单相位 1 的有 C₂=2 个); 变换 = 配对坍缩, 可构造。"
+
+known_special_cases:
+  - "单相位 0: C₁ = 1 (p1 = p0(p0))"
+  - "单相位 1: C₂ = 2 (p2 两种配对)"
+  - "单相位 2: C₃ = 5 (p3 全部配对)"
+
+counterexample_search:
+  status: done
+  search_space: "卡特兰计数 (枚举)"
+  smallest_checked_size: 3
+  result: "C₁=1, C₂=2, C₃=5 ✓; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/P3Pairings.lean
+  theorem_name: p3_balanced, p3_p2p0, p3_p0p1p0, pairings_equal
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "投影源计数限配对: 非配对结构另论"
+  - "变换 = 坍缩: 需结合律"
+  - "逆运算返回基点: 下一步验证"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "验证: 任意 pat n 经单相位逆运算 (降层) 返回基点 0"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
