@@ -1,0 +1,127 @@
+id: R177
+title: "R177 (2026-08-13): ★偶奇奇 周期观测 — 旋转基点 I (90° 相位基点) 交换实/虚轴 = 交换奇偶槽: 4 次单位根投影 (R175) 下奇偶 = 实/虚轴, 乘法基点 I 旋转 → 奇观测为偶 (I·I^p = ∓1 实轴), 偶观测为奇 (I·I^p = ±I 虚轴); 考拉兹循环 1→4→2→1 (奇偶偶) 在旋转轴下 = 偶奇奇 循环 (I·I^1 = -1, I·I^4 = I, I·I^2 = -I); 合并步 (3n+1)/2 可输出奇数 (n ≡ 3 mod 4 → 6k+5 奇, 连续奇数可能)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "等等，你找个偶奇奇的周期观测基点和轴看下呢？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。R176 的补充观测: 找偶奇奇 的
+       周期观测基点和轴.
+
+    ★ 唯一论点: 旋转基点 I (90° 相位基点) 轴 = 奇偶互翻轴:
+       R175 的 4 次单位根投影 (p ↦ I^p) 下奇偶 = 实/虚轴 (奇 →
+       虚轴 ±I, 偶 → 实轴 ±1). 乘法基点取 I (90° 旋转): 观测
+       (I·I^p) —
+       - p 奇 → I^p = ±I → I·I^p = ∓1 (实轴 = 偶槽) — 奇数被观测
+         为偶.
+       - p 偶 → I^p = ±1 → I·I^p = ±I (虚轴 = 奇槽) — 偶数被观测
+         为奇.
+       即: 基点旋转 I 交换实/虚轴 = 交换奇偶槽.
+
+    ★ 偶奇奇 循环观测: 考拉兹循环 1 → 4 → 2 → 1 (原轴观测为 奇偶偶,
+       R176 collatz_cycle_142) 在旋转基点 I 下: I·I^1 = I·I = -1
+       (实轴 = 偶槽), I·I^4 = I·1 = I (虚轴 = 奇槽), I·I^2 = I·(-1)
+       = -I (虚轴 = 奇槽) — 观测序列 偶奇奇 循环 (再回到 1 → 偶).
+       同一循环, 不同基点观测: 奇偶偶 ↔ 偶奇奇 — 奇偶模式是基点
+       观测的函数 (R142/RulerDelta: 基点 = delta 的锚, 基点旋转
+       改变观测).
+
+    ★ 合并步补充: 单步视角奇数 → 3n+1 必偶 (R176 collatz_odd_step_
+       even); 合并步视角 (奇数两步合并 = (3n+1)/2): n ≡ 3 (mod 4)
+       → (3n+1)/2 = 6k+5 仍为奇数 — 合并步轨道上连续奇数可能出现
+       ("奇数必落偶数槽"是单步 3n+1 的性质, 非合并步性质).
+
+  formal_math: |
+    -- 旋转基点 I 交换奇偶轴 (奇 → 实轴):
+    theorem I_rot_swaps_axis {p : ℕ} (hp : Odd p) :
+      Complex.im (Complex.I * Complex.I ^ p) = 0
+    -- 旋转基点 I 下偶数被观测为奇 (偶 → 虚轴):
+    theorem I_rot_swaps_axis_even {p : ℕ} (hp : Even p) :
+      Complex.re (Complex.I * Complex.I ^ p) = 0
+    -- 偶奇奇 循环观测:
+    theorem collatz_cycle_even_odd_odd :
+      Complex.I * Complex.I ^ 1 = -1 ∧
+      Complex.I * Complex.I ^ 4 = Complex.I ∧
+      Complex.I * Complex.I ^ 2 = -Complex.I
+    -- 合并步可输出奇数:
+    theorem odd_merged_step_parity (k : ℕ) :
+      Odd (((3 * (4 * k + 3) + 1) / 2))
+    -- 全景:
+    theorem eoo_perspective (p : ℕ) (hp : Odd p) :
+      (Complex.im (Complex.I * Complex.I ^ p) = 0) ∧
+      (Complex.I * Complex.I ^ 1 = -1 ∧
+       Complex.I * Complex.I ^ 4 = Complex.I ∧
+       Complex.I * Complex.I ^ 2 = -Complex.I)
+
+objects:
+- I_rot_swaps_axis
+- I_rot_swaps_axis_even
+- collatz_cycle_even_odd_odd
+- odd_merged_step_parity
+- eoo_perspective
+definitions_used:
+- 旋转基点 I 轴 = 奇偶互翻轴
+- 偶奇奇 循环观测
+- 合并步可输出奇数
+
+assumptions:
+- 4 次单位根投影下奇偶 = 实/虚轴 (R175)
+- I^2 = -1, I^4 = 1 (90° 旋转基点)
+- 基点旋转改变观测 (R142/RulerDelta)
+- 单步 3n+1 必偶 (R176 collatz_odd_step_even); 合并步无此约束
+conclusion: "筑基篇课后习题 XVII 补充完成: 偶奇奇 周期观测 — 旋转基点 I (90° 相位基点) 交换实/虚轴 = 交换奇偶槽: 奇观测为偶 (∓1 实轴), 偶观测为奇 (±I 虚轴); 考拉兹循环 1→4→2→1 (奇偶偶) 在旋转轴下 = 偶奇奇 循环 (I·I^1 = -1, I·I^4 = I, I·I^2 = -I); 合并步 (3n+1)/2 可输出奇数 (n ≡ 3 mod 4 → 6k+5, 连续奇数可能)。5 个新定理全部只锚筑基篇定理 (R142/R175/R176) + mathlib 复数/奇偶基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'p = 1 (奇): I·I^1 = -1 (实轴, 观测为偶)'
+- 'p = 4 (偶): I·I^4 = I (虚轴, 观测为奇)'
+- 'n = 4k+3: 合并步输出 6k+5 奇数 (连续奇数)'
+closest_known_results:
+- R176 PatCollatz (奇偶偶 循环, 单步折叠决策)
+- R175 PatPrimeGapPhase (4 次单位根投影, 奇偶 = 实/虚轴)
+- R142 (基点漂移, 基点 = delta 的锚)
+literature_queries:
+- collatz cycle parity rotation observation
+- even odd odd cycle phase rotation
+
+counterexample_search:
+  status: done
+  search_space: 旋转 I 是否真交换奇偶轴 (奇→实轴, 偶→虚轴);
+    循环是否真 偶奇奇; 合并步 n≡3 mod 4 是否真输出奇数
+  smallest_checked_size: null
+  result: 枚举 p=1..39 全过 (python 验证奇→实轴 偶→虚轴); 循环
+    I·I^1=-1, I·I^4=I, I·I^2=-I; 合并步 6k+5 奇数 (omega); 全部
+    0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatCollatz.lean (补充 5 定理)
+  theorem_name: ZeroRelative.PatCollatz.I_rot_swaps_axis / .I_rot_swaps_axis_even / .collatz_cycle_even_odd_odd / .odd_merged_step_parity / .eoo_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明考拉兹猜想 — 诚实边界: 基点观测相对性非收敛性证明
+- 把合并步视角与单步视角混淆 — 已区分: 单步 3n+1 必偶, 合并步可奇
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'I_rot_swaps_axis: pow_add + I^2=-1 — 奇 → 实轴 (观测为偶)'
+- 'I_rot_swaps_axis_even: 偶 → 虚轴 (观测为奇)'
+- 'collatz_cycle_even_odd_odd: norm_num — 偶奇奇 循环'
+- 'odd_merged_step_parity: omega — 合并步 6k+5 奇数'
+- 'eoo_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 基点旋转观测与轨道结构的联系, 或其他
+  经典猜想的 pat 重新观测'
+notes: 'R176 补充: 用户要求找偶奇奇 周期观测基点轴 — 旋转基点 I (90°)
+  交换实/虚轴 = 交换奇偶槽: 奇偶偶 ↔ 偶奇奇 (同一循环不同基点观测);
+  合并步 (3n+1)/2 可输出奇数 (n ≡ 3 mod 4)。'
