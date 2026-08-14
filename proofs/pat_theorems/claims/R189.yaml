@@ -1,0 +1,112 @@
+id: R189
+title: "R189 (2026-08-13): ★能构造 = 存在 — 构造性存在机制: ∃ x, P x 的证明 = witness w + 验证 P w (⟨w, h⟩, 类型论内建规则, 定义级别等价非定理); 完整构造 = 形状 + 性质验证 (⟨6, σ(6)=12=2·6⟩ ⟹ ∃ n, σ(n)=2n, Euclid-Euler p=2); ★形状约束 ≠ 存在: 45 = 5^1·3² 满足欧拉形状但 σ(45) = 78 ≠ 90 (形状不含完全性, R188 基点形状 = 部分构造) — 奇完全数存在性 OPEN = 完整构造 (奇 n 满足 σ(n)=2n) 未知"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "如何证明，能构造就等于存在？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。能构造 = 存在的证明机制.
+
+    ★ 唯一论点: 能构造 = 存在是类型论内建规则 (∃ 引入: witness +
+       验证), 定义级别等价; 需要区分完整构造 (形状 + 验证) 与形状
+       约束 (部分构造).
+
+    ★ 机制: ∃ x, P x 的证明 = 给出 witness w + 验证 P w — ⟨w, h⟩ :
+       ∃ x, P x. 这不是需证明的定理, 而是类型论内建 (∃ 是 Σ 的命题
+       截断) — 构造与存在证明是同一个东西.
+
+    ★ 关键区分:
+       - 完整构造 = 形状 + 性质验证: ⟨6, σ(6) = 12 = 2·6⟩ ⟹ ∃ n,
+         σ(n) = 2n (偶完全数, Euclid-Euler p=2).
+       - 形状约束 ≠ 存在: 45 = 5^1·3² 满足欧拉形状 (q = 5 ≡ 1 mod
+         4, α = 1 ≡ 1 mod 4) 但 σ(45) = 78 ≠ 90 — 形状本身不含完全
+         性. 欧拉形式 (R187/R188) 是必要条件, 形状构造 ≠ 存在构造.
+
+    ★ 奇完全数存在性 OPEN 的原因: 欧拉形式 (必要条件) 可证, 但完整
+       构造 (奇 n 满足 σ(n) = 2n) 未知 — "能构造 = 存在"成立, 但
+       "形状约束"不是构造.
+
+  formal_math: |
+    -- ★构造性存在机制 (∃ 引入):
+    theorem exists_intro_construction {P : ℕ → Prop} (w : ℕ) (h : P w) :
+      ∃ x : ℕ, P x
+    -- 完整构造实例 (6 是完全数):
+    theorem six_is_perfect : σ 1 6 = 2 * 6
+    theorem perfect_six_exists : ∃ n : ℕ, σ 1 n = 2 * n
+    -- ★形状约束 ≠ 存在:
+    theorem euler_shape_not_complete : σ 1 45 ≠ 2 * 45
+    -- 全景:
+    theorem construction_existence_perspective :
+      (∃ n : ℕ, σ 1 n = 2 * n) ∧ (σ 1 45 ≠ 2 * 45)
+
+objects:
+- exists_intro_construction
+- six_is_perfect
+- perfect_six_exists
+- euler_shape_not_complete
+- construction_existence_perspective
+definitions_used:
+- 能构造 = 存在 (∃ 引入: witness + 验证)
+- 完整构造 = 形状 + 性质验证
+- 形状约束 = 部分构造
+
+assumptions:
+- ∃ 引入规则 (类型论内建)
+- 6 = 2^1·3 是完全数 (Euclid-Euler p=2)
+- 45 = 5^1·3² 满足欧拉形状但非完全数
+- 欧拉形式是必要条件 (R187/R188)
+conclusion: "筑基篇系列方法论固化之五完成: 能构造 = 存在 — 构造性存在机制: ∃ x, P x 的证明 = witness w + 验证 P w (⟨w, h⟩, 类型论内建); 完整构造 = 形状 + 验证 (⟨6, σ(6)=12=2·6⟩ ⟹ ∃ n, σ(n)=2n); ★形状约束 ≠ 存在 (45 = 5^1·3² 满足欧拉形状但 σ(45) = 78 ≠ 90)。奇完全数存在性 OPEN = 完整构造未知 (形状约束非构造)。5 个新定理全部只锚筑基篇定理 (R187/R188) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '6 = 2^1·3: 偶完全数 (Euclid-Euler p=2), 完整构造实例'
+- '45 = 5^1·3²: 欧拉形状但非完全数 (σ(45) = 78 ≠ 90)'
+- '形状约束 = 部分构造 (必要条件基点化)'
+closest_known_results:
+- R188 PatBasepointShape (基点形状构造)
+- R187 PatOddPerfectEulerForm (欧拉形式必要条件)
+- R180 PatOddPerfect (奇完全数结构观测)
+literature_queries:
+- constructive existence witness verification
+- euler form necessary condition not existence
+
+counterexample_search:
+  status: done
+  search_space: 6 是否真完全数 (σ(6) = 12); 45 是否真非完全数 (σ(45)
+    = 78); 45 是否真满足欧拉形状
+  smallest_checked_size: null
+  result: σ(6) = 1+2+3+6 = 12 = 2·6 ✓; σ(45) = 1+3+5+9+15+45 = 78
+    ≠ 90 ✓; 45 = 5^1·3² (5 ≡ 1 mod 4, 1 ≡ 1 mod 4) ✓; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatConstructionExistence.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatConstructionExistence.exists_intro_construction / .six_is_perfect / .perfect_six_exists / .euler_shape_not_complete / .construction_existence_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称形状约束 = 存在 — 已修正: 形状 ≠ 完整构造 (45 反例)
+- 把能构造=存在当需证定理 — 类型论内建规则 (定义级别等价)
+- 声称奇完全数存在 — 诚实边界: 完整构造未知, OPEN
+evidence_for:
+- 'exists_intro_construction: exact ⟨w, h⟩ — ∃ 引入'
+- 'six_is_perfect: native_decide — 6 完全数'
+- 'perfect_six_exists: exists_intro 6 — 构造性存在'
+- 'euler_shape_not_complete: native_decide — 45 非完全数'
+- 'construction_existence_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 构造 = 存在机制完成; 后续可深化 完整构造的条件
+  在其他问题上的应用'
+notes: '用户问"如何证明能构造就等于存在" — 机制: ∃ 引入 (witness +
+  验证) 是类型论内建, 定义级别等价; 关键区分: 完整构造 (形状+验证,
+  6 实例) vs 形状约束 (45 反例, 欧拉形式必要条件)。'
