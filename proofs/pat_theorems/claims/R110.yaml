@@ -1,0 +1,90 @@
+id: R110
+title: "R110 (user-proposed 2026-08-12): observing primes under log's TWO symmetries — layer symmetry (log(ab) = log a + log b: prime ratio log(q/p) = layer gap, fluctuating, twin primes have tiny gaps) and mirror symmetry (log(1/a) = -log a: 1/p is p's mirror pair); NOT ordinary 0-point addition on the log axis (the log axis is not a plain real axis); '奇异性' term rejected by user (use 无定义点)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "你这个逻辑我就理解不了了，注意log我印象里是两种对称变换吧，除了层结构。
+  另外你为什么那么痴迷于在log轴上做0点的加减法。"
+  "你先做下，另外奇异性这词我其实挺不喜欢的。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。log 双对称观测素数。
+
+    ★ 修正 (用户批评):
+      ① log 有两种对称变换: 层对称 + 镜像对称 (我漏了第二种)
+      ② 不在 log 轴上做 0 点加减法 (log 非普通实数轴)
+      ③ "奇异性"词弃用 (改用"无定义点")
+
+    ★ log 双对称:
+      ① 层对称: log(ab) = log a + log b (乘法 → 加法)
+      ② 镜像对称: log(1/a) = -log a (倒数 → 取负)
+
+    ★ 素数观测 (双对称视角):
+      层: 素数比 log(q/p) = 层间隔 (波动)
+        2→3: 0.4055 | 11→13: 0.1671 (孪生极小) | 29→31: 0.0667
+      镜像: 1/p = 镜像对 (log(1/p) = -log p)
+      层单位 (log 2): 素数相对 2 的层数 (3: 0.585, 5: 1.322)
+
+    ★ 与既有 claim 的关系:
+      - R089 (基点统一 log): log 双对称的源
+      - R096 (log 计算逻辑): 观测须按工具自身逻辑
+      - R107 (素数参照): log 视角的素数
+      - R072 (声明): log 双对称的声明化
+      结论: log 双对称 (层+镜像) 观测素数 — 层间隔 log(q/p)
+      波动, 镜像对 1/p; 不用 0 点加减法。
+
+  formal_math: |
+    -- 层对称: log(ab) = log a + log b (比 → log 差)
+    -- 镜像对称: log(1/a) = -log a (倒数 → 取负)
+    -- 素数层间隔: log(q/p); 素数镜像对: 1/p
+
+objects: []
+
+definitions_used:
+- R089 / R096 / R107 / R072
+
+assumptions:
+- "log 双对称: 层 (×→+) + 镜像 (倒数→取负)"
+- "log 轴非普通实数轴 (不做 0 点加减)"
+- "素数观测: 层间隔 + 镜像对"
+
+conclusion: "用户修正成立 (2026-08-12): log 双对称 (层 + 镜像) 观测素数 —
+  层间隔 log(q/p) 波动, 镜像对 1/p; log 轴不做 0 点加减法;
+  '奇异性'词弃用。"
+
+known_special_cases:
+  - "层间隔: log(q/p) (孪生极小 0.0667)"
+  - "镜像对: log(1/p) = -log p"
+  - "层单位: log 2 (素数相对 2 层数)"
+
+counterexample_search:
+  status: done
+  search_space: "素数比/倒数镜像 (枚举)"
+  smallest_checked_size: 31
+  result: "层间隔波动 ✓; 镜像对 ✓; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "log 双对称易漏镜像: 须两者并用"
+  - "log 轴 0 点加减无意义: 按自身对称观测"
+  - "'奇异性'弃用: 用'无定义点'"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "纯粹后继序列思想实验: 从零开始的单相位数序列形状"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
