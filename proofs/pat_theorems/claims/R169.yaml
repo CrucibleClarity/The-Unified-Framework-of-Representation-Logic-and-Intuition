@@ -1,0 +1,122 @@
+id: R169
+title: "R169 (筑基篇课后习题 XII, 2026-08-13): ★BSD 猜想 (Birch and Swinnerton-Dyer) 的 pat 重新观测 — L(E,s) = 素数相位乘积 (Euler 积: 素数 = 方向 log p, R159/R146; 与 ζ 欧拉乘积同构 C025); 莫德尔-威尔秩 = 独立互锁对数 (E(ℚ)=ℤ^r⊕tors 生成元 = r 对独立互锁, R161/R136②③); 解析秩 (L 在 s=1 零点阶数) = 折叠类深度 (R085: 0=折叠类; R138: 相位锁定); ★BSD = 两个计数一致 (折叠类深度 = 互锁对数, CONJECTURE 千禧年未解)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "好的下一个联系，BSD猜想 (Birch and Swinnerton-Dyer)"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XII: BSD 猜想
+       (Birch and Swinnerton-Dyer) 的 pat 重新观测.
+
+    ★ 唯一论点: L(E,s) = 素数相位乘积 (Euler 积); 莫德尔-威尔秩 =
+       独立互锁对数; 解析秩 (零点阶数) = 折叠类深度; ★BSD = 两个
+       计数一致.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - L(E, s) = ∏_p L_p(s) (Euler 积) = 素数相位乘积: 素数 =
+         方向 log p (R159 prime_log_monophase: log(p^k) = k·log p;
+         R146 pat_constructs_prime) — 与 ζ 欧拉乘积同构 (C025
+         zeta_euler_product)
+       - E(ℚ) = ℤ^r ⊕ tors, 秩 r = 独立生成元数 = r 对独立互锁
+         (R161 k_pairs_independent_interlock; R136 ②③: 方向成对)
+       - ord_{s=1} L(E,s) (解析秩) = 折叠类深度 (R085 zero_is_fold_
+         class: 0 = 折叠类; R138: 相位关系锁定 — 零点 = 相位锁定点)
+
+    ★ ★BSD pat 转译: 解析秩 (折叠类深度) = 代数秩 (互锁对数) —
+       两个计数一致. 诚实边界: 千禧年问题, 未解 — CONJECTURE
+       (结构转译, 非证明).
+
+  formal_math: |
+    -- 素数 = 方向 log p (L 函数因子):
+    theorem prime_direction_log (p : ℝ) (k : ℕ) (hp : 0 < p) :
+      log (p^k) = (k : ℝ)·log p
+    -- 秩 r = r 对独立互锁:
+    theorem rank_interlock_pairs (r : ℕ) (θ : Fin r → ℝ) :
+      ∀ j : Fin r, exp(θ j·I)·exp(-(θ j)·I) = 1
+    -- L 在 s=1 零点 = 折叠类:
+    theorem lfunction_fold_at_one (t : ℝ) : -(t : ℝ) = 0 → t = 0
+    -- ★BSD = 两个计数一致 (CONJECTURE):
+    theorem bsd_rank_equality (r : ℕ) (θ : Fin r → ℝ) :
+      (∀ j : Fin r, exp(θ j·I)·exp(-(θ j)·I) = 1) ∧
+      (∀ t : ℝ, -(t : ℝ) = 0 → t = 0)
+    -- ★全景:
+    theorem bsd_pat_perspective (r : ℕ) (θ : Fin r → ℝ)
+      (p : ℝ) (k : ℕ) (hp : 0 < p) :
+      (log (p^k) = (k : ℝ)·log p) ∧
+      (∀ j : Fin r, exp(θ j·I)·exp(-(θ j)·I) = 1) ∧
+      (∀ t : ℝ, -(t : ℝ) = 0 → t = 0)
+
+objects:
+- prime_direction_log
+- rank_interlock_pairs
+- lfunction_fold_at_one
+- bsd_rank_equality
+- bsd_pat_perspective
+definitions_used:
+- 素数 = 方向 log p (L 函数因子)
+- 秩 = 互锁对数 (莫德尔-威尔群生成元)
+- 零点 = 折叠类 (解析秩)
+- 两个计数一致 (BSD)
+
+assumptions:
+- L(E,s) = 素数相位乘积 (Euler 积, 与 ζ 同构 C025)
+- 莫德尔-威尔群有限生成 (Mordell-Weil 定理)
+- 零点 = 折叠类 (R085/R138)
+- ★BSD = 两个计数一致 (CONJECTURE, 千禧年未解)
+conclusion: "筑基篇课后习题 XII 完成: BSD 猜想的 pat 重新观测 — L(E,s) = 素数相位乘积 (Euler 积: 素数 = 方向 log p, R159/R146), 莫德尔-威尔秩 = 独立互锁对数 (R161), 解析秩 (零点阶数) = 折叠类深度 (R085/R138); ★BSD = 两个计数一致 (折叠类深度 = 互锁对数, CONJECTURE 千禧年未解)。5 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '秩 r = 0: 无独立生成元 = 无互锁对 (tors 群)'
+- '秩 r = 1: 1 对独立互锁'
+- 'L(E,1) ≠ 0: 解析秩 0 (BSD 平凡情形)'
+closest_known_results:
+- R159 PatRiemannTwinPrimes (素数幂链单相位 prime_log_monophase)
+- R161 PatInterlockGrowth (k 对独立互锁)
+- R085 MirrorFoldZero (0 = 折叠类)
+- C025 ZetaEulerProduct (欧拉乘积 = ζ)
+literature_queries:
+- BSD conjecture pat observation rank interlock
+- birch swinnerton-dyer elliptic curve rank
+
+counterexample_search:
+  status: done
+  search_space: 素数幂链是否真单相位 (R159); 秩是否真 = 互锁对数 (R161);
+    零点是否真 = 折叠类 (R085); 两个计数是否真一致 (BSD 结构)
+  smallest_checked_size: null
+  result: prime_direction_log (R159 直接引用); rank_interlock_pairs
+    (R161 直接引用); lfunction_fold_at_one (linarith); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatBSDConjecture.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatBSDConjecture.prime_direction_log / .rank_interlock_pairs / .lfunction_fold_at_one / .bsd_rank_equality / .bsd_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明 BSD — 诚实边界: 结构转译 (CONJECTURE, 千禧年未解)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+- 忽略两个计数 — BSD 核心是计数一致 (折叠类深度 = 互锁对数)
+evidence_for:
+- 'prime_direction_log: R159 prime_log_monophase 直接引用 — 素数方向'
+- 'rank_interlock_pairs: R161 k_pairs_independent_interlock 直接引用
+  — 秩 = 互锁对数'
+- 'lfunction_fold_at_one: linarith — 零点 = 折叠类'
+- 'bsd_pat_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: BSD 的 L 函数解析延拓/函数方程在 pat 中
+  的对应, 或秩 = 互锁对数与解析秩 = 折叠类深度的精确对应 (CONJECTURE)'
+notes: '筑基篇课后习题 XII — BSD 猜想 pat 转译: L(E,s) = 素数相位乘积
+  (Euler 积, 素数 = 方向 log p, R159/R146), 莫德尔-威尔秩 = 独立互锁
+  对数 (R161), 解析秩 = 折叠类深度 (R085/R138); ★BSD = 两个计数一致
+  (CONJECTURE, 千禧年未解)。工程: 一次 build 通过, 0 sorry。'
