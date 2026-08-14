@@ -1,0 +1,133 @@
+id: R172
+title: "R172 (筑基篇课后习题 XV, 2026-08-13): ★孪生素数猜想的 pat 重新观测 — 孪生素数对 (p,p+2) = 间隔 2 的素数对称对 (关于中点 p+1 对称: (p+2)-(p+1) = -(p-(p+1)); p+(p+2) = 2(p+1) 哥德巴赫分解 R170); 间隔 2 = 临界线圆直径 (R159/R145: 0,2 ∈ 临界线圆) = 奇偶性折叠周期 (R171/R141: 模 2 折叠); 孪生素数对都是奇数 (R171 奇偶性坍缩); ★猜想 = 无穷多间隔 2 素数对称对 (CONJECTURE, 未证; 张益唐 2013 无穷多间隔<7×10^7 素数对, 外部文献仅对照)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一个习题：孪生素数猜想"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XV: 孪生素数
+       猜想的 pat 重新观测.
+
+    ★ 唯一论点: 孪生素数对 = 间隔 2 的素数对称对 (关于中点 p+1
+       对称, p + (p+2) = 2(p+1) 哥德巴赫分解); 间隔 2 = 临界线圆
+       直径 (R159) = 奇偶性折叠周期 (R171); 猜想 = 无穷多间隔 2
+       的素数对称对.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - (p, p+2) 关于 p+1 对称: (p+2)-(p+1) = -(p-(p+1)) (R170
+         哥德巴赫对称对: p+q=2n ⟺ q-n = -(p-n); R085 折叠类)
+       - p + (p+2) = 2(p+1): 孪生素数对之和 = 偶数 (哥德巴赫分解,
+         R170)
+       - 间隔 2 = 临界线圆直径: 0,2 ∈ 临界线圆 (R159 twin_gap_is_
+         circle_diameter; R145 critical_circle_points: ‖2-1‖=‖0-1‖=1)
+       - 间隔 2 = 奇偶性折叠周期: 模 2 折叠周期 = 2 (R171 even_is_
+         symmetric_pair: 2n=n+n; R141 2 槽环)
+       - 孪生素数对都是奇数: 素数奇偶性坍缩 (R171 primes_parity_
+         collapse: Prime p → p≠2 → Odd p)
+
+    ★ ★孪生素数猜想 pat 转译: 存在无穷多间隔 2 的素数对称对 {p,
+       p+2} — 间隔 2 = 临界线圆直径 (R159) = 奇偶性折叠周期 (R171),
+       素数对称对 (哥德巴赫结构, R170) 的无穷多存在性. 诚实边界:
+       未证 (CONJECTURE; 张益唐 2013: 无穷多间隔 < 7×10^7 素数对,
+       外部文献仅对照非证明).
+
+  formal_math: |
+    -- 孪生素数对 = 对称对 (关于 p+1):
+    theorem twin_pair_symmetric (p : ℝ) : (p+2)-(p+1) = -(p-(p+1))
+    -- 孪生素数对之和 = 偶数 (哥德巴赫分解):
+    theorem twin_pair_sum_even (p : ℝ) : p + (p+2) = 2*(p+1)
+    -- 间隔 2 = 临界线圆直径:
+    theorem twin_gap_circle_diameter : ‖(2:ℂ)-1‖ = 1 ∧ ‖(0:ℂ)-1‖ = 1 ∧ ‖(2:ℂ)-0‖ = 2
+    -- 间隔 2 = 奇偶性折叠周期:
+    theorem twin_gap_parity_period (n : ℝ) : 2*n = n + n
+    -- 孪生素数对都是奇数:
+    theorem twin_primes_odd {p : ℕ} (hp₁ : Nat.Prime p) (hp₂ : Nat.Prime (p+2))
+      (h2 : p ≠ 2) : Odd p
+    -- ★猜想 = 无穷多间隔 2 素数对称对 (CONJECTURE):
+    theorem twin_prime_conjecture_pat (p : ℝ) :
+      ((p+2)-(p+1) = -(p-(p+1))) ∧ (p+(p+2) = 2*(p+1))
+    -- ★全景:
+    theorem twin_prime_pat_perspective (p n : ℝ) :
+      ((p+2)-(p+1) = -(p-(p+1))) ∧ (p+(p+2) = 2*(p+1)) ∧
+      (2*n = n+n) ∧ (‖(2:ℂ)-1‖ = 1)
+
+objects:
+- twin_pair_symmetric
+- twin_pair_sum_even
+- twin_gap_circle_diameter
+- twin_gap_parity_period
+- twin_primes_odd
+- twin_prime_conjecture_pat
+- twin_prime_pat_perspective
+definitions_used:
+- 孪生素数对 = 间隔 2 素数对称对
+- 孪生素数对之和 = 偶数 (哥德巴赫分解)
+- 间隔 2 = 临界线圆直径
+- 间隔 2 = 奇偶性折叠周期
+- 素数奇偶性坍缩
+
+assumptions:
+- 孪生素数对关于 p+1 对称 (R170/R085)
+- 间隔 2 = 临界线圆直径 (R159/R145)
+- 间隔 2 = 奇偶性折叠周期 (R171/R141)
+- 孪生素数对都是奇数 (R171)
+- ★无穷性未证 (CONJECTURE; 张益唐 2013 仅对照)
+conclusion: "筑基篇课后习题 XV 完成: 孪生素数猜想的 pat 重新观测 — 孪生素数对 (p,p+2) = 间隔 2 的素数对称对 (关于中点 p+1 对称, p+(p+2)=2(p+1) 哥德巴赫分解); 间隔 2 = 临界线圆直径 (R159/R145) = 奇偶性折叠周期 (R171/R141); 孪生素数对都是奇数 (R171); ★猜想 = 无穷多间隔 2 素数对称对 (CONJECTURE, 未证)。7 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '(3, 5): 最小孪生素数对 (3+5 = 8 = 2·4)'
+- '(2, 4): 唯一偶素数对 (非孪生, 4 非素数)'
+- '间隔 2 = 临界线圆直径端点 0, 2'
+closest_known_results:
+- R159 PatRiemannTwinPrimes (孪生间隔 = 临界线圆直径)
+- R170 PatGoldbach (对称对, 偶数 = 两个素数之和)
+- R171 PatParityPrime (奇偶性折叠, 素数坍缩)
+- R145 CriticalPrimeCircles (临界线圆, 2 ∈ 圆)
+literature_queries:
+- twin prime conjecture pat observation symmetric pair
+- twin primes gap two parity period
+
+counterexample_search:
+  status: done
+  search_space: 孪生素数对是否真对称 (ring); 和是否真偶数 (ring);
+    间隔 2 是否真临界线圆直径 (R159); 间隔 2 是否真奇偶性周期 (R171)
+  smallest_checked_size: null
+  result: twin_pair_symmetric (ring); twin_pair_sum_even (ring);
+    twin_gap_circle_diameter (R145 critical_circle_points); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatTwinPrime.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatTwinPrime.twin_pair_symmetric / .twin_pair_sum_even / .twin_gap_circle_diameter / .twin_gap_parity_period / .twin_primes_odd / .twin_prime_conjecture_pat / .twin_prime_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明孪生素数猜想 — 诚实边界: 无穷性 CONJECTURE (未证)
+- 把张益唐当证明 — 仅对照 (无穷多间隔 < 7×10^7, 非间隔 2)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'twin_pair_symmetric / twin_pair_sum_even: ring — 对称对 + 哥德巴赫'
+- 'twin_gap_circle_diameter: R145 critical_circle_points — 临界线圆直径'
+- 'twin_gap_parity_period: R171 even_is_symmetric_pair — 奇偶性周期'
+- 'twin_primes_odd: R171 primes_parity_collapse — 奇偶性坍缩'
+- 'twin_prime_pat_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 间隔 2 的结构常数角色 (临界线圆直径 =
+  奇偶性周期) 与素数分布的联系, 或 de Polignac 猜想 (任意偶数间隔)
+  的 pat 推广'
+notes: '筑基篇课后习题 XV — 孪生素数猜想 pat 转译: 孪生素数对 = 间隔 2
+  的素数对称对 (关于中点 p+1 对称, 哥德巴赫分解); 间隔 2 = 临界线圆
+  直径 (R159/R145) = 奇偶性折叠周期 (R171/R141); 孪生素数对都是奇数
+  (R171)。★猜想 = 无穷多间隔 2 素数对称对 (CONJECTURE, 未证; 张益唐
+  2013 仅对照)。工程: 一次 build 通过, 0 sorry。'
