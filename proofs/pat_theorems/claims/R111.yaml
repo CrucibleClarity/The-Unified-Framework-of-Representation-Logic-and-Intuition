@@ -1,0 +1,85 @@
+id: R111
+title: "R111 (user-proposed 2026-08-12): the pure-successor sequence definition is UNDETERMINED — the positional notation (位序) is NOT necessarily the layer structure (R099 correction); because the internal structure of basepoint 0 was not discovered (R085: 0 = ±1 fold class, but its FULL internal structure is open), the pure-successor definition (0→1→2→...) is essentially underdetermined; next: recompute the polyphase positive-integer structure using the constructed monophase numbers"
+status: OBSERVATION
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "部队的，位序不一定是层结构吧？注意这个定义由于没有发现基点0的内部结构，
+  所以本质上是不明的，你需要落这个claim,然后用构造出的单相位数，重新计算
+  多相位的正整数，是什么结构。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。纯粹后继定义不明性。
+
+    ★ 修正 (用户):
+      ① 位序不一定是层结构 (R099 的升层/降层 ≠ 位序必然)
+      ② 纯粹后继定义 (0→1→2→...) 本质不明:
+         基点 0 的内部结构未完全发现 (R085: 0 = ±1 折叠类,
+         但完整内部结构开放)
+      ③ 定义不明 ⟹ 序列形状未定 (R110 结论不可靠)
+
+    ★ 意义:
+      纯粹后继序列 = 定义不明 (基点 0 内部结构未明)
+      ⟹ 需要先构造单相位数, 再计算多相位正整数结构
+
+    ★ 下一步 (用户指令):
+      用构造出的单相位数, 重新计算多相位的正整数是什么结构
+
+    ★ 与既有 claim 的关系:
+      - R099 (升层/降层): 位序 ≠ 层结构 (修正)
+      - R085 (0 = ±1 折叠类): 基点 0 内部结构部分已知
+      - R110 (纯粹后继形状): 本 claim 判定其未定
+      - R091 (单相位 = {n·d}): 构造工具
+      - R072 (声明): 定义不明性的声明化
+      结论: 纯粹后继定义不明 (基点 0 内部结构未明, 位序非必然层);
+      需用构造的单相位数重算多相位正整数。
+
+  formal_math: |
+    -- 位序 ≠ 层结构 (R099 修正)
+    -- 基点 0 内部结构: 部分已知 (R085 折叠类), 完整开放
+    -- 纯粹后继定义: 不明 (待单相位数构造)
+
+objects: []
+
+definitions_used:
+- R099 / R085 / R110 / R091 / R072
+
+assumptions:
+- "位序不一定是层结构"
+- "基点 0 内部结构未完全发现"
+- "纯粹后继定义不明"
+
+conclusion: "用户修正成立 (2026-08-12): 位序不一定是层结构; 纯粹后继定义
+  (0→1→2) 因基点 0 内部结构未明而本质不明; 需用构造的单相位数重算
+  多相位正整数结构。"
+
+known_special_cases: []
+counterexample_search:
+  status: done
+  search_space: ""
+  smallest_checked_size: null
+  result: "定义不明性声明 (非数学反例)"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "位序 ≠ 层: 升层/降层只是位序的一种可能"
+  - "基点 0 内部结构开放: 定义不明"
+  - "形状未定: R110 结论不可靠"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "用构造的单相位数重算多相位正整数结构"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行 claim 落盘。"
