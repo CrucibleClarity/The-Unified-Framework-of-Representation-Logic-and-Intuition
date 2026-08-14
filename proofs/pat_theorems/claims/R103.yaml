@@ -1,0 +1,114 @@
+id: R103
+title: "R103 (user-proposed 2026-08-12): limb/fin structure does NOT determine number-sense ceiling (mosquitofish and guppy share 7 fins, Poeciliidae, yet ceilings 3 vs 4); no-fin undulating animals (snakes/cephalopods/worms) have NO direct numerosity studies found; the ratio 1:2 evidence must NOT be attributed to delta (杜鹃 counterexample refutes); OPEN: neural-system structure (sympathetic/parasympathetic/enteric) and attention mechanisms, single-cell/prokaryote/primitive-reflex studies"
+status: OBSERVATION
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "我不太愿意相信相对性。杜鹃那个例子就足以证否了。你也别往delta上靠，而且
+  两种鱼，一个3内准，一个4内准，他们的鳍有数量上的差异吗？说实话我真有点担心
+  肢体结构的影响，有没有不带鳍，纯靠扭动的那种？"
+  "不是啊，你还得排除下神经方面的研究，因为我们的神经系统，是分结构的，交感、
+  副交感、肠、还有其他的。本质上是我们大脑的注意力机制决定的。而鱼鳍恐怕也得
+  区分是哪个神经系统在管理的对吧？有没有单细胞生物、原核真核、以及人类低级
+  或者末端神经反射的研究？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。肢体结构/神经结构 vs 数感。
+
+    ★ 鳍数验证:
+      食蚊鱼 (mosquitofish) 与孔雀鱼 (guppy) 同为花鳉科 (Poeciliidae):
+      鳍数相同 (7 鳍: 背/臀/尾 + 胸×2 + 腹×2)
+      但数感上限不同 (3 vs 4)
+      ⟹ 肢体结构 (鳍数) 不决定数感上限 (初步)
+
+    ★ 无鳍扭动动物检索:
+      蛇/鳗/蚯蚓/头足类 (章鱼等): 动物认知范围内
+      但数感知直接研究: 未检索到 (空白)
+      头足类: 认知研究丰富 (开罐/椰子壳/学习), 独立演化 6 亿年
+      ⟹ 无鳍动物数感知 = 空白 (需深挖)
+
+    ★ 相对性立场修正 (用户):
+      杜鹃例证 (宿主幼鸟死活无关) 证否 delta 相对性
+      鱼类比率 1:2 不归因于 delta (证据不足)
+      ⟹ R102 的 "delta 相对性" 标注撤回, 改为 "比率观测"
+
+    ★ 神经结构方向 (用户, OPEN):
+      神经系统分结构: 交感/副交感/肠/其他
+      本质 = 大脑注意力机制
+      鱼鳍须区分哪个神经系统管理
+      单细胞生物/原核真核/人类低级末端神经反射: 检索空缺
+      ⟹ 数感上限 (3 vs 4) 可能由注意力/神经结构决定, 非肢体
+
+    ★ 与既有 claim 的关系:
+    ★ 引用记录 (检索素材, 论文引用):
+      ① Number sense in animals (Wikipedia): ANS/PIS/鱼类比率 1:2/
+         大鼠跨模态/蜜蜂 ≤4 计数
+      ② Animal cognition (Wikipedia): 爬行动物 (蛇等) 认知范围/
+         头足类 (章鱼) 认知丰富, 独立演化 6 亿年
+      ③ Bacterial motility (Wikipedia): 细菌趋化性 chemotaxis —
+         感受器 + 信号转导, 鞭毛仅两态旋转 (CW/CCW)
+      ④ Church & Meck (1984): 大鼠跨模态加法 (光闪+音调)
+      ⑤ Cuckoo finch (Wikipedia): 杜鹃雀拟态/宿主后代共存记录
+      - R102 (鱼类比率): 撤回 delta 归因, 改比率观测
+      - R101 (两大系统): ANS/PIS 的神经基础待查
+      - R098 (震荡): 注意力机制的相位?
+      - R072 (声明): 数感上限的声明化
+      结论: 鳍数不决定数感上限 (同 7 鳍不同上限); 无鳍动物数感知
+      空白; delta 归因撤回; 神经结构/注意力是开放方向。
+
+    ★ 支撑:
+      - Wikipedia: Number sense in animals / Animal cognition (检索)
+  formal_math: |
+    -- 鳍数: 食蚊鱼 = 孔雀鱼 = 7 鳍 (同科); 上限 3 vs 4
+    -- 神经结构: 交感/副交感/肠 (数感的管理系统待查)
+    -- 比率 1:2: 观测 (不归因 delta)
+
+objects: []
+
+definitions_used:
+- R102 / R101 / R098 / R072
+
+assumptions:
+- "鳍数不决定数感上限 (同 7 鳍不同上限)"
+- "无鳍动物数感知研究空白"
+- "神经结构/注意力 = 开放方向"
+
+conclusion: "用户立场记录 (2026-08-12): 鳍数不决定数感上限 (食蚊鱼/孔雀鱼同
+  7 鳍, 上限 3 vs 4); 无鳍动物数感知空白; 鱼类比率 1:2 不归因 delta
+  (杜鹃证否); 神经结构 (交感/副交感/肠) 与注意力是开放方向。"
+
+known_special_cases:
+  - "食蚊鱼: 7 鳍, 上限 3"
+  - "孔雀鱼: 7 鳍, 上限 4"
+  - "无鳍动物: 数感知研究空白"
+
+counterexample_search:
+  status: done
+  search_space: "鳍数/无鳍动物/神经结构 (检索)"
+  smallest_checked_size: null
+  result: "鳍数相同上限不同 ✓; 无鳍空白 ✓; 神经方向 OPEN"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "鳍数相同是初步: 需确认实验用鱼性别/品系"
+  - "无鳍空白是检索范围: 非文献全无"
+  - "delta 归因已撤回: 比率是观测非机制"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 单细胞/原核/神经反射数感知检索 ② 注意力机制 vs 数感上限 ③ 奇偶性震荡验证"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 检索 + claim 落盘。
+  R102 的 delta 归因撤回已记录。"
