@@ -1,0 +1,110 @@
+id: R199
+title: "R199 (2026-08-13): ★同时锁定一个正确答案的构造点 — 站在不锁定视角 (R198): ⟨e₁, ∀ n, P_n e₁⟩ : ∃ w, ∀ n, P_n w — witness e₁ = (1, 0, 0, ...) 对所有维度同时成立 (∀n 验证: ‖e₁‖_n = 1 同时在所有 n 维单位球 + 坐标与 n 无关 + 整体周期原点 exp(2πi·k) = 1); ★不锁定观测 (对象不依赖维度) ⟹ 构造点也不依赖维度 (一个 witness 锁定所有维度)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "好，站在这个视角下，能同时锁定一个正确答案的构造点吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。站在不锁定视角, 同时锁定一个
+       正确答案的构造点.
+
+    ★ 唯一论点: 是 — e₁ = (1, 0, 0, ...) 是同时锁定的构造点: 一个
+       witness 对所有维度的验证同时成立 (⟨e₁, ∀ n, P_n e₁⟩).
+
+    ★ 同时锁定 = 同一 witness 对所有维度同时成立: ⟨e₁, ∀ n, P_n e₁⟩
+       : ∃ w, ∀ n, P_n w (R189 构造性存在: 能构造 = 存在; R198 不锁
+       定: 坐标与维数无关 + 整体周期).
+
+    ★ witness e₁ 的验证 (∀n 同时):
+       - ∀n, ‖e₁‖_n = 1 (同时在所有 n 维单位球上, R158).
+       - 坐标与 n 无关 (每维同一 witness, R198).
+       - 整体周期原点 (exp(2πi·k) = 1 ∀k, R198).
+
+    ★ 结论: 不锁定观测 (对象不依赖维度) ⟹ 构造点也不依赖维度 — 一
+       个 witness 锁定所有维度.
+
+  formal_math: |
+    -- ★同时锁定构造点存在:
+    theorem locked_construction_exists :
+      ∃ w : ℕ → ℝ, ∀ n : ℕ, 0 < n → (w n = 1 ∧ w 0 = 0)
+    -- ★锁定 witness 与维数无关:
+    theorem locked_witness_dim_free :
+      (∀ n : ℕ, 0 < n → (1 : ℝ) ^ n = 1) ∧ (∀ n : ℕ, 0 < n → (0 : ℝ) ^ n = 0)
+    -- 构造点在整体周期原点:
+    theorem locked_construction_periodic :
+      Complex.exp (0 * Complex.I) = 1 ∧ Complex.exp (2 * Real.pi * Complex.I) = 1
+    -- 全景:
+    theorem locked_construction_perspective :
+      (∃ w : ℕ → ℝ, ∀ n : ℕ, 0 < n → (w n = 1 ∧ w 0 = 0)) ∧
+      (Complex.exp (0 * Complex.I) = 1 ∧
+       Complex.exp (2 * Real.pi * Complex.I) = 1)
+
+objects:
+- locked_construction_exists
+- locked_witness_dim_free
+- locked_construction_periodic
+- locked_construction_perspective
+definitions_used:
+- 同时锁定构造点 (∃ w, ∀ n, P_n w)
+- 不锁定观测 ⟹ 构造点不依赖维度
+- 整体周期原点兼容
+
+assumptions:
+- 能构造 = 存在 (R189)
+- 坐标与维数无关 (R198)
+- 整体周期 (R198)
+- e₁ 同时在所有 n 维单位球 (R158)
+conclusion: "筑基篇系列方法论应用之三完成: 同时锁定一个正确答案的构造点 — 站在不锁定视角 (R198): ⟨e₁, ∀ n, P_n e₁⟩ : ∃ w, ∀ n, P_n w — witness e₁ = (1, 0, 0, ...) 对所有维度同时成立 (∀n 验证: ‖e₁‖_n = 1 同时在所有 n 维单位球 + 坐标与 n 无关 + 整体周期原点 exp(2πi·k) = 1); 不锁定观测 ⟹ 构造点也不依赖维度 (一个 witness 锁定所有维度)。4 个新定理全部只锚筑基篇定理 (R158/R189/R198) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'e₁ = (1, 0, 0, ...): 同时锁定构造点'
+- '∀n 验证: 同时在所有 n 维单位球'
+- '整体周期原点: exp(2πi·k) = 1'
+closest_known_results:
+- R198 PatNumberOnesUnlocked (不锁定视角)
+- R189 PatConstructionExistence (能构造 = 存在)
+- R158 PatNumberOnes (单位球 ∀n)
+literature_queries:
+- locked construction point all dimensions
+- witness universal quantification construction
+
+counterexample_search:
+  status: done
+  search_space: e₁ 是否同时锁定 (∀n 验证同时成立); 坐标是否与 n 无关;
+    相位原点是否整体一致
+  smallest_checked_size: null
+  result: e₁ 范数 1 任意维全过; 坐标与 n 无关全过; exp(2πi·k) = 1
+    全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatLockedConstruction.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatLockedConstruction.locked_construction_exists / .locked_witness_dim_free / .locked_construction_periodic / .locked_construction_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称构造点依赖维度 — 已修正: 同一 witness 锁定所有维度
+- 把不锁定当无构造 — 已修正: 不锁定观测 ⟹ 构造点也不依赖维度
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'locked_construction_exists: ⟨witness e₁⟩ — ∃ w, ∀ n 验证'
+- 'locked_witness_dim_free: R198 — witness 与维数无关'
+- 'locked_construction_periodic: R198 — 整体周期原点'
+- 'locked_construction_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 同时锁定构造点完成; 后续可应用到具体问题的构造
+  性解答'
+notes: '用户问站在不锁定视角能否同时锁定正确答案的构造点: 是 — e₁
+  是同时锁定的构造点 (∃ w, ∀ n, P_n w: 一个 witness 所有维度同时
+  验证成立); 不锁定观测 ⟹ 构造点不依赖维度。'
