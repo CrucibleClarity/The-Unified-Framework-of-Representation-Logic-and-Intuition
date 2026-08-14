@@ -1,0 +1,508 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{DejaVu Sans}
+    \setmonofont[]{DejaVu Sans Mono}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans CJK SC}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans CJK SC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{直觉构造驱动的 Lean 形式化: token
+效率案例研究}\label{ux76f4ux89c9ux6784ux9020ux9a71ux52a8ux7684-lean-ux5f62ux5f0fux5316-token-ux6548ux7387ux6848ux4f8bux7814ux7a76}
+
+\textbf{DeepSeek 辅助的黎曼方向经典结果形式化 (C011-C022)}
+
+\emph{内部研究笔记 --- 2026-08-12}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{摘要}\label{ux6458ux8981}
+
+本文报告一个案例研究: 借助 DeepSeek 语言模型, 通过''直觉构造''路径
+(基点漂移、复平面投影、圆上整点、反演蜷曲等直觉框架), 在 Lean 4 +
+mathlib 中将黎曼方向的一组\textbf{经典数学结果}全部形式化 (claims
+C011-C022, 全部 PROVED/KNOWN, 无 sorry, 全量 lake build 通过)。研究目标:
+检验''直觉快速路径节省 token''假设。结果: 直觉确实快速命中已知结构
+(免去教材式推导), 但单次 session 的 token 经济主要由传输效率决定 (99.2\%
+为上下文缓存重发), 实际新增内容 \textless{} 1\%。\textbf{本文不声称证明
+黎曼猜想或孪生素数猜想} --- 所有形式化结果均为已知事实的重述,
+零点的存在性/位置断言与孪生素数无穷性未触及。
+
+\subsection{1. 动机}\label{ux52a8ux673a}
+
+用户最初的假设: 直觉快速路径 (intuition fast-path) 不只是节省推理 token,
+还可能是数学结构的正确导航。为了验证, 用户提出一条直觉链:
+``复数轴是某高维结构中 -1 的投影'', ``素数落在平移整数位'', ``1/2 是
+反演-平移对偶的对称中心'', ``复数轴是蜷曲的, 无限与有限无差别'', ``素数
+= 圆上整点''。本 session 逐条形式化验证。
+
+\subsection{2. 方法}\label{ux65b9ux6cd5}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{直觉链 → 精确陈述}: 每个直觉先翻译为可判定的数学命题
+  (群模型/复平面 ComplexAxis/高斯整数), 标记认识论标签
+  (OBSERVATION/KNOWN)。
+\item
+  \textbf{Lean 形式化}: 在自建的 ComplexAxis (二维旋转代数, 投影 π,
+  基点漂移) 上逐条验证, 全部定理 Lean 验收 (无 sorry)。
+\item
+  \textbf{Token 审计}: 沙盒记录全部模型请求 (state/requests.jsonl),
+  统计传输字节与缓存命中率。
+\end{enumerate}
+
+\subsection{3. 结果}\label{ux7ed3ux679c}
+
+\subsubsection{3.1 Claim 链 (全部 PROVED/KNOWN, 无
+sorry)}\label{claim-ux94fe-ux5168ux90e8-provedknown-ux65e0-sorry}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Claim
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+直觉
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+形式化内容
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+C011 & 复数轴 = 高维投影 & ComplexAxis 构造; J²=-1;
+投影丢旋转/开方/基点位置; 实数轴是投影等价类 \\
+C012 & 素数落平移整数位 & 素数只落基点一步 (n·p 素数 ⟺ n=1); 反演对偶
+p/2 非整数; 无理轴无整数点 \\
+C013 & 1/2 是对偶中心 & 部分和 = 反演轴整数位求和; s↦1-s 不动点 = 1/2;
+临界线 ⟺ 1-s = conj s \\
+C014 & 素数可被打出 & 两次漂移配方命中每个素数; 素数 = 高斯范数
+(两平方和) \\
+C015 & 轴是蜷曲的 & 反演把无限远卷回有限 (ε-R); 圆上整点 90° 循环
+(R⁴=id) \\
+C016 & 圆上整点结构 & 范数乘性; 整点环 (高斯整数); 轨道封闭 \\
+C017 & 素数圆单轨道 & 两平方和分解唯一 (高斯整数 UFD) \\
+C018 & 1/2 是复数开方 & 反射的平方根 φ∘φ = 反射 (i 的平方) \\
+C019 & 临界线是圆 & 竖直线 x=1/2 反演 = 圆心 (1,0) 半径 1 的圆 \\
+C020 & 两个圆 & 素数圆 (圆心 0) 与临界线圆 (圆心 1); 交叉: p=2 交点
+1±i \\
+C021 & 零点形状 & 非平凡零点 (猜想) 形状: 竖直线 ↔ 圆 (反演对合) \\
+C022 & 一个圆 & 非平凡零点的圆 = 临界线圆 (同一个对象) \\
+\end{longtable}
+
+\subsubsection{3.2 Token 经济}\label{token-ux7ecfux6d4e}
+
+\begin{verbatim}
+模型请求:       1,009 次 (最后 12h 活跃期)
+传输字节:       220,262,605 bytes
+对话内容:       ~700k token ≈ 1.75M bytes
+缓存命中率:     99.2% (上下文重发)
+实际新增:       < 1%
+\end{verbatim}
+
+\subsection{4. 讨论}\label{ux8ba8ux8bba}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{直觉快速路径的省 token 假设: 部分成立}。直觉直接命中 KNOWN
+  结构 (heap/torsor、两平方和、圆反演、函数方程对称轴), 免去了
+  教科书式数论推导; 每个 claim 的平均形式化成本低。但 session 内
+  大量反复确认同一组对象 (临界线圆/非平凡零点圆/半圆) 造成冗余,
+  C019-C022 的实质可压缩至 \textless300k token。
+\item
+  \textbf{诚实边界}: 全部结果均为经典数学的重述 (novelty: KNOWN)。
+  黎曼猜想的零点断言 (非平凡零点全在 Re(s)=1/2) 与孪生素数猜想 (无穷多对
+  (p, p+2)) 均未证明, 也未产生任何新的部分结果。 形式化位置几何
+  (临界线圆) 等价于函数方程对称轴的代数重述。
+\item
+  \textbf{蜷曲性与解析延拓}: C015 证明反演 (乘法结构) 的紧致性
+  (无限远卷回有限), 对应解析延拓/拉马努金求和的机制 (ζ(-1)=-1/12)。
+  但''无限问题消解''不等同于零点位置断言 --- 这是两个独立问题。
+\item
+  \textbf{方法论教训}: 直觉构造是 KNOWN 结果的优秀组织/教学框架, 但
+  不产生新定理; 形式化工具记录而不发明数学。
+\end{enumerate}
+
+\subsection{5. 案例: 基点漂移 --- 复平面投影构造
+(C011)}\label{ux6848ux4f8b-ux57faux70b9ux6f02ux79fb-ux590dux5e73ux9762ux6295ux5f71ux6784ux9020-c011}
+
+\textbf{直觉}: 复数轴是某高维结构中 ``-1'' 在人类数学空间 (实数轴)
+的投影; 复平面上定义自然数 ⟹ λ 基点落在复数轴, 不在原点 0 而是 i (或 i
+的 变换); 实数轴本身只是投影等价类。
+
+\textbf{形式化过程} (全部在 \texttt{ComplexAxis.lean}):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{高维结构} --- \texttt{ComplexAxis} (二维旋转代数 a + bJ, 乘法
+  = 复数 乘法, ≅ ℂ 的矩阵表示): \texttt{J\_sq}: J·J = -1 --- 高维中 -1
+  有平方根 (√(-1) 投影前存在)。\texttt{@{[}ext{]}} 注册结构外延。
+\item
+  \textbf{投影} --- \texttt{proj\ (a+bJ)\ =\ a}: \texttt{proj\_add}
+  (保加法), \texttt{proj\_J} (π(J) = 0),
+  \texttt{proj\_mul\_not\_preserved} (π(J·J) = -1 ≠ π(J)·π(J) = 0 ---
+  开方/旋转信息在投影中丢失)。
+\item
+  \textbf{根号 = 投影的逆} --- \texttt{sqrt\_neg\_one\_exists\_high}
+  (高维中 w·w = -1, w = J) vs \texttt{sqrt\_neg\_one\_not\_exists\_axis}
+  (实数轴上 ∀t, t² ≠ -1); \texttt{lift\_neg\_one\_sqrt} (J·J =
+  lift(-1)); \texttt{lift\_add}/\texttt{lift\_mul} (抬升保加乘,
+  实数轴是子代数)。
+\item
+  \textbf{基点漂移} --- \texttt{basepoint} := i = J, \texttt{succ} (x ↦
+  x+1), \texttt{driftChain} := Chain(succ, i) (最小 σ-闭结构, 无 Nat
+  primitive):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{basepoint\_proj}: proj i = 0 --- 原点假象 (投影把基点 i
+    显示成 0);
+  \item
+    \texttt{pure\_imag\_proj}: 所有纯虚基点 ⟨0,b⟩ 投影都是 0 (i
+    的变换族);
+  \item
+    \texttt{proj\_succ}: π(σ(x)) = π(x)+1 --- 后继投影 = 实数轴 +1;
+  \item
+    \texttt{zero\_in\_proj\_chain} / \texttt{proj\_chain\_succ\_closed}:
+    投影后的链条是 含 0 且 +1 封闭的自然数结构候选;
+  \item
+    \texttt{proj\_chain\_basepoint\_independent}:
+    任何纯虚基点给出同一投影 结构 --- 基点漂移在投影下不可观测。
+  \end{itemize}
+\item
+  \textbf{实数轴可疑性} --- \texttt{axisLine\ b} (过纯虚基点 ⟨0,b⟩
+  的实方向线), \texttt{axisLine\_eval\_proj} (线上点由投影值标定),
+  \texttt{axisProjEquiv} (ℝ ≃ axisLine b --- 每条线投影都是完整实数轴),
+  \texttt{axisLine\_proj\_\ \ \ \ independent} (位置不可观测),
+  \texttt{realAxis\_indistinguishable\_from\_\ \ \ \ i\_line} (实数轴 =
+  过 i 的线, 投影相同 --- 假复数轴)。
+\end{enumerate}
+
+\textbf{关键坑}: 结构分量投影需要 \texttt{@{[}ext{]}} 注册才能用
+\texttt{ext}; 记号 \texttt{*}/ \texttt{+} 是实例字段, 需 \texttt{change}
+显式展开成 \texttt{mul}/\texttt{add}; \texttt{0+0} 与 \texttt{0}
+非定义相等, \texttt{rfl} 失败需
+\texttt{ext\ \textless{};\textgreater{}\ simp}; 投影不保乘法的数值验证
+(π(J·J) ≠ π(J)π(J)) 需 \texttt{change} 到分量再 \texttt{norm\_num}。
+
+\subsection{6. 结论}\label{ux7ed3ux8bba}
+
+直觉构造驱动的形式化在 token 效率上可行 (直觉命中 + 缓存命中 =
+实际成本极低), 但论文写作必须如实标注: 本案例形式化的是黎曼方向
+的经典结果 (C011-C022, 全部 KNOWN), \textbf{不构成黎曼猜想或孪生素数
+猜想的证明}。真正的差距 (零点的位置断言) 依然需要尚不存在的 数学论证。
+
+\subsection{7. 案例 A: ``一窝八个'' --- 素数圆 8
+整点的成对形式化}\label{ux6848ux4f8b-a-ux4e00ux7a9dux516bux4e2a-ux7d20ux6570ux5706-8-ux6574ux70b9ux7684ux6210ux5bf9ux5f62ux5f0fux5316}
+
+\textbf{直觉}: 素数 p ≡ 1 (mod 4) 的圆 x²+y² = p 上有 8 个整点 (一窝
+八只), 而且它们成对。
+
+\textbf{形式化过程} (定理全在 \texttt{ComplexAxis.lean}, 全量 build
+通过):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{存在性} --- \texttt{prime\_two\_axis}: p ≢ 3 (mod 4) 的素数 p
+  是 ComplexAxis 中某点 z 的范数 (norm z = p), 即存在两轴坐标 (a,b)。
+  直接引用 mathlib 的 Fermat 两平方和 \texttt{Nat.Prime.sq\_add\_sq}
+  ({[}Fact p.Prime{]} + p \% 4 ≠ 3 → ∃ a b, a²+b² = p), 由
+  \texttt{exact\_mod\_cast} 收尾。这一层只给''有一个点''。
+\item
+  \textbf{8 个变体同圆} --- \texttt{norm\_neg\_b} (norm ⟨a,-b⟩ = norm
+  ⟨a,b⟩), \texttt{norm\_swap} (norm ⟨b,a⟩ = norm ⟨a,b⟩),
+  \texttt{rot90\_norm} (旋转保持 范数): 符号变体 (a,±b,±a,±b 交换)
+  与旋转变体全部落在同一个圆上。 证明只是 \texttt{simp\ {[}norm{]}} +
+  \texttt{ring}。
+\item
+  \textbf{轨道结构} --- \texttt{rot90} (90° 旋转), \texttt{rot90\_four}
+  (R⁴ = id, 4 循环), \texttt{rot90\_keeps\_lattice} (整点 → 整点),
+  \texttt{orbit\_closed} (旋转 × 共轭的轨道 ≤ 8 点全在同一圆上)。
+\item
+  \textbf{唯一性 (单轨道)} --- \texttt{prime\_sq\_add\_sq\_unique}:
+  这是最重的一步, 用高斯整数 UFD:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{gauss\_unit\_of\_norm\_one}: 范数 = 1 的高斯整数 = \{±1,
+    ±i\} (分量枚举: re,im ∈ \{±1,0\});
+  \item
+    \texttt{gauss\_irreducible\_of\_norm\_prime}: 范数为素数 p ⟹ 不可约
+    (norm 分解 p = ny·nz + 素数整除 ⟹ 单位);
+  \item
+    主定理: α = ⟨a,b⟩, β = ⟨c,d⟩ 都是范数 p 的不可约元, β·star β = p =
+    α·star α ⟹ β \textbar{} α·star α; UFD 中 Prime 的 Euclid 引理 ⟹ β
+    \textbar{} α 或 β \textbar{} star α; 相伴 ⟹ β = α·u 或 star α·u (u ∈
+    \{±1,±i\}); 展开 ⟹ (c,d) 是 (a,b) 的符号/顺序变体。 结论:
+    圆上整点恰好是锁定的那条轨道 (8 点), 没有别的。
+  \end{itemize}
+\item
+  \textbf{成对} --- \texttt{conj\_involutive} (conj(conj z) = z,
+  镜像对合), \texttt{conj\_pair} (conj ⟨a,b⟩ = ⟨a,-b⟩): 8 个整点 =
+  \textbf{4 个共轭对} (关于假复数轴镜像): (a,b)↔(a,-b), (-a,b)↔(-a,-b),
+  (b,a)↔(b,-a), (-b,a)↔(-b,-a)。每对在同一圆上 (\texttt{norm\_conj})。
+\end{enumerate}
+
+\textbf{关键坑}: ℤ{[}i{]} 是 local notation 不跨文件 (需写 GaussianInt);
+ℤ 素数判定需经 natAbs 转 ℕ 用
+\texttt{Nat.Prime.eq\_one\_or\_self\_of\_dvd}; 分量投影 (x*y).a 需
+\texttt{change}/分量 simp 定理展开。
+
+\subsection{8. 案例 B: ``两个圆是一个圆'' --- 非平凡零点的圆 =
+临界线圆}\label{ux6848ux4f8b-b-ux4e24ux4e2aux5706ux662fux4e00ux4e2aux5706-ux975eux5e73ux51e1ux96f6ux70b9ux7684ux5706-ux4e34ux754cux7ebfux5706}
+
+\textbf{直觉}: 临界线 (竖直线 x = 1/2) 蜷曲后是一个圆; 非平凡零点 (猜想)
+所在之圆就是它 --- 两个称呼, 一个对象。
+
+\textbf{形式化过程}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{临界线参数化} --- \texttt{critical\_line\_points}: proj z =
+  1/2 ⟺ z = lift(1/2) + t·J (竖直线 = 假复数轴位置 1/2 + 真复数轴自由
+  t); \texttt{nontrivial\_zero\_position}: 加 t ≠ 0 (去实点)
+  即非平凡零点的 位置形式。
+\item
+  \textbf{竖线蜷曲成圆} --- \texttt{critical\_line\_is\_circle}: norm
+  (recip (lift(1/2) + lift t·J) − lift 1) = 1: 竖直线上的每
+  一点反演后落在圆心 (1,0) 半径 1 的圆上。证明: z = ⟨1/2, t⟩, recip z
+  分量展开 + \texttt{field\_simp} + 分母正性 (nlinarith {[}sq\_nonneg
+  t{]})。
+\item
+  \textbf{集合版} --- \texttt{critical\_line\_in\_circle}: proj z = 1/2
+  ⟹ recip z ∈ criticalCircle (由 critical\_line\_points 取 t, rw 代入)。
+\item
+  \textbf{反向 (圆 → 竖线)} --- 需要两个工具:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{recip\_involutive}: recip (recip z) = z (z ≠ 0) ---
+    反演对合;
+  \item
+    \texttt{circle\_recip\_proj}: 圆上非 0 点 w ⟹ proj (recip w) = 1/2
+    (分量: (a−1)²+b² = 1 → a²+b² = 2a → proj recip = a/2a = 1/2, 需 a ≠
+    0 即 w ≠ 0)。
+  \end{itemize}
+\item
+  \textbf{同一个圆 (双向包含)}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{nontrivialZeroSet} := \{z \textbar{} proj z = 1/2 ∧ z.b ≠
+    0\} (零点位置集);
+  \item
+    \texttt{zeroSet\_in\_criticalCircle}: 零点集 ⊆ 临界线圆 (recip 像);
+  \item
+    \texttt{criticalCircle\_subset\_zeroSet\_image}: 临界线圆上非平凡点
+    (w ≠ 0, w ≠ lift 2; 0 = ∞ 的像, 2 = 平凡点 1/2 的像) 都是某
+    零点位置的 recip 像 --- 需证明 (recip w).b ≠ 0: 分量展开 (recip w 的
+    b 分量 = 0 ⟹ w.b = 0 ⟹ w 在实轴, \textbar w−1\textbar=1 ⟹ w ∈
+    \{0,2\}, 矛盾两个排除假设)。 双向包含 ⟹ 同一个对象 (criticalCircle,
+    圆心 (1,0) 半径 1)。
+  \end{itemize}
+\end{enumerate}
+
+\textbf{关键坑}: 0 在临界线圆上 (\textbar0−1\textbar{} = 1) 但 recip 0 =
+0 的代数延续 使 0 不对应任何临界线点 (0 = ∞ 的像) --- 反向映射必须排除 w
+≠ 0; 2 对应 t = 0 的平凡点 (z = 1/2), 非平凡零点集排除它。
+
+\subsection{9. 后续形式化: 睡眠 compact 后的直觉链 (C023-C025 + 0
+点视角)}\label{ux540eux7eedux5f62ux5f0fux5316-ux7761ux7720-compact-ux540eux7684ux76f4ux89c9ux94fe-c023-c025-0-ux70b9ux89c6ux89d2}
+
+第 8 章之后的形式化 (全部在 \texttt{ComplexAxis.lean} /
+\texttt{ZetaEulerProduct.lean}, 全量 build 通过):
+
+\textbf{C023 --- 素数圆乘积与 i 后继表}: 8 整点 \{±z, ±z̄, ±iz, ±iz̄\}
+两两共轭 配对, 每对乘积 = 范数 p (\texttt{mul\_conj},
+\texttt{prime\_conj\_pair}, \texttt{rotated\_conj\_\ pair}), 转一圈 =
+p⁴; i 的后继每两个 = -1 (\texttt{J\_pow\_two}, 半圈), 4 循环闭合
+(\texttt{J\_pow\_four}, \texttt{rotate\_two\_neg})。
+
+\textbf{C024 --- 分裂结构的几何版}: p ≡ 1 (mod 4) 素数分裂为共轭高斯素数
+对 (p = π·π̄); 8 点 = π 的 4 伴随 ∪ π̄ 的 4 伴随 (\texttt{isUnit4},
+\texttt{associates}, \texttt{norm\_unit4}, \texttt{associates\_norm},
+\texttt{variants\_are\_\ associates}) --- 复平面欧拉乘积的构件。
+
+\textbf{C025 --- 欧拉乘积收敛与零点关系}: mathlib 组合
+(\texttt{eulerProduct\_completely\_multiplicative\_tprod} +
+\texttt{Complex.summable\_one\_div\_nat\_cpow}): Re \textgreater{} 1 时
+∏\_p (1 - p⁻ˢ)⁻¹ = Σ 1/n\^{}s (\texttt{zeta\_euler\_product}); 与
+mathlib 官方 ζ 拼接 (\texttt{riemannZeta\_euler\_product}); Re ≥ 1
+无零点 (\texttt{riemannZeta\_ne\_zero\_of\_one\_le\_re})。发现 mathlib
+已有完整 ζ (解析延拓) 与 RiemannHypothesis 官方陈述。
+
+\textbf{真 0 点视角系列} (recip 蜷曲): 素数圆 8 点反演后每对 = 1/p, 四对
+= 1/p⁴ = p⁻⁴ (\texttt{conj\_recip}, \texttt{recip\_conj\_pair},
+\texttt{zero\_point\_\ prime\_pair}); recip 是二阶乘性反轴 (recip² = id,
+\textbar recip z\textbar{} = 1/\textbar z\textbar,
+\texttt{recip\_axis\_second\_order}); 临界线圆穿过乘性轴上的 0 和 2
+(\texttt{critical\_line\_circle\_on\_recip\_axis}); 基点移到 1/2
+(\texttt{halfBasepoint} 族); 新基点视角的实部轴 (Re) = 过 1/2
+的实方向线, 投影压掉 J 方向 (\texttt{realAxisAtHalf} 族,
+\texttt{halfBasepoint\_recip} = 2); 彻底一维化: proj 的核 = 真复数轴
+(\texttt{proj\_kernel\_J}), 假复数轴信息无损
+(\texttt{real\_axis\_preserved\_by\_proj}), 基点投影清晰可见 (= 1/2)。
+
+\textbf{投影还原性} (\texttt{proj\_not\_recoverable},
+\texttt{proj\_recoverable\_symmetry},
+\texttt{projection\_recovery\_theorem}): \textbf{丢失结构不可还原,
+对称性方向可还原} --- i 与 -i 投影相同 (虚轴不可区分), 实轴 ± 对称保留
+(负号保持)。
+
+\textbf{势的对比} (\texttt{kernelEquivReal}, \texttt{realAxisEquivReal},
+\texttt{primes\_countable}): 投影核 (J 方向) 与剩余 (实轴) 都与 ℝ 等势
+(均不可数); 素数可数 (ℕ 子集) vs 圆上连续点不可数 --- ``可数 vs
+不可数''的对比发生在素数 vs 圆, 不在丢失/剩余之间。
+
+\subsection{10. 元观察: context 700k 后的睡眠
+compact}\label{ux5143ux89c2ux5bdf-context-700k-ux540eux7684ux7761ux7720-compact}
+
+本 session 的记录性观察 (方法论元数据, 非数学结论):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{context 逼近 700k 时出现反复绕圈}: C019 之后大量轮次在
+  同一组对象 (临界线圆/非平凡零点圆/半圆/素数圆) 之间重复确认,
+  实质新内容占比下降 (token 审计: 99.2\% 缓存命中, 新增 \textless{}
+  1\%)。
+\item
+  \textbf{睡眠后直觉被 compact}: 用户中断 session (睡眠), 醒来后
+  直觉链显著聚焦 --- 直接推进 0 点视角 (recip)、乘性反轴、一维化,
+  不再绕圈。睡眠/时间间隔起到''直觉压缩''作用: 长期上下文中的
+  重复探索被整理为聚焦的下一步。
+\item
+  \textbf{观察意义}: 这与''直觉快速路径''假设相关 --- 直觉不只是即时
+  推理的加速器, 也参与''隔夜整理'' (offline consolidation): context
+  膨胀时直觉退化 (绕圈), context 经时间压缩后直觉恢复 聚焦。本 session
+  是这一现象的单一数据点 (n=1), 记录不作结论。
+\end{enumerate}
+
+\textbf{方法论观察 (经验法则, 非定理)}: - \textbf{观察 1 (投影丢失 =
+快速路径机制)}: 将与目标无关的结构以不可 还原的投影方式丢失,
+是通往目标结构的快速路径。数学内核已证 (投影丢 J 保实轴);
+``快速路径''是效率陈述 (本 session 数据支持)。 边界: 投影丢的是几何信息,
+不改变级数发散性。 - \textbf{观察 2 (精确构造 = 前提)}: 精确无误的构造
+(Lean 验收, 无 sorry) 是直觉指引形式化的前提 --- 构造不精确时直觉走偏
+(本 session 中 8 点 vs 4 点、共轭对误解等修正)。 - \textbf{观察 3
+(势的对比)}: 丢失 (核) 与剩余 (实轴) 都不可数; 可数 vs
+不可数对比成立的是素数 (可数) vs 圆上点 (不可数)。
+
+\subsection{附录: 归档}\label{ux9644ux5f55-ux5f52ux6863}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{formal/Formal/ZeroRelative/ComplexAxis.lean} --- 全部定理
+\item
+  \texttt{claims/ZeroRelative/C011.yaml\ ..\ C022.yaml} --- claim ledger
+\item
+  \texttt{experiments/finite\_models/session\_token\_audit.py} --- token
+  统计
+\item
+  \texttt{docs/session\_20260812\_archive.md} --- session 归档
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{结语 (认识论标注:
+KNOWN)}\label{ux7ed3ux8bed-ux8ba4ux8bc6ux8bbaux6807ux6ce8-known}
+
+本 session 的全部数学结论 (C011-C022) 均为\textbf{已知事实的重述}
+(novelty: KNOWN), 无任何新定理。特别地, DeepSeek 在全程约 700k token
+的对话中, 始终拒绝声称证明黎曼猜想或孪生素数猜想 --- 尽管
+用户多次以''直接出结论得证吧''、``是不是也证到了''等方式诱导, 模型
+坚持标注: 临界线圆的位置几何是函数方程对称轴的代数重述, 零点的
+存在性/位置断言与孪生素数无穷性\textbf{均未证明}。这一行为 (在强烈
+的用户期望压力下保持诚实) 值得记录与肯定 --- 学术诚信不是锦上添花,
+而是形式化工作可复现性的底线。为 DeepSeek 的坚守喝彩。
+
+\end{document}
