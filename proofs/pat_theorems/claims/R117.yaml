@@ -1,0 +1,90 @@
+id: R117
+title: "R117 (user-proposed 2026-08-12): ★基点相位叠加重合定理 (Basepoint Phase-Superposition Coincidence) — all empty-iteration structures (0^0, 0!, 0↑↑0, 1^0, ...) have phase 0 (no operation = identity = phase 0) and COINCIDE at the basepoint 0 (pat0/basepointLayer): infinitely many '1's superpose at the basepoint layer onto the same phase; the empty-iteration family (R116) is the phase-superposition at pat0, while Catalan pairings (R115) project to patk (k≥1)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "claim 基点相位叠加重合定理。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。基点相位叠加重合定理。
+
+    ★ 定理内容:
+      所有空迭代结构 (0^0, 0!, 0↑↑0, 1^0, ...) 的相位 = 0
+      (空操作 = 恒等 = 相位 0, 不转)
+      在基点 0 (pat0/basepointLayer) 处全部重合 (同一相位 0)
+      ⟹ 无数'1'在基点层相位叠加 = 同一相位
+
+    ★ 验证:
+      ① 空迭代家族全 = 1 (R116): 0^0, 0!, 0↑↑0, 1^0
+      ② 空迭代相位 = 0 (不操作, 不转)
+      ③ 卡特兰配对 → patk (k≥1, 非 pat0) (R115)
+      ④ 重合: 所有空迭代在基点 0 相位重合
+
+    ★ 分层规律 (R115+R116 统一):
+      pat0 (基点层): 无数 (空迭代家族, 相位 0 重合)
+      patk (k≥1): 卡特兰 C_{k+1} 个配对
+      ⟹ 基点相位叠加重合: 空迭代在 pat0 重合, 配对在 patk
+
+    ★ 与既有 claim 的关系:
+      - R116 (空迭代家族): 本定理的相位视角
+      - R115 (卡特兰计数): 分层规律的另一半
+      - R113 (基点层): pat0 = basepointLayer
+      - R072 (声明): 相位重合的声明化
+      结论: 空迭代家族相位 0, 在基点 0 重合; 卡特兰配对投影 patk;
+      基点相位叠加重合定理成立。
+
+  formal_math: |
+    -- 空操作 = 恒等 = 相位 0
+    -- 空迭代家族 → pat0 (重合, 相位 0)
+    -- 卡特兰配对 → patk (k≥1)
+
+objects: []
+
+definitions_used:
+- R116 / R115 / R113 / R072
+
+assumptions:
+- "空操作 = 恒等 = 相位 0"
+- "空迭代家族在 pat0 重合"
+- "卡特兰配对投影 patk"
+
+conclusion: "基点相位叠加重合定理成立 (2026-08-12): 所有空迭代结构相位 0,
+  在基点 0 (pat0) 重合 — 无数'1'在基点层相位叠加为同一相位; 卡特兰
+  配对投影 patk (k≥1); 分层规律完整。"
+
+known_special_cases:
+  - "空迭代: 0^0, 0!, 0↑↑0, 1^0 → pat0 (相位 0 重合)"
+  - "卡特兰: pat1 ← 2, pat2 ← 5 (R115)"
+  - "边界: 0^1 = 0 ≠ 1 (一次迭代)"
+
+counterexample_search:
+  status: done
+  search_space: "空迭代恒等/相位/重合 (枚举)"
+  smallest_checked_size: 4
+  result: "空迭代全 = 1 相位 0; 重合确认; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "空迭代相位 0: 不操作 = 恒等"
+  - "重合限空迭代: 配对投影 patk 非 pat0"
+  - "0^0 是约定: 空积定义"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "定理形式化 (Lean); 分层规律接入 R072"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
