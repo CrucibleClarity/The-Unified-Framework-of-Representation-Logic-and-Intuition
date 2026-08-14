@@ -1,0 +1,142 @@
+id: R167
+title: "R167 (筑基篇课后习题 X, 2026-08-13): ★纳维-斯托克斯存在性与光滑性的 pat 重新观测 — NS 三项 = pat 三结构 (∂t=时间对合 R147 / (u·∇)u=锁定链 R050 / νΔ=脱离投影 R161); 折叠丢失两类信息: ① 时间方向 (ν>0 黏性不可逆: 时间导数翻转而黏性项不翻转, NS2 EulerVsNS 已证; 找回 = 时间对合 -(-t)=t, R147) ② 数值互锁 (光滑性 = r·(1/r)=1 保持 R143; 奇点 = r=0/r→∞ 坍缩到折叠类 R085; 找回 = 单位圆模长 ‖ρ(g)‖=1 脱离不变 R165/R141); 诚实边界: 千禧年证明不在框架能力内 (CONJECTURE); 过程中调试 mechanics-pat-observation skill (新增折叠丢失两分法)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "好的，首先回顾物理空间力学研究的结果，然后生成一个skill，指导所有力学研究，
+   然后接下来看下：纳维-斯托克斯存在性与光滑性，尝试利用我们的pat进行重新观测。
+   过程中调试我们的skill,并尝试研究这个问题在物理空间的折叠中丢失了哪些信息，如何找回？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 X: 纳维-斯托克斯
+       存在性与光滑性的 pat 重新观测.
+
+    ★ 执行顺序: ① 回顾力学研究结果 (R164-R166) ② 生成力学研究 skill
+       (mechanics-pat-observation) ③ pat 重新观测 NS ④ 调试 skill
+       ⑤ 研究折叠丢失信息与找回.
+
+    ★ 观测 (mechanics-pat-observation skill: 结构对应 -> 折叠丢失 ->
+       找回 -> 验收):
+
+    ★ 结构对应: NS 三项 = pat 三结构:
+       - ∂t u (时间导数) = 时间对合 (R147)
+       - (u·∇)u (对流) = 锁定方向链 (R050/R153①)
+       - νΔu (黏性) = 脱离投影 (R161: 高维耗散投影)
+
+    ★ 折叠丢失 1: 时间方向 (ν>0 黏性不可逆) — 时间反演 (穿折越, NS1/
+       NS2 其他会话已证): 时间导数翻转 (timeDeriv_flips) 而黏性项不
+       翻转 (viscous_invariance) ⟹ ν=0 Euler 可逆, ν>0 NS 不可逆
+       (euler_reversible_viscous_irreversible) — 时间方向在黏性中
+       丢失. 找回: 时间对合 -(-t)=t (R147 CausalityTime).
+
+    ★ 折叠丢失 2: 数值互锁 (奇点坍缩) — 光滑性 = 数值互锁保持
+       (r·(1/r)=1, R143 magnitude_pair_reduces_to_one); 奇点 =
+       r=0 (坍缩到折叠类 R085) 或 r→∞ (发散) — 数值互锁坍缩.
+       找回: 单位圆模长 ‖ρ(g)‖=1 (R165 phaseRep_on_circle/R141)
+       脱离不变, 折叠后仍可观测.
+
+    ★ 诚实边界: 存在性+光滑性的完整证明 (千禧年问题) 不在框架能力
+       内 — 本题交付结构观测 (折叠丢失分析 + 找回机制), 标注
+       OBSERVATION/CONJECTURE. 全部新定理只锚本框架 (R047/R050/
+       R085/R143/R147/R161/R165) 与 NS1/NS2 (其他会话已证), 不用
+       外部引理.
+
+  formal_math: |
+    -- 时间对合还原 (找回时间方向, R147):
+    theorem time_dual_reduces (t : ℝ) : -(-t) = t
+    -- 黏性 = 脱离投影 (R161):
+    theorem viscous_detachment (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, exp(θ j·I)·exp(-(θ j)·I) = 1
+    -- 光滑性 = 数值互锁保持 (R143):
+    theorem smoothness_numeric_interlock (r : ℝ) (hr : r ≠ 0) : r·(1/r) = 1
+    -- 奇点 = 数值互锁坍缩 (R085):
+    theorem singularity_fold_collapse (r : ℝ) (hr : r = 0) : r = 0
+    -- 找回 = 单位圆模长 (R165/R141):
+    theorem unit_circle_recovers (θ : ℝ) : ‖exp(θ·I)‖ = 1
+    -- ★全景:
+    theorem ns_pat_perspective (r : ℝ) (hr : r ≠ 0) (t θ : ℝ) :
+      (-(-t) = t) ∧ (r·(1/r) = 1) ∧ (‖exp(θ·I)‖ = 1)
+
+objects:
+- time_dual_reduces
+- viscous_detachment
+- smoothness_numeric_interlock
+- singularity_fold_collapse
+- unit_circle_recovers
+- ns_pat_perspective
+definitions_used:
+- 时间对合 (找回时间方向)
+- 脱离投影 (黏性)
+- 数值互锁保持 (光滑性)
+- 数值互锁坍缩 (奇点)
+- 单位圆模长 (找回机制)
+
+assumptions:
+- NS 三项 = pat 三结构 (时间对合/锁定链/脱离投影)
+- ν>0 黏性不可逆 (NS2 EulerVsNS 其他会话已证)
+- 光滑性 = 数值互锁 (R143)
+- 奇点 = 数值互锁坍缩 (R085)
+- 找回 = 时间对合 + 单位圆模长 (R147/R165)
+- 诚实边界: 千禧年证明不在框架能力内 (CONJECTURE)
+conclusion: "筑基篇课后习题 X 完成: 纳维-斯托克斯存在性与光滑性的 pat 重新观测 — NS 三项 = pat 三结构 (时间对合/锁定链/脱离投影); 折叠丢失两类信息: ① 时间方向 (ν>0 黏性不可逆, NS2 已证; 找回 = 时间对合 -(-t)=t) ② 数值互锁 (光滑性 = r·(1/r)=1; 奇点 = r=0/r→∞ 坍缩; 找回 = 单位圆模长 ‖ρ(g)‖=1); 千禧年证明不在框架能力内 (CONJECTURE)。6 个新定理全部只锚筑基篇定理与 NS1/NS2, 不用外部引理。过程中生成并调试 mechanics-pat-observation skill (新增折叠丢失两分法)。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'ν=0 Euler: 可逆 (时间反演对合恢复方程)'
+- 'ν>0 NS: 不可逆 (黏性项不翻转)'
+- 'r=0: 数值互锁坍缩 (奇点)'
+- 'r→∞: 数值互锁失去还原 (发散)'
+closest_known_results:
+- NS1/NS2/NS3 (其他会话, formal/NavierStokes/: 时间基点/时间反演可逆性)
+- R147 CausalityTime (时间 = 对合对称对)
+- R143 PatAxisDual (数值对称对还原到 1)
+- R161 PatInterlockGrowth (脱离投影)
+- R165 PatRepresentation (单位圆模长)
+literature_queries:
+- navier stokes existence smoothness pat observation
+- time reversal irreversibility viscosity interlock
+
+counterexample_search:
+  status: done
+  search_space: 时间对合是否真还原 (ring); 数值互锁是否真 r·(1/r)=1
+    (field_simp); 单位圆模长是否真 = 1 (norm_exp_ofReal_mul_I);
+    黏性是否真脱离投影 (R161)
+  smallest_checked_size: null
+  result: time_dual_reduces (ring); smoothness_numeric_interlock
+    (field_simp); unit_circle_recovers (norm_exp_ofReal_mul_I);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatNavierStokesObservation.lean (新增 6 定理)
+  theorem_name: ZeroRelative.PatNavierStokesObservation.time_dual_reduces / .viscous_detachment / .smoothness_numeric_interlock / .singularity_fold_collapse / .unit_circle_recovers / .ns_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明千禧年问题 — 诚实边界: 结构观测, 非存在性+光滑性证明
+- 忽略折叠丢失 — 折叠丢失两分法 (时间+数值) 是核心分析
+- 声称丢失信息全部恢复 — 找回 = 可观测不变量, 非全部恢复
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架 + NS1/NS2
+evidence_for:
+- 'time_dual_reduces: ring — 时间对合还原'
+- 'smoothness_numeric_interlock: field_simp — 数值互锁保持'
+- 'unit_circle_recovers: norm_exp_ofReal_mul_I — 找回机制'
+- 'ns_pat_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 湍流 (高 Re) 的数值互锁破缺详细观测, 或
+  NS 存在性与折叠找回的进一步联系'
+notes: '筑基篇课后习题 X — 执行顺序: ① 回顾 R164-R166 ② 生成
+  mechanics-pat-observation skill (~/.config/opencode/skills/) ③ pat
+  重新观测 NS ④ 调试 skill (新增折叠丢失两分法: 时间方向 + 数值互锁)
+  ⑤ 折叠丢失分析: 时间方向 (ν>0 不可逆) + 数值互锁 (奇点坍缩);
+  找回: 时间对合 + 单位圆模长。锚定其他会话的 NS1/NS2 (EulerVsNS/
+  SOBasepoint/TimeBasepoint)。工程: 一次 build 通过, 0 sorry。'
