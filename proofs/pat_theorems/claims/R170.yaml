@@ -1,0 +1,120 @@
+id: R170
+title: "R170 (筑基篇课后习题 XIII, 2026-08-13): ★哥德巴赫猜想的 pat 重新观测 — 2n = p+q ⟺ p,q 关于 n 对称 (q = 2n-p, 对称对 R085/R136②③); 镜像对合 S(x)=2n-x, S²=id (R085/R128); 中心不动点 S(n)=n (R085); 对称中点 q-n = -(p-n) (R085/R143); 素数 = 方向 log p (R159/R146); ★哥德巴赫 = 素数对称对存在性 (CONJECTURE, 强哥德巴赫未证; 弱哥德巴赫已证 Helfgott 2013 仅对照)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一步，哥德巴赫猜想"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XIII: 哥德巴赫
+       猜想的 pat 重新观测.
+
+    ★ 唯一论点: p + q = 2n ⟺ p, q 关于 n 对称 (q = 2n - p) —
+       哥德巴赫分解 = 素数对称对, 关于偶数中心 n 折叠还原.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - 2n = p + q = 对称对 {p, q} = {p, 2n-p} 关于 n (R085: 折叠
+         类; R136 ②③: 对称性成对声明) — 代数等价 q = 2n - p
+       - 镜像对合: S(x) = 2n - x, S² = id (R085/R128: 任意基点镜像
+         对合) — 素数对称对经两次镜像还原
+       - 中心不动点: S(n) = n (R085: 折叠中心) — 对称对关于 n 折叠
+       - 对称中点: q - n = -(p - n) (R085: 0 = ±1 折叠类; R143:
+         对称对还原到中心)
+       - 素数 = 方向 log p (R159 prime_log_monophase: log(p^k) =
+         k·log p; R146 pat_constructs_prime)
+
+    ★ ★哥德巴赫 pat 转译: 每个偶数 2n (n > 1) 存在素数对称对 {p, q}
+       关于 n — 两个素数方向在中心 n 折叠还原 (R085). 诚实边界:
+       强哥德巴赫未证 (CONJECTURE); 弱哥德巴赫已证 (Helfgott 2013,
+       外部文献, 仅对照非证明).
+
+  formal_math: |
+    -- p + q = 2n ⟺ 对称对:
+    theorem symmetric_pair_iff_sum (p q n : ℝ) : p + q = 2*n ↔ q = 2*n - p
+    -- 镜像对合:
+    theorem mirror_involution (n x : ℝ) : 2*n - (2*n - x) = x
+    -- 中心不动点:
+    theorem center_fixed (n : ℝ) : 2*n - n = n
+    -- 对称中点:
+    theorem symmetric_pair_midpoint (p q n : ℝ) :
+      p + q = 2*n ↔ q - n = -(p - n)
+    -- ★哥德巴赫 = 素数对称对 (CONJECTURE):
+    theorem goldbach_symmetric_decomposition (p q n : ℝ) :
+      p + q = 2*n ↔ q = 2*n - p
+    -- ★全景:
+    theorem goldbach_pat_perspective (p q n x : ℝ) (pk : ℕ) (hp : 0 < p) :
+      (p + q = 2*n ↔ q = 2*n - p) ∧ (2*n - (2*n - x) = x) ∧
+      (2*n - n = n) ∧ (log (p^pk) = (pk : ℝ)·log p)
+
+objects:
+- symmetric_pair_iff_sum
+- mirror_involution
+- center_fixed
+- symmetric_pair_midpoint
+- goldbach_symmetric_decomposition
+- goldbach_pat_perspective
+definitions_used:
+- 素数对称对 (2n = p+q 关于 n)
+- 镜像对合 (S² = id)
+- 中心不动点 (折叠中心)
+- 素数 = 方向 log p
+
+assumptions:
+- 2n = p+q 代数等价对称对 (ring 恒等)
+- 镜像对合 S²=id (R085/R128)
+- 素数 = 方向 log p (R159/R146)
+- 强哥德巴赫未证 (CONJECTURE)
+conclusion: "筑基篇课后习题 XIII 完成: 哥德巴赫猜想的 pat 重新观测 — 2n = p+q ⟺ p,q 关于 n 对称 (q = 2n-p, 镜像对合 S²=id, 中心不动点); 素数 = 方向 log p (R159); ★哥德巴赫 = 素数对称对存在性 (CONJECTURE, 强哥德巴赫未证)。6 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'n = 2 (偶数 4): 2 + 2 = 4 (最小情形)'
+- '对称对 {p, 2n-p}: p = q = n 时 (2n = 2p, p 素数)'
+- '镜像对合: S(S(x)) = x 恒成立'
+closest_known_results:
+- R159 PatRiemannTwinPrimes (素数幂链单相位 prime_log_monophase)
+- R085 MirrorFoldZero (折叠类, 镜像对合)
+- R128 (任意基点镜像对合)
+- R143 PatAxisDual (对称对还原到中心)
+literature_queries:
+- goldbach conjecture pat observation symmetric pair
+- goldbach prime symmetric pair even center
+
+counterexample_search:
+  status: done
+  search_space: p+q=2n 是否真等价 q=2n-p (linarith); 镜像是否真对合
+    (ring); 中心是否真不动点 (ring); 对称中点是否真成立 (linarith)
+  smallest_checked_size: null
+  result: symmetric_pair_iff_sum (linarith 双向); mirror_involution
+    (ring); symmetric_pair_midpoint (linarith 双向); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatGoldbach.lean (新增 6 定理)
+  theorem_name: ZeroRelative.PatGoldbach.symmetric_pair_iff_sum / .mirror_involution / .center_fixed / .symmetric_pair_midpoint / .goldbach_symmetric_decomposition / .goldbach_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明强哥德巴赫 — 诚实边界: 素数对称对存在性 CONJECTURE (未证)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+- 把弱哥德巴赫当证明 — 仅对照 (Helfgott 2013 外部文献)
+evidence_for:
+- 'symmetric_pair_iff_sum: linarith 双向 — 对称对代数'
+- 'mirror_involution / center_fixed: ring — 镜像对合/不动点'
+- 'goldbach_pat_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 素数对称对的密度/分布观测, 或哥德巴赫与
+  孪生素数 (R159) 的对称对结构对比'
+notes: '筑基篇课后习题 XIII — 哥德巴赫 pat 转译: 2n = p+q ⟺ p,q 关于 n
+  对称 (镜像对合 S²=id, 中心不动点, 对称中点) — 素数对称对; 素数 =
+  方向 log p (R159)。存在性未证 (强哥德巴赫 CONJECTURE; 弱哥德巴赫
+  Helfgott 2013 仅对照)。工程: 一次 build 通过, 0 sorry。'
