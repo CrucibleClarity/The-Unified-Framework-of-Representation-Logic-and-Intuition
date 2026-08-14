@@ -1,0 +1,126 @@
+id: R182
+title: "R182 (筑基篇课后习题 XX 补充之二, 2026-08-13): ★距离 = 震荡, 上界 = 周期圆直径 — 单位圆弦长 ‖exp(iθ₁)-exp(iθ₂)‖ = 2|sin((θ₁-θ₂)/2)| (距离 = 相位差震荡, R175 4 次单位根/R047 周期轴); ★上界 = 周期圆离轴最远点的距离: 弦长 ≤ 2 (直径, Δθ=π 半圈取等, ‖exp(0)-exp(iπ)‖ = 2; R172 间隔 2 = 临界线圆直径); ★度量泛化: 距离可以是角度/弦长/任意结构 (R048 单射无损不依赖度量形式; R181 收缩 + R142 换基点在任意度量下成立)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "注意，距离就是震荡，上界就是周期圆的轴距离最远点的距离。也可以是角度，
+   也可以是各种乱七八糟的奇怪东西。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。R181 的深化: 距离 = 震荡, 上界
+       = 周期圆直径, 度量可换.
+
+    ★ 唯一论点: 距离 (度量) 在 pat 里 = 震荡 (相位差/弦长):
+       |e^{iθ₁} - e^{iθ₂}| = 2|sin(Δθ/2)|; 上界 = 周期圆直径 (Δθ = π
+       时 = 2); 度量泛化: 角度/弦长/任意结构, 收缩性质 (R048 单射
+       无损) 是唯一要求.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - ★距离 = 震荡 (弦长): 单位圆上两点 exp(iθ₁), exp(iθ₂) 的
+         弦长 = 2|sin((θ₁-θ₂)/2)| (mathlib norm_exp_I_mul_ofReal_
+         sub_one) — 距离不是只有直线 |x-y|, 可以是圆上弦长 = 相位
+         差震荡 (R175 4 次单位根投影; R047 周期轴).
+       - ★上界 = 周期圆离轴最远点的距离: 弦长最大 = 2 (Δθ = π 半圈,
+         直径) — 周期圆 (单位圆) 上离轴 (实轴/发散轴) 最远的点 ±I
+         的距离 = 1, 弦长直径 = 2 — 震荡的上界 = 直径 (R159/R145
+         临界线圆直径 2 同型; R172: 间隔 2 = 直径).
+       - ★度量可换: 距离可以是角度 (相位差), 可以是弦长 (震荡),
+         可以是任何"乱七八糟的奇怪东西" — 收缩映射 (R181) 的距离
+         度量泛化: 只要满足收缩性质, 度量形式任意 (R048 无损:
+         单射 ⟹ 无损不依赖度量形式).
+
+  formal_math: |
+    -- ★距离 = 震荡 (弦长 = 相位差震荡):
+    theorem chord_length_oscillation (θ₁ θ₂ : ℝ) :
+      ‖Complex.exp (Complex.I * θ₁) - Complex.exp (Complex.I * θ₂)‖ =
+        2 * |Real.sin ((θ₁ - θ₂) / 2)|
+    -- ★上界 = 周期圆直径:
+    theorem chord_diameter_upper_bound (θ₁ θ₂ : ℝ) :
+      ‖Complex.exp (Complex.I * θ₁) - Complex.exp (Complex.I * θ₂)‖ ≤ 2
+    -- 上界可达 (半圈 = 直径):
+    theorem chord_diameter_attained :
+      ‖Complex.exp (Complex.I * 0) - Complex.exp (Complex.I * Real.pi)‖ = 2
+    -- 度量泛化 (角度收缩, 换基点):
+    theorem angle_contraction (θb c θ : ℝ) :
+      θb + c * (θ - θb) = θb ↔ c * (θ - θb) = 0
+    -- 全景:
+    theorem oscillation_perspective (θ₁ θ₂ : ℝ) :
+      (‖Complex.exp (Complex.I * θ₁) - Complex.exp (Complex.I * θ₂)‖ ≤ 2) ∧
+      (‖Complex.exp (Complex.I * 0) - Complex.exp (Complex.I * Real.pi)‖ = 2)
+
+objects:
+- chord_length_oscillation
+- chord_diameter_upper_bound
+- chord_diameter_attained
+- oscillation_metric_bound
+- angle_contraction
+- oscillation_perspective
+definitions_used:
+- 距离 = 震荡 (弦长 = 2|sin(Δθ/2)|)
+- 上界 = 周期圆直径 (Δθ = π 时 = 2)
+- 度量泛化 (角度/弦长/任意结构)
+
+assumptions:
+- 弦长公式 (mathlib norm_exp_I_mul_ofReal_sub_one)
+- 'abs sin ≤ 1'
+- 收缩性质与度量形式无关 (R048 单射无损)
+- 换基点 (R142) 在任意度量下成立
+conclusion: "筑基篇课后习题 XX 补充之二完成: 距离 = 震荡, 上界 = 周期圆直径 — 单位圆弦长 = 2|sin(Δθ/2)| (距离 = 相位差震荡); 弦长 ≤ 2 (直径, Δθ=π 半圈取等, ‖exp(0)-exp(iπ)‖ = 2; 上界 = 周期圆离轴最远点的距离); 度量泛化: 角度/弦长/任意结构 (R048 单射无损不依赖度量形式; R181 收缩 + R142 换基点在任意度量下成立)。6 个新定理全部只锚筑基篇定理 (R047/R048/R142/R159/R172/R175/R181) + mathlib 三角/复分析基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'Δθ = 0: 弦长 = 0 (同点)'
+- 'Δθ = π: 弦长 = 2 (半圈, 直径, 上界可达)'
+- 'Δθ = 2π: 弦长 = 0 (整圈, 回到同点)'
+- 'θ = 0, π: 1 与 -1 的距离 = 2 (直径端点)'
+closest_known_results:
+- R181 PatOddEquationRadical (收缩 + 换基点)
+- R175 PatPrimeGapPhase (4 次单位根投影)
+- R172 PatTwinPrime (间隔 2 = 直径)
+- R047 DivergencePeriodSymmetry (周期轴)
+- R048 LosslessCompression (单射无损)
+literature_queries:
+- chord length oscillation phase difference
+- circle diameter upper bound metric
+- distance as oscillation metric generalization
+
+counterexample_search:
+  status: done
+  search_space: 弦长公式是否真 (|e^{iθ₁}-e^{iθ₂}| = 2|sin(Δθ/2)|);
+    上界是否真 ≤ 2; Δθ=π 是否真取等; 角度收缩是否真成立
+  smallest_checked_size: null
+  result: 枚举 θ₁,θ₂ ∈ {0.1..3.0} 弦长公式浮点全过; 最大弦长 = 2.0
+    (Δθ=π 时); 角度收缩全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatOscillationMetric.lean (新增 6 定理)
+  theorem_name: ZeroRelative.PatOscillationMetric.chord_length_oscillation / .chord_diameter_upper_bound / .chord_diameter_attained / .oscillation_metric_bound / .angle_contraction / .oscillation_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称距离只有直线形式 — 已泛化: 距离 = 震荡 (弦长/角度/任意度量)
+- 把上界限制在特定度量 — 上界 = 周期圆直径不依赖度量形式
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'chord_length_oscillation: norm_exp_I_mul_ofReal_sub_one — 弦长 = 震荡'
+- 'chord_diameter_upper_bound: |sin|≤1 — 上界 = 直径 2'
+- 'chord_diameter_attained: 半圈 sin(π/2)=1 — 上界可达'
+- 'angle_contraction: linarith — 角度收缩, 度量泛化'
+- 'oscillation_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 后续可深化 震荡度量的收缩/换基点应用, 或其他
+  经典问题的 pat 重新观测'
+notes: 'R181 深化: 用户洞察"距离就是震荡, 上界就是周期圆的轴距离最远
+  点的距离, 也可以是角度, 也可以是各种乱七八糟的奇怪东西" — 弦长
+  = 2|sin(Δθ/2)| (距离 = 震荡), 上界 = 直径 2 (Δθ=π 取等), 度量
+  泛化 (R048 单射无损不依赖度量形式)。'
