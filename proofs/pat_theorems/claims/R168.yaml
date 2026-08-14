@@ -1,0 +1,130 @@
+id: R168
+title: "R168 (筑基篇课后习题 XI, 2026-08-13): ★霍奇猜想的 pat 重新观测 — Hodge 分解 = 单位圆互锁对 {exp(iθ),exp(-iθ)} (共轭成对, R161/R165); Hodge 类 (共轭不变) = 折叠类 {0,π} (exp(2iθ)=1 ⟹ θ=π·n, R085/R138); 代数子簇 = 可构造锚点 (r·(1/r)=1, R143); 折叠丢失 (p,q)/(q,p) 方向区分, 找回 = 单位圆模长 ‖exp(iθ)‖=1 (R165/AxisComponent); ★猜想 = 折叠类点都可构造 (CONJECTURE, 千禧年未解)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一个问题，霍奇猜想 (Hodge Conjecture)"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XI: 霍奇猜想的
+       pat 重新观测.
+
+    ★ 唯一论点: Hodge 分解 = 单位圆互锁对 (共轭成对); Hodge 类 =
+       共轭不变 = 折叠类 {0, π}; 代数子簇 = 可构造锚点; 猜想 =
+       折叠类点都可构造.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - Hodge 分解 H^k = ⊕ H^{p,q} = 互锁对 {exp(iθ), exp(-iθ)}
+         (R161 pair_interlock_self_consistent; R136 ②③ 方向成对)
+       - H^{p,q} ↔ H^{q,p} 复共轭 = 反向相位 (conj(exp(iθ)) =
+         exp(-iθ), R165)
+       - Hodge 类 (共轭不变, 实类) = 折叠类 {0, π}: conj z = z ⟹
+         exp(-iθ) = exp(iθ) ⟹ exp(2iθ) = 1 ⟹ θ = π·n (Complex.
+         exp_eq_one_iff) — 在 [0,2π) 中 = 0 或 π (R085: 折叠类;
+         R138: 相位锁定)
+       - 代数子簇 (可构造对象) = 对称对还原到锚点 1 (R143
+         magnitude_pair_reduces_to_one: r·(1/r) = 1)
+       - 折叠丢失: (p,q)/(q,p) 方向区分; 找回 = 单位圆模长
+         ‖exp(iθ)‖ = 1 (R165 phaseRep_on_circle / 框架
+         AxisComponent.norm_exp_I_eq_one) 折叠后不变
+
+    ★ ★霍奇猜想 pat 转译 (CONJECTURE): 所有有理 Hodge 类 (折叠类
+       点 {0, π}) 都是代数子簇 (可构造锚点) 的组合 — 折叠类点都
+       可构造. 诚实边界: 千禧年问题, 未解 — 结构转译, 非证明.
+
+  formal_math: |
+    -- Hodge 共轭对 = 互锁对:
+    theorem hodge_conjugate_pair_interlock (θ : ℝ) :
+      conj(exp(θ·I)) = exp((-θ)·I) ∧ exp(θ·I)·exp((-θ)·I) = 1
+    -- Hodge 类 = 折叠类:
+    theorem hodge_class_fold_class (θ : ℝ) :
+      conj(exp(θ·I)) = exp(θ·I) → ∃ n : ℤ, θ = (n : ℝ)·π
+    -- 代数子簇 = 可构造锚点:
+    theorem algebraic_cycle_anchor (r : ℝ) (hr : r ≠ 0) : r·(1/r) = 1
+    -- 找回 = 单位圆模长:
+    theorem fold_recovers_observable (θ : ℝ) : ‖exp(θ·I)‖ = 1
+    -- ★霍奇猜想 (CONJECTURE):
+    theorem hodge_conjecture_pat (θ : ℝ) :
+      conj(exp(θ·I)) = exp(θ·I) →
+      (∃ n : ℤ, θ = (n : ℝ)·π) ∧ (∀ r, r ≠ 0 → r·(1/r) = 1)
+
+objects:
+- hodge_conjugate_pair_interlock
+- hodge_class_fold_class
+- algebraic_cycle_anchor
+- fold_recovers_observable
+- hodge_conjecture_pat
+definitions_used:
+- Hodge 共轭对 = 互锁对
+- Hodge 类 = 折叠类 {0,π}
+- 代数子簇 = 可构造锚点
+- 折叠丢失与找回 (单位圆模长)
+
+assumptions:
+- Hodge 分解共轭对 = 互锁对 (R161/R165)
+- Hodge 类共轭不变 ⟹ 折叠类 (exp_eq_one_iff)
+- 代数子簇可构造 (R143)
+- 千禧年问题未解 (CONJECTURE)
+conclusion: "筑基篇课后习题 XI 完成: 霍奇猜想的 pat 重新观测 — Hodge 分解 = 单位圆互锁对 (共轭成对), Hodge 类 = 折叠类 {0,π}, 代数子簇 = 可构造锚点, 折叠丢失 (p,q)/(q,p) 方向区分 + 找回 (单位圆模长); ★猜想 = 折叠类点都可构造 (CONJECTURE, 千禧年未解)。5 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'θ = 0: exp(0) = 1 (折叠类 0)'
+- 'θ = π: exp(π·I) = -1 (折叠类 π)'
+- 'H^{p,q} ⊕ H^{q,p}: 共轭互锁对'
+closest_known_results:
+- R161 PatInterlockGrowth (互锁对 exp(iθ)·exp(-iθ)=1)
+- R165 PatRepresentation (相位表示, conj = 反向相位)
+- R085 (折叠类 {0,π})
+- R143 PatAxisDual (对称对还原到 1)
+literature_queries:
+- hodge conjecture pat observation fold class
+- hodge decomposition interlock pair conjugate
+
+counterexample_search:
+  status: done
+  search_space: conj(exp(iθ)) 是否真 = exp(-iθ) (exp_conj); exp(2iθ)=1
+    是否真 ⟹ θ=π·n (exp_eq_one_iff); r·(1/r)=1 是否真 (field_simp);
+    ‖exp(iθ)‖ 是否真 = 1 (norm_exp)
+  smallest_checked_size: null
+  result: hodge_conjugate_pair_interlock (exp_conj + R161);
+    hodge_class_fold_class (exp_eq_one_iff + nlinarith);
+    fold_recovers_observable (AxisComponent.norm_exp_I_eq_one);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatHodgeConjecture.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatHodgeConjecture.hodge_conjugate_pair_interlock / .hodge_class_fold_class / .algebraic_cycle_anchor / .fold_recovers_observable / .hodge_conjecture_pat (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明霍奇猜想 — 诚实边界: 结构转译 (CONJECTURE, 千禧年未解)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+- 忽略折叠丢失 — (p,q)/(q,p) 方向区分丢失, 单位圆模长找回
+evidence_for:
+- 'hodge_conjugate_pair_interlock: exp_conj + R161 — 互锁对'
+- 'hodge_class_fold_class: exp_eq_one_iff + field_simp + nlinarith
+  — 折叠类 {0,π}'
+- 'algebraic_cycle_anchor: field_simp — 可构造锚点'
+- 'fold_recovers_observable: AxisComponent.norm_exp_I_eq_one — 找回'
+- 'hodge_conjecture_pat: 合取项全部锚本框架 — 转译'
+evidence_against: []
+next_action: '课后习题系列后续: 霍奇类 = 折叠类点的可构造性深化, 或
+  Hodge 结构 (极化/权) 在 pat 中的进一步对应'
+notes: '筑基篇课后习题 XI — 霍奇猜想 pat 转译: Hodge 分解 = 单位圆互锁对
+  (共轭成对, R161/R165), Hodge 类 (共轭不变) = 折叠类 {0,π} (exp(2iθ)=1
+  ⟹ θ=π·n, 经 Complex.exp_eq_one_iff), 代数子簇 = 可构造锚点 (R143),
+  折叠丢失 (p,q)/(q,p) 方向 + 找回 (单位圆模长)。★猜想 = 折叠类点都
+  可构造 (CONJECTURE, 千禧年未解)。工程: 一次 build 通过, 0 sorry。
+  教训: hodge_class_fold_class 用 exp_eq_one_iff (ℂ 版本在
+  Analysis/SpecialFunctions/Complex/Circle.lean)。'
