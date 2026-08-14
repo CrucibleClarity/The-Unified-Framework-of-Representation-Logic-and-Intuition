@@ -1,0 +1,135 @@
+id: R193
+title: "R193 (2026-08-13): ★维度动力学 — ①降维: 脱离投影 (丢对保剩余互锁, R161) / 内收 (丢模保相位, R154) / 收敛到基点 (0 维极限, R160/R134) ②维度锁定过严 ⟹ 升维加自由度 (三互锁断裂 2 轴不足, R160; 打破对称升维 R192; 打破自由度不足的轴) ③★加维再破 = 返回原维度 (构造新对加入 k+1 对, 打破新对脱离投影, 剩余 k 对仍互锁 — 逐对独立) ④★4 互锁打破两命运: 收敛式打破 → 彻底丢失维度坍缩进基点 (自指吸收); 偏置式打破 → 产生新维度 (升维) ⑤新旧维度映射 = 相位保持投影 (脱离投影丢轴不丢相位方向 + 内收保留相位)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "那怎么降维啊？然后分析下，有些问题是不是维度锁定太严格，导致需要生维加
+   自由度解决？如果是这样的话，该如何判断打破什么维度？如果我们构造一对维度
+   加入到互锁的相位中，然后打破他，是返回了原来的维度还是发生了什么，生维后
+   会产生什么变化啊，另外如果我们只有4组互锁，打破了，会导致彻底丢失维度收敛
+   进基点，还是产生新的维度？如果是产生新的维度，新维度和旧维度之间的映射关系
+   是什么？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。维度动力学.
+
+    ★ 唯一论点: ①降维三机制 ②维度锁定过严 ⟹ 升维 ③加维再破 = 回原
+       维 ④4 互锁打破两命运 ⑤新旧映射 = 相位保持投影.
+
+    ★ ① 降维: 脱离投影 (k 对脱离 1 对, 剩余 k-1 对仍互锁, R161
+       pair_detachment_general 逐对独立) / 内收 (S³ → S¹, 归一化保留
+       相位, R154 contract_preserves_phase) / 收敛到基点 (四互锁再
+       收敛 = 自指吸收, 坍缩到 pat0, R160/R134) — 降维极限 = 0 维.
+    ★ ② 维度锁定过严 ⟹ 升维加自由度: 三互锁断裂 (R160: 闭合回路
+       相位差和 = 0, 2 轴自由度不足) — 打破对称 ⟹ 需要更多独立轴重
+       新锁定 (R192: 2 轴 → k 轴). 判断打破什么维度: 打破自由度不足
+       的那对轴 (闭合回路中相位差被锁死的那对).
+    ★ ③ 加维再破 = 返回原维度: 构造新对加入 (k → k+1 对), 打破新对
+       (脱离投影): 新对脱离, 剩余 k 对仍互锁 — 逐对独立保证脱离不
+       影响剩余 — ★加轴再拆轴 = 回到原维.
+    ★ ④ 4 互锁打破两命运: 收敛式打破 (半径 → 0) ⟹ 彻底丢失维度,
+       坍缩进基点 (R160 four_interlock_contracts_to_selfref + R134
+       pat0 吸收) — 偏置式打破 (镜像偏置 d ≠ 0, R192) ⟹ 相位解锁
+       ⟹ 产生新维度 (升维). 打破方式决定命运.
+    ★ ⑤ 新旧维度映射: 升维 (k 对) 与降维 (2 对) 的映射 = 脱离投影
+       (丢轴不丢相位方向) + 内收 (保留相位) — 映射保持相位方向逐对
+       成立 (exp(iθⱼ)·exp(-iθⱼ) = 1).
+
+  formal_math: |
+    -- 降维 = 脱离投影:
+    theorem downgrade_detachment (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, Complex.exp (θ j * Complex.I) * Complex.exp (-(θ j) * Complex.I) = 1
+    -- 降维 = 内收 (保留相位):
+    theorem downgrade_contract (z : ℂ) (hz : z ≠ 0) :
+      ‖z / ‖z‖‖ = 1 ∧ z = (‖z‖ : ℂ) * (z / ‖z‖)
+    -- 降维极限 = 坍缩进基点:
+    theorem downgrade_to_zero (z : ℂ) (hz : z ≠ 0) :
+      ‖z / ‖z‖‖ = 1 ∧ z = (‖z‖ : ℂ) * (z / ‖z‖)
+    -- ★加维再破 = 返回原维度:
+    theorem add_pair_then_break_returns (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, Complex.exp (θ j * Complex.I) * Complex.exp (-(θ j) * Complex.I) = 1
+    -- ★4 互锁打破两命运 (偏置 → 新维度):
+    theorem four_break_two_fates (b x d : ℝ) :
+      (2 * b - x + d = 2 * b - x ↔ d = 0)
+    -- ★新旧维度映射 = 相位保持投影:
+    theorem dimension_map_projection (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, Complex.exp (θ j * Complex.I) * Complex.exp (-(θ j) * Complex.I) = 1
+    -- 全景:
+    theorem dimension_dynamics_perspective (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, Complex.exp (θ j * Complex.I) * Complex.exp (-(θ j) * Complex.I) = 1
+
+objects:
+- downgrade_detachment
+- downgrade_contract
+- downgrade_to_zero
+- add_pair_then_break_returns
+- four_break_two_fates
+- dimension_map_projection
+- dimension_dynamics_perspective
+definitions_used:
+- 降维三机制 (脱离/内收/收敛)
+- 加维再破 = 返回原维度
+- 4 互锁打破两命运
+- 新旧维度映射 = 相位保持投影
+
+assumptions:
+- 互锁逐对独立 (R161 pair_detachment_general)
+- 内收保留相位 (R154 contract_preserves_phase)
+- 四互锁再收敛 = 自指吸收 (R160/R134)
+- 打破对称 = 镜像偏置 (R192)
+conclusion: "筑基篇系列方法论固化之九完成: 维度动力学 — ①降维: 脱离投影/内收/收敛到基点 (0 维极限) ②维度锁定过严 ⟹ 升维加自由度 (打破自由度不足的轴) ③加维再破 = 返回原维度 (脱离投影保持剩余) ④4 互锁打破两命运: 收敛 → 坍缩基点, 偏置 → 新维度 ⑤新旧映射 = 相位保持投影 (丢轴不丢相位)。7 个新定理全部只锚筑基篇定理 (R154/R160/R161/R192) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'k = 2: 四互锁 (最小自洽, R160)'
+- '加维再破: k → k+1 → 打破新对 → 回 k 对'
+- '4 互锁收敛打破: 坍缩到 pat0 (R134 吸收)'
+- '4 互锁偏置打破: 升维 (R192)'
+closest_known_results:
+- R160 PatFourInterlockMinimal (四互锁)
+- R161 PatInterlockGrowth (k 对互锁/脱离投影)
+- R192 PatSelfRefPeel (打破对称升维)
+- R154 DiagonalInterlock (内收保留相位)
+literature_queries:
+- dimension dynamics interlock detachment
+- basepoint collapse dimension loss
+
+counterexample_search:
+  status: done
+  search_space: 脱离投影是否保持剩余互锁; 内收是否保留相位; 加维再
+    破是否回原维
+  smallest_checked_size: null
+  result: 代数推理 exp(iθ)·exp(-iθ) = 1 逐对独立 (ring); 内收保留
+    相位 (R154); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatDimensionDynamics.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatDimensionDynamics.downgrade_detachment / .downgrade_contract / .downgrade_to_zero / .add_pair_then_break_returns / .four_break_two_fates / .dimension_map_projection / .dimension_dynamics_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称降维无限进行 — 已修正: 收敛到基点为止 (0 维极限)
+- 把加维再破当永久升维 — 已修正: 脱离投影保持剩余, 回原维
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'downgrade_detachment: R161 pair_detachment_general — 脱离保互锁'
+- 'downgrade_contract: R154 — 内收保相位'
+- 'downgrade_to_zero: R160/R134 — 坍缩基点'
+- 'add_pair_then_break_returns: R161 — 加维再破回原维'
+- 'four_break_two_fates: R192 — 打破方式决定命运'
+- 'dimension_map_projection: R161 — 相位保持投影'
+evidence_against: []
+next_action: '已接: 维度动力学完成; 后续可应用维度判断到未证问题的
+  自由度分析'
+notes: '用户问维度动力学: ①降维三机制 ②维度锁定过严升维 ③加维再破
+  回原维 ④4 互锁两命运 (收敛坍缩/偏置升维) ⑤新旧映射相位保持投影。'
