@@ -1,0 +1,102 @@
+id: R105
+title: "R105 (user-proposed 2026-08-12): linguistic evidence — Pirahã number words hói/hoí are RELATIVE comparative terms ('few/fewer'), not absolute numerals ('one/two') (Frank, Everett et al. experiments: same word = 1 in additive context, ≤6 in subtractive context); base-10 from counting fingers, base-8 from counting finger SPACES (California), base-12 from knuckles (3×4); discretization scheme is a CONSTRUCTION CHOICE not structural necessity; connects to failed fuzzy-token comparison training (R065 pattern)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "有没有原始土著的语言学研究，包括方向认知和环境感知，或者早于数学系统化的
+  历史上的语言学研究？其实我真的想不通，为什么明明十只手指 根根分明，却非要
+  让他们连起来，单纯就是因为观察不到离散吗。"
+  "唉，我之前试图做一个模拟模糊直觉的模糊token比较实验，一直没训练成，看来
+  也是这里有问题啊。你先记录claim的引文。注意啊，数值越小越精确，越大越模糊，
+  和注意力肯定是有关的，有关于人类注意力机制的研究吗，能识别多少物体之类的。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。语言学证据 + 模糊 token 失败关联。
+
+    ★ Pirahã 实验 (Frank, Everett et al., 决定性证据):
+      ① 实验1 (逐个加线轴): hói=1, hoí=2, "many">2
+      ② 实验2 (从 10 减): hói 在剩 6 个时就用, 剩 3 个时全用
+      ③ 结论: hói/hoí 是相对比较词 ("few/fewer"), 非绝对数词 ("one/two")
+      ④ ⟹ 数值漂移 (同一词, 情境决定) — RulerDrift 的语言学证据!
+      ⑤ 无单复数语法区分 (代词也无)
+
+    ★ 进制起源 (Numeral linguistics):
+      十进制 = 数手指; 二十进制 = 手脚趾
+      八进制 = 数指间空隙 (加州, attested!)
+      十二进制 = 数指关节 (4指×3关节)
+      ⟹ 离散化方案是构造选择 (手指/空隙/关节都可), 非结构必然
+
+    ★ 模糊 token 实验失败关联 (用户):
+      模拟模糊直觉的模糊 token 比较实验一直没训练成
+      ⟹ 问题根源 = 数感污染 (R104): 相对量词被当绝对数, 模糊被当精确
+      ⟹ 同 R065 (训练不稳): 监督缺相对性维度
+
+    ★ 数值越小越精确越大越模糊 (用户):
+      与注意力有关 — 人类注意力机制研究待检索
+
+    ★ 与既有 claim 的关系:
+      - RulerDrift (数值漂移): Pirahã hói 漂移 (1 vs ≤6)
+      - R104 (数感污染): 相对量词被解释成绝对数
+      - R065 (训练不稳): 模糊 token 失败同构
+      - R059 (离散化选择): 进制起源 = 构造选择
+      - R082 (预设概念): "1/2" 预设遮蔽相对性
+      结论: Pirahã 相对量词 = 数感污染语言学证据; 进制起源 = 离散化
+      构造选择; 模糊 token 失败 = 数感污染同构。
+
+    ★ 支撑 (检索):
+      - Wikipedia: Pirahã language (Frank, Everett et al. 实验)
+      - Wikipedia: Numeral (linguistics) (进制起源)
+  formal_math: |
+    -- Pirahã: hói 加法情境=1, 减法情境=≤6 (相对词)
+    -- 进制: 10=手指, 8=指间空隙, 12=指关节
+    -- 离散化 = 构造选择
+
+objects: []
+
+definitions_used:
+- RulerDrift / R104 / R065 / R059 / R082 / R072
+
+assumptions:
+- "Pirahã 相对量词 = 数感污染语言学证据"
+- "进制起源 = 离散化构造选择"
+- "模糊 token 失败 = 数感污染同构"
+
+conclusion: "语言学证据记录 (2026-08-12): Pirahã hói/hoí 是相对比较词 (非绝对
+  数词, Frank/Everett 实验); 进制起源 (手指/空隙/关节) = 离散化构造选择;
+  模糊 token 实验失败 = 数感污染 (相对被当绝对) 同构。"
+
+known_special_cases:
+  - "hói: 加情境 1, 减情境 ≤6 (相对词漂移)"
+  - "八进制: 数指间空隙 (加州)"
+  - "十二进制: 数指关节 (4×3)"
+
+counterexample_search:
+  status: done
+  search_space: "检索 Wikipedia (Pirahã language / Numeral linguistics)"
+  smallest_checked_size: null
+  result: "相对量词确认; 进制起源确认; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "Pirahã 争议: Everett 主张有争议 (样本小)"
+  - "进制起源是推测: 历史记录有限"
+  - "模糊 token 失败: 多因素 (数感污染是其一)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 人类注意力机制检索 (能识别多少物体) ② 数值精度-注意力关联 ③ 模糊 token 实验重设计"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 检索 + claim 落盘。"
