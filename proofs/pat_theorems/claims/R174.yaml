@@ -1,0 +1,117 @@
+id: R174
+title: "R174 (2026-08-13): ★轴修正 — 素数间隔属于发散轴 (实数轴), 周期轴 (奇偶性折叠) 观测不到间隔 — 用户纠正: 孪生素数定理问的间隔是实数轴上的间隔对; R172/R173 把发散轴距离搬到周期轴 = 选错轴; 七扭八歪的素数轴 (间隔 2,4,2,4,6,2,6,..) 投影到奇偶性 (模 2 折叠) = 全坍缩 0 槽, 歪斜完全消失 (信息坍缩)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "这个不对啊，要求问的间隔是实数轴上的间隔对。这意味着孪生素数定理
+   选错轴了对吧。能看下那个七扭八歪的实数轴，投影到pat上，是什么结构吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。轴修正: 孪生素数定理的间隔是
+       实数轴上的间隔对.
+
+    ★ 唯一论点: 素数间隔属于发散轴 (实数轴, R047: 实轴 = 发散轴
+       lift t = ⟨t, 0⟩) — 间隔 2 = |(p+2) - p| 是实数轴上的欧氏
+       距离. R172 的"间隔 2 = 临界线圆直径" (复数平面距离) 与
+       R173 的"间隔 2 = 震荡周期" (exp(iπt)) 都是把发散轴距离
+       搬到周期轴观测 = 选错轴.
+
+    ★ 七扭八歪的素数轴投影到 pat:
+       - 素数在实数轴上分布不规则 (间隔 2, 4, 2, 4, 6, 2, 6, ...)
+         = 七扭八歪的轴 (非均匀刻度).
+       - 投影到奇偶性 (模 2 折叠, R171/R141 2 槽环): 素数除 2 外
+         全落 1 槽 (R171 primes_parity_collapse); 素数间隔全为
+         偶数 (奇数 - 奇数 = 偶数, prime_gap_even) → 间隔投影全落
+         0 槽 (prime_gap_two_slot) — 七扭八歪的间隔分布全部坍缩为
+         0, 歪斜完全消失 (信息坍缩, 与 R171 同精神).
+       - 孪生间隔在奇偶性下不可见: p 与 p+2 同为奇数 → 同槽 (1)
+         (twin_gap_invisible_parity) — 周期轴区分不出 p 和 p+2.
+
+    ★ 结论 (轴修正): 间隔属于发散轴 (实数轴), 投影到周期轴 (奇偶
+       性折叠) 后坍缩不可见 — R172/R173 把发散轴距离搬到周期轴
+       观测 = 选错轴; 正确的观测轴 = 实数轴 (发散轴) 本身:
+       |(p+2) - p| = 2.
+
+  formal_math: |
+    -- 间隔 2 = 实数轴距离 (发散轴):
+    theorem twin_gap_real_axis (p : ℝ) : |(p+2) - p| = 2
+    -- 奇素数间隔是偶数 (投影到 0 槽):
+    theorem prime_gap_even {p q : ℕ} (hp : Nat.Prime p) (hq : Nat.Prime q)
+      (h2p : p ≠ 2) (h2q : q ≠ 2) : Even (q - p)
+    theorem prime_gap_two_slot {p q : ℕ} (hp : Nat.Prime p) (hq : Nat.Prime q)
+      (h2p : p ≠ 2) (h2q : q ≠ 2) : (q - p) % 2 = 0
+    -- 孪生间隔在奇偶性下不可见:
+    theorem twin_gap_invisible_parity {p : ℕ} (hp₁ : Nat.Prime p)
+      (hp₂ : Nat.Prime (p + 2)) (h2 : p ≠ 2) : p % 2 = (p + 2) % 2
+    -- 全景:
+    theorem gap_axis_perspective (p : ℝ) :
+      (|(p+2) - p| = 2) ∧ ((2 : ℕ) % 2 = 0)
+
+objects:
+- twin_gap_real_axis
+- prime_gap_even
+- prime_gap_two_slot
+- twin_gap_invisible_parity
+- gap_axis_perspective
+definitions_used:
+- 间隔属于发散轴 (实数轴)
+- 素数间隔 = 偶数 (投影 0 槽)
+- 奇偶性下孪生间隔不可见
+
+assumptions:
+- 实数轴 = 发散轴 (R047)
+- 奇偶性 = 模 2 折叠 (R171/R141)
+- 素数除 2 外全奇数 (R171 坍缩)
+- 间隔 2 = |(p+2) - p| (实数距离)
+conclusion: "筑基篇课后习题 XVI 修正完成: 轴修正 — 素数间隔属于发散轴 (实数轴, R047), 投影到周期轴 (奇偶性折叠) 后全坍缩不可见; 七扭八歪的素数轴投影到奇偶性 = 间隔全落 0 槽 (歪斜消失, 信息坍缩); R172/R173 选错轴。5 个新定理全部只锚筑基篇定理 (R047/R141/R171/R172)。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '孪生对 (3, 5): p % 2 = 1 = (p+2) % 2 (同槽)'
+- '间隔 2 vs 间隔 4: 模 2 下都 → 0 槽 (不可区分)'
+closest_known_results:
+- R171 PatParityPrime (奇偶性坍缩)
+- R172 PatTwinPrime (间隔 2 的临界线圆/震荡轴对应 — 本 claim 修正)
+- R047 DivergencePeriodSymmetry (发散轴 ⊥ 周期轴)
+literature_queries:
+- prime gaps parity projection collapse
+- twin prime gap real line distance
+
+counterexample_search:
+  status: done
+  search_space: 素数间隔是否真全偶数 (奇数-奇数); |(p+2)-p| 是否真
+    = 2 (ring); p 与 p+2 是否真同奇偶性槽
+  smallest_checked_size: null
+  result: prime_gap_even (Odd.sub_odd); twin_gap_real_axis (ring);
+    twin_gap_invisible_parity (两奇数同槽); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPrimeGapAxis.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatPrimeGapAxis.twin_gap_real_axis / .prime_gap_even / .prime_gap_two_slot / .twin_gap_invisible_parity / .gap_axis_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明孪生素数猜想 — 诚实边界: 轴归属观测非素数分布理论
+- 继续用临界线圆直径对应间隔 — 已修正: 发散轴距离
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'twin_gap_real_axis: ring — 间隔 = 实数距离 2'
+- 'prime_gap_even: Odd.sub_odd — 奇数-奇数 = 偶数'
+- 'prime_gap_two_slot: even_two_slot — 间隔投影 0 槽'
+- 'twin_gap_invisible_parity: 两奇数同槽 — 周期轴不可见'
+- 'gap_axis_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 4 次单位根投影 (R175) — 奇偶性不丢失且周期行的轴'
+notes: '用户纠正 R172/R173 选错轴: 间隔是实数轴上的间隔对。七扭八歪
+  的素数轴 (间隔不规则) 投影到奇偶性 (模 2 折叠) = 全坍缩 0 槽,
+  歪斜消失。轴修正: 间隔属于发散轴。'
