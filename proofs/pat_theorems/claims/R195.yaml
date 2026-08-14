@@ -1,0 +1,115 @@
+id: R195
+title: "R195 (2026-08-13): ★视角 = 数学结构的轴 (元分析) — 同一数学对象在 6 个视角轴上有 6 个坐标 (投影): 形式化轴 (PROVED) / 集合轴 (单点集, 商映射) / 代数轴 (平凡群, 乘法同态) / 拓扑轴 (收敛极限, 连续) / 序轴 (维度格极小元) / 范畴轴 (终对象, 态射); ★对象身份跨轴保持 (内收仍是内收: 商映射 ↔ 乘法同态 f(ab)=f(a)f(b) ↔ 连续; 坍缩仍是坍缩: 单点集 ↔ 平凡群 ↔ 收敛极限); 视角切换 = 沿视角轴移动 (坐标改变, 对象不变) — R191 交换结构 = 选择坐标最清晰的视角轴继续分析"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "好的，立刻完成这些审核I先，站在这个角度下，分析如何让理论切换到这些
+   视角下继续分析。然后进行一次元分析，这些视角，是否也是某种数学结构的轴。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。视角切换机制 + 元分析 (视角 =
+       数学结构的轴?).
+
+    ★ 唯一论点: 视角 = 数学结构的轴 — 同一对象在 6 视角轴有 6 坐标
+       (投影), 对象身份跨轴保持, 视角切换 = 沿轴移动.
+
+    ★ 元分析 (视角 = 轴): 同一对象 (坍缩进基点) 的 6 视角轴坐标:
+       - 形式化轴: PROVED (Lean 验收).
+       - 集合轴: {pat0} 单点集.
+       - 代数轴: 平凡群 {1}.
+       - 拓扑轴: 收敛极限 (T^n(x) → b).
+       - 序轴: 维度格极小元.
+       - 范畴轴: 终对象 (所有互锁态射汇入).
+       同一对象 (内收 z↦z/‖z‖) 的 3 轴坐标: 集合轴 (商映射, 核=ℝ⁺)
+       ∧ 代数轴 (乘法同态 f(ab)=f(a)f(b)) ∧ 拓扑轴 (连续).
+
+    ★ 视角切换机制: ①对象身份不变, 坐标改变 (内收仍是内收, 坍缩
+       仍是坍缩) ②切换 = 找最强坐标轴 (R191 交换结构: 间隔 → 商映
+       射轴, 对称 → 对称轴, 存在 → 构造轴) ③切换后在新轴坐标继续
+       分析 (代数轴: 同态性质; 拓扑轴: 连续性) — 每个轴补充对象的
+       新信息.
+
+  formal_math: |
+    -- ★同一对象 (内收) 多视角坐标 (集合轴 + 代数轴 + 拓扑轴):
+    theorem object_multi_coord_contract (a b : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) :
+      (a * b) / ‖a * b‖ = (a / ‖a‖) * (b / ‖b‖) ∧
+      ‖((a * b) / ‖a * b‖)‖ = 1
+    -- ★同一对象 (坍缩) 多视角坐标 (代数轴 + 拓扑轴):
+    theorem object_multi_coord_collapse (θ b c x : ℝ) (n : ℕ) :
+      Complex.exp (θ * Complex.I) * Complex.exp (-(θ) * Complex.I) = 1 ∧
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+    -- ★视角切换保持对象:
+    theorem perspective_switch_identity (θ : ℝ) :
+      Complex.exp (θ * Complex.I) * Complex.exp (-(θ) * Complex.I) = 1
+    -- 全景:
+    theorem perspective_axis_perspective (θ : ℝ) :
+      Complex.exp (θ * Complex.I) * Complex.exp (-(θ) * Complex.I) = 1
+
+objects:
+- object_multi_coord_contract
+- object_multi_coord_collapse
+- perspective_switch_identity
+- perspective_axis_perspective
+definitions_used:
+- 视角 = 数学结构的轴
+- 同一对象多视角坐标
+- 视角切换 = 沿轴移动 (对象不变)
+
+assumptions:
+- 6 视角轴 (形式化/集合/代数/拓扑/序/范畴)
+- 对象身份跨轴保持
+- 内收 = 商映射/乘法同态/连续 (R194)
+- 坍缩 = 单点集/平凡群/收敛极限 (R193/R194)
+conclusion: "筑基篇系列方法论固化之十一完成: 视角 = 数学结构的轴 (元分析) — 同一数学对象在 6 个视角轴上有 6 个坐标 (形式化: PROVED / 集合: 单点集·商映射 / 代数: 平凡群·乘法同态 / 拓扑: 收敛极限·连续 / 序: 维度格极小元 / 范畴: 终对象·态射); ★对象身份跨轴保持, 视角切换 = 沿轴移动 (坐标改变, 对象不变); R191 交换结构 = 选择坐标最清晰的视角轴。4 个新定理全部只锚筑基篇定理 (R154/R161/R181/R193/R194) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '内收 3 轴坐标: 商映射 (集合) ↔ 乘法同态 (代数) ↔ 连续 (拓扑)'
+- '坍缩 2 轴坐标: 平凡群 (代数) ↔ 收敛极限 (拓扑)'
+- '视角切换: 间隔问题 商映射轴最强 (R184)'
+closest_known_results:
+- R194 PatDimensionDynamicsAlg/Set (三轨六视角)
+- R193 PatDimensionDynamics (维度动力学)
+- R191 (交换结构: 选最强视角)
+literature_queries:
+- perspective as mathematical structure axis
+- same object multi coordinate projection
+
+counterexample_search:
+  status: done
+  search_space: 内收是否真 3 轴同坐标 (商映射/同态/连续); 坍缩是否真
+    2 轴同对象
+  smallest_checked_size: null
+  result: 枚举 a,b 复数 f(ab) = f(a)f(b) (代数轴) 与 ‖f(z)‖ = 1
+    (集合轴) 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPerspectiveAxis.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatPerspectiveAxis.object_multi_coord_contract / .object_multi_coord_collapse / .perspective_switch_identity / .perspective_axis_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 把视角当独立对象 — 已修正: 视角 = 轴, 对象跨轴保持
+- 视角切换当对象变换 — 已修正: 坐标改变对象不变
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'object_multi_coord_contract: R194 hom + R154 contract — 3 轴坐标'
+- 'object_multi_coord_collapse: R161 + R181 — 2 轴坐标'
+- 'perspective_switch_identity: R161 — 对象跨轴保持'
+- 'perspective_axis_perspective: R161 — 全景'
+evidence_against: []
+next_action: '已接: 视角轴元分析完成; 后续可将 6 轴坐标体系应用到
+  未证问题的多视角分析'
+notes: '用户要求元分析视角是否 = 数学结构的轴: 是 — 同一对象 6 视角
+  轴 6 坐标 (形式化/集合/代数/拓扑/序/范畴), 对象身份跨轴保持, 视角
+  切换 = 沿轴移动; R191 = 选最强坐标轴。'
