@@ -1,0 +1,149 @@
+id: R159
+title: "R159 (筑基篇课后习题 III, 2026-08-13): ★pat 视角回顾黎曼猜想与孪生素数 — 唯一论点: 两个还原点 (0 与 1) 圆化出素数圆与临界线圆 (R144/R145), 黎曼与孪生的结构都在这两个圆上; ① 黎曼 = 临界线圆 (C019: 临界线 ⟺ 共轭对称 1-s=conj s; C022: Re(s)=1/2 零点满足 ‖1/s-1‖=1; R145: 过 0 和 2) ② 素数 = 基点漂移后继 (R145 素数圆圆心 0 半径 √p; R142 素数幂链单相位 log(p^k)=k·log p; C014 两平方和) ③ 孪生 = 间隔 2 直径 (R145: 临界线圆直径端点 0 与 2 距离 2; R109/R145: 反演 2↔1/2 乘法对称对); 诚实边界: 不证明黎曼猜想/孪生素数猜想 (与 C011-C025 一致)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一个练习，站在pat视角下回顾黎曼猜想与孪生素数"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 III: pat 视角回顾
+       黎曼猜想与孪生素数。
+
+    ★ 习题定位: 筑基篇课后习题系列第三题 (exercise_i_2)。用筑基篇的
+       几何/互锁结构 (素数圆/临界线圆/反演/log 对偶/基点漂移) 重述
+       黎曼猜想与孪生素数的经典结构。
+
+    ★ 唯一论点: 两个还原点 (0 与 1) 圆化出素数圆与临界线圆 (R144/
+       R145), 黎曼与孪生的结构都在这两个圆上。
+
+    ★ 三个层次 (每层锚到已证 claim):
+      ① 黎曼 = 临界线圆的 pat 几何重述: 临界线 (Re(s)=1/2) ⟺ 共轭
+         对称 (1-s = conj s, C019 critical_line_iff_conj_complex);
+         反演下临界线 = 临界线圆 (圆心 1, 半径 1, 过 0 和 2, R145
+         critical_circle_points); Re(s)=1/2 的 ζ 零点满足 ‖1/s-1‖ = 1
+         (C022 zeta_zero_on_circle) — 零点落在临界线圆上; pat 视角:
+         黎曼猜想 = "非平凡零点在乘法还原点 1 的圆上" (结构重述,
+         非零点存在性断言)
+      ② 素数 = 基点漂移后继: 素数圆 (圆心 0 = 折叠类/加法还原点,
+         半径 √p, R145 prime_circle_center_zero); 素数幂链 = 单相位
+         (log(p^k) = k·log p, R142 prime_power_log_layer); p ≡ 1
+         (mod 4) ⟹ 两平方和 (C014 prime_two_axis); 用户洞察 (docs/
+         关于黎曼猜想的思考.md): 素数 = 平移的真实后继迭代丢失结构
+         后的投影 — pat 视角: 素数的 log 单相位 = 平移链的相位形式,
+         丢失的是数值链的"层"结构
+      ③ 孪生 = 间隔 2 的框架几何对应: 间隔 2 = 临界线圆直径端点
+         0 与 2 的距离 (R145 critical_circle_points: 0 与 2 是直径
+         端点); 反演 2 ↔ 1/2 = 乘法对称对 (R109/R145
+         reciprocal_pair_reduces: r·(1/r) = 1 还原到圆心 1); pat
+         视角: 孪生素数对 (p, p+2) 的间隔 2 = 临界线圆直径的实数
+         对应, 与 1/2 (临界线位置) 反演对称 — 同一互锁对的两端
+         (R147); 诚实边界: 孪生素数无穷性未证明
+
+    ★ 诚实边界 (延续 C011-C025): 黎曼猜想 (非平凡零点全在 Re(s)=1/2)
+       与孪生素数猜想 (无穷多间隔 2 素数对) 均未证明 — 本题交付的是
+       pat 几何重述, 7 个新定理是结构事实的 Lean 验收, 非零点存在性/
+       素数对无穷性断言。全部新定理只锚筑基篇定理与框架 C011-C025,
+       不用外部引理 (R153 用户纠正精神延续)。
+
+  formal_math: |
+    -- ① 黎曼 = 临界线圆 (C019/C022 + R144/R145):
+    theorem critical_line_pat_circle (s : ℂ) : s.re = 1 / 2 ↔ 1 - s = star s
+    theorem zero_on_pat_circle (s : ℂ) (hs0 : s ≠ 0) (hz : riemannZeta s = 0)
+      (h12 : s.re = 1 / 2) : ‖1 / s - 1‖ = 1
+    -- ② 素数 = 基点漂移后继 (R142/R145 + C014):
+    theorem prime_on_pat_circle (p θ : ℝ) (hp : 0 ≤ p) :
+      ‖(Real.sqrt p : ℂ) * exp (θ·I) - 0‖ = Real.sqrt p
+    theorem prime_log_monophase (p : ℝ) (k : ℕ) (hp : 0 < p) :
+      Real.log (p ^ k) = (k : ℝ) * Real.log p
+    -- ③ 孪生 = 间隔 2 直径 (R109/R145):
+    theorem twin_gap_is_circle_diameter : ‖(2 : ℂ) - 0‖ = 2
+    theorem twin_gap_inversion_symmetry : (2 : ℝ) * (1 / 2) = 1
+    -- 全景:
+    theorem pat_riemann_twin_perspective :
+      (∀ s : ℂ, s.re = 1 / 2 ↔ 1 - s = star s) ∧
+      (∀ p : ℝ, 0 ≤ p → ‖(Real.sqrt p : ℂ) - 0‖ = Real.sqrt p) ∧
+      ‖(2 : ℂ) - 0‖ = 2 ∧ (2 : ℝ) * (1 / 2) = 1
+
+objects:
+- critical_line_pat_circle
+- zero_on_pat_circle
+- prime_on_pat_circle
+- prime_log_monophase
+- twin_gap_is_circle_diameter
+- twin_gap_inversion_symmetry
+- pat_riemann_twin_perspective
+definitions_used:
+- 临界线圆 (乘法还原点 1 的圆化)
+- 素数圆 (加法还原点 0 的圆化)
+- 间隔 2 = 临界线圆直径
+- 反演 2 ↔ 1/2 (乘法对称对)
+
+assumptions:
+- 临界线 ⟺ 共轭对称 (C019, 框架已证)
+- Re(s)=1/2 零点落在临界线圆 (C022, 框架已证, 条件重述)
+- 素数在素数圆上 (R145, 框架已证)
+- 孪生素数间隔 2 = 直径 (R145 几何对应, 非无穷性断言)
+- 诚实边界: 不证明黎曼猜想/孪生素数猜想 (与 C011-C025 一致)
+conclusion: "筑基篇课后习题 III 完成: pat 视角回顾黎曼猜想与孪生素数 — 两个还原点 (0 与 1) 圆化出素数圆与临界线圆, 黎曼与孪生的结构都在这两个圆上 (黎曼 = 临界线圆/共轭对称/零点条件重述; 素数 = 素数圆/log 单相位; 孪生 = 间隔 2 直径/反演对称)。7 个新定理全部只锚筑基篇定理与框架 C011-C025, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。诚实边界: 黎曼猜想与孪生素数猜想均未证明 (结构重述, 非断言)。"
+
+known_special_cases:
+- 's.re = 1/2: 临界线 ⟺ 共轭对称 (1-s = conj s)'
+- 'ζ 零点 Re(s)=1/2: ‖1/s - 1‖ = 1 (临界线圆)'
+- 'p ≡ 1 (mod 4): 素数圆格点 = 两平方和 (C014)'
+- '间隔 2: ‖2-0‖ = 2 (临界线圆直径); 2·(1/2) = 1 (反演对称)'
+closest_known_results:
+- C011-C025 riemann_direction_formalization (临界线几何/欧拉乘积/无零点区, 全部 KNOWN)
+- R145 CriticalPrimeCircles (素数圆/临界线圆 = 还原点圆化)
+- R142 PatMapping (素数幂链单相位)
+literature_queries:
+- Riemann hypothesis critical line circle inversion
+- twin prime conjecture gap two geometry
+
+counterexample_search:
+  status: done
+  search_space: 临界线 ⟺ 共轭对称是否构造性成立 (C019); 零点条件重述是否
+    与 C022 一致; 间隔 2 = 直径是否几何正确; 反演对称是否还原到圆心 1
+  smallest_checked_size: null
+  result: 'critical_line_pat_circle (C019 直接引用) 构造性成立; 全部 7 新
+    定理 0 sorry; 诚实边界: 无零点存在性/素数对无穷性断言'
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatRiemannTwinPrimes.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatRiemannTwinPrimes.critical_line_pat_circle / .zero_on_pat_circle / .prime_on_pat_circle / .prime_log_monophase / .twin_gap_is_circle_diameter / .twin_gap_inversion_symmetry / .pat_riemann_twin_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明黎曼猜想/孪生素数猜想 — 诚实边界: 结构重述, 非断言 (与 C011-C025 一致)
+- 用外部引理 — R153 纠正精神延续: 全部锚筑基篇定理与框架 C011-C025
+- 手工推导临界线几何 — 直接锚定 C019/C022 已证定理
+- 2*(1/2) 类型推断 — 需显式 ℝ 注解 (否则推断为 ℕ)
+evidence_for:
+- 'critical_line_pat_circle: C019 critical_line_iff_conj_complex 直接引用
+  — 临界线 = 共轭对称轴'
+- 'zero_on_pat_circle: C022 zeta_zero_on_circle 直接引用 — 零点在临界线圆'
+- 'prime_on_pat_circle: R145 prime_circle_center_zero — 素数圆'
+- 'prime_log_monophase: Real.log_pow — 素数幂链单相位'
+- 'twin_gap_is_circle_diameter / twin_gap_inversion_symmetry: norm_num —
+  间隔 2 = 直径, 反演对称'
+- 'pat_riemann_twin_perspective: 四合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 习题 IV (如: 平移/反演对称对 1 1/a+1/b,
+  素数复数进制快路径, 黎曼反演结构, 或 ζ 的零点统计在 pat 视角)'
+notes: '筑基篇课后习题 III — pat 视角回顾黎曼猜想与孪生素数 (用户指定题目)。
+  用户洞察来源: docs/关于黎曼猜想的思考.md (素数 = 平移的真实后继迭代丢失
+  结构后的投影; 黎曼函数有反演结构 1 ↔ 1/a+1/b; 基点漂移后继投影到数轴是
+  素数时原数/对称位置问题)。框架前置: riemann_direction_formalization.md
+  (C011-C025, 全部 KNOWN, DeepSeek 坚持诚实边界 — 黎曼猜想/孪生素数均未
+  证明)。工程教训: ZetaEulerProduct 定理在 ZeroRelative 命名空间 (无子命名
+  空间); Real.log_pow 直接 exact; 2*(1/2) 需显式 ℝ 注解。'
