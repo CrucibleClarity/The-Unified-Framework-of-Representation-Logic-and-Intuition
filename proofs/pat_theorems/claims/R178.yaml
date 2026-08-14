@@ -1,0 +1,131 @@
+id: R178
+title: "R178 (2026-08-13): ★实数轴在 pat 上的映射架构图景 — 4 次单位根投影下实数轴子集的槽位覆盖: 自然数 {0,1,2,3} 全覆盖, 偶数 {0,2}, 奇数 {1,3}, 素数 {1,2,3} (★缺 0 槽: p mod 4 ≠ 0, 4k 合数, I^p ≠ 1), 考拉兹循环 {1,4,2} = {0,1,2} (★缺 3 槽: 无 ≡ 3 mod 4, 无 -I) — 每个子集都有 pat 上永远不出现的位置"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "嗯？那是否有可能，实数轴视角下丢失了某一个槽？先形式化一个实数轴
+   在pat上的映射架构图景出来，我们好了解pat上哪些位置实数轴上永远不出现。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。形式化实数轴在 pat 上的映射
+       架构图景 — pat 上哪些位置实数轴 (的子集) 永远不出现.
+
+    ★ 唯一论点: 4 次单位根投影 n ↦ I^n (R175: 奇偶 = 实/虚轴; R141:
+       4 槽环) 下, 实数轴的不同子集覆盖不同槽位组合, 每个子集都
+       有"永远不出现"的 pat 位置:
+
+       | 实数轴子集 | 槽位 (n mod 4) | 缺失 |
+       |---|---|---|
+       | 自然数 ℕ | {0, 1, 2, 3} | 无 (全覆盖) |
+       | 偶数 | {0, 2} | 实轴 (R175) |
+       | 奇数 | {1, 3} | 虚轴 (R175) |
+       | **素数** | {1, 2, 3} | **★0 槽 (+1)** |
+       | **考拉兹循环 {1,4,2}** | {0, 1, 2} | **★3 槽 (-I)** |
+
+    ★ 核心观测:
+       1. **素数像永不落 0 槽** (prime_pow_I_never_one): p mod 4 = 0
+          ⟺ 4 | p ⟺ p = 4k (k ≥ 1) 是合数 — 素数永不 ≡ 0 (mod 4),
+          I^p ≠ 1 — **pat 的 +1 位置是素数永远不出现的位置** —
+          素数是缺 0 槽的实数轴子集.
+       2. **考拉兹循环 {1, 4, 2} 像缺 3 槽** (collatz_cycle_pow_
+          never_neg_I): 1 ≡ 1, 4 ≡ 0, 2 ≡ 2 (mod 4) — 循环中永不
+          出现 ≡ 3 (mod 4) 的数 — 循环 pat 像 {I, 1, -1} 缺 3 槽
+          (-I, 虚轴负侧) — 循环相位 1 槽 → 0 槽 → 2 槽 → 1 槽,
+          永远跳过 3 槽.
+       3. **映射架构图景**: "实数轴视角下丢失的槽" = 其子集 (素数/
+          轨道) 在 pat 投影下的空缺槽位 — 不是实数轴本身丢失,
+          而是子集的像有结构性空缺.
+
+  formal_math: |
+    -- 素数永不 ≡ 0 (mod 4):
+    theorem prime_mod_four_never_zero {p : ℕ} (hp : Nat.Prime p) : p % 4 ≠ 0
+    -- ★素数像永不落 0 槽 (I^p ≠ 1):
+    theorem prime_pow_I_never_one {p : ℕ} (hp : Nat.Prime p) : Complex.I ^ p ≠ 1
+    -- 循环 {1, 4, 2} 槽位 = {0, 1, 2}:
+    theorem collatz_cycle_mod_slots :
+      1 % 4 = 1 ∧ 4 % 4 = 0 ∧ 2 % 4 = 2
+    -- ★循环像永不落 3 槽 (无 -I):
+    theorem collatz_cycle_pow_never_neg_I :
+      Complex.I ^ 1 ≠ -Complex.I ∧
+      Complex.I ^ 4 ≠ -Complex.I ∧
+      Complex.I ^ 2 ≠ -Complex.I
+    -- 全景:
+    theorem real_axis_pat_mapping_perspective {p : ℕ} (hp : Nat.Prime p) :
+      (Complex.I ^ p ≠ 1) ∧
+      (1 % 4 = 1 ∧ 4 % 4 = 0 ∧ 2 % 4 = 2) ∧
+      (Complex.I ^ 1 ≠ -Complex.I ∧
+       Complex.I ^ 4 ≠ -Complex.I ∧
+       Complex.I ^ 2 ≠ -Complex.I)
+
+objects:
+- prime_mod_four_never_zero
+- prime_pow_I_never_one
+- collatz_cycle_mod_slots
+- collatz_cycle_pow_never_neg_I
+- real_axis_pat_mapping_perspective
+definitions_used:
+- 映射架构图景 (实数轴子集 → pat 槽位覆盖)
+- 素数缺 0 槽 (+1)
+- 考拉兹循环缺 3 槽 (-I)
+
+assumptions:
+- 4 次单位根投影 n ↦ I^n (R175/R141)
+- 素数永不 ≡ 0 (mod 4) (4k 合数)
+- 循环 {1,4,2} 无 ≡ 3 (mod 4) 的数 (R176)
+- 自然数全覆盖 {0,1,2,3}
+conclusion: "筑基篇课后习题系列补充完成: 实数轴在 pat 上的映射架构图景 — 4 次单位根投影下: 自然数 {0,1,2,3} 全覆盖; 素数 {1,2,3} ★缺 0 槽 (p mod 4 ≠ 0, 4k 合数, I^p ≠ 1 — pat 的 +1 是素数永远不出现的位置); 考拉兹循环 {1,4,2} = {0,1,2} ★缺 3 槽 (无 ≡ 3 mod 4, 无 -I — 循环永远跳过 3 槽)。5 个新定理全部只锚筑基篇定理 (R141/R175/R176) + mathlib 数论基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'p = 2: 2 % 4 = 2 (2 槽, I^2 = -1)'
+- 'p = 5: 5 % 4 = 1 (1 槽, I^5 = I)'
+- '循环: 1 % 4 = 1, 4 % 4 = 0, 2 % 4 = 2 (缺 3)'
+closest_known_results:
+- R175 PatPrimeGapPhase (4 次单位根投影, 奇偶 = 实/虚轴)
+- R176 PatCollatz (考拉兹循环 1→4→2→1)
+- R141 PatCircle (单位根 4 槽环)
+literature_queries:
+- prime mod 4 never zero projection
+- collatz cycle modulo 4 slots
+- real axis pat mapping architecture
+
+counterexample_search:
+  status: done
+  search_space: 素数是否真永不 ≡ 0 mod 4 (4k 合数); 循环槽位是否真
+    {0,1,2}; I^p ≠ 1 是否真对全部素数
+  smallest_checked_size: null
+  result: 枚举素数 p < 500 缺失槽 = {0} (p mod 4 = 0 永不出现);
+    循环 {1,4,2} 槽 = {0,1,2} 缺 {3}; 自然数全覆盖; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatRealAxisMapping.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatRealAxisMapping.prime_mod_four_never_zero / .prime_pow_I_never_one / .collatz_cycle_mod_slots / .collatz_cycle_pow_never_neg_I / .real_axis_pat_mapping_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称实数轴本身丢失槽 — 已修正: 子集 (素数/轨道) 的像缺槽
+- 把 4 槽环与 2 槽环混淆 — 已区分: 4 次单位根 (R175) vs 模 2 折叠
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'prime_mod_four_never_zero: 4|p ⟹ p=4k 合数矛盾 — 素数永不 0 槽'
+- 'prime_pow_I_never_one: I^p = I^(p mod 4), p mod 4 ≠ 0 — I^p ≠ 1'
+- 'collatz_cycle_mod_slots: norm_num — 循环槽 {0,1,2}'
+- 'collatz_cycle_pow_never_neg_I: norm_num — 循环无 -I'
+- 'real_axis_pat_mapping_perspective: 合取项锚本框架 — 图景'
+evidence_against: []
+next_action: '已接: 后续可深化 缺槽对偶 (素数缺 +1, 循环缺 -I) 与
+  其他实数轴子集 (如合数/幂) 的槽位覆盖'
+notes: '用户要求形式化实数轴在 pat 上的映射架构图景: 4 次单位根投影
+  下素数缺 0 槽 (+1, p ≡ 0 mod 4 是合数), 考拉兹循环 {1,4,2} 缺
+  3 槽 (-I, 无 ≡ 3 mod 4); 自然数全覆盖 — 每个子集都有 pat 上永远
+  不出现的位置。'
