@@ -1,0 +1,96 @@
+id: C008
+title: "Endogenous basepoint generation: finite-reachability graph baseline (TransGen) — NOT the Nat-source result"
+status: OBSERVATION
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ★ 根本性修正 (用户指令 + 评审): 禁止预设自然数。研究目标 = "自然数这种迭代结构
+    本身是怎样从基点变化中出现的", 因此不能用 Nat 作为迭代 primitive。
+    ★ 分类修正 (评审): Relation.TransGen 的归纳深度 = 有限步数 n ∈ ℕ
+    (mathlib 文档: TransGen r a b ↔ ∃ x₀...xₙ, 步数 n 是自然数)。因此本 claim 的
+    TransGen 方法已经引入了 finitary (有限步) 结构 — 这正是要解释的对象, 不能作为
+    "自然数来源"的基础结果。故本 claim 重新分类为: finite-reachability graph baseline
+    (研究有限图的可达性结构类型), 不含 ordinal-like 极限节点 (TransGen 排除了)。
+    真正的 Nat-source 研究用 C009 第二版本 (最小 S-closed 子结构 / Dedekind chain)。
+    本 claim 保留: 定义不借助显式 Nat 计数的生成关系 R ⊆ H×H, 枚举其有限可达性
+    结构类型 (链截断/树/环/rho/孤立), 作为基线。
+    本 claim 定义不借助自然数编号的次基点生成系统:
+    设 H 为无基点结构, 定义局部生成关系 R ⊆ H×H:
+      R(e, e')  := e' 是由以 e 为当前基点的内部生成规则产生的"次基点"。
+    确定性版本: σ : H → H (e ↦ σ(e) 为唯一后继, 暂不定义 σ^[n])。
+    研究 R 的 generated reachability structure:
+    - 每个 e 是否有唯一 successor (若用 σ)?
+    - 是否有循环 (R^+ 中 e 回到 e)?
+    - 是否有 predecessor / 起始对象?
+    - 是否有分叉 (一个 e 多个 e')?
+    - 是否有极限节点 / 不可继续的点?
+    - 不同初始基点产生的 reachability 是否同构?
+    用 Relation.TransGen R (传递闭包) 表达可达性 — 对象层不给每个位置
+    标自然数坐标。
+  formal_math: |
+    Let H : Type (unpointed structure). Let R : H → H → Prop be a generation
+    relation (e' is a sub-basepoint generated from e). Define reachability as
+    Relation.TransGen R : H → H → Prop.
+    Investigate: uniqueness of successors, cycles, predecessors, branching,
+    limits, and isomorphism types of reachability structures.
+    (Deterministic version: σ : H → H, WITHOUT defining σ^[n].)
+
+objects: ["H : Type (unpointed)", "R : H → H → Prop (generation rule)", "σ : H → H (deterministic version)", "Reach := Relation.TransGen R"]
+definitions_used: ["Relation.TransGen", "Relation.ReflTransGen"]
+
+assumptions:
+  - "H : Type, R : H → H → Prop (或 σ : H → H)"
+conclusion: "分类生成关系的 reachability 结构性质 (唯一后继/循环/分叉/极限/同构型)"
+
+known_special_cases:
+  - "σ 为 heap translation τ_{e,a} (C006): e ↦ [e,e,a] = a, 平凡 (常值)"
+  - "σ 为 bpChange 复合: 需具体生成规则才有内容"
+  - "无生成规则的极端: R 空, reachability 平凡"
+closest_known_results:
+  - "C006 (step translation τ_{e,a}; 换基点后端点 teleport)"
+  - "C007 (displacement equivalence (e,a)∼(f,b))"
+  - "自动机/图论 reachability (标准工具)"
+literature_queries:
+  - "endogenous generation reachability structure without natural numbers"
+  - "inductive generation closure iteration structure"
+
+counterexample_search:
+  status: done
+  search_space: "有限集上枚举生成规则 (全函数 + 部分函数), 观察 reachability 结构类型"
+  smallest_checked_size: "n=3,4"
+  result: |
+    全函数 σ : H→H 在有限集上必有循环 (不可能 ω-like 单链)。
+    部分生成规则 (允许"不可继续"点) 可实现: chain (ω 截断, 0→1→...→n-1 终止),
+    branching tree, cycle/rho, isolated。
+    Z/m 上固定相对位移规则 σ(e)=e+a-δ 全部为 cycle。
+    → ω-like 链需部分规则或无限 H (关键观察)。
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Generation.lean"
+  theorem_name: "ZeroRelative.reach_single / reach_trans / reach_trans_rel / fun_gen_successor_unique / GenRelOfFun"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "不得偷偷引入 Function.iterate / F^[n] / orbit : ℕ → H (已遵守: 用 Relation.TransGen)"
+  - "TransGen 归纳结构在元层可用, 对象 statement 不给位置标 Nat 坐标 (已满足)"
+  - "C001-C003 是已知 baseline 可用 Nat; 本 claim 起 (内生生成) 禁止 (已区分)"
+  - "全函数有限集必有循环 (已观察) — 需部分规则或无限 H 才得 ω-like"
+
+evidence_for:
+  - "枚举: 全函数必有循环; 部分规则可得 chain/tree/cycle/rho/isolated (experiments/finite_models/C008_reachability*.py)"
+  - "Lean: reach_single/reach_trans/reach_trans_rel (Relation.TransGen 封装), 无 sorry"
+  - "Lean: fun_gen_successor_unique (确定性规则后继唯一), 无 Nat"
+evidence_against: []
+
+next_action: "C008 完成 (关系机制 + 结构观察)。下一步 C009: 在什么条件下生成结构具有 ω 型 — 证明 (Reach(e),R) ≅ (N,S) 为表示定理 (结论而非输入); 同时保留失败框架: 分叉得树/循环得有限循环群/多前驱得图/极限得 ordinal-like"
+notes: "用户根本性修正已落实: (1) 禁止 Church numeral / Function.iterate / Nat 作为迭代 primitive (AGENTS.md §自然数来源研究边界); (2) C008 用关系 R ⊆ H×H + Relation.TransGen 研究可达性, 对象层无 Nat 坐标; (3) 关键观察: 全函数有限集必有循环, ω-like 需部分规则或无限 H — 这本身就是'自然数结构何时出现'的第一步分类; (4) C009 才证明 (Reach(e),R)≅(N,S), 让自然数是结论; (5) 允许自然数失败: 树/环/图/ordinal-like 都是合法结果。★ C001 定位已注明: 它用 Nat 是 KNOWN baseline (研究已给定迭代系统的 semiconjugacy), 不回答自然数来源。"
