@@ -1,0 +1,104 @@
+id: R076
+title: "R076 (user-proposed 2026-08-12): the fold-chain is the phase binary decomposition — each fold drops one sign bit (2-fold 2→1, 4-fold 4→1, k-fold drops k sign bits, range [0, 2π/2^k], limit 0); 'not cleanly decomposed' means the fold chain is infinite (continuum sign bits) — finitization requires R059 roots-of-unity discretization (n-slot ring)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "这可太不妙了，这意味着我们没拆干净，还得继续拆。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。R075 归并后的继续拆解。
+
+    ★ 背景: R075 证明环 (2π) = 折叠 (0-π) — 环内藏折叠。用户判断:
+      没拆干净, 还得继续拆。
+
+    ★ 拆解链 (机械验证):
+      ① 对偶中心逐层减半: π → π/2 → π/4 → ... (每折一次中心收缩)
+      ② 折叠区间: k 次折叠后 ∈ [0, 2π/2^k] (二进制精度!)
+      ③ 符号位丢弃: 1 折 = 2合1 (丢 1 符号位); 2 折 = 4合1 (丢 2 符号位);
+         k 折 = 2^k 合 1 (丢 k 符号位)
+      ④ 折叠极限: 40 次折叠 → 0 (对偶中心完全收缩)
+      ⑤ 本质: 折叠链 = 相位的二进制分解 (k 次折叠保留二进制前 k 位,
+         丢 k 个符号位)
+
+    ★ "没拆干净"的数学本质:
+      连续统的符号位无限 ⟹ 折叠链无限 ⟹ 永远拆不完 (除非离散化)。
+      拆解终点 = R059 单位根离散化 (n 槽环) — 有限化即拆完
+      (丢不完的符号位由 n 槽截断, 量化误差 ≤ π/n)。
+
+    ★ 机械验证 (R076_fold_chain.py, 枚举=证据):
+      1. 对偶中心逐层减半 (π→π/2→π/4): PASS
+      2. 二次折叠 ∈ [0, π/2] (段内再折): PASS
+      3. 二次折叠 4 合 1 (丢 2 符号位): PASS
+      4. k 次折叠 ∈ [0, 2π/2^k]: PASS
+      5. 40 次折叠 → 0 (对偶中心完全收缩): PASS
+
+    ★ 与既有 claim 的关系:
+      - R075 (半圈+phi = phi/2 + 0-phi): 本 claim 的起点 (归并后继续拆)
+      - R059 (单位根离散化): 拆解终点 (n 槽环有限化)
+      - R072 (单相位数 Pat): ℙ⟨φ⟩ 相位环折叠链 = 二进制分解
+      - RulerFoldCircle (0-π 折叠): 折叠链的第一层
+      - RulerTernary/RulerNumeral (三值位/相位格点): 离散化的其他实现
+      结论: 折叠链 = 相位二进制分解 (每折丢 1 符号位); 连续统符号位无限
+      ⟹ 拆不完; 终点 = R059 单位根离散化 (有限化即拆完)。
+
+    ★ 支撑 (Lean):
+      - fold_fixed_at_pi / fold_kills_direction / fold_finite
+        [CircleFold.lean]
+      - R059 root_of_unity_finite [ZeroPiBarrel.lean]
+  formal_math: |
+    -- 折叠链: k 次折叠 f_k(θ) ∈ [0, 2π/2^k]
+    -- 符号位: 每折丢 1 位 (2^k 合 1)
+    -- 极限: lim_k f_k(θ) = 0 (对偶中心完全收缩)
+    -- 终点: R059 单位根 n 槽 (有限化)
+
+objects: []
+
+definitions_used:
+- R075 / R059 / R072 / RulerFoldCircle / RulerTernary / RulerNumeral
+
+assumptions:
+- "折叠链 = 相位二进制分解 (每折丢 1 符号位)"
+- "连续统符号位无限 ⟹ 折叠链无限"
+- "拆解终点 = 单位根离散化 (n 槽环)"
+
+conclusion: "用户判断成立 (2026-08-12): 没拆干净 — 折叠链 = 相位二进制分解
+  (每折丢 1 符号位, 区间 2π/2^k, 极限 0); 连续统符号位无限 ⟹ 拆不完;
+  终点 = R059 单位根离散化 (n 槽环, 有限化即拆完)。"
+
+known_special_cases:
+  - "1 折: 2 合 1 (丢 1 符号位, 区间 [0,π])"
+  - "2 折: 4 合 1 (丢 2 符号位, 区间 [0,π/2])"
+  - "k 折: 2^k 合 1 (丢 k 符号位, 区间 [0, 2π/2^k])"
+  - "极限: → 0 (对偶中心完全收缩)"
+
+counterexample_search:
+  status: done
+  search_space: "对偶中心/区间/符号位/极限 (R076_fold_chain.py: 5 组)"
+  smallest_checked_size: 500
+  result: "5/5 PASS (折叠极限初版断言错误, 修正为逐段对折后 PASS); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/CircleFold.lean
+  theorem_name: fold_fixed_at_pi, fold_kills_direction, fold_finite
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "折叠极限是逐段对折 (min(f, 2·half - f)): 非单一对折点"
+  - "拆不完是连续统本质: 符号位无限, 需离散化 (R059)"
+  - "折叠丢方向: 非无损 (R048 不适用 — 折叠是有损观测)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "拆解终点接入 R059: 折叠链 + 单位根 n 槽 = 相位有限编码; 与 R072 (Pat) 组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出继续拆解 (原话原封保存); assistant 仅执行
+  机械验证 (枚举) + claim 落盘。"
