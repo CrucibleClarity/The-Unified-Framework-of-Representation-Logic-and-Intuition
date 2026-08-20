@@ -1,0 +1,154 @@
+id: S002
+title: 'S002 — Type-Indexed Back-Reaction Control Model (审计反例: Σ L3Config ≃ Bool,
+  1 bit typestate)'
+status: CONJECTURE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "五层架构 (用户指令, 2026-08-09): L0 Lean Host ⊃ L1 工具/capability 层\n⊃ L2 验证层\
+    \ ⊃ L3 交互膜/实验装置 | L4 绝对实验对象。\n\n关键变化: 首次写入不是 L4 内部 operation, 而是 L3→L4 的边界事件。\n\
+    这解决了根本错误: 之前把实验装置和实验对象混在一层 (不得不问 L3 怎么存/\n读/parse/equality/stage — 问题本身就说明混层)。\n\
+    \n设计:\n  L1 工具层    : 登记 L3 可用能力 (ToolCapability: propose/intervene/selfObserve)\n\
+    \  L2 验证层    : 验证 intervention 合法性 (L1 能力子集)\n  L3 交互膜    : 有结构的 transducer。proposal\
+    \ → boundary intervention →\n                 L3-side residual。可以有 rule/relation/equality/direction/\n\
+    \                 parser — 因为不声称 L3 是 Pure。\n  L4 绝对对象  : 缺席。不声明为 Lean 类型。只作为\
+    \ L3 边界协议的\"被侵入\n                 目标位置\"存在。L4 不需要拥有 read/parse/stage/equality,\n\
+    \                 甚至不需要知道\"我被写过\"。\n\nBoundary-Genesis Audit (五 audit):\n  ① No\
+    \ read channel        : L3 无 L4→L3 reader (L4 缺席 + 能力登记无 read)\n  ② No L4 parser\
+    \ assumption: 所有 observation 都发生在 L3-side\n  ③ residual minimality    : extensionally\
+    \ 相同的 intervention ⟹ 相同\n                              residual, Host provenance\
+    \ 不留痕\n  ④ No automatic reflection: L3 residual τ 不自动等于 L4 content\n  ⑤ Boundary\
+    \ effect criterion: 只有证明某 L4 structural fact 对所有\n                           \
+    \   admissible intervention implementation 相同,\n                             \
+    \ 才能认证为第一个 L4 internal fact\n\n关键定理: 不能自动声称 τ = L4 content 的编码 — 要得后者需另证\nL4₁≠L4₂\
+    \ ⟹ τ₁≠τ₂ (trace 对相关 L4 状态 injective)。\n"
+  formal_math: 'inductive ToolCapability : propose | intervene | selfObserve
+
+    no_read_channel_capability: ∀c, c=propose ∨ c=intervene ∨ c=selfObserve
+
+    structure L3Config where fired : Bool
+
+    initialConfig := {fired := false}; intervene _ := {fired := true}
+
+    residual (c) := c.fired
+
+    observe (c) := c.fired
+
+    boundary_back_reaction: intervene initialConfig ≠ initialConfig
+
+    no_l4_parser (c) : observe c = c.fired
+
+    residual_minimality (I₁ I₂) (hext: ∀c, I₁ c = I₂ c) : ∀c, residual (I₁ c) = residual
+    (I₂ c)
+
+    boundary_genesis_audit: residual_minimality ∧ boundary_back_reaction
+
+    '
+objects:
+- ToolCapability
+- L3Config
+- initialConfig
+- intervene
+- residual
+- observe
+- L4 (缺席)
+definitions_used:
+- boundary event
+- L3-side residual
+- boundary back-reaction
+- transducer
+- 实验 cut
+- No automatic reflection
+- injective trace
+assumptions:
+- L4 不声明为 Lean 类型 (缺席 = 最纯的无内部预设)
+- 首次写入 = L3→L4 边界事件, 非 L4 内部 operation
+- L3 可以有结构 (rule/relation/equality/direction/parser), L4 没有
+- 观察者的结构不得免费成为被观察对象的结构 (实验 cut, 接受则无需 L5)
+- 零 import (只用 Lean 核心)
+conclusion: '最终定位 (审计反例, 非 first emergence 证据): S002 是 Type-Indexed Back-Reaction
+  Control Model。审计证书 totalConfigEquivBool: Σ b, L3Config b ≃ Bool — 整个 L3 state 恰好
+  1 bit (untouched/touched)。S002 没消除 fired, 只是从 value 层搬到 type-index 层 (runtime tag
+  → type-level tag): Host 预置一比特 typestate (false/true, 未发生/已发生, 两个 fiber, 定向, ≠, one-shot
+  全部免费获得), 然后定义 intervention 翻转它。back_reaction_structural 是 representation-driven
+  (结构性强制≠结构自然涌现; 结构是 Host 给的), 准确表述: 在预采用 two-state typestate spec 下, 合法 intervention
+  必须改变 typestate; 不能表述成 ''boundary invasion 自身必然产生 back-reaction''。forget_discards_residual
+  只证 codomain 写死。no_l4_parser 可保留 (L4 没进语言所以当然无 parser), 但模型预置 L3 two-state observation。S003
+  Index Injection Audit 证明: back-reaction 可区分 ⟹ 预先存在 index distinction; subsingleton
+  index ⟹ 无 residual distinction。'
+known_special_cases:
+- L4 缺席 ⟹ 无 L4State/Occurrence/Stage/Content 可构造 (不伪造 L4 内部事实)
+- 'L3 有 fired: Bool — L3 是仪器, 可以有结构'
+closest_known_results:
+- S001 三层沙盒 (L1/L2/L3, 被本 claim 升级为五层); R059 Sandbox-in-Sandbox
+literature_queries:
+- boundary intervention transducer experiment
+- observer apparatus object separation quantum measurement
+counterexample_search:
+  status: done
+  search_space: 是否有办法在 L4 缺席时仍从 L4 读取信息 — 结构上不可能 (无 L4 类型); 是否有办法让 residual 自动编码 L4
+    content — 需 injective 定理, 不自动成立
+  smallest_checked_size: null
+  result: 'boundary_back_reaction / residual_minimality / no_read_channel_capability
+    零公理: L3 侧观测 + 无 L4 通道成立'
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/BoundaryGenesis.lean (零 import)
+  theorem_name: AbsoluteRelative.BoundaryGenesis.totalConfigEquivBool / .l3_state_is_bool
+    (审计证书) / .back_reaction_structural / .no_l4_parser / .residual_respects_extensional_equality
+    / .forget_discards_residual / .instrumented_l3_back_reaction (已证, 无 sorry, 全零公理,
+    零 import)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 把 residual_minimality 当 'provenance 不可观察' 证据 — 类型里无 provenance, 只是 extensional 平凡事实
+- 声称 No automatic reflection 已证 — L4 缺席只是无语言可表达, 不是 non-reflection theorem
+- 声称 Boundary effect criterion 已证 — 未证
+- 声称 L2 enforcement 已生效 — capability 是描述性登记
+- 声称 'intervene 是 L3→L4 write' — Lean 类型里没有 L4, 只是 meta 解释
+- 用索引类型 residual 声称'事件来自 L4' — 仍需 meta 解释, 未形式化
+evidence_for:
+- 'back_reaction_structural 零公理: residual (intervene untouched) ≠ residual untouched
+  — 索引 false→true 结构性, 非写死'
+- 'residual_respects_extensional_equality 零公理: extensional equality ⟹ equality residual
+  (平凡, 已诚实定位)'
+- 'forget_discards_residual 零公理: L3Config true→false 必丢 residual (回到初始只能丢弃信息)'
+- 'no_read_channel_capability 零公理: 能力只有 propose/intervene/selfObserve (描述性)'
+evidence_against: []
+next_action: 'S002 最终定位完成 (审计反例): 审计证书 Σ L3Config ≃ Bool 证明 S002 是 1 bit typestate
+  (工程上更严格的 fired, 非概念上更纯的 fired)。真正下一步已做: S003 Index Injection Audit (back-reaction
+  可区分 ⟹ 预先存在 index distinction)。后续 OPEN (用户指令): 能否在不先给 index-space distinction 的情况下,
+  从一次边界侵入中得到任何可区分 residual? S003 已证不可能。'
+notes: '2026-08-09 用户指令 (S001 后): 真正架构 L0⊃L1⊃L2⊃L3|L4。关键变化: 首次写入不是 L4 内部 operation,
+  而是 L3→L4 的边界事件。① 解决根本错误: 之前混层 (L3∅→L3ω 需问怎么存/读/parse/equality/stage — 问题本身就说明混层);
+  下沉到 L4 后 write/direction/measurement 都属 L3, L4 不需要拥有这些, 甚至不需要知道''我被写过''。② L3 不需要''读取
+  L4'': 只观察自己执行跨边界动作后自身变化 (比较 L3_before 与 L3_after), 不可消去变化 = boundary back-reaction,
+  无 read:L4→L3 通道。③ 关键限制: 不能自动声称''L3 变化映射 L4 内容'' — residual τ 最多是 L3-side residual,
+  要得 τ=L4 content 编码需另证 L4₁≠L4₂⟹τ₁≠τ₂ (injective)。④ L4 首次写入前甚至不是 Lean State: 只作为''被侵入目标位置''存在于
+  L3 边界协议; 首次写入是 signature extension Σ∅⇝Σ₁ (对象语言第一次扩张, 非修改 runtime value)。⑤ 破坏性写入更易定义:
+  改变 L4 可接受结构的 signature 本身, 一旦发生不能假装没发生。⑥ L3 真正角色是 transducer (proposal→boundary
+  intervention→L3-side residual), 不是 sandbox。⑦ 实验 cut: L3=允许有结构的测量仪器, L4=被研究的绝对对象;
+  观察者结构不得免费成为被观察对象结构; 接受此 cut 无需 L5。⑧ 首次 relation 存在于 L3|L4 boundary (e:L3⇝L4), 不能因此声称
+  L4 内已有 relation; 若 L4 内部首次出现 relation 必须证明是 boundary coupling 的不可避免 consequence。⑨
+  下一步完全换成 Boundary-Genesis Audit, 不再构造 L4State/Occurrence/Stage/Content, 只研究抽象一次性
+  intervention I:L3⇝L4, 验证五条 (No read channel / No L4 parser / residual minimality
+  / No automatic reflection / Boundary effect criterion)。 [2026-08-09 用户评审修正: ① intervene
+  原实现 (_c↦{fired:=true}) 没作用到 L4, L4 没出现在类型里, back-reaction 只因写死 fired 成立 — 改为索引类型
+  L3Config:Bool→Type + intervene:L3Config false→L3Config true, residual 由类型结构保证; ②
+  capability 层是描述性非 enforcement, 任何代码可直接调 intervene — 诚实标注; ③ one-time 原未实现 (可无限调用)
+  — 索引类型使连调不可表达; ④ residual_minimality 名不副实 (extensional 是前提, 类型无 provenance) — 改名
+  residual_respects_extensional_equality; ⑤ 编号漂移 (综合定理把④从 No automatic reflection
+  变 back-reaction) — 修正: 综合只证 ③+back-reaction, ④⑤ 未证; ⑥ Sandbox.lean 整体退役 (见 S001):
+  Sealed 无 inhabitant≠无 eliminator, sealed_no_data 伪强, SandboxRaw 预装结构, L2/L3 兄弟 namespace,
+  addConstructor 是 meta 叙述。] [2026-08-09 S003 用户评审 (最终定位): ① S002 没消除 fired, 只是从 value
+  层搬到 type-index 层 — Bool→false/true 已把结论写进模型, intervene 是规定 ''合法 intervene 必须从 false
+  fiber 去 true fiber'' 不是发现''侵入→不可逆变化''; ② 审计证书 Σ b, L3Config b ≃ Bool Lean 通过 — S002
+  完整 state 恰好 1 bit, 是 Host 预置一比特 typestate 然后翻转; ③ back_reaction_structural 是 representation-driven
+  (结构性强制≠结构自然涌现, 结构是 Host 给的); ④ forget_discards_residual 基本是 codomain 写死; ⑤ no_l4_parser
+  可保留 (L4 没进语言) 但模型预置 L3 two-state observation; ⑥ 定位: Type-Indexed Back-Reaction Control
+  Model, 不删 (好审计反例), 加上 Σ L3Config ≃ Bool 作审计证书; ⑦ 真正下一步 S003 Index Injection Audit。]'
