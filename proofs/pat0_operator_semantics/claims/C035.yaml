@@ -1,0 +1,66 @@
+id: C035
+title: "Matrix/tensor dot and cross products under pat0 operator semantics"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    矩阵/张量的点乘叉乘的 pat0 形式化分析 (每个算符独立轴, 数值 0-1 离散, 基点簇):
+    - 点乘 (内积) = 轴收缩: 两向量沿共享轴逐分量交互后收缩为标量 —
+      投影对消的标量化; 正交 = 点积 0; 基点 = 0
+    - 叉乘 (3D) = 互锁生成第三轴: a×b 正交于 a 与 b — 两轴互锁产生正交补轴;
+      自叉乘 = 0 (基点); 基轴叉乘 êx×êy = êz (轴互锁生成第三轴)
+    - 外积 (张量积) = 互锁矩阵: (a⊗b)[i,j] = a_i·b_j — rank-1 矩阵 =
+      两轴的锁定写入 (SSM 状态更新 k⊗d 就是外积!)
+    - 矩阵乘法 = 共享轴收缩: (AB)[i,j] = Σ_k A[i,k]·B[k,j] — 公共轴 k 收缩,
+      i 轴 × j 轴交互; 轴对齐是正确性核心: 收缩要求 "A 的列轴 = B 的行轴" —
+      布局转置 = 公共轴错位 = 交互完全错误 (GGUF 布局 bug 的 pat0 解释)
+    张量推广: 张量点乘 = 沿公共轴的收缩 (多轴对消); 张量叉乘 (张量积) =
+    因子轴的笛卡尔组合.
+  formal_math: |
+    (a⊗b)[i,j] = a_i·b_j (rank-1 outer product).
+    (AB)[i,j] = Σ_k A[i,k]·B[k,j] (shared-axis contraction).
+    Cross product: a×b ⊥ a, a×b ⊥ b; êx×êy = êz; a×a = 0.
+
+objects: ["dot product (axis contraction)", "cross product (interlock generates the third axis)", "outer product (interlock matrix)", "matrix multiplication (shared-axis contraction)"]
+definitions_used: ["Matrix", "inner product", "cross product", "rank-1 matrix"]
+
+assumptions:
+  - "standard linear algebra on ℝ"
+conclusion: "Dot = axis contraction (basepoint 0), cross = interlock generating the orthogonal complement axis, outer = interlock write (the SSM state update k⊗d), matmul = shared-axis contraction whose correctness depends on axis alignment."
+
+known_special_cases:
+  - "êx×êy = êz: basis-axis interlock generates the third axis"
+  - "a×a = 0: self-interlock degenerates to the basepoint"
+closest_known_results:
+  - "Classical linear algebra (KNOWN)"
+  - "R143 (interlock matrix), R166 (K3 complete graph of three interlocked axes)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the axis-semantics reading (layout transposition = axis misalignment)."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/MatrixOpsPat0.lean"
+  theorem_name: "ZeroRelative (matrix operator theorems in the file)"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "cross product is 3D-specific (no cross product in other dimensions)"
+  - "matrix-multiplication correctness requires matching contraction axes (A columns = B rows)"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/MatrixOpsPat0.lean, no sorry"
+evidence_against: []
+
+next_action: "C036 (trigonometric direction) and C037 (Q2_0 symbol quantization)."
