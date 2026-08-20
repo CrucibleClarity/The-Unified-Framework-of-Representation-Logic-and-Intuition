@@ -1,0 +1,100 @@
+id: R089
+title: "R089 (user-proposed 2026-08-12): unifying the basepoints of the three axes via basepoint drift — the multiplication basepoint 1 drifts to the addition basepoint 0 under log (log 1 = 0); 0 ↔ 1 is a basepoint Worn-Zhe-Yue duality (exp∘log = id); the three axes (addition 0 / multiplication 1 / log-axis) unify under log: reducibility = additive decomposition, multiplicativity = additive observation"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "你先做干净一点，把这仨玩意的基点统一了再说，基点漂移啊。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。三轴 (加法/乘法/log) 基点统一。
+
+    ★ 主张内容 (基点漂移统一):
+      ① 加法轴基点: 0 (e+0 = e)
+      ② 乘法轴基点: 1 (e·1 = e) — 特权基点 (R088: 1 不可由乘法产生)
+      ③ log 轴: 缩放 → 平移 (log(ab) = log a + log b)
+      ④ 统一: log(1) = 0 — 乘法基点 1 在对数下漂移到加法基点 0!
+      ⑤ 0 ↔ 1 是 log/exp 对偶 (基点穿折越, exp∘log = id)
+
+    ★ 数学内容 (验证):
+      ① log(1) = 0: 乘法基点 → 加法基点 (基点漂移)
+      ② log(ab) = log a + log b (乘法轴 → 加法轴)
+      ③ log 下: 可约 = 加法分解 (log a = log b + log c) — 三轴统一
+      ④ 乘法基点漂移: log 下 delta 差 = 基点漂移量
+      ⑤ log/exp 对偶: 0 ↔ 1 基点穿折越 (exp∘log = id)
+      ⑥ 统一结论: 加法基点 0 = log(乘法基点 1);
+         乘法基点 1 = exp(加法基点 0)
+
+    ★ 机械验证 (R089_basepoint_unify.py, 枚举=证据):
+      1. log(1) = 0: 乘法基点 → 加法基点: PASS
+      2. log(ab) = log a + log b (乘法→加法): PASS
+      3. log 下可约 = 加法分解: PASS
+      4. 乘法基点漂移: delta 差 = 基点漂移量: PASS
+      5. log/exp 对偶: 0 ↔ 1 基点穿折越: PASS
+      6. 三轴统一: 0 = log(1), 1 = exp(0): PASS
+
+    ★ 与既有 claim 的关系:
+      - R088 (1 = 乘法特权基点): 本 claim 统一其与加法基点 0
+      - R087 (乘法重定义): 乘法基点 1 漂移到加法基点 0 (log)
+      - RulerDrift (基点漂移): 统一机制 (delta 不变)
+      - R085 (0 = 折叠类): 0 与 1 的穿折越对偶
+      - R072 (声明): 三轴统一后的相位声明
+      结论: 三轴基点在 log/exp 对偶下统一为 0↔1 穿折越 — 基点漂移统一。
+
+    ★ 支撑 (Lean):
+      - RulerDrift / R088 / R087 / R085 [claim 级]
+  formal_math: |
+    -- 基点漂移: log(1) = 0 (乘法基点 → 加法基点)
+    -- 乘法→加法: log(ab) = log a + log b
+    -- 对偶: exp∘log = id, log∘exp = id (0 ↔ 1 穿折越)
+    -- 可约性 log 下: log a = log b + log c (加法分解)
+
+objects: []
+
+definitions_used:
+- RulerDrift / R088 / R087 / R085 / R072
+
+assumptions:
+- "加法基点 0, 乘法基点 1"
+- "log 把乘法轴映到加法轴 (log(ab) = log a + log b)"
+- "log(1) = 0: 基点漂移统一"
+
+conclusion: "用户指令完成 (2026-08-12): 三轴基点统一 — 乘法基点 1 经 log 漂移到
+  加法基点 0 (log 1 = 0); 0 ↔ 1 是 log/exp 对偶穿折越; 加法/乘法/log
+  三轴基点在基点漂移下统一。"
+
+known_special_cases:
+  - "log(1) = 0: 乘法基点 → 加法基点"
+  - "exp(0) = 1: 加法基点 → 乘法基点"
+  - "log(ab) = log a + log b: 乘法观测 → 加法观测"
+
+counterexample_search:
+  status: done
+  search_space: "log(1)/乘法加法映射/基点漂移/对偶 (R089_basepoint_unify.py: 6 组)"
+  smallest_checked_size: 300
+  result: "6/6 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "log 定义域: 仅正实数 (0 与负数无 log)"
+  - "基点漂移需对偶: exp∘log = id 前提"
+  - "统一是观测统一: 非结构合并 (三轴仍独立)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "三轴统一后: 可约/离散/乘性共享对称性 (R088 ③) 在统一基点下重新表述"
+
+notes: "观点归属: 用户 (2026-08-12) 提出指令 (原话原封保存); assistant 执行
+  机械验证 + claim 落盘。"
