@@ -1,0 +1,150 @@
+%% CPP 2027 Submission — 0pat: Composite Numbers as Prime Factorization
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+
+\begin{document}
+
+\title{Composite Numbers as Prime Factorization:\\ A Pure-Known-Mathematics
+Re-formalization of a Pat Observation}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We report the first completed exercise of a re-formalization program: a pat
+framework observation (``composite numbers are multiple projection
+superpositions of primes'') is re-stated in pure known mathematics and
+formally proved in Lean 4 / mathlib with \emph{no} pat framework concepts.
+The re-statement is the fundamental theorem of arithmetic; the proof is four
+theorems: existence of the prime factorization
+(\texttt{prod\_factorization\_pow\_eq\_self}), primality of the
+factorization support, uniqueness of the factorization (via mathlib's
+\texttt{factorizationEquiv}), and the existence of a nontrivial prime
+factor for every composite number (\texttt{exists\_prime\_and\_dvd}). All
+four compile with zero errors against mathlib v4.32.2. The exercise
+demonstrates the program's method: walk the genealogy map from the pat
+concept to its standard-mathematics coordinate, formalize the equivalence
+on the way, and keep the pat vocabulary out of the proof.
+\end{abstract}
+
+\keywords{Lean, formalization, arithmetic, fundamental theorem of arithmetic, 0pat, reproducibility}
+
+\maketitle
+
+\section{Introduction}
+
+\emph{Program.} This paper is the first completed exercise of a
+re-formalization program (``0pat''): take the exercises of the pat
+framework --- a body of Lean-formalized observations about basepoint-
+relative operator semantics --- and re-prove their mathematical content
+using \emph{pure known mathematics}: only mathlib's existing definitions
+and theorems, no pat framework concepts (basepoints, phase locking,
+interlock pairs, projection superpositions).
+
+\emph{Method.} Each exercise is located on a genealogy map (rows: pat
+concepts R1--R25; columns: mathematical genealogies --- geometry, algebra,
+analytic number theory, topology, category theory, representation,
+physics, construction). The map's entries are the paths: a pat concept at
+coordinate $(R_i, C_j)$ has a standard-mathematics correspondent at that
+coordinate. The re-formalization walks the path: re-state the pat claim at
+its coordinate in standard mathematics, formalize the equivalence, and
+prove. Since the mathematical claim is known (the ``answer'' exists in
+mathlib), the work is path-finding, not theorem-finding.
+
+\emph{This exercise.} The pat observation ``composite numbers are multiple
+projection superpositions of primes'' sits at $(R23, C3)$ on the genealogy
+map (prime circle $\times$ analytic number theory). Its standard-
+mathematics correspondent is the fundamental theorem of arithmetic. We
+re-state and prove it.
+
+\section{Re-statement (0pat)}
+
+\paragraph{Pat claim.} A composite number is a superposition of prime
+projections: its prime structure is fully determined by the primes that
+divide it and their multiplicities.
+
+\paragraph{0pat re-statement (fundamental theorem of arithmetic).}
+\begin{enumerate}
+\item \emph{Existence:} every nonzero natural number equals the product of
+its prime powers: $\prod_{p} p^{e_p} = n$ where $e_p =
+\mathrm{factorization}(n)(p)$.
+\item \emph{Primality of support:} $e_p > 0$ only for prime $p$.
+\item \emph{Uniqueness:} any prime-supported factorization whose product
+equals $n$ is exactly $n$'s factorization.
+\item \emph{Composite structure:} every composite $n > 1$ has a prime
+factor $p < n$.
+\end{enumerate}
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 90 lines), importing
+only \texttt{Mathlib.Data.Nat.Factorization.Basic} and
+\texttt{Mathlib.Data.Nat.Basic}. Four theorems:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & mathlib anchor \\
+\midrule
+\texttt{factorization\_represents} & $n \neq 0 \Rightarrow \prod_p p^{e_p} = n$
+  & \texttt{Nat.prod\_factorization\_pow\_eq\_self} \\
+\texttt{factorization\_support\_prime} & $p \in \mathrm{supp}\, e \Rightarrow$ prime $p$
+  & \texttt{Nat.factorization\_eq\_zero\_iff} \\
+\texttt{factorization\_unique} & prime support + product $= n \Rightarrow f = n.factorization$
+  & \texttt{Nat.factorizationEquiv} \\
+\texttt{composite\_has\_prime\_factor} & $1 < n \wedge \neg$prime $n \Rightarrow \exists p$, prime $p$, $p \mid n$, $p < n$
+  & \texttt{Nat.exists\_prime\_and\_dvd} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Uniqueness via the factorization equivalence.} The cleanest
+route to uniqueness is mathlib's
+$\mathrm{factorizationEquiv} : \mathbb{N}^+ \simeq \{ f : \mathbb{N}
+\rightarrow_0 \mathbb{N} \mid \forall p \in \mathrm{supp}\, f, \text{prime } p \}$:
+the inverse maps $f$ to $f.\mathrm{prod}\,(\cdot^\cdot)$ (a mathlib
+theorem), so a prime-supported $f$ with product $n$ is the preimage of
+$n$ under the inverse --- hence equals $\mathrm{factorizationEquiv}(n)$,
+which is definitionally $\langle n.\mathrm{factorization}, \cdot\rangle$.
+The whole proof is: $f = \mathrm{factorizationEquiv}(n) = n.\mathrm{factorization}$.
+
+\paragraph{Verification.} Compiled with Lean 4.32.2 (mathlib v4.32.2),
+zero errors, zero \texttt{sorry}, zero axioms beyond mathlib's. Build
+command in the artifact.
+
+\section{Relation to the pat exercise}
+
+The original exercise (pat\_pnp exercise XXIII, claim R234) formalized the
+same observation inside the pat framework, using pat vocabulary. This
+re-formalization shows that the mathematical content survives the removal
+of the framework: the observation is the fundamental theorem of
+arithmetic, and its proof is entirely within known mathematics. The pat
+vocabulary is preserved in the exercise record (README) as provenance, not
+in the proof.
+
+\section{Conclusion}
+
+The first 0pat exercise is complete: composite numbers as prime
+factorization, proved with pure known mathematics in four theorems, zero
+errors. The method (genealogy-map path-walking, formalize the equivalence
+on the way) is validated on this exercise and is the template for the
+remaining ones.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
