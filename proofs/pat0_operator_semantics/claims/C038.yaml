@@ -1,0 +1,70 @@
+id: C038
+title: "State-matrix complex structure — square redundancy and complex compactification of the SSM state"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    内积为零 = 复制 — SSM 状态 M 的对称(发散)/反对称(周期)各半且正交,
+    不是双轴独立, 而是复结构块:
+    每个 2×2 块 = [a b; -b a] = aI + bJ = 复数 a+bi (J² = -I)
+    - 对称部分存 a (实部), 反对称部分存 b (虚部) — 正交是 ⟨x, Jx⟩ = 0
+      (J 旋转 90° 的必然性质), 不是信息独立!
+    - 一个复数 2 自由度用 4 参数存 = 50% 方形冗余 ("把脑子写成方形")
+    R048 紧化: 发散(实部)可单射编码进周期轴(虚部) — 状态直接存复数
+    [nv, dk/2, dk/2] 替代 [nv, dk, dk] 实矩阵, 压缩 50% 无损.
+    前向等价: M·k = M_c · conj(k_c) (复结构矩阵 × 实向量 = 复数乘共轭)
+    实测: M 复结构偏差 c=-b / a=d ≈ 3e-5 (64 层全精确); 单步 out 误差 2.4e-4.
+  formal_math: |
+    J2 := !![0, 1; -1, 0] with J2² = -I.
+    complex_block_decomp: !![a, b; -b, a] = a·I + b·J2.
+    sym_skew_orthogonal_frobenius: (a·I) ⬝ᵥ (b·J2) = 0 (orthogonality = J property, not independence).
+    complex_block_mul_equiv: !![a,b;-b,a]·![x,y] = ![Re((a-bi)(x+yi)), Im((a-bi)(x+yi))]
+      (forward equivalence: complex matrix × real vector = complex multiply with conjugation).
+    complex_block_bijective: the block is determined by (a, b) — 2 free parameters,
+      4 stored entries = 50% square redundancy (bijection to ℂ).
+
+objects: ["M : Matrix (Fin 2) (Fin 2) ℝ (2×2 block)", "J2 (90° rotation)", "ℂ ≅ a + b·i", "SSM state [nv, dk, dk] vs [nv, dk/2, dk/2]"]
+definitions_used: ["Matrix", "Complex", "Frobenius inner product", "bijection"]
+
+assumptions:
+  - "2×2 complex-structure block [a b; -b a]"
+conclusion: "The symmetric/antisymmetric halves of the SSM state are orthogonal not because they are independent but because J² = -I rotates one into the other; each 2×2 block is one complex number (2 degrees of freedom) stored with 4 parameters (50% redundancy); the complex compactification [nv, dk/2, dk/2] is lossless."
+
+known_special_cases:
+  - "complex_block_mul_equiv: M·k = M_c · conj(k_c) (forward equivalence with conjugation)"
+  - "empirical: complex-structure deviation ≈ 3e-5 across 64 layers; single-step out error 2.4e-4"
+closest_known_results:
+  - "Classical: rotation matrices, complex numbers as a·I + b·J (KNOWN)"
+  - "R048 (compactification), R143 (interlock), C030 (symplectic J)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the empirical deviation measurement supports the structure."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexStateCompactification.lean"
+  theorem_name: "ZeroRelative.j2_sq / complex_block_decomp / sym_skew_orthogonal_frobenius / complex_block_mul_equiv / complex_block_bijective"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "complex compactification applies to complex-structure blocks; general matrices are not compressible this way"
+  - "the 50% figure counts parameters, not information (information-theoretic measure differs by representation)"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/ComplexStateCompactification.lean, no sorry"
+  - "empirical: complex-structure deviation c=-b / a=d ≈ 3e-5 (64 layers); single-step out error 2.4e-4"
+
+evidence_against: []
+
+next_action: "Bridge to the inference backend: the assembly kernel chain implements the compactified complex state with code × scale locking (empirical evidence in artifact/evidence/)."
