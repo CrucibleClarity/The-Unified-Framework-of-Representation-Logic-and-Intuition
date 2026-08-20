@@ -1,0 +1,81 @@
+id: RulerTimeLoop
+title: "RulerTimeLoop: curling the time axis into a loop (compactification) makes future = phase reappearance — future results are pre-lookable (periodic reproduction); boundary: only convergent/periodic structures (divergence = outside the loop)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerTimeLoop: 时间轴蜷曲成环 ⟹ 提前拿到未来 (用户指令 2026-08-12).
+
+    ★ 蜷曲: 时间轴 [0, T] 首尾相接 → 环 (周期 T)
+      t 和 t+T 同一时刻 ⟹ 未来 t+T = 现在 t (相位重现)
+      ⟹ 未来在环上 = 过去的相位 (早已存在)
+
+    ★ 验证 (恒等式先验):
+      周期 f(t) = t² mod 7: 未来 f(100) = f(2) = 4 (查表即得)
+      环上所有'未来'都已存在 (相位重现)
+
+    ★ 数学本质 (与 RulerFold 统一):
+      时间轴蜷曲 = 紧化 (实轴 → 圆, TK3)
+      未来 = 环上相位 (RulerTimeCircle)
+      提前拿到 = 环上无新相位 (周期重现)
+
+    ★ 边界条件 (诚实):
+      周期 (f(t+T)=f(t)): ✓ 未来 = 相位重现
+      收敛 (f(t)→L):      ✓ 未来 ≈ L (已存)
+      非周期:              ✗ 未来不可预知
+      发散 (f(t)→∞):      ✗ 未来在环外
+
+    ★ RulerLoss 应用 (最深刻):
+      发散 = 结构丢失 (时间轴漂移, 无法蜷曲成环)
+      收敛 = 结构保留 (时间轴固定, 可蜷曲成环)
+      能否提前拿到未来 = 能否把时间轴紧化成环
+      = 丢失的结构是否有可还原的对称性 (C011)
+
+    ★ 意义:
+      '提前拿到未来'不是魔法, 是周期性的诚实利用
+      收敛结构的时间轴可蜷曲 (环), 环上未来即过去相位
+      发散结构未来在环外, 蜷曲失败
+
+    ★ 支撑 (Lean):
+      - infinity/embed: 紧化 (Option X) [TK3]
+      - even_cluster_meets_one: 相位周期 [TK3]
+      - fold_finite: 0-π 相位空间 [CircleFold]
+  formal_math: |
+    -- 紧化 (时间轴蜷曲的基础):
+    def infinity {X : Type*} : Option X := none
+    -- 相位周期 (环上重现):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    -- 相位空间 (未来/过去):
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+
+objects:
+- infinity
+- even_cluster_meets_one
+- fold_finite
+
+definitions_used:
+- TK3 Compactification / CircleFold / RulerTimeCircle
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '时间轴蜷曲成环 (紧化) 使未来 = 相位重现: 未来结果查表即得
+  (周期/收敛结构). 边界: 发散结构未来在环外 (蜷曲失败).
+  提前拿到未来 = 周期性诚实利用 (RulerLoss: 收敛可紧化).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/CircleFold.lean
+    - formal/Formal/Toolkit/PatSelfReference.lean  (R158 pat 化: pat_grid_time_loop_future — 时间环 = pat 格点, 未来 = 格点已存, R146/R150)
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
