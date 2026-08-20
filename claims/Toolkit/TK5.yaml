@@ -1,0 +1,63 @@
+id: TK5
+title: "Toolkit/CircleStructure: five components of circle structure (scale, warp-speed, metric, embedding, sampling) — parameterized"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    自包含工具包 (只 import mathlib): 实数轴紧化为圆的结构有 5 个分量
+    (用户指令 2026-08-12: 椭圆/扭曲圆都是分量产生, 不是新结构).
+
+    ★ 分量1 度量/尺度 (椭圆):
+      - ellipse_identity: (a·cosθ)²/a² + (b·sinθ)²/b² = 1
+      - circle_is_ellipse_unit: a=b=1 时 x²+y²=1 (正圆是椭圆特例)
+    ★ 分量2 速度/密度 (扭曲):
+      - warp_deviation: (1+k·cosθ) - 1 = k·cosθ (角速度偏离均匀)
+      - nonuniform_when_warp_nonzero: k≠0 ⟹ 非均匀密度 (扭曲圆)
+    ★ 分量3 度规 (非欧圆):
+      - euclideanCircumference = 2πr; hyperbolicCircumference = 2π·sinh r
+      - hyperbolic_eq_iff_sinh_eq: 周长相等 ⟺ sinh r = r (度规是分量)
+    ★ 分量4 嵌入/翘曲 (3D 圆):
+      - planarCircle = exp(θ·I); warp_zero_is_planar: k=0 ⟹ 无翘曲
+    ★ 分量5 采样 (多边形→圆):
+      - polygonError n = 1 - cos(π/n); 非负; 正方形误差 = 1 - √2/2
+
+    数学定位: 经典 (椭圆/周长/多边形逼近), 形式化价值 = 圆结构的 5 分量
+    分解: 椭圆/扭曲/非欧/翘曲/多边形都是这 5 个分量的参数变化, 不是新结构.
+    KNOWN (几何/三角).
+  formal_math: |
+    lemma ellipse_identity (a b θ : ℝ) (ha : a ≠ 0) (hb : b ≠ 0) :
+      (a * Real.cos θ) ^ 2 / a ^ 2 + (b * Real.sin θ) ^ 2 / b ^ 2 = 1
+    lemma warp_deviation (k t : ℝ) : (1 + k * Real.cos t) - 1 = k * Real.cos t
+    def euclideanCircumference (r : ℝ) := 2 * Real.pi * r
+    def hyperbolicCircumference (r : ℝ) := 2 * Real.pi * Real.sinh r
+    def polygonError (n : ℕ) := 1 - Real.cos (Real.pi / n)
+    lemma polygon_error_square : polygonError 4 = 1 - Real.sqrt 2 / 2
+
+objects:
+- euclideanCircumference
+- hyperbolicCircumference
+- planarCircle
+- polygonError
+
+definitions_used:
+- Real.cos / Real.sin / Real.sinh (三角函数)
+- Complex.exp (平面圆)
+
+assumptions:
+- 自包含: 仅 import mathlib
+
+conclusion: '实数轴→圆的结构有 5 个参数化分量 (度量/速度/度规/嵌入/采样);
+  椭圆、扭曲圆、非欧圆、翘曲圆、多边形都是分量的参数变化.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/CircleStructure.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
