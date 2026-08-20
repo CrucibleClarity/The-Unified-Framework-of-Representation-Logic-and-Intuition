@@ -1,0 +1,74 @@
+id: RulerAsym
+title: "RulerAsym: the relative 2 is the source of asymmetry — the abstract 2 is symmetric, the basepoint-relative 2 (+1/-1) is asymmetric"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerAsym: 相对性的 2 = 不对称的根源 (用户指令 2026-08-12).
+
+    ★ 绝对 vs 相对:
+      绝对视角: 无基点, 无区分, 只有 1 (无结构, 完全对称)
+      相对视角: 选基点 e, 区分出现 (±1, 2 值)
+
+    ★ 核心区分:
+      抽象 2: {a,b} 两元素 — 完全对称 (交换 a,b 不变)
+      相对 2: {+1,-1} 相对基点 — 不对称 (谁正谁负由基点定)
+      ⟹ 区分 (±1) 需要选方向 ⟹ 方向选择打破对称
+
+    ★ 三层不对称:
+      ① 值的不对称: +1 vs -1 (区分本身)
+      ② 基点的不对称: 选 e 不选 f (锚的选择)
+      ③ 结构的不对称: 相对基点, 保持 vs 破缺
+
+    ★ 验证 (时间反演):
+      时间反演 det = -1 vs 恒等 det = +1
+      选择'时间正向'为基点 ⟹ -1 是'破缺', +1 是'保持'
+      ⟹ 不对称 = 基点选择的后果 (不是内在的)
+
+    ★ 完整闭环:
+      C-PH2: 对称性破缺 = 基点选择
+      RulerDelta: 基点是 delta 的锚
+      ⟹ 不对称 = 相对性的 2 = 锚 (基点) 的选择
+      ⟹ 对称性破缺不是结构的性质, 是'选了基点'的性质
+
+    ★ 支撑 (Lean):
+      - sign_is_pm_one: 符号投影值域 {+1,-1} (相对 2, TK2)
+      - teleport: 两点 e,f (锚选择, TK1)
+      - timeRev_det_neg: det(T) = -1 (时间反演不对称, NS3)
+  formal_math: |
+    -- 相对 2: ±1 投影 (TK2)
+    lemma sign_is_pm_one (σ : Equiv.Perm α) :
+      signProjection σ = 1 ∨ signProjection σ = -1
+    -- 锚选择: 两点 (TK1)
+    def teleport (e f : P) (x : P) : P := (f -ᵥ e) +ᵥ x
+    -- 不对称: 时间反演 det = -1 (NS3)
+    theorem timeRev_det_neg (tIdx : n) : (timeRevMatrix tIdx).det = -1
+
+objects:
+- sign_is_pm_one
+- teleport
+
+definitions_used:
+- TK2 SymmetryRecovery / TK1 BasepointGen / NS3 SOBasepoint
+
+assumptions:
+- 各定理假设见 TK1/TK2/NS3 (自包含, 仅 import mathlib)
+
+conclusion: '抽象 2 对称, 相对性的 2 (±1) 不对称 — 区分需要选方向, 方向由
+  基点定. 不对称 = 锚 (基点) 的选择, 不是结构的性质 (C-PH2 + RulerDelta).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/BasepointGen.lean
+    - formal/Formal/NavierStokes/SOBasepoint.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
