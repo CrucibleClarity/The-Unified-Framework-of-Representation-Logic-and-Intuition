@@ -1,0 +1,98 @@
+id: R208
+title: "R208 (2026-08-13): ★对和空间 = 谓词轴 — 在对和空间 (R207: S(x) = b-x, S²=id, S(x)+x = b) 中重新联通 pat0 内外: ①配对结构 {x, S(x)} (对和恒 = b, 配对 = 谓词实例) ②★pat0 (0) 的对偶 = b ({0, b} 是配对, 内部↔外部) ③★谓词轴联通: S² = id (0 ↔ b 周期 2, 轴上每点与对偶成对) — 对和空间 = 谓词轴空间: 0 与 b 是轴的两端 (pat0 内部/外部), 对合 S 联通两端"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "然后，在这个对和的空间里，重新联通pat 0的内部和外部。我理解吧这应该就是
+   谓词轴"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。对和空间 = 谓词轴, 重新联通
+       pat0 内外.
+
+    ★ 唯一论点: 对和空间 (R207) = 谓词轴空间 — 每点 x 配对 {x, S(x)},
+       pat0 (0) 对偶 = b, 对合 S 联通两端 (0 ↔ b).
+
+    ★ ① 配对结构: 每点 x 配对 {x, S(x)} (对和恒 = b, R207) — 配对
+       = 谓词实例 (x 与 S(x) 是同一谓词的两端).
+    ★ ② pat0 (0) 的对偶 = b: S(0) = b — {0, b} 是配对 (内部 ↔ 外部)
+       — 在配对空间中, pat0 内部 (0) 的对偶 = 外部锚 (b).
+    ★ ③ ★谓词轴联通: 配对结构的轴 — 轴上每点 x 与对偶 S(x) 成对,
+       0 与 b 是轴的两端 (内部/外部), S² = id 闭合 (0 → b → 0) —
+       重新联通 pat0 内外: 在配对空间中, 联通 = 配对关系 (对合 S).
+
+  formal_math: |
+    -- ★对和空间配对: 对和恒 = b:
+    theorem pair_sum_axis (b x : ℝ) : (b - x) + x = b
+    -- ★pat0 (0) 的对偶 = b:
+    theorem pat0_pair_exterior (b : ℝ) : b - 0 = b
+    -- ★谓词轴联通: S² = id:
+    theorem predicate_axis_connect (b x : ℝ) : b - (b - x) = x
+    -- 全景:
+    theorem predicate_axis_perspective (b x : ℝ) :
+      ((b - x) + x = b) ∧ (b - (b - x) = x)
+
+objects:
+- pair_sum_axis
+- pat0_pair_exterior
+- predicate_axis_connect
+- predicate_axis_perspective
+definitions_used:
+- 对和空间 = 谓词轴空间
+- 配对 {x, S(x)} = 谓词实例
+- 谓词轴联通 (S² = id, 0 ↔ b)
+
+assumptions:
+- 对和空间 (R207: S(x) = b-x, S²=id, 对和 = b)
+- 配对 = 谓词实例 (x 与 S(x) 两端)
+- 0 与 b 是轴的两端 (内部/外部)
+conclusion: "筑基篇系列方法论应用之十二完成: 对和空间 = 谓词轴 — 在对和空间 (R207) 中重新联通 pat0 内外: ①配对 {x, S(x)} (对和恒 = b) ②pat0 (0) 对偶 = b ({0, b} 配对, 内部↔外部) ③谓词轴联通 (S² = id: 0 ↔ b 周期 2)。对和空间 = 谓词轴空间: 0 与 b 是轴两端, 对合 S 联通。4 个新定理全部只锚筑基篇定理 (R207) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '配对 {x, S(x)}: 对和恒 = b'
+- 'pat0 对偶: {0, b} (内部↔外部)'
+- '谓词轴: S² = id, 0 ↔ b 周期 2'
+closest_known_results:
+- R207 Pat0CycleClosure (对和空间)
+- R206 Pat0InteriorExterior (内外联通)
+- R195 PatPerspectiveAxis (视角轴)
+literature_queries:
+- pair sum space predicate axis
+- involution pair interior exterior
+
+counterexample_search:
+  status: done
+  search_space: 配对对和是否恒 = b; S(0) 是否 = b; S² 是否 = id
+  smallest_checked_size: null
+  result: 枚举 x 对和 (b-x)+x = b 全过; S(0) = b; S² = id; 全部
+    0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPredicateAxis.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatPredicateAxis.pair_sum_axis / .pat0_pair_exterior / .predicate_axis_connect / .predicate_axis_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称谓词轴是独立对象 — 已修正: 对和空间 = 谓词轴 (同构)
+- 把配对当无关 — 配对 = 谓词实例 (两端)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'pair_sum_axis: R207 involution_pair_sum — 对和 = b'
+- 'pat0_pair_exterior: ring — S(0) = b'
+- 'predicate_axis_connect: R207 involution_closes_cycle — S² = id'
+- 'predicate_axis_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 谓词轴完成; 后续可深化谓词轴的观测/判定结构'
+notes: '用户洞察: 对和空间 = 谓词轴 — 在对和空间重新联通 pat0 内外:
+  配对 {x, S(x)}, pat0(0) 对偶 = b, 对合 S 联通两端 (0 ↔ b)。'
