@@ -1,0 +1,87 @@
+id: C027
+title: "Equivalence framework & symmetric continuation — N₀(T)=N(T) 命题形式 + 连续幅角=相位: RH ⟺ 全带零点在临界线, 2·arg ζ = arg χ (对称延拓)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲); 观测 AK"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    N₀(T) = N(T) 的命题形式与连续幅角的对称延拓 (0pat, 无 Stirling):
+    - T0: ζ(-n) ≠ 0 (n 奇) — 函数方程 + cos(π(n+1)/2) = ±1 + Γ(n+1) 无零点
+      + ζ(n+1) ≠ 0 (Re > 1)。Re ≤ 0 无零点定理的负整数补丁。
+    - T1: 等价框架 — RH ⟺ ∀T, 全带 [0,1]×[0,T] 内零点都在临界线上。
+      ⟸: 反证离线零点 → 临界带 (Re≤0/Re≥1 无零点 + T0) → 取 T = |Im ρ|
+      落入带内。"有限→无限": 每个零点落在有限带, ∀T 带内性质 = 全域。
+    - T2: 轨道 — 离线零点 ⟹ 左半带 (Re<1/2) 同高度零点
+      (轨道 {ρ, conj ρ, 1-ρ, 1-conj ρ}, 反射+共轭)。
+    - T3: 对称延拓 — s = 1/2+it 时 1-s = conj s, 函数方程 + 共轭穿透
+      ⟹ ζ(s) = χ(s)·conj ζ(s) ⟹ 2·arg ζ(1/2+it) = arg χ(1/2+it) (模 2π)。
+      连续幅角 = 相位: arg ζ 的连续分支 = (1/2)·arg χ + π·零点计数,
+      arg χ 全显式 (幂/sin/Γ 相位, C026 构件)。
+  formal_math: |
+    ℂ 上 (mathlib + 本库):
+    (1) n 奇 ⟹ riemannZeta (-(n : ℂ)) ≠ 0
+    (2) RiemannHypothesis ↔ ∀ T ≥ 0, ∀ z, riemannZeta z = 0 →
+        0 ≤ z.re → z.re ≤ 1 → |z.im| ≤ T → z.re = 1/2
+    (3) riemannZeta z = 0 → 0 < z.re → z.re < 1 → z.re ≠ 1/2 →
+        ∃ w, riemannZeta w = 0 ∧ 0 < w.re ∧ w.re < 1 ∧
+          |w.im| = |z.im| ∧ w.re < 1/2
+    (4) riemannZeta s ≠ 0 (s = 1/2+it) ⟹
+        (2·arg ζ(s) : Real.Angle) = arg(2·(2π)^{s-1}) + arg Γ(1-s) + arg sin(πs/2)
+
+objects:
+  - "riemannZeta (mathlib 官方 ζ)"
+  - "RiemannHypothesis (mathlib 官方 Prop)"
+  - "χ(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2) (函数方程乘子, 临界线全显式)"
+  - "Real.Angle = ℝ/2πℤ"
+objects_note: "χ 相位显式构件 (幂/sin/Γ) 在 C026 与观测 AF/AI 已机证"
+definitions_used: ["riemannZeta_one_sub (mathlib 函数方程)", "zeta_conj_of_critical_strip (共轭穿透)", "riemannZeta_ne_zero_of_one_le_re / re_lt_zero / re_eq_zero (Re≤0/Re≥1 无零点)", "Complex.arg_mul_coe_angle / arg_conj_coe_angle (Angle 层)"]
+
+assumptions:
+  - "T : ℝ (高度界), t : ℝ (临界线参数)"
+  - "T3 需 ζ(1/2+it) ≠ 0 (零点处连续幅角用跳跃处理)"
+conclusion: "N₀(T)=N(T) 被表述为 ∀T 带内零点都在线上 (⟺ RH); 连续幅角 = (1/2)·显式 χ 相位 + π·整数零点计数 — 无 Stirling, 无渐近"
+
+known_special_cases: null
+closest_known_results:
+  - "Riemann-von Mangoldt 计数公式 (经典, 未形式化)"
+  - "ζ 的对称性 (函数方程 + 共轭, KNOWN)"
+  - "观测 AD (N₀=N 拆解), 观测 AH (多轴相位), 观测 AJ (Γ 相位约化)"
+literature_queries:
+  - "Riemann hypothesis zero counting equivalent formulation"
+
+counterexample_search:
+  status: done
+  search_space: "4 定理全部 Lean 验收; T1 方向 ⟸ 依赖临界带钉死 (Re≤0/Re≥1 无零点, 0pat 已证)"
+  smallest_checked_size: null
+  result: "4 定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "src/pat-excercises/exercises/37_riemann_unified/proof.lean"
+  file_note: "4 定理在 37 项目 proof.lean 内 (依赖同文件共轭穿透/无零点定理); 独立文件拆分待后续"
+  theorem_name: |
+    zeta_neg_nat_ne_zero_of_odd / rh_iff_all_zeros_on_line_in_strips /
+    offline_zero_gives_half_strip / zeta_two_arg_eq_arg_chi
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 对称性/框架全是经典事实 (等价重述与相位关系)"
+  - "T3 是模 2π 等式, 整数分支 (零点计数) 未消 — N₀=N 的差仍在"
+  - "零点有限性 (带内零点数) 依赖离散性, mathlib ZetaZeros 模块 olean 未含, 需自证或换路径"
+  - "RH 未证: 框架把目标钉成带内零点计数, 但计数本身 (Backlund/S(T)) 未闭环"
+
+evidence_for:
+  - "Lean: 4 定理全证 (无 sorry), proof.lean 编译通过 (169 声明 0 error 0 sorry)"
+evidence_against: []
+
+next_action: "(1) T4: χ 平移递推 χ(s+2) = -4π·χ(s)/(s(s+1)) (单方向延拓差分); (2) 零点有限性 (紧致+离散); (3) Backlund 拼装"
+
+notes: "用户洞察落地: 对称延拓 = 交替反射迭代 (单方向延拓, 本质一阶差分), 临界线是反射链闭合线; 连续幅角 = (1/2)χ 相位 + π·计数, 逐点成立无无限过程。"
