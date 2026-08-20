@@ -1,0 +1,143 @@
+id: R157
+title: "R157 (筑基篇课后习题 I, 2026-08-13): ★P vs NP 在 pat 视角下的详细展开 — 唯一论点: NP 的 pat 语义 = 用模糊换速度 (N 的存在性 = 相位锁定外推, R150 王氏定理, 不穷举), 用结构找回精确 (验证 = 查表判等, RulerLookup/RulerRevLookup); witness ⟺ 表条目双向 (强化 R153 单向); 有限域上 P = NP 平凡 (R152: 结构已完备, 模糊不必要); 用户纠正: 不枚举, 只保留承载论证的机制定理"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  ① "阅读这个里面的论文，然后再一个独立的子文件夹里写新论文，并做lean形式化验证，
+     首先是P NP在pat视角下的详细展开和论述。"
+  ② "不是算器神魂论的计算篇，是筑基篇的一个课后习题"
+  ③ "不要试图过度枚举，没意义。这个框架下需要的是用模糊换速度，用结构找回精确。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 I: P vs NP 在 pat
+       视角下的详细展开和论述。
+
+    ★ 习题定位: 不是算器神魂论的独立篇章, 是筑基篇的课后习题 — 用筑基篇
+       已证定理 (R136–R154) 把 R152/R153 的 P vs NP 侧写展开为详细论述。
+       全部新定理只锚本框架定理, 不用外部引理 (R153 用户纠正精神延续)。
+
+    ★ 唯一论点 (用户纠正③后收束, 不枚举): NP 的 pat 语义 =
+       用模糊换速度, 用结构找回精确。
+       - 模糊 = N 的存在性: witness 猜测不穷举 — 存在性由相位锁定外推
+         给出 (R150 王氏定理, R153 ③: 任意未锁定相位 θ 被 pat 格点任意
+         精度统一)
+       - 结构 = 验证表: 有限域函数 = 预计算表 (RulerLookup, R057 一切皆表),
+         表 = 结构; witness 存在 ⟺ 表条目存在 (双向, 强化 R153 单向;
+         反向由 lookup_correct 封死)
+       - 有限域上 P = NP 平凡 (R152): 结构已完备 (表全量), 模糊不必要 —
+         求解与验证都 O(1), 多项式与常数无别
+       - P = 锁定方向唯一链 (R153 ①, R050 机制): 无模糊
+
+    ★ 四个机制定理 (只保留承载论证的, 删除枚举层):
+      ① lookup_iff_value: y = f x ⟺ (x, y) ∈ 表 — 验证 = 查表判等
+         (结构找回精确)
+      ② witness_iff_table_entry: ∃ w, V x w = true ⟺ ∃ w, (w, true) ∈
+         表 — 模糊与结构等价 (双向)
+      ③ ★np_fuzzy_structure_duality: 模糊存在性 ⟹ 结构存在性 ∧ 逐点
+         判等 — 本题核心定理 (NP 的模糊/结构对偶)
+      ④ p_np_pat_perspective: 全景 — N = 相位锁定外推 (模糊, R150) ∧
+         验证 = 查表判等 (结构) ∧ P = 锁定方向唯一链 (R153 ①, R050)
+
+    ★ 诚实边界: 全部为结构侧写, 非 P≠NP 判定 (规模增长下界不在框架内,
+       R152 边界延续)。
+
+  formal_math: |
+    -- ① 结构找回精确: 验证 = 查表判等 (双向):
+    theorem lookup_iff_value {D E} [Fintype D] [DecidableEq D] [DecidableEq E]
+      (f : D → E) (x : D) (y : E) :
+      y = f x ↔ (x, y) ∈ makeTable f
+    -- ② 模糊与结构等价 (双向, 强化 R153):
+    theorem witness_iff_table_entry {D} [Fintype D] [DecidableEq D]
+      (V : D → D → Bool) (x : D) :
+      (∃ w, V x w = true) ↔ (∃ w, (w, true) ∈ makeTable (fun w => V x w))
+    -- ③ ★NP 的模糊/结构对偶 (核心):
+    theorem np_fuzzy_structure_duality {D} [Fintype D] [DecidableEq D]
+      (V : D → D → Bool) (x : D) (hw : ∃ w, V x w = true) :
+      (∃ w, (w, true) ∈ makeTable (fun w => V x w)) ∧
+      (∀ w, V x w = true ↔ (w, true) ∈ makeTable (fun w => V x w))
+    -- ④ 全景: N=外推 (R150) ∧ 验证=判等 ∧ P=锁定链 (R153①/R050):
+    theorem p_np_pat_perspective {D} [Fintype D] [DecidableEq D]
+      (V : D → D → Bool) (x : D) (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      (∀ ε, 0 < ε → ∃ y ∈ patGrid, |θ - y| ≤ ε) ∧
+      (∀ w, V x w = true ↔ (w, true) ∈ makeTable (fun w => V x w)) ∧
+      (∀ d, Injective (fun x => x + d))
+
+objects:
+- lookup_iff_value
+- witness_iff_table_entry
+- np_fuzzy_structure_duality
+- p_np_pat_perspective
+definitions_used:
+- 用模糊换速度 (N 的存在性 = 相位锁定外推)
+- 用结构找回精确 (验证 = 查表判等)
+- 模糊/结构对偶 (NP 的 pat 语义)
+- 验证表 (RulerLookup/RulerRevLookup)
+- 锁定方向唯一链 (P)
+
+assumptions:
+- 有限域 (Fintype D) 上表语义成立 (RulerLookup 前提, R152 边界)
+- 确定性 = 锁定方向唯一链 (R050/R136/R153 ①)
+- 非确定性 = 未锁定方向, 存在性由相位锁定外推给出 (R140/R150/R153 ②③)
+- 诚实边界: 结构侧写, 非 P≠NP 判定 (规模下界不在框架)
+conclusion: "筑基篇课后习题 I 完成: R152/R153 的 P vs NP 侧写展开为单一论点的详细论述 — NP 的 pat 语义 = 用模糊换速度 (N = 相位锁定外推, R150), 用结构找回精确 (验证 = 查表判等, RulerLookup/RulerRevLookup); witness ⟺ 表条目双向 (强化 R153); 有限域上 P = NP 平凡 (R152, 模糊不必要)。4 个机制定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases: []
+closest_known_results:
+- R152 P vs NP 框架侧写 (有限域平凡 + 验证免费 + 方向对)
+- R153 N = 相位锁定外推 (P vs NP 中 N 的 Pat 视角)
+- R150 王氏可达周期与不可达无穷间相位锁定一致性定理
+literature_queries:
+- verification as table lookup complexity
+- nondeterminism existence phase extrapolation
+
+counterexample_search:
+  status: done
+  search_space: 验证判等双向是否在有限域全成立 (lookup_correct/lookup_exists
+    反向); witness⟺表条目双向是否被 lookup_correct 封死; 模糊/结构对偶是否
+    由两个双向定理机械推出
+  smallest_checked_size: null
+  result: lookup_iff_value / witness_iff_table_entry 双向全构造性成立 (无
+    sorry); np_fuzzy_structure_duality = 前两者的机械组合
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPvsNPExercise.lean (import 筑基篇全部依赖链)
+  theorem_name: ZeroRelative.PatPvsNPExercise.lookup_iff_value / .witness_iff_table_entry / .np_fuzzy_structure_duality / .p_np_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 把课后习题写成独立篇章 — 用户纠正②: 不是计算篇, 是筑基篇课后习题
+- 过度枚举 — 用户纠正③: 不枚举 (初版 9 定理 4 层已删, 收束为 4 个机制定理
+  单一论点: 用模糊换速度, 用结构找回精确)
+- 用外部引理 (路径不可数等) — R153 纠正精神延续: 全部锚本框架定理
+- 声称 P≠NP 判定 — 诚实边界: 结构侧写, 非判定
+- 'lookup_iff_value 值域类型 — 验证函数 V : D → D → Bool 不是 D → D, 定理
+  需值域多态 [DecidableEq E]'
+evidence_for:
+- 'lookup_iff_value 构造性: lookup_exists (y=f x ⟹ 表) + lookup_correct
+  (表 ⟹ y=f x) — 验证 = 查表判等双向'
+- 'witness_iff_table_entry 双向: lookup_exists (witness⟹表) + lookup_correct
+  (表⟹witness) — 强化 R153 单向为双向, 模糊与结构等价'
+- 'np_fuzzy_structure_duality: witness_iff_table_entry 正向 + lookup_iff_value
+  逐点 — 模糊存在性 ∧ 结构判等'
+- 'p_np_pat_perspective: R150 相位锁定外推 + lookup_iff_value + R153① 唯一链
+  — 全景组合'
+evidence_against: []
+next_action: '课后习题系列后续: 模糊换速度/结构找回精确的方法论向其他问题投影
+  (搜索问题/优化问题/步数度量多项式边界)'
+notes: '筑基篇课后习题 I — 用户定位: 不是算器神魂论的独立篇章 (计算篇), 是筑基篇的
+  课后习题。用户纠正③ (2026-08-13): 不要过度枚举 — 初版 9 定理 4 层 (决策=折叠类/
+  P 复合封闭/N 分岔/步数链长) 全部删除, 收束为单一论点: 用模糊换速度, 用结构找回
+  精确。工程教训: fun w => V x w 内层 binder 与外层 w 同名时 rw 失效用 simpa 解;
+  lookup_iff_value 值域需多态 (验证函数 Bool 值域); Mathlib.Tactic.Simp 不可直接
+  import (用 Mathlib.Data.Real.Basic 自带 simp)。'
