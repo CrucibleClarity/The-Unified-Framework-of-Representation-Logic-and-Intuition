@@ -1,0 +1,73 @@
+id: C022
+title: "Nontrivial zero circle = critical circle — 非平凡零点的圆与临界线圆是同一个圆 (双向包含)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    "非平凡零点 (猜想) 所在之圆" 与 "临界线圆" 是同一个对象
+    (criticalCircle, 圆心 (1,0) 半径 1, 经过 0 和 2):
+    - nontrivialZeroSet: 非平凡零点 (猜想) 位置集 = 假复数轴 1/2 +
+      真复数轴非零 (临界线去实点);
+    - zeroSet_in_criticalCircle: 零点集的 recip 像 ⊆ 临界线圆;
+    - criticalCircle_subset_zeroSet_image: 临界线圆上非平凡点
+      (≠ 0, ≠ 2; 0 = ∞ 的像, 2 = 平凡点 1/2 的像) 都是某零点位置的
+      recip 像 — 双向包含 = 同一个圆。
+    黎曼猜想 = 断言非平凡零点全在唯一的一个圆 (临界线圆) 上。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) nontrivialZeroSet := {z | proj z = 1/2 ∧ z.b ≠ 0}
+    (2) zeroSet_in_criticalCircle: z ∈ nontrivialZeroSet → recip z ∈ criticalCircle
+    (3) criticalCircle_subset_zeroSet_image: w ∈ criticalCircle → w ≠ 0 →
+        w ≠ lift 2 → w ∈ recip '' nontrivialZeroSet
+
+objects:
+  - "nontrivialZeroSet (非平凡零点位置集)"
+  - "criticalCircle (临界线圆, 唯一对象)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "criticalCircle (C020)", "nontrivial_zero_on_circle (C020)", "circle_recip_proj (C021)", "recip_involutive (C021)"]
+
+assumptions:
+  - "C011/C013/C019/C020/C021 构造"
+conclusion: "非平凡零点的圆 = 临界线圆 (同一个对象 criticalCircle, 圆心 (1,0) 半径 1): 双向包含 (零点集 ⊆ 圆, 圆上非平凡点 ∈ 零点集之像)"
+
+known_special_cases:
+  - "圆上 0 点 = ∞ 的像 (不在零点集内)"
+  - "圆上 2 点 = 平凡点 z=1/2 的像"
+closest_known_results:
+  - "C019 (临界线是圆), C020 (两个圆), C021 (形状双向)"
+literature_queries: []
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    nontrivialZeroSet / zeroSet_in_criticalCircle /
+    criticalCircle_subset_zeroSet_image
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 反演/圆反演经典"
+  - "双向包含是'同一个圆'的位置陈述, 不是零点存在性 (黎曼猜想本体未动)"
+
+evidence_for:
+  - "Lean: 3 个定理全证 (无 sorry), 全量 lake build 通过 (2224 jobs)"
+evidence_against: []
+
+next_action: "(1) 素数圆 8 整点的成对结构 (共轭对); (2) 或收尾总结"
+
+notes: "非平凡零点的圆 = 临界线圆 (同一对象): 黎曼猜想只认这一个环。全部 KNOWN, 观测锚点。"
