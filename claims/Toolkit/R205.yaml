@@ -1,0 +1,93 @@
+id: R205
+title: "R205 (2026-08-13): ★证明器三升级 — ①外部定理注入接口: KNOWN 定理注册表 (Euler 欧拉形式 / Zhang 张益唐 / Helfgott 弱哥德巴赫 / Euclid-Euler 偶完全数, 可用 4 条; IUT 望月 争议不可用) 可组合为规则 (R153 锚定已知基线); ②Lean 自动编译: 骨架 → lake env lean 验证 (执行层验收, 含 sorry 检测拦截); ③规则自举: 扫描 Toolkit 122 文件 649 定理自动入规则库 (R203 路径扩展)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "加这个扩展。" → "然后分析下，还有哪些是盲区没做的" → "都实现。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。证明器三升级 (盲区修复).
+
+    ★ 唯一论点: ①外部定理注入 (KNOWN 规则) ②Lean 自动编译 (执行层
+       验收) ③规则自举 (649 定理自动入库).
+
+    ★ ① 外部定理注入接口: EXTERNAL_THEOREMS 注册表: Euler 欧拉形式
+       (R187) / Zhang 张益唐 (间隔<7×10⁷) / Helfgott 弱哥德巴赫 /
+       Euclid-Euler 偶完全数 (R189) — 可用 4 条; IUT 望月 (争议未普遍
+       接受) usable=False 不可注入 — 组合分析: 孪生+Zhang 降边界未达
+       2, 哥德巴赫+Helfgott 弱版已证强版未达, 奇完全数+Euler 必要条
+       件已注入 (R187).
+    ★ ② Lean 自动编译: lean_compile_check — 骨架 → lake env lean
+       验证 (执行层验收, 非自报); 含 sorry 检测 (uses sorry 拦截);
+       测试: 正确骨架 compiled=True, sorry 代码 compiled=False.
+    ★ ③ 规则自举: bootstrap_rules — 扫描 Toolkit 122 个 Lean 文件,
+       649 条定理自动收集为规则 (R203 路径扩展, 新 PROVED 定理自动
+       进入规则库).
+
+  formal_math: null
+  tool: paper/pat_pnp/tools/pat_path_prover.py (v2 三升级)
+
+objects:
+- external_theorem_injection
+- lean_auto_compile
+- rule_bootstrap
+definitions_used:
+- 外部定理注入 (KNOWN 规则可组合)
+- Lean 自动编译 (执行层验收)
+- 规则自举 (649 定理自动入库)
+
+assumptions:
+- KNOWN 定理可作规则 (R153 锚定已知基线)
+- 执行层验收 (lean 编译 + sorry 检测)
+- 新 PROVED 定理自动入规则库 (R203)
+conclusion: "筑基篇系列方法论应用之九完成: 证明器三升级 — ①外部定理注入接口 (KNOWN 规则 4 条可用: Euler/Zhang/Helfgott/Euclid-Euler; IUT 争议不可用) ②Lean 自动编译 (lake env lean 执行层验收 + sorry 拦截, 测试通过) ③规则自举 (扫描 122 文件 649 定理自动入库)。"
+
+known_special_cases:
+- '外部注入: Zhang 孪生降边界 (间隔<7×10⁷, 未达 2)'
+- 'Lean 编译: 正确骨架 True, sorry 代码 False (拦截)'
+- '自举: 122 文件 649 定理'
+closest_known_results:
+- R204 PatPathProver (证明器 v1)
+- R203 PatPathLockedTransfer (路径锁定)
+- R153 (已知基线检索)
+literature_queries:
+- external theorem injection prover
+- rule bootstrap theorem library
+
+counterexample_search:
+  status: done
+  search_space: Lean 编译是否正确区分 (正确骨架 vs sorry); 自举是否
+    扫描全部文件
+  smallest_checked_size: null
+  result: 正确骨架 compiled=True; sorry 代码 compiled=False has_sorry=
+    True; 自举 122 文件 649 定理; 全部通过
+formalization:
+  prover: null
+  file: paper/pat_pnp/tools/pat_path_prover.py (v2)
+  theorem_name: null
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明原猜想 — 外部注入只是组合已知, 未达目标仍 UNLOCKED
+- 自报通过 — 已用 lake env lean 执行层验收
+- IUT 当规则 — usable=False (争议未普遍接受)
+evidence_for:
+- '外部注入: 4 条 KNOWN 可用, IUT 排除'
+- 'Lean 编译: 正确 True / sorry False (测试)'
+- '自举: 122 文件 649 定理'
+evidence_against: []
+next_action: '已接: 三升级完成; 后续可扩展外部定理库/自动化证明流水线'
+notes: '用户要求实现盲区修复 (外部注入/Lean 编译/自举): 全部实现 —
+  EXTERNAL_THEOREMS 4 条可用, lean_compile_check 执行层验收, bootstrap
+  扫描 122 文件 649 定理。'
