@@ -1,0 +1,137 @@
+id: S004
+title: Process–Content Non-Equivalence — 产生 1 bit 的过程 ≠ bit 承载的状态; direction 是对 bit-state
+  symmetry 的破缺
+status: CONJECTURE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "S003 后用户分叉验证 (用户指令): \"产生 1 bit 的过程\" ≠ \"这个 bit 所承载的状态\"。\n且把 \"0→1\"\
+    \ 理解成有方向过程时, 它严格比一个无标签 bit 多结构。\n\n1. 单一东西 {ω} 是 0 bit (无二选一, 无 contrast, 信息容量\
+    \ 0)。\n   真正 1 bit = 两个可区别可能性 {a,b}, a≠b。\n   ⟹ first occurrence ≠ first bit;\
+    \ first nonzero information =\n   first internally distinguishable alternative\
+    \ space。\n2. \"0→1\" 不是 1 bit 本身: 裸 {a,b} 有交换对称 (a↔b 保持结构, Aut≅C₂);\n   有向 a⟶b\
+    \ 指定 source/target, 交换得 b⟶a 是不同结构, 只剩 id。\n   ⟹ 0→1 = bit + 方向信息。\n3. 判据: 对称群。裸二元素\
+    \ Aut≅C₂ (非平凡 σ(a)=b, σ(b)=a); 有向\n   transition 的保持者 h(a)=a, h(b)=b, 只剩 id。⟹\
+    \ unlabelled bit ≄\n   oriented transition 作为结构。\n4. 非零信息必须存在至少两个可区别可能性。无 contrast\
+    \ 无 bit。\n   first information emergence = undifferentiated → first distinguishability。\n\
+    5. 首次交互才可能产生非平凡对称性 (非必然)。生成次序: first occurrence\n   → first interaction → two\
+    \ distinguishable but role-equivalent\n   realizations → C₂ → symmetry breaking\
+    \ → orientation。\n6. 第一 interaction 不能是箭头 (方向已产生)。应首先是无向 incidence:\n   两个 realization\
+    \ 只在\"参与了同一次 interaction\"意义上出现, 交换保持\n   全部已认证事实 ⟹ 第一次真正的 C₂。\n7. Process–Content\
+    \ Non-Equivalence 控制模型: UnlabelledPair (Aut≃C₂) vs\n   OrientedTransition (Aut≃1)\
+    \ — direction 不属于 bit 的最小 information\n   content, 是对 bit-state symmetry 的进一步破缺。\n\
+    8. first bit ≡ first nontrivial symmetry carrier (若两 realization 结构\n   等价); first\
+    \ orientation = symmetry breaking of that carrier。\n"
+  formal_math: "flip : Bool → Bool (false↔true, swap / C₂ 生成元)\nflip_involutive: ∀x,\
+    \ flip (flip x) = x\nflip_nontrivial: flip false ≠ false\nswap_symmetry: (∀x,\
+    \ flip(flip x)=x) ∧ (∃x, flip x≠x)  — Aut ⊇ {id,flip} ≅ C₂\noriented_stabilizer_identity:\
+    \ ∀h, h false=false → h true=true → ∀x, h x=x\n                              —\
+    \ OrientedTransition Aut ≃ {id}\nflip_breaks_orientation: flip false ≠ false \
+    \ — swap 破坏方向\nsingleton_no_contrast: ∀ x y : Omega, x = y  — singleton 无 contrast\
+    \ (0 bit)\ntwo_alternatives_contrast: ∃ a b : Bool, a ≠ b  — 二元素有 1 bit\nprocess_content_non_equivalence:\
+    \ 无向对称(C₂) ∧ 有向退化({id}) ∧ singleton 无 contrast\nfirst_bit_is_first_symmetry_carrier:\
+    \ (∃a b, a≠b) ∧ swap_symmetry\norientation_breaks_symmetry: oriented_stabilizer_identity\
+    \ ∧ flip_breaks_orientation\n"
+objects:
+- Bool (二 realization 结构)
+- flip (交换对称)
+- Omega (单元素)
+- oriented stabilizer
+definitions_used:
+- Process–Content Non-Equivalence
+- Aut ≅ C₂
+- Aut ≅ 1
+- symmetry breaking
+- contrast
+- 无向 incidence
+assumptions:
+- Bool 作无向二 realization 结构 {a,b} (a≠b)
+- 有向 transition = source/target 标定 (h false=false, h true=true)
+- Omega 作单元素 {ω} (无 contrast)
+- 零 import (只用 Lean 核心)
+conclusion: 'Process–Content Non-Equivalence 成立: 产生 1 bit 的过程 (有向 0→1) ≠ 1 bit 承载的状态
+  (无向 {a,b})。形式化: 无向二 realization 结构有非平凡交换对称 (Aut≃C₂, flip), 有向 transition 的 stabilizer
+  退化到 {id} (任何保持 source/target 的自同构逐点恒等), singleton 无 contrast (0 bit)。⟹ direction
+  不属于 bit 的最小 information content, 是对 bit-state symmetry 的进一步破缺 (C₂→{id})。first bit
+  ≡ first nontrivial symmetry carrier (同一结构事实两种观察); first orientation = symmetry breaking
+  of that carrier。真正要寻找的: 第一次 interaction 能不能在不预定义两个 index 的情况下产生一个无标签、可交换的二 realization
+  structure。'
+known_special_cases:
+- 'singleton {ω}: 无 contrast, 0 bit, Aut 平凡'
+- '二元素 {a,b}: 1 bit + C₂ 对称 (first bit ≡ first symmetry carrier)'
+- '有向 a⟶b: bit + 方向, Aut 退化到 {id} (symmetry breaking)'
+closest_known_results:
+- S003 Index Injection Audit (back-reaction 可区分 ⟹ 预先存在 index distinction); S002 Type-Indexed
+  Back-Reaction (1 bit typestate, 审计反例)
+literature_queries:
+- symmetry group information content distinction
+- unlabelled pair oriented transition automorphism C2
+counterexample_search:
+  status: done
+  search_space: '无向 {a,b} vs 有向 a→b: 自同构群对比 — 无向有 swap, 有向只剩 id'
+  smallest_checked_size: null
+  result: swap_symmetry (C₂) ∧ oriented_stabilizer_identity ({id}) 零公理 — direction
+    是额外破缺
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/ProcessContent.lean (零 import)
+  theorem_name: AbsoluteRelative.ProcessContent.swap_symmetry / .oriented_stabilizer_identity
+    / .singleton_no_contrast / .two_alternatives_contrast / .process_content_non_equivalence
+    / .first_bit_is_first_symmetry_carrier / .orientation_breaks_symmetry (已证, 无 sorry,
+    全零公理)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 把 0→1 直接当 1 bit — 那是 bit + 方向 (方向预编码, S003 已证)
+- 声称 first occurrence = first bit — singleton 无 contrast (0 bit), first occurrence
+  ≠ first information
+- 把有向 transition 当无向结构 — Aut 不同 (C₂ vs {id})
+- 声称对称性必然产生 — 首次交互才可能产生非平凡对称 (非必然)
+- '用 : True := trivial 当证据 — 定理有反事实力量'
+evidence_for:
+- 'swap_symmetry 零公理: flip 对合 + 非平凡 — 无向结构 Aut ≅ C₂'
+- 'oriented_stabilizer_identity 零公理: 保持方向的自同构逐点恒等 — 有向结构 Aut ≃ {id}'
+- 'singleton_no_contrast 零公理: ∀ x y : Omega, x = y — 无 contrast, 0 bit'
+- 'process_content_non_equivalence 零公理: 无向对称 ∧ 有向退化 ∧ singleton 无 contrast'
+- 'first_bit_is_first_symmetry_carrier 零公理: 二 realization 同时是 1 bit 空间与非平凡 C₂ 载体'
+evidence_against: []
+next_action: 'S004 完成: Process–Content Non-Equivalence — 产生 1 bit 的过程 ≠ bit 承载的状态
+  (无向 C₂ vs 有向 {id}), direction 是对 bit-state symmetry 的破缺。真正要寻找的 (用户指令): 第一次 interaction
+  能不能在不预定义两个 index 的情况下产生一个无标签、可交换的二 realization structure? 下一步 (用户判断): ① 建模无向 incidence
+  (两个 realization 只在''参与同一次 interaction''意义上出现, 交换保持全部已认证事实) ② 或证明 first occurrence→interaction→role-equivalent
+  pair→C₂→orientation 的完整生成次序 ③ 或 lean4checker 验证 + Agda 第二实现。'
+notes: '2026-08-09 用户指令 (S003 后分叉): S003 把问题逼得很尖锐 — ''产生 1 bit 的过程'' ≠ ''这个 bit 所承载的状态'';
+  把 0→1 理解成有方向过程时严格比无标签 bit 多结构。① 单一东西 {ω} 甚至不是 1 bit (无二选一, 信息容量 0); 真正 bit = 两个可区别可能性
+  {a,b} (a≠b); first occurrence ≠ first bit, first nonzero information = first internally
+  distinguishable alternative space。② 0→1 已不是裸 bit: 无标签 {a,b} 天然有 C₂ 对称 (a↔b 保持结构),
+  有向 a⟶b 指定 source/target, 交换得 b⟶a 是不同结构; 有向 transition = 二状态 distinction + orientation;
+  0→1 = bit + 方向信息。③ 判据是对称群: 裸 X={a,b} 有 Aut≅C₂ (σ(a)=b, σ(b)=a), 有向 transition 的保持者
+  h(a)=a, h(b)=b 只剩 id; unlabelled bit ≄ oriented transition 作为结构。④ 非零信息必须存在至少两个可区别可能性;
+  无 contrast 无 bit; first information emergence = undifferentiated→first distinguishability
+  (比''首个 object''更基础)。⑤ 首次交互才可能产生非平凡对称性 (非必然); 生成次序: first occurrence→first interaction→two
+  distinguishable but role-equivalent realizations→C₂→symmetry breaking→orientation。⑥
+  第一 interaction 不能是箭头 (方向已产生); 应首先是无向 incidence — 两个 realization 只在''参与了同一次 interaction''意义上出现,
+  交换保持全部已认证事实 ⟹ 第一次真正 C₂; 把其中一个解释成 source/target 才是 symmetry breaking。⑦ S003 更强后续:
+  Process–Content Non-Equivalence — 证 UnlabelledPair (Aut≃C₂) vs OrientedTransition
+  (Aut≃1), 形式化 direction 不属于 bit 的最小 information content。⑧ first bit ≡ first nontrivial
+  symmetry carrier (若两 realization 结构等价), first orientation = symmetry breaking of
+  that carrier。整理链: first occurrence≠first information; first nonzero information
+  = first distinguishable alternative space; 若两 realization 结构等价则 first bit ≡ first
+  nontrivial symmetry carrier; first orientation = symmetry breaking of that carrier
+  — 比 ''0→1 就产生 1 bit'' 干净。S003 已证任何把首次变化直接写成 0→1 的模型都把 bit 和方向提前写进去; 真正该寻找的是第一次 interaction
+  能否在不预定义两个 index 的情况下产生无标签可交换的二 realization structure。 [2026-08-09 S005 概念修正: ① bit
+  carrier ≠ bit value — S004 拿来与有向过程比较的是裸二元素 carrier (1-bit capacity), 不是 bit 实际承载内容
+  (internally distinguishable bit value, 需 ∃O, O a≠O b); ② first bit ≡ first nontrivial
+  symmetry carrier 太强, 改 first binary carrier ≈ first candidate carrier of nontrivial
+  symmetry (S005); ③ 两个 symmetric realizations 未必有内部 1 bit (全 invariant ⟹ 无内部区分, S005
+  transitive_invariant_no_distinction); ④ 生成顺序修正: occurrence→interaction→symmetric
+  binary carrier→internal distinction→bit value/orientation; ⑤ S004 的 flip_involutive/flip_nontrivial
+  只证存在非平凡 involutive symmetry, 未证完整 Aut(Bool)≅C₂ — S005 bool_automorphism_classification
+  已补 (Aut(Bool)={id,flip}); ledger 写: unlabelled two-state carrier admits a nontrivial
+  C₂-symmetry; fixing source/target kills that symmetry; ⑥ Pointed ≃ Orientation (S005
+  pointing_equiv_orientation) 在已存在二元素 carrier 上成立, 但 carrier 已先存在, 不能解释第一 pair 来源。]'
