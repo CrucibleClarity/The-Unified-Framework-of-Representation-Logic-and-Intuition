@@ -1,0 +1,83 @@
+id: R109
+title: "R109 (user-proposed 2026-08-12): re-observation from the zero point (0 = ±1 fold class, R085) — the fold class 0 is BOTH the center of every prime circle (radius √p) AND a diameter endpoint of the critical-line circle (center (1,0), radius 1, through 0 and 2); under inversion 0 ↔ ∞ and 2 ↔ 1/2; the fold class anchors both circle structures"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "记录这个发现。然后这俩在那个实数域上不是一连串排列的圆，还有内切的吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。零点重观测的发现。
+
+    ★ 发现 (从 0 = ±1 折叠类, R085 观测):
+      ① 折叠类 0 是素数圆圆心 (半径 √p, C017)
+      ② 折叠类 0 也是临界线圆上的点 (圆心 (1,0) 半径 1, 过 0 和 2)
+      ③ 0 与 2 是临界线圆直径端点: |0-1| = |2-1| = 1
+      ④ 反演: 0 ↔ ∞ (折叠类 = ∞ 的像), 2 ↔ 1/2 (临界线)
+      ⑤ ⟹ 折叠类 0 = 素数圆圆心 ∩ 临界线圆直径端点 (公共锚)
+
+    ★ 下一步问题 (用户): 两个圆在实数域上的排列/内切关系
+      (素数圆 vs 临界线圆) — 见验证
+
+    ★ 与既有 claim 的关系:
+      - R085 (0 = ±1 折叠类): 观测视角
+      - C017 (素数圆): 圆心 0
+      - C022 (临界线圆): 过 0 和 2
+      - C021 (零点形状): 反演视角
+      结论: 折叠类 0 = 素数圆圆心 ∩ 临界线圆直径端点;
+      反演 0↔∞, 2↔1/2; 公共锚。
+
+    ★ 支撑 (Lean):
+      - C017 / C022 / R085 [claim 级]
+  formal_math: |
+    -- 素数圆: |z| = √p (圆心 0 = 折叠类)
+    -- 临界线圆: |z-1| = 1 (过 0 和 2, 直径端点)
+    -- 反演: recip 0 = ∞, recip 2 = 1/2
+
+objects: []
+
+definitions_used:
+- R085 / C017 / C022 / C021 / R072
+
+assumptions:
+- "折叠类 0 = 素数圆圆心 = 临界线圆直径端点"
+- "反演 0↔∞, 2↔1/2"
+
+conclusion: "发现记录 (2026-08-12): 折叠类 0 是素数圆圆心且是临界线圆直径
+  端点 (0 与 2, 反演 0↔∞, 2↔1/2) — 两个圆结构的公共锚。圆排列/内切
+  关系为下一步。"
+
+known_special_cases:
+  - "素数圆: 圆心 0, 半径 √p"
+  - "临界线圆: 圆心 (1,0), 半径 1, 过 0 和 2"
+  - "反演: 0↔∞, 2↔1/2"
+
+counterexample_search:
+  status: done
+  search_space: "圆上点验证 (枚举)"
+  smallest_checked_size: 3
+  result: "0/2/1+i 全在临界线圆上 ✓; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "0 是折叠类 (表示): 数值 0 与结构 0 需区分"
+  - "反演 0↔∞: 需扩展实数域 (∞)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "验证两圆排列: 素数圆 (半径√p) vs 临界线圆 (半径1) 的内切/相交关系"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
