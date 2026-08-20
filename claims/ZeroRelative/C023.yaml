@@ -1,0 +1,80 @@
+id: C023
+title: "Prime circle product & i-successor table — 素数圆转一圈乘积 = p⁴ (4 对共轭); i 后继每两个 = -1 (J² = -1)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    素数圆 (圆心 0, 半径 √p) 的乘法结构 (OBSERVATION/KNOWN):
+    一、8 整点乘积 = p⁴:
+    - 8 个整点 {±z, ±z̄, ±iz, ±iz̄} 两两共轭配对;
+    - mul_conj: z·conj z = lift (norm z) — 共轭对乘积 = 范数;
+    - prime_conj_pair: norm z = p ⟹ z·conj z = lift p;
+    - rotated_conj_pair: (rot90 z)·conj(rot90 z) = lift p —
+      旋转不破坏配对;
+    - 4 对 × p = p⁴, 与方向无关。
+    二、i 的后继乘法表 (每两个 = -1):
+    - J_pow_two: i² = -1 — 每两个后继乘出 -1 (半圈, 180°);
+    - J_pow_four: i⁴ = 1 — 4 循环闭合;
+    - rotate_two_neg: rot90² = -z — 旋转两步 = ×(-1)。
+    乘法表: 1 → i → -1 → -i → 1, 相邻 ×i, 隔一个 ×(-1) —
+    C011 J² = -1 (高维中 -1 的平方根) 的迭代展开。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) mul_conj: z * conj z = lift (norm z)
+    (2) prime_conj_pair: norm z = p → z * conj z = lift p
+    (3) rotated_conj_pair: norm z = p → (rot90 z) * conj (rot90 z) = lift p
+    (4) J_pow_two: npow J 2 = -1
+    (5) J_pow_four: npow J 4 = 1
+    (6) rotate_two_neg: rot90 (rot90 z) = -z
+
+objects:
+  - "素数圆 8 整点 {±z, ±z̄, ±iz, ±iz̄}"
+  - "i 的后继乘法表 (1, i, -1, -i)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "norm (C014)", "conj (C013)", "rot90 (C015)", "npow (C013)"]
+
+assumptions:
+  - "C011/C013/C014/C015 构造"
+conclusion: "素数圆转一圈: 8 整点乘积 = p⁴ (4 对共轭 × 范数 p); i 的后继迭代每两个 = -1 (半圈), 4 循环闭合"
+
+known_special_cases:
+  - "p = 2: a = b = 1 退化, 整点只有 4 个 (±1, ±1)"
+closest_known_results:
+  - "范数乘性/共轭对 (KNOWN)"
+  - "单位根 i 的 4 循环 (KNOWN)"
+  - "C015 (rot90 4 循环), C017 (8 整点单轨道), C020 (共轭成对)"
+literature_queries: []
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    mul_conj / prime_conj_pair / rotated_conj_pair / J_pow_two / J_pow_four / rotate_two_neg
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 范数/共轭对/单位根循环是经典"
+  - "p⁴ 是单个素数圆的乘积, 不是欧拉乘积 (Π_p(1-p⁻ˢ)⁻¹) — 后者未形式化"
+
+evidence_for:
+  - "Lean: 6 个定理全证 (无 sorry), 全量 lake build 通过"
+evidence_against: []
+
+next_action: "(1) 欧拉乘积有限版: eulerFactor (1-p⁻ˢ)⁻¹ + 几何级数恒等式 (数轴视角); (2) 或收尾"
+
+notes: "素数圆转一圈 = p⁴ (4 对共轭); i 后继每两个 = -1。全部 KNOWN, 观测锚点。注意: 这完成的是'单个素数圆的乘积', 不是'所有素数的乘积' (欧拉乘积)。"
