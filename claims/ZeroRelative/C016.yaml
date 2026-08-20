@@ -1,0 +1,83 @@
+id: C016
+title: "Full circle-lattice structure — 圆上整点的完整结构: 范数乘性 (圆间乘法链接), 整点环 (高斯整数), 旋转×共轭轨道"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    不局限于素数, 对任意半径的圆 x²+y² = n, 抓圆上所有整点的完整结构
+    (OBSERVATION/KNOWN):
+    - isLattice: 整点 (两轴坐标都是整数);
+    - norm_mul: 范数乘性 norm (z·w) = norm z · norm w — 圆的乘法链接:
+      圆 n 与圆 m 的整点乘出圆 nm 的整点 (合数 65 = 5·13 的 16 个整点
+      = 5 和 13 的分解组合; 圆上整点数由半径的素数分解决定);
+    - lattice_mul: 整点乘法封闭 — 圆上整点构成环 (高斯整数 Z[i]);
+    - orbit_closed: 旋转 4 循环 × 共轭镜像 (最多 8 点) 全在同一圆上 —
+      圆上整点的轨道结构: 整点 = 若干 8 点轨道, 圆间由乘法链接。
+    这给出了"所有能抓的整点"的结构: 素圆的整点轨道经乘法组合生成合数
+    圆的整点 (高斯整数环的乘法结构)。65 例: 16 个整点 = 4 种轨道组合。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) isLattice z := ∃ a b : ℤ, z = ⟨(a:ℝ), (b:ℝ)⟩
+    (2) norm_mul: norm (z·w) = norm z · norm w
+    (3) lattice_mul: isLattice z → isLattice w → isLattice (z·w)
+    (4) orbit_closed: norm z = norm (rot90 z) ∧ norm z = norm (conj z) ∧
+        norm z = norm (rot90 (conj z))
+
+objects:
+  - "isLattice (整点)"
+  - "norm (范数, 半径平方)"
+  - "rot90 / conj (轨道生成: 旋转 4 循环 × 镜像)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "norm (C014)", "rot90 (C015)", "conj (C013)"]
+
+assumptions:
+  - "C011/C014/C015 构造"
+conclusion: "圆上整点构成轨道 (旋转×共轭, ≤8 点) 且在乘法下封闭 — 高斯整数环的几何实现; 合数圆的整点由素圆整点乘法组合生成"
+
+known_special_cases:
+  - "65 = 5·13: 16 个整点 = 5 圆 (8 点) 与 13 圆 (8 点) 的 4 种组合"
+  - "退化轨道: a=b 或 ab=0 时轨道 < 8 点"
+closest_known_results:
+  - "高斯整数环 Z[i] (KNOWN)"
+  - "范数乘性 (KNOWN, 复数模性质)"
+  - "r₂(n) 圆上整点数 (KNOWN, 经典数论: r₂(n) = 4(d₁−d₃))"
+  - "C014 (两平方和/两轴重构), C015 (圆上整点/90° 循环)"
+literature_queries:
+  - "sum of two squares multiplicativity circle lattice points"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    isLattice / norm_mul / lattice_mul / orbit_closed
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "全部 KNOWN: 高斯整数环、范数乘性、r₂(n) 都是经典"
+  - "轨道 ≤ 8 点但未证'恰好 8 点'(退化情形 a=b/ab=0 未计数)"
+  - "整点计数 r₂(n) = 4(d₁−d₃) 未形式化 (需因子计数理论)"
+  - "未证唯一性: 圆上整点'只有'轨道这些 (合数 65 已展示多轨道)"
+
+evidence_for:
+  - "Lean: 4 个定理全证 (无 sorry), 全量 lake build 通过 (2224 jobs)"
+  - "65 = 5·13 的 16 整点结构 (轨道组合) 与经典 r₂(65) = 16 一致"
+evidence_against: []
+
+next_action: "(1) 素数唯一性 (UFD: 圆上整点只有轨道这些, p ≡ 1 mod 4 素数恰 8 点); (2) r₂(n) = 4(d₁−d₃) 计数; (3) 欧拉乘积有限版; (4) Re(s)>1 收敛性"
+
+notes: "圆上整点的完整结构: 轨道 (旋转×共轭) + 乘法链接 (范数乘性) = 高斯整数环的几何实现。全部 KNOWN, 观测锚点。"
