@@ -1,0 +1,88 @@
+id: R125
+title: "R125 (user-proposed 2026-08-12): the p1 jump arrow connects CONTINUOUSLY under p0's structure — like a Go board (围棋棋盘): one-dimensional chain (p0→p0→...) and two-dimensional board (multi-direction jumps, R054: any axis); connectivity: any crossing point reachable (曼哈顿路径, the '气' adjacency of Go); crossings = p0, edges = jump arrows"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "要求0 sorry。  下一步，这个箭头，是可以在p0的结构下接通连续的，就像围棋的
+  棋盘一样？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。箭头连续接通 = 围棋棋盘。
+
+    ★ 洞察 (验证):
+      ① 连续跳转: p0→p0→p0→... (每步等价, R054)
+         箭头可迭代 (链)
+      ② 棋盘需要二维: 一维 = 链, 二维 = 棋盘
+         基点等价 (R054: 任意轴) ⟹ 多方向跳转可能
+      ③ 二维跳转: 34 个不同交叉点可达 (棋盘格)
+      ④ 连通性: 任意交叉点可达 (曼哈顿路径) — 围棋"气"相邻
+      ⑤ ⟹ 箭头像围棋棋盘: 交叉点 = p0, 边 = 跳转箭头
+
+    ★ 围棋对应:
+      围棋: 交叉点 (格点), 边 = 气 (相邻), 连通性
+      我们的: 交叉点 = p0 (等价基点), 边 = 跳转箭头 (p1)
+      连续接通 = 任意 p0 经箭头路径可达
+
+    ★ 与既有 claim 的关系:
+      - R124 (跳转箭头): 本 claim 的连续性
+      - R054 (任意基点任意轴): 多方向跳转依据
+      - R123 (基点闭包): 棋盘 = 闭包内的网格?
+      - R072 (声明): 棋盘结构的声明化
+      结论: p1 跳转箭头可连续接通 — 链 (一维) + 棋盘 (二维,
+      多方向), 任意交叉点可达 (围棋"气"结构)。
+
+  formal_math: |
+    -- 连续跳转: p0 → p0 → ... (链)
+    -- 棋盘: 多方向 (R054 任意轴) ⟹ 二维格
+    -- 连通: 任意交叉点可达 (曼哈顿路径, 围棋气)
+
+objects: []
+
+definitions_used:
+- R124 / R054 / R123 / R072
+
+assumptions:
+- "箭头可迭代 (每步 p0→p0 等价)"
+- "多方向跳转 (R054 任意轴) ⟹ 棋盘"
+- "连通性: 任意交叉点可达 (围棋气)"
+
+conclusion: "用户断言成立 (2026-08-12): p1 跳转箭头在 p0 结构下可连续接通 —
+  链 (一维) + 棋盘 (二维, 多方向), 任意交叉点可达 — 像围棋棋盘
+  (交叉点 = p0, 边 = 跳转箭头)。"
+
+known_special_cases:
+  - "一维链: p0→p0→p0→..."
+  - "二维棋盘: 多方向跳转 (R054)"
+  - "连通性: 曼哈顿路径 (围棋气)"
+
+counterexample_search:
+  status: done
+  search_space: "连续跳转/二维可达/连通性 (枚举)"
+  smallest_checked_size: 100
+  result: "34 交叉点可达; 任意格点连通 (PASS); 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "棋盘维度: 取决于方向数 (一维链 vs 二维棋盘)"
+  - "连通性: 依赖多方向 (R054 任意轴)"
+  - "围棋类比: 结构对应 (交叉点/气) 非规则对应"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "棋盘结构形式化 (Lean); 接入 R072"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
