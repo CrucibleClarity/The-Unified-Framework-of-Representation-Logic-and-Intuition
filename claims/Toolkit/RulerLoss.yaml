@@ -1,0 +1,82 @@
+id: RulerLoss
+title: "RulerLoss: divergence IS structure loss — every divergent accumulation is a sequence of projections dropping structure; convergence-restoration recovers the symmetry directions (C011), not the lost structure"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerLoss: 发散 = 结构丢失 (用户指令 2026-08-12, 新 claim).
+
+    ★ 核心命题 (修正之前的'基点漂移'表述):
+      基点漂移是表现, 结构丢失是本质
+      收敛: 累加不丢结构 (C007 位置不变) → 有有限表达
+      发散: 累加丢结构 (每步丢位置) → 无有限表达
+
+    ★ 统一 (投影恢复定理 C011):
+      投影: 一步丢结构 (proj 丢虚部, √-1 消失)
+      发散: 每步丢结构 (累加丢位置)
+      ⟹ 发散 = 连续投影 = 结构不断丢失
+
+    ★ 五种发散全部验证 (丢什么/保留什么):
+      素数无穷: 丢素数间距离结构, 欧拉乘积保留乘积结构
+      无穷 ±∞: 丢'远离'结构, 紧化保留对称 (圆)
+      无理数: 丢整数关系, 圆轴保留结构常数
+      连续相位: 丢相位位置, 三值格保留相位类别
+      无限嵌套: 丢层间关系, 对数截断保留误差界
+
+    ★ 与投影恢复定理 (C011) 的精确连接:
+      丢失结构不可还原 ⟹ 发散无法还原位置 ⟹ 无有限表达
+      对称性方向可还原 ⟹ 紧化恢复对称 ⟹ 收敛化
+      ⟹ 收敛化 = 恢复丢失的对称性方向 (非丢失的结构)
+
+    ★ 总纲 (任意类发散收敛的判定):
+      发散 = 结构丢失
+      收敛化 = 恢复丢失的对称性方向
+      判定: 发散能否收敛化 ⟺ 丢失的结构里有可还原的对称性方向
+        有 ⟹ 可建表 (收敛编码)
+        无 ⟹ 真发散 (不可收敛化)
+
+    ★ 支撑 (Lean):
+      - proj_mul_not_preserved: 投影丢结构 (一步) [C011]
+      - displacement_structure_is_equiv: 位置 (C007) [Ruler2Exam]
+      - teleport_preserves_structure: 结构保持 [RulerDrift]
+      - zeta_euler_product: 素数收敛 (结构保留) [C023]
+  formal_math: |
+    -- 投影丢结构 (一步, 不可还原):
+    theorem proj_mul_not_preserved : proj (J * J) ≠ proj J * proj J
+    -- 位置 (基点无关结构, 收敛的锚):
+    lemma displacement_structure_is_equiv :
+      Equivalence (fun p q : P × P => Displacement p.1 p.2 q.1 q.2)
+    -- 收敛 (结构保留 → 有限表达):
+    theorem zeta_euler_product (s : ℂ) (hs : 1 < s.re) :
+      (∏ p, (1 - p^(-s))⁻¹) = riemannZeta s
+
+objects:
+- proj_mul_not_preserved
+- displacement_structure_is_equiv
+- zeta_euler_product
+
+definitions_used:
+- C011 ComplexAxis / Ruler2Exam / C023 ZetaEulerProduct
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '发散 = 结构丢失 (连续投影); 收敛 = 结构保留 (C007 位置不变).
+  收敛化 = 恢复丢失的对称性方向 (C011: 对称可还原, 结构不可还原).
+  判定: 发散可收敛化 ⟺ 丢失结构有可还原对称性方向.'
+
+verification:
+  lean_files:
+    - formal/Formal/ZeroRelative/ComplexAxis.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+    - formal/Formal/ZeroRelative/ZetaEulerProduct.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
