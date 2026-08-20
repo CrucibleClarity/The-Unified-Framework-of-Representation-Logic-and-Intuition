@@ -1,0 +1,138 @@
+%% CPP 2027 Submission — 0pat Exercise XXXIII: The Imaginary Part Compressed into a Coefficient Axis
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{The Imaginary Part Compressed into a Coefficient Axis: Where the\\
+Product of Imaginary Parts Appears (Exercise XXXIII)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We formalize what happens when the imaginary part is compressed into a
+coefficient axis. In the complex plane, the imaginary axis does not
+represent the imaginary part itself; it represents the real
+coefficients of the imaginary part. The unit $i$ is pressed into the
+axis's semantics. We prove, with five machine-checked theorems, the
+consequence of this compression: in multiplication, the product of two
+imaginary-part coefficients $b d$ leaves the imaginary part and appears
+in the real part, with a sign determined by the square of the unit. In
+$\mathbb{C}$ ($i^2 = -1$): the real part of $(a+bi)(c+di)$ is
+$ac - bd$. In the split-complex frame ($j^2 = +1$): the real part of
+$(a+bj)(c+dj)$ is $ac + bd$. The cross terms $ad + bc$ stay in the
+imaginary part in both. The leak sign is the unit square: $i \cdot i =
+-1$ versus $j \cdot j = +1$. Zero errors, zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, complex multiplication, coefficient compression, product leak, 0pat}
+
+\maketitle
+
+\section{The compression}
+
+The imaginary axis of the complex plane displays, at each tick, a real
+number $t$ --- the coefficient of the imaginary part. The imaginary
+part itself, $t \cdot i$, is the product of this visible coefficient and
+the invisible unit $i$. The unit is compressed into the axis: the axis
+shows coefficients, not units.
+
+This exercise proves what happens under this compression, in
+multiplication. Two numbers $a + bi$ and $c + di$ multiply to
+$(ac - bd) + (ad + bc)i$. The observation: the product of the two
+imaginary-part coefficients, $b d$, does \emph{not} stay in the
+imaginary part. It appears in the real part, with a sign. That sign is
+the square of the unit.
+
+\section{The theorems}
+
+\paragraph{The axis shows coefficients (complex\_imag\_axis\_coefficient).}
+A point $z$ of the imaginary axis satisfies $z = t \cdot i$ exactly
+when $z.\mathrm{re} = 0$ and $z.\mathrm{im} = t$. The tick $t$ is a
+real coefficient; the unit $i$ is not displayed by the axis.
+
+\paragraph{The product of imaginary parts leaks to the real part
+(complex\_mul\_imag\_leaks).} The real part of $(a+bi)(c+di)$ is
+$ac - bd$. The term $bd$ is the product of the two imaginary-part
+coefficients; it appears in the real part with a minus sign, because
+$i \cdot i = -1$.
+
+\paragraph{The cross terms stay in the imaginary part
+(complex\_mul\_cross\_stays\_imag).} The imaginary part is
+$ad + bc$: one imaginary coefficient times one real coefficient stays
+in the imaginary part. Only the product of two imaginary coefficients
+leaks.
+
+\paragraph{The split frame leaks with the opposite sign
+(split\_mul\_imag\_leaks).} In the split-complex frame ($j^2 = +1$),
+the real part of $(a+bj)(c+dj)$ is $ac + bd$. The same compression, the
+same leak --- but the sign is now plus, because $j \cdot j = +1$.
+
+\paragraph{The leak sign is the unit square
+(leak\_sign\_is\_unit\_square).} $i \cdot i = -1$ in $\mathbb{C}$ and
+$j \cdot j = +1$ in the split frame. The sign with which the product of
+imaginary coefficients appears in the real part is exactly the square
+of the unit that was compressed into the axis.
+
+\section{Honest boundary and position}
+
+The content is elementary algebra (multiplication formulas); the value
+is the precise statement of the compression's consequence. The result
+concerns the coordinate structure of the frames; no claim is made about
+the Riemann zeta function. The analysis of $\zeta$ remains the open
+span of the bridge.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 95 lines),
+importing \texttt{Mathlib.Data.Complex.Basic} and
+\texttt{Mathlib.Data.Real.Basic}. Five theorems, compiled with Lean
+4.32.2 / mathlib v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{complex\_imag\_axis\_coefficient} & $z = t \cdot i \leftrightarrow \mathrm{re}\, z = 0 \wedge \mathrm{im}\, z = t$ & Complex.ext; simp \\
+\texttt{complex\_mul\_imag\_leaks} & $\mathrm{re}((a+bi)(c+di)) = ac - bd$ & simp \\
+\texttt{complex\_mul\_cross\_stays\_imag} & $\mathrm{im}((a+bi)(c+di)) = ad + bc$ & simp \\
+\texttt{split\_mul\_imag\_leaks} & $\mathrm{re}((a+bj)(c+dj)) = ac + bd$ & rfl \\
+\texttt{leak\_sign\_is\_unit\_square} & $i \cdot i = -1$, $j \cdot j = +1$ & ext; norm\_num \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The compression of the imaginary part into a coefficient axis has one
+precise, machine-checked consequence: in multiplication, the product of
+two imaginary-part coefficients leaks into the real part, and the sign
+of the leak is the square of the unit compressed into the axis ($-1$
+for $\mathbb{C}$, $+1$ for the split frame). The cross terms stay in
+the imaginary part. The frames are fully understood; the analysis of
+$\zeta$ remains the open span of the bridge.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
