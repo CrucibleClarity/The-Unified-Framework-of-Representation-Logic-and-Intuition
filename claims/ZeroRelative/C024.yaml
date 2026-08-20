@@ -1,0 +1,79 @@
+id: C024
+title: "Geometric splitting — 分裂结构的几何版: 8 点 = 高斯素数 π 的 4 伴随 ∪ π̄ 的 4 伴随 (复平面欧拉乘积构件)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    p ≡ 1 (mod 4) 素数在高斯整数中分裂: p = π·π̄ (π = a+bi 高斯素数,
+    prime_conj_pair)。8 个整点 = π 的 4 个伴随 (乘乘性单位 {±1, ±J})
+    ∪ π̄ 的 4 个伴随:
+      {±z, ±J·z} ∪ {±conj z, ±J·conj z}
+    - isUnit4: 乘性单位 {±1, ±J} (i 的后继表);
+    - associates z: 伴随集 {z·u : u ∈ {±1, ±J}};
+    - norm_unit4: 单位范数 = 1;
+    - associates_norm: 伴随保范数 — 每个伴随仍在圆上;
+    - variants_are_associates: 8 变体 = 伴随并集。
+    这是复平面 (高斯数域 ℚ(i)) 欧拉乘积的构件: p 分裂为一对共轭
+    高斯素数, 在 ζ_{ℚ(i)}(s) = ζ(s)·L(s,χ₄) 中贡献 (1-p⁻ˢ)⁻²。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) isUnit4 u := u = 1 ∨ u = -1 ∨ u = J ∨ u = -J
+    (2) associates z := {w | ∃ u, isUnit4 u ∧ w = z * u}
+    (3) norm_unit4: isUnit4 u → norm u = 1
+    (4) associates_norm: w ∈ associates z → norm w = norm z
+    (5) variants_are_associates: ⟨a,-b⟩, ⟨-a,b⟩, ⟨b,a⟩, ⟨-b,-a⟩ ∈
+        associates (conj ⟨a,b⟩); ⟨-a,-b⟩, ⟨b,-a⟩, ⟨-b,a⟩ ∈ associates ⟨a,b⟩
+    (6) prime_conj_pair (C023): norm z = p → z * conj z = lift p
+
+objects:
+  - "高斯素数 π = a+bi (p 分裂的一半)"
+  - "associates (伴随集, 乘单位 ±1, ±J)"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "norm (C014)", "conj (C013)", "J", "mul_conj (C023)"]
+
+assumptions:
+  - "C011/C013/C014/C023 构造"
+conclusion: "8 整点 = 高斯素数 π 的 4 伴随 ∪ π̄ 的 4 伴随, 伴随保范数 (仍在圆上) — 素数分裂的几何版, 复平面欧拉乘积的构件"
+
+known_special_cases:
+  - "p = 2: π = 1+i, π̄ = 1-i, 退化 4 点"
+closest_known_results:
+  - "高斯整数分裂/伴随 (KNOWN)"
+  - "ζ_{ℚ(i)}(s) = ζ(s)·L(s,χ₄) (KNOWN, 数域 ζ)"
+  - "C017 (8 整点唯一轨道), C023 (共轭对乘积 p⁴)"
+literature_queries:
+  - "Gaussian integer splitting associates Dedekind zeta"
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, 全部 Lean 验收"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    isUnit4 / associates / norm_unit4 / associates_norm / variants_are_associates
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 高斯整数分裂/伴随是经典"
+  - "这是单素数分裂的几何, 不是完整欧拉乘积 (Π_p 无限乘积) 的形式化"
+
+evidence_for:
+  - "Lean: 5 个定理全证 (无 sorry), 全量 lake build 通过"
+evidence_against: []
+
+next_action: "(1) 欧拉乘积有限版 (eulerFactor + 几何级数); (2) 或收尾"
+
+notes: "8 点 = π 的 4 伴随 ∪ π̄ 的 4 伴随 (复平面欧拉乘积构件)。全部 KNOWN, 观测锚点。"
