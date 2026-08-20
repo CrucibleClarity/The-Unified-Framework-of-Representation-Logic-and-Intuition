@@ -10,8 +10,8 @@ Compile: `tectonic Exercise_XXXVII_Riemann_Direction_Unified.tex`
 ## Content
 
 Unified machine-checked development of the Riemann direction
-(13 exercises XXIV–XXXVI merged + new theorems), 110 theorems,
-0 errors, 0 sorry:
+(13 exercises XXIV–XXXVI merged + new theorems), 93 declarations
+(87 theorems + 6 lemmas), 0 errors, 0 sorry:
 
 - prime structure: infinitely many primes, Fermat's little theorem,
   unit groups of prime residue rings
@@ -24,6 +24,9 @@ Unified machine-checked development of the Riemann direction
 - divergence–period structure of the zeta series: modulus split,
   mirror pairs, conjugation, functional equation (mathlib
   riemannZeta_one_sub), convergence region
+- zeta conjugation: conj(ζ(s)) = ζ(conj s) on Re s > 1 (series form)
+  and Re s < 0 (functional-equation conjugation + cancellation),
+  χ-conjugation (conj(χ(s)) = χ(conj s))
 - zero structure: zero reflection, prime-factor zeros on the
   imaginary axis (1−p^{−s} = 0 ⟺ s·ln p = 2πik), trivial zero
   condition (cos(πs/2) = 0 ⟺ s = 2k+1), critical-line observation
@@ -39,7 +42,7 @@ base-point shift, phase projection, exhaustive radius searches).
 
 ## Artifact
 
-- artifact/formal/proof.lean — the 110-theorem proof
+- artifact/formal/proof.lean — the 93-declaration proof
 - artifact/observation.md — 12 numerical observation records
 - artifact/README.md — build + theorem inventory + provenance
 
