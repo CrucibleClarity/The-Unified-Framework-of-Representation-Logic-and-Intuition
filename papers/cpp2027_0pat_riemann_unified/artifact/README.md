@@ -7,7 +7,7 @@
 lean proof.lean   # 0 errors, 0 warnings, 0 sorry
 ```
 
-## Theorems (110, all 0pat)
+## Theorems (93, all 0pat)
 
 Merged from exercises XXIV–XXXVI (original namespaces preserved) plus
 new theorems in `RiemannUnifiedObservation`:
@@ -20,6 +20,7 @@ new theorems in `RiemannUnifiedObservation`:
 | Critical/prime circles | imagAxis_inter_criticalCircle, primeCircle_inter_criticalCircle_ge5 |
 | Compression | complex_mul_imag_leaks, split_mul_imag_leaks, leak_sign_is_unit_square |
 | Divergence/period | zeta_term_norm_split, period_pair_reduces, divergence_pair_reduces, term_conj_symmetry, functional_equation_bridges, complex_zeta_convergence_region |
+| Zeta conjugation | zeta_conj_of_one_lt_re (Re > 1, series), zeta_conj_of_re_lt_zero (Re < 0, functional equation), chi_conj |
 | Zero structure | zeta_zero_reflection, prime_factor_zero, trivial_zero_condition, critical_line_observation |
 | i-iteration | i_pow_i_eq_exp_neg_pi_div_two, i_pow_i_ne_i, axis_tick_pow, prime_no_power_decomposition |
 | Completed zeta | xi_symmetry₀, xi_symmetry, xi_entire, zeta_series_form, zeta_functional_equation |
