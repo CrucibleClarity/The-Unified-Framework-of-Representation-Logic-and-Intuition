@@ -1,0 +1,117 @@
+id: R144
+title: "R144 (user-proposed 2026-08-12): ★0 与 1 = 对称对还原点 (R085 + R143 统一) — 0 = 加法对称对还原点 (t+(-t) = 0, R085 折叠类), 1 = 乘法/相位对称对还原点 (r·(1/r) = 1, exp(iθ)·exp(-iθ) = 1, R143); log 把乘法对映到加法对 (log r + log(1/r) = 0, 还原点 1→0, R110/R089); 还原点对偶: log 1 = 0 且 exp 0 = 1 (0 ↔ 1 穿折越, R089/R090)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "开始做r085 r143。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。R085 + R143 组合: 0 与 1 都是
+       对称对还原点。
+
+    ★ 统一 (每环锚到已证 claim):
+      ① 0 = 加法对称对的还原点 (R085): t + (-t) = 0 — 镜像 S 的不动点,
+         ±t 折叠中心 (镜像对合的选择产物, 非干净基点; C010/R062)
+      ② 1 = 乘法对称对的还原点 (R143): r·(1/r) = 1 — 1 轴 (发散轴)
+         上的倒数对称对还原为乘法基点 (R110: log 镜像对称)
+      ③ 1 = 相位对称对的还原点 (R143): exp(iθ)·exp(-iθ) = 1 — i 轴
+         (周期轴) 上的相位对称对还原为单位 (R090: 乘法单位 1 = exp(0i))
+      ④ log 把乘法对映到加法对: log r + log(1/r) = log(r·(1/r)) = log 1
+         = 0 — 乘法对称对经 log 变成加法对称对 {log r, -log r}, 还原点
+         1 漂移到还原点 0 (R110: log 双对称镜像; R089: log 1 = 0)
+      ⑤ 还原点对偶: log 1 = 0 且 exp 0 = 1 — 0 ↔ 1 是 log/exp 穿折越
+         (R089: 三轴基点统一; R090: 三轴单位元交汇于相位 0)
+      ⑥ 统一结论: 每个对称对 (加法/乘法/相位) 组合还原到其锚点
+         (0 或 1); 锚点经 log/exp 对偶互映 — R085 的 0 与 R143 的 1
+         是同一还原结构的两个锚点
+
+    ★ 验证结论: 用户指令完成 — R085 (0 = 加法折叠类) 形式化
+       (MirrorFoldZero.lean) + R085/R143 统一 (FoldCenters.lean):
+       0 与 1 都是对称对还原点, log/exp 对偶互映。
+
+  formal_math: |
+    -- 0 = 加法对称对还原点 (R085):
+    theorem zero_is_add_fold_center (t : ℝ) : t + (-t) = 0
+    -- 1 = 乘法对称对还原点 (R143):
+    theorem one_is_mul_fold_center (r : ℝ) (hr : r ≠ 0) : r * (1 / r) = 1
+    -- 1 = 相位对称对还原点 (R143):
+    theorem one_is_phase_fold_center (θ : ℝ) :
+      Complex.exp (θ * Complex.I) * Complex.exp ((-θ) * Complex.I) = 1
+    -- log 把乘法对映到加法对 (还原点 1→0, R110/R089):
+    theorem log_maps_mul_pair_to_add_pair (r : ℝ) (hr : 0 < r) :
+      Real.log r + Real.log (1 / r) = 0
+    -- 还原点对偶 (0 ↔ 1 穿折越, R089/R090):
+    theorem fold_centers_dual :
+      Real.log 1 = 0 ∧ Complex.exp (0 * Complex.I) = 1
+    -- 统一 (R085 + R143):
+    theorem zero_one_fold_centers (t r : ℝ) (hr : r ≠ 0) :
+      t + (-t) = 0 ∧ r * (1 / r) = 1
+
+objects:
+- zero_is_add_fold_center
+- one_is_mul_fold_center
+- one_is_phase_fold_center
+- log_maps_mul_pair_to_add_pair
+- fold_centers_dual
+- zero_one_fold_centers
+
+definitions_used:
+- R085 MirrorFoldZero (0 = ±1 折叠类: mirror_fixes_zero/zero_is_fold_center) / R143 PatAxisDual (phase_pair_reduces_to_one/magnitude_pair_reduces_to_one) / R110 (log 镜像对称) / R089 (log 1 = 0 基点漂移) / R090 (三轴单位元交汇于相位 0) / R069 (±1 自逆对) / C010/R062 (0 非内生/特权基点)
+
+assumptions:
+- "0 = 加法对称对还原点 (R085: 镜像折叠类)"
+- "1 = 乘法/相位对称对还原点 (R143: 1 与 i 还原后的 1)"
+- "log 同态: 乘法对称对 → 加法对称对 (R110/R089)"
+- "0 ↔ 1 是 log/exp 穿折越 (R089/R090)"
+
+conclusion: "用户指令完成 (2026-08-12): 0 与 1 都是对称对还原点 — 0 =
+  加法对还原 (t+(-t) = 0, R085 折叠类), 1 = 乘法对还原 (r·(1/r) = 1) 与
+  相位对还原 (exp(iθ)·exp(-iθ) = 1, R143); log 把乘法对映到加法对
+  (还原点 1→0); 0 ↔ 1 经 log/exp 对偶互映 (R089/R090)。"
+
+known_special_cases:
+  - "加法对: t + (-t) = 0 (还原到 0, R085)"
+  - "乘法对: r·(1/r) = 1 (还原到 1, R143)"
+  - "相位对: exp(iθ)·exp(-iθ) = 1 (还原到 1, R143/R090)"
+  - "log 映射: log r + log(1/r) = 0 (乘法对 → 加法对, 1 → 0)"
+  - "对偶: log 1 = 0, exp 0 = 1 (0 ↔ 1 穿折越)"
+
+counterexample_search:
+  status: done
+  search_space: "还原恒等式 (加法/乘法/相位对组合, log 映射, 对偶, Lean 验证)"
+  smallest_checked_size: null
+  result: "6/6 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/FoldCenters.lean + formal/Formal/Toolkit/PatFoundationReform.lean
+  theorem_name: zero_is_add_fold_center, one_is_mul_fold_center, one_is_phase_fold_center, log_maps_mul_pair_to_add_pair, fold_centers_dual, zero_one_fold_centers, reduction_point_pat_fold [R159]
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "还原是组合 (对称对相乘/相加): 单个方向不还原 (t 单独 ≠ 0, r 单独 ≠ 1)"
+  - "log 映射限 r > 0: log 定义域 (R110 同前提)"
+  - "0 与 1 数值不同: 还原点对偶是相位/结构对偶 (R090: 交汇于相位 0), 非数值相等"
+  - "0 仍是特权基点 (R062): 还原点统一不改变 0 的选择性"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 还原点统一接入 R072 声明体系 (0/1 = 对称对还原锚点) ② 与 RulerTernary (三值 {-1,0,1}: 0 = 中间相位, ±1 = 对称对) 组合 ③ 六集群神经层: 还原锚点 = 层间对齐参照"
+
+notes: "观点归属: 用户 (2026-08-12) 提出组合指令 (原话原封保存); assistant 执行
+  R085 形式化 (MirrorFoldZero.lean, 5 定理 0 sorry) + R085/R143 统一
+  (FoldCenters.lean, 6 定理 0 sorry, lake build PASS) + R085.yaml formalization
+  更新 + R144 claim 落盘。0 与 1 = 对称对还原点的两个锚点, log/exp 对偶互映。"
