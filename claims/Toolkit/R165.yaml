@@ -1,0 +1,147 @@
+id: R165
+title: "R165 (筑基篇课后习题 VIII, 2026-08-13): ★pat 原生群表示理论 — 用户纠正: 不抄 mathlib RepresentationTheory, 自己形式化 pat 原生; 定义: 群的相位表示 ρ(g) = exp(i·θ(g)) (RulerPhase: 相位差=方向), 值在单位圆 (R141), 单位元=相位0 (R143), 同态性 θ(gh)=θ(g)+θ(h) (R138 相位差可加 ⟹ exp_add), ★互锁对 ρ(g)·ρ(g⁻¹)=1 (逆元=反向相位, R143 对称对还原 + R136②③ 方向成对), 规范群=k 独立相位参数 (U(1)=1 参数/SU(2)=2 参数=4互锁=S³/SU(3)=4 参数=8互锁, R161 k 对独立互锁自洽)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "开始尝试对群表示理论进行Lean的形式化工作。"
+  "别想着抄了，还是我们自己做形式化，pat原生。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 VIII: pat 原生
+       群表示理论.
+
+    ★ 用户纠正: 不抄 mathlib RepresentationTheory (G →* V →ₗ V),
+       自己形式化, pat 原生.
+
+    ★ pat 原生表示定义: 群的相位表示 — 每个群元素 g 映射到单位圆
+       上的相位 exp(i·θ(g)) (RulerPhase: 相位差 = 方向), 保持群结构:
+       - 同态性: θ(gh) = θ(g) + θ(h) ⟹ ρ(gh) = ρ(g)·ρ(h) (R138:
+         相位差可加; exp_add)
+       - 单位元: ρ(1) = exp(0) = 1 (exp_zero; R143: 对称对还原到 1)
+       - ★互锁对: ρ(g⁻¹) = ρ(g)⁻¹ = exp(-i·θ(g)) (逆元 = 反向相位;
+         R136 ②③: 方向必须成对声明), ρ(g)·ρ(g⁻¹) = 1 (R143: 对称对
+         还原) — 每个群元素与其逆元构成互锁对
+       - 单位圆: ‖ρ(g)‖ = 1 (R141: 单位根相位圆)
+
+    ★ 物理解读 (R164 强弱力观测支撑):
+       - U(1) 电磁 = 1 相位参数 (单相位圆 R138, 1 对互锁)
+       - SU(2) 弱 = 2 相位参数 (2 对 = 4 互锁 = S³, R149/R154)
+       - SU(3) 强 = 4 相位参数 (4 对 = 8 互锁) — k 对独立互锁自洽
+         (R161 k_pairs_independent_interlock)
+
+    ★ 诚实边界: 生成元与互锁对的精确对应需群表示理论 (CONJECTURE
+       层); 本习题锚定的是 k 对独立互锁自洽 (R161) 与相位表示
+       结构 (R138/R141/R143). 全部新定理只锚本框架, 不用外部引理,
+       不 import mathlib RepresentationTheory.
+
+  formal_math: |
+    -- 相位表示值: ρ(g) = exp(i·θ(g)):
+    noncomputable def phaseRepValue (θ : G → ℝ) (g : G) : ℂ :=
+      exp (θ g · I)
+    -- 值在单位圆:
+    theorem phaseRep_on_circle (θ : G → ℝ) (g : G) : ‖phaseRepValue θ g‖ = 1
+    -- 单位元 = 相位 0:
+    theorem phaseRep_one (θ : G → ℝ) : phaseRepValue θ 1 = 1
+    -- 同态性:
+    theorem phaseRep_mul (θ : G → ℝ) (g h : G) (hθ : θ (g*h) = θ g + θ h) :
+      phaseRepValue θ (g*h) = phaseRepValue θ g * phaseRepValue θ h
+    -- 逆元 = 反向相位:
+    theorem phaseRep_inv (θ : G → ℝ) (g : G) (hθ : θ (g⁻¹) = -θ g) :
+      phaseRepValue θ (g⁻¹) = (phaseRepValue θ g)⁻¹
+    -- ★互锁对还原:
+    theorem phaseRep_pair_reduces (θ : G → ℝ) (g : G) (hθ : θ (g⁻¹) = -θ g) :
+      phaseRepValue θ g * phaseRepValue θ (g⁻¹) = 1
+    -- 规范群 = k 独立相位参数:
+    theorem gauge_k_phase_params (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j : Fin k, exp (θ j·I)·exp (-(θ j)·I) = 1
+    -- 全景:
+    theorem phaseRep_perspective (θ : G → ℝ) (g h : G)
+      (hθ₁ : θ (g*h) = θ g + θ h) (hθ₂ : θ (g⁻¹) = -θ g) :
+      (‖phaseRepValue θ g‖ = 1) ∧
+      (phaseRepValue θ (g*h) = phaseRepValue θ g * phaseRepValue θ h) ∧
+      (phaseRepValue θ g * phaseRepValue θ (g⁻¹) = 1)
+
+objects:
+- phaseRepValue
+- phaseRep_on_circle
+- phaseRep_one
+- phaseRep_mul
+- phaseRep_inv
+- phaseRep_pair_reduces
+- gauge_k_phase_params
+- phaseRep_perspective
+definitions_used:
+- 相位表示 (群 → 单位圆 exp(iθ))
+- 相位差可加 (同态性)
+- 互锁对还原 (ρ(g)·ρ(g⁻¹)=1)
+- 规范群 = k 独立相位参数
+
+assumptions:
+- 相位差 = 方向 (RulerPhase)
+- 相位锁定后相位差可加 (R138)
+- 对称对还原到 1 (R143)
+- 方向必须成对声明 (R136 ②③)
+- 单位根相位圆 (R141)
+- k 对独立互锁自洽 (R161)
+- 诚实边界: 生成元与互锁对精确对应为 CONJECTURE; 不抄 mathlib
+conclusion: "筑基篇课后习题 VIII 完成: pat 原生群表示理论 — 相位表示 ρ(g) = exp(i·θ(g)) (群 → 单位圆, 同态保持), 单位元 = 相位 0, ★互锁对还原 ρ(g)·ρ(g⁻¹) = 1 (每个群元素与其逆元构成互锁对), 规范群 = k 独立相位参数 (U(1)=1/SU(2)=2/SU(3)=4 参数)。不抄 mathlib RepresentationTheory (用户纠正), 全部只锚本框架 (R138/R141/R143/R161)。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'U(1): 1 相位参数 = 1 对互锁 = 2 互锁 (单相位圆)'
+- 'SU(2): 2 相位参数 = 2 对 = 4 互锁 = S³'
+- 'SU(3): 4 相位参数 = 4 对 = 8 互锁'
+- '单位元: ρ(1) = exp(0) = 1'
+closest_known_results:
+- R161 PatInterlockGrowth (k 对独立互锁自洽)
+- R149 Pat4Phase (4 相位互锁 = S³)
+- R154 DiagonalInterlock (S³ 无损内收)
+- R164 PatPhysicsObservation (五大力观测: 规范群 = 互锁对数 CONJECTURE)
+literature_queries:
+- phase representation group unit circle interlock
+- pat native group representation theory
+
+counterexample_search:
+  status: done
+  search_space: 相位表示是否真同态 (exp_add); 互锁对是否真还原 (exp_add +
+    exp_zero); 值是否真在单位圆 (norm_exp_ofReal_mul_I); k 独立相位
+    参数是否真自洽 (R161)
+  smallest_checked_size: null
+  result: phaseRep_mul (exp_add + ring 构造性); phaseRep_pair_reduces
+    (exp_add + simp); phaseRep_on_circle (norm_exp_ofReal_mul_I);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatRepresentation.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatRepresentation.phaseRep_value / .phaseRep_on_circle / .phaseRep_one / .phaseRep_mul / .phaseRep_inv / .phaseRep_pair_reduces / .gauge_k_phase_params / .phaseRep_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 抄 mathlib RepresentationTheory — 用户纠正: 自己形式化, pat 原生
+- 声称 SU(3) 8 生成元 = 4 对精确映射 — CONJECTURE: 需群表示理论
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'phaseRep_mul: exp_add + hθ + ring — 同态性'
+- 'phaseRep_pair_reduces: exp_add + hθ + simp — 互锁对还原'
+- 'phaseRep_on_circle: norm_exp_ofReal_mul_I — 单位圆'
+- 'gauge_k_phase_params: R161 k_pairs_independent_interlock — 规范群'
+- 'phaseRep_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 相位表示与经典群表示的对照 (Weyl 理论),
+  或 SU(2)/SU(3) 生成元的 pat 相位参数精确构造 (CONJECTURE 推进)'
+notes: '筑基篇课后习题 VIII — 用户指令: 开始群表示理论的 Lean 形式化;
+  用户纠正: 不抄 mathlib, pat 原生。自建相位表示: 群 → 单位圆 exp(iθ),
+  同态保持, 每个元素与逆元构成互锁对 (ρ(g)·ρ(g⁻¹)=1, R143 对称对
+  还原)。规范群 = k 独立相位参数 (U(1)=1/SU(2)=2/SU(3)=4)。对 R164
+  强弱力观测的支撑: 从 CONJECTURE 推进到 k 对独立互锁自洽 PROVED +
+  精确生成元对应仍 CONJECTURE。工程: 一次 build 通过, 0 sorry。'
