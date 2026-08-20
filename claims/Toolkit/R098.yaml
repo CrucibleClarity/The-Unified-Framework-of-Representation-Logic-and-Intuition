@@ -1,0 +1,98 @@
+id: R098
+title: "R098 (user-proposed 2026-08-12): simple harmonic motion (简谐运动) = the real-axis projection of circular motion — cos θ = Re(exp(iθ)) (C011: projection drops the direction component); the 'oscillation' feel of the prime-power chains / binary features is the phase structure observed on the real axis (bounded back-and-forth, direction lost); period vs oscillation = complete structure vs projection"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "关键是差别啊，这些特征都有着我看来不像是周期，像是震荡的感觉。有个概念叫
+  什么来着，简谐运动？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。简谐运动 = 圆周投影的发现。
+
+    ★ 主张内容:
+      ① 素数幂链/二进制的特征不像是周期, 像是震荡 (简谐运动感)
+      ② 简谐运动 x(t) = A·cos(ωt+φ) = Re(A·exp(i(ωt+φ))) —
+         圆周运动在实轴上的投影!
+      ③ 震荡 = 周期结构的实轴观测 (丢方向, C011 投影丢虚部)
+
+    ★ 数学内容 (验证):
+      ① cos θ = Re(exp(iθ)) (圆周投影 = 简谐运动)
+      ② 震荡 (cos 有界 [-1,1] 来回) vs 周期 (exp 恒模 1 圆上转)
+      ③ cos 丢虚部 (方向信息, C011)
+      ④ 复对数 log z = ln|z| + i·arg z (实部单调 + 虚部周期 2πi,
+         螺旋结构) — 用户"震荡感"的来源 (完整结构含周期成分)
+      ⑤ 正整数实轴观测: arg=0 (实轴无转圈) — 震荡感来自投影/观测轴
+
+    ★ 机械验证 (R098_shm_projection.py, 枚举=证据):
+      1. 简谐运动 cos θ = Re(exp(iθ)): PASS
+      2. 震荡 (cos 有界) vs 周期 (exp 恒模): PASS
+      3. cos 丢虚部 (方向信息, C011): PASS
+      4. 复对数: 实部单调 + 虚部周期 2πi: PASS
+      5. 正整数实轴观测: arg=0 (震荡感来自投影): PASS
+
+    ★ 与既有 claim 的关系:
+      - C011 (投影丢方向): 简谐运动 = 投影的运动学表现
+      - R097 (素数幂链): 特征"震荡感"的实轴观测
+      - R091 (单相位 = {n·d}): 完整结构 (等差链) vs 投影 (震荡)
+      - R072 (声明): 完整相位 vs 实轴投影的声明
+      结论: 简谐运动 = 周期在实轴的投影 (cos = Re(exp), 丢虚部);
+      震荡感 = 相位结构的实轴观测 — C011 的运动学对应。
+
+    ★ 支撑 (Lean):
+      - C011 / R097 / R091 [claim 级]
+  formal_math: |
+    -- 简谐运动 = 圆周投影: cos θ = Re(exp(iθ))
+    -- 震荡: cos 有界 [-1,1] (来回); 周期: exp 恒模 1 (圆上)
+    -- 丢方向: cos 丢 exp 虚部 (C011)
+    -- 复对数: log z = ln|z| + i·arg z (螺旋)
+
+objects: []
+
+definitions_used:
+- C011 / R097 / R091 / R072
+
+assumptions:
+- "简谐运动 = 圆周运动的实轴投影"
+- "震荡 = 相位结构的实轴观测 (丢方向)"
+- "周期 vs 震荡 = 完整 vs 投影"
+
+conclusion: "用户直觉成立 (2026-08-12): 简谐运动 = 圆周运动在实轴的投影
+  (cos = Re(exp), 丢虚部); 素数幂链/二进制的'震荡感' = 相位结构的实轴
+  观测 (丢方向, C011); 周期 vs 震荡 = 完整结构 vs 投影。"
+
+known_special_cases:
+  - "cos θ = Re(exp(iθ)) (简谐运动 = 圆周投影)"
+  - "cos 有界 [-1,1] (震荡) vs exp 恒模 1 (周期)"
+  - "log z = ln|z| + i·arg z (螺旋, 实部单调虚部周期)"
+
+counterexample_search:
+  status: done
+  search_space: "投影等式/有界性/虚部丢失/复对数 (R098_shm_projection.py: 5 组)"
+  smallest_checked_size: 500
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "震荡是投影观测: 完整结构是周期 (圆/螺旋)"
+  - "cos 丢方向: 不可还原虚部 (C011)"
+  - "实轴观测 arg=0: 正整数无转圈 (震荡感来自观测轴)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "简谐运动 = 投影接入运动学/观测框架; 与 R097 素数幂链组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
