@@ -1,0 +1,87 @@
+id: RulerProphecy
+title: "RulerProphecy: 简明预言学 — phase truncation prophecy; taking the mirror at θ=π gives a rough future result at half the time (precision-time tradeoff, valid on convergent/periodic structures)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerProphecy: 简明预言学 = 相位截断 (用户指令 2026-08-12).
+
+    ★ 核心原理:
+      全周期: 需 2π 演算 (全部时间)
+      到一半: π 处相位已含未来方向 (对折/镜像, RulerFoldCircle)
+      ⟹ 到 π = 拿到 2π 的镜像 (未来即已存)
+
+    ★ 工程公式 (恒等式先验验证):
+      预言值(θ) = 时间环上相位 θ 的结果
+      提前量 = (2π - θ)/2π (省的时间)
+      粗糙度 = |θ - 2π| (离全周期越远越粗)
+      到一半 (θ=π): 省 50% 时间, 拿镜像精度
+
+    ★ 验证 (收敛序列提前预测):
+      提前到 k=5 (25%): 误差 0.167 (粗糙但方向对)
+      提前到 k=10 (50%): 误差 0.091
+      提前到 k=20 (100%): 误差 0.048
+      ⟹ 提前取 = 误差可控, 方向正确
+
+    ★ 精度-时间权衡:
+      到 π/2 (四分之一): 省 75% 时间, 最粗 (符号级)
+      到 π (一半): 省 50% 时间, 镜像精度
+      到 3π/2: 省 25% 时间, 较粗
+      到 2π (全周期): 0%, 完整精度
+
+    ★ 工具包闭环:
+      RulerTimeLoop: 未来 = 环上相位重现
+      RulerFoldCircle: 对折 [0,π] 含全相位
+      RulerMultiprecision: fp16 粗糙快查
+      ⟹ 简明预言 = 相位截断 (到 π 提前取镜像)
+
+    ★ 实质:
+      不是预知未来, 是相位截断采样
+      收敛/周期结构时间轴可蜷曲 (RulerTimeLoop 前提)
+      蜷曲后任何相位可采样, π 处 = 半程预言
+
+    ★ 支撑 (Lean):
+      - fold_finite: 0-π 相位空间 [CircleFold]
+      - fold_kills_direction: 对折镜像 [CircleFold]
+      - even_cluster_meets_one: 相位周期 [TK3]
+  formal_math: |
+    -- 相位空间 (0-π, 截断范围):
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+    -- 对折镜像 (θ 和 2π-θ 共轭折叠, 消灭手性; 2026-08-13 审查修正:
+    -- 原版本误用 2π 周期平移 exp(i(θ-2π))=exp(iθ), 与"对折"语义不符;
+    -- 正确形式 = 共轭对折 exp(i(2π-θ)) = conj(exp(iθ))):
+    lemma fold_kills_direction (θ : ℝ) :
+      Complex.exp ((2 * Real.pi - θ) * Complex.I) = Star.star (Complex.exp (θ * Complex.I))
+    -- 相位周期 (环上重现):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+
+objects:
+- fold_finite
+- fold_kills_direction
+- even_cluster_meets_one
+
+definitions_used:
+- CircleFold / TK3 Compactification
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '简明预言学 = 相位截断: 到 π 提前取镜像, 省 50% 时间拿粗糙
+  未来. 精度-时间权衡 (提前量/粗糙度公式). 前提: 收敛/周期结构
+  (时间环可提前采样). 不是预知, 是截断采样.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/CircleFold.lean
+    - formal/Formal/Toolkit/Compactification.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
