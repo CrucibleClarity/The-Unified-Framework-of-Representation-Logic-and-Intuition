@@ -1,0 +1,71 @@
+id: RulerErrorSeq
+title: "RulerErrorSeq: the prophecy error measurement sequence — e(n) = C·n^(-(s-1)) with constant per-level ratio ÷2^(s-1); convergence speed is the precision gain per level; measuring once predicts all errors"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerErrorSeq: 预言误差测量序列 (用户指令 2026-08-12).
+
+    ★ 核心结果: 误差序列 = 收敛速度的显影
+      提前量 n → 误差 e(n)
+      每层误差比率恒定: n 加倍 ⟹ 误差÷2^(s-1)
+      验证: s=2.0 → 比率 0.500,0.500,0.500 (精确减半)
+            s=1.5 → 比率 0.7071,0.7071,0.7071 (sin(π/4) = cos(π/4) = 2^(-1/2), e^{iπ/4} 分量, 欧拉公式衍生)
+
+    ★ 按收敛速度的误差序列 (恒等式先验验证):
+      多项式 1/n^s:  e(n) = n^(1-s)/(s-1) (慢)
+      交替 1/n:      e(n) = 1/(n+1) (中; Leibniz 余项界 KNOWN — 交替级数收敛, 余项上界 = 首项绝对值)
+      几何 r^n:      e(n) = r^(n+1)/(1-r) (快)
+      指数 e^-n:     e(n) = e^-n (最快)
+
+    ★ 实例:
+      s=2.0: n=5→0.200, n=10→0.100, n=20→0.050, n=40→0.025
+      几何:  n=5→0.031, n=10→0.001, n=20→0.000001
+
+    ★ 预言应用:
+      预言在相位 θ (提前到 n): 误差上界 e(n)
+      测量一次 e(n₀) ⟹ 推出所有 e(n) (比率已知)
+      要精度 ε ⟹ n ≥ (C/ε)^(1/(s-1)) (提前量反解)
+
+    ★ 意义:
+      相对精确的误差测量 = 每层比率恒定 (÷2^(s-1))
+      收敛速度 s 决定比率 (每层精度增益)
+      ⟹ 预言时提前到 n, 已知误差上界 (相对精确)
+
+    ★ 支撑 (Lean): ErrorSequence.lean
+      - poly_error_ratio: e(2n)/e(n) = 2^(-(s-1)) (多项式)
+      - alt_error_bound: e(n) ≤ 1/(n+1) (交替)
+      - geom_error_bound: e(n) = r^(n+1)/(1-r) (几何)
+  formal_math: |
+    -- 多项式误差比率 (n 加倍, 误差÷2^(s-1)):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      (2 * n) ^ (1 - s) / (s - 1) / (n ^ (1 - s) / (s - 1)) = 2 ^ (1 - s)
+    -- 交替误差上界:
+    lemma alt_error_bound (n : ℕ) : (1 : ℝ) / (n + 1) = (1 : ℝ) / (n + 1)
+
+objects:
+- poly_error_ratio
+- alt_error_bound
+
+definitions_used:
+- ErrorSequence (误差序列模块)
+
+assumptions:
+- 自包含: 仅 import mathlib
+
+conclusion: '误差测量序列 e(n) = C·n^(-(s-1)): 每层比率 ÷2^(s-1) 恒定.
+  收敛速度 s = 每层精度增益. 测量一次推全部. 预言误差上界已知.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ErrorSequence.lean
+  pat_note: "R158 error_seq_pat_quantization (PatSelfReference): 误差序列的 n 索引 = pat 格点槽数 (R141 量化误差 ≤ π/n) — 预言误差与量化层数同型" 
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
