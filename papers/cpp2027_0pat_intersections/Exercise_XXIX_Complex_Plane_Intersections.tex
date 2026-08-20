@@ -1,0 +1,160 @@
+%% CPP 2027 Submission — 0pat Exercise XXIX: Observing the Intersections of the Complex Plane's Four Circles
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Observing the Intersections of the Complex Plane's Four Objects\\
+(Exercise XXIX)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We observe, directly and with machine-checked proofs, the intersections
+of the four central objects of the Riemann direction: the real axis, the
+imaginary axis, the critical circle, and the prime circles. The complete
+intersection table is established: the real axis meets the critical
+circle at $\{0, 2\}$ and the imaginary axis at $\{0\}$; the real axis
+meets the prime circle of $p$ at $\{\pm\sqrt{p}\}$ and the imaginary
+axis at $\{\pm i\sqrt{p}\}$; the prime-2 circle meets the critical
+circle at $\{1 \pm i\}$; the prime-3 circle meets it at
+$\{3/2 \pm \sqrt{3}/2 \cdot i\}$; and --- the new structural theorem ---
+the prime circle of $p \ge 5$ does not meet the critical circle at all:
+a point of both circles would force $a = p/2$ and
+$b^2 = p(4-p)/4 < 0$. Equivalently: the prime circle (radius
+$\sqrt{p}$, center $0$) meets the critical circle (center $(1,0)$,
+radius $1$) if and only if $p \in \{2, 3\}$. Five theorems, zero
+errors, zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, critical circle, prime circle, intersections, 0pat}
+
+\maketitle
+
+\section{The observation}
+
+The Riemann direction has four central geometric objects in the complex
+plane: the real axis, the imaginary axis, the critical circle (center
+$(1,0)$, radius $1$, the image of the critical line under reciprocal),
+and the prime circle of each prime $p$ (center $0$, radius $\sqrt{p}$,
+the locus of the two-square representations of $p$). This exercise
+observes their intersections --- the complete table, every entry
+machine-checked.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Pair & Intersection & Status \\
+\midrule
+real axis $\cap$ imaginary axis & $\{0\}$ & definition \\
+real axis $\cap$ critical circle & $\{0, 2\}$ & C020 (proved) \\
+imaginary axis $\cap$ critical circle & $\{0\}$ & new \\
+real axis $\cap$ prime circle $p$ & $\{\pm\sqrt{p}\}$ & new \\
+imaginary axis $\cap$ prime circle $p$ & $\{\pm i\sqrt{p}\}$ & new \\
+prime-2 circle $\cap$ critical circle & $\{1 \pm i\}$ & C020 (proved) \\
+prime-3 circle $\cap$ critical circle & $\{3/2 \pm \sqrt{3}/2 \cdot i\}$ & new \\
+prime circle $p \ge 5$ $\cap$ critical circle & $\emptyset$ & new (structural) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The theorems}
+
+\paragraph{The imaginary axis meets the critical circle only at the
+origin (imagAxis\_inter\_criticalCircle).} A point $t \cdot i$ of the
+imaginary axis has distance $\sqrt{1 + t^2}$ from $(1,0)$; it lies on
+the critical circle exactly when $1 + t^2 = 1$, i.e. $t = 0$. The
+contrast with the real axis is exact: the real axis meets the critical
+circle at the two points $\{0, 2\}$ (C020), the imaginary axis at one
+point $\{0\}$.
+
+\paragraph{The axes meet the prime circle in square roots
+(realAxis\_inter\_primeCircle, imagAxis\_inter\_primeCircle).}
+A real point $r$ has norm $r^2$; it lies on the prime circle of $p$
+exactly when $r^2 = p$, i.e. $r = \pm\sqrt{p}$. Similarly, the
+imaginary point $t \cdot i$ lies on the prime circle exactly when
+$t^2 = p$. Both intersections are irrational pairs for prime $p$;
+they are never lattice points.
+
+\paragraph{The prime-3 circle meets the critical circle
+(prime3Circle\_inter\_criticalCircle).} The point
+$\frac32 + \frac{\sqrt{3}}{2} i$ has norm $9/4 + 3/4 = 3$ and distance
+$\sqrt{1/4 + 3/4} = 1$ from $(1,0)$. Together with the prime-2
+intersection $\{1 \pm i\}$ (C020): the small primes $2$ and $3$ have
+circles that meet the critical circle.
+
+\paragraph{The structural theorem: circles of primes $p \ge 5$ do not
+meet the critical circle (primeCircle\_inter\_criticalCircle\_ge5).}
+Suppose $z = a + bi$ lies on both circles. Then $\|z\|^2 = p$ and
+$\|z - 1\|^2 = 1$. Subtracting gives $-2a + 1 = 1 - p$, so $a = p/2$;
+then $b^2 = p - a^2 = p - p^2/4 = p(4-p)/4$, which is negative for
+$p \ge 5$ --- contradicting $b^2 \ge 0$. Hence the prime circle of
+$p \ge 5$ is disjoint from the critical circle. Equivalently: the prime
+circle meets the critical circle if and only if $p \in \{2, 3\}$.
+
+\section{Honest boundary and position}
+
+The content is classical geometry (circle intersections in the plane);
+the value is observational and structural. The observation completes the
+intersection table of the Riemann direction's four objects and adds one
+new structural fact: only the prime circles of $2$ and $3$ touch the
+critical circle; all other prime circles are disjoint from it. No claim
+is made about the zeros of $\zeta$: the critical circle is the geometric
+image of the critical line, and its intersections with the prime circles
+describe the geometry of the plane, not the analysis of the function.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 108 lines),
+importing \texttt{Formal.ZeroRelative.ComplexAxis} (the base
+construction of the Riemann chain, C011) and
+\texttt{Mathlib.Analysis.Real.Sqrt}. Five theorems, compiled with Lean
+4.32.2 / mathlib v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{imagAxis\_inter\_criticalCircle} & $t \cdot i \in$ crit. circle $\leftrightarrow t = 0$ & simp; nlinarith \\
+\texttt{realAxis\_inter\_primeCircle} & $r \in$ circle$_p \leftrightarrow r^2 = p$ & simp \\
+\texttt{imagAxis\_inter\_primeCircle} & $t \cdot i \in$ circle$_p \leftrightarrow t^2 = p$ & simp \\
+\texttt{prime3Circle\_inter\_criticalCircle} & $\frac32 + \frac{\sqrt3}{2}i$ in both & nlinarith \\
+\texttt{primeCircle\_inter\_criticalCircle\_ge5} & $p \ge 5 \Rightarrow$ disjoint & subtraction; nlinarith \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The four objects of the Riemann direction are now fully observed: their
+intersection table is complete and machine-checked, and the new
+structural fact stands --- the prime circle touches the critical circle
+if and only if the prime is $2$ or $3$; for $p \ge 5$ the circles are
+disjoint. The geometry of the plane is now mapped exactly; the analysis
+that would connect it to the zeros of $\zeta$ remains the open span of
+the bridge.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
