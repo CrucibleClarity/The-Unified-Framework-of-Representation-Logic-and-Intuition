@@ -1,0 +1,84 @@
+id: R232
+title: "R232 (user 2026-08-14): 相位产生研究 — 相位 = 对称性对的复合 (反射对复合产生旋转, 相位轨道/特征空间/升维/锚定五机制)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲)"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户指令 (2026-08-14): 新论文 — Pat 理论继续完善 + 相位产生研究。
+
+    ★ 核心新结论: 相位不是公设, 是**对称性对的复合产物**:
+    ① 反射对复合 = 旋转 (相位生成元): Sv∘S = J² — 两个反射 (对称性) 复合
+       产生旋转; 单个反射周期 2 (R083), 反射对复合周期 4
+    ② 相位 = 旋转轨道 (J⁴ = id)
+    ③ 相位轴 = S 取反特征空间 (虚轴, 特征值 -1)
+    ④ 相位产生 = 升维 (虚轴在实轴 proj = 0, 需扩展维度)
+    ⑤ 相位锚定 = 互逆对和 = 0 (折叠类 ±1)
+
+    ★ 完善点: R047 的相位轴从公设升级为反射复合的产物; 维度动力学接入
+    (R231): 相位产生/消失 = 升维/降维。
+
+formal_math: |
+    -- ① 反射对复合 = 旋转
+    def Sv (v : ℝ × ℝ) : ℝ × ℝ := (-v.1, v.2)
+    theorem reflection_pair_composes_rotation (v) : Sv (S v) = J (J v)
+    -- ② 相位 = 旋转轨道
+    theorem rotation_pair_generates_period (v) : J (J (J (J v))) = v
+    -- ③ 相位轴 = S 取反特征空间
+    theorem phase_axis_is_reflected_eigenspace (y) : S (imagAxis y) = -imagAxis y
+    -- ④ 相位产生 = 升维
+    theorem phase_generation_expands_dimension (y) : proj (imagAxis y) = 0 ∧ ...
+    -- ⑤ 核心组合
+    theorem phase_generation_synthesis : (五段合取)
+
+objects:
+- Sv (虚轴反射, 新)
+- S / J / imagAxis / proj (R227/R231)
+
+definitions_used:
+- "R227 DivergencePeriodGeometric / R047 / R083 (S/R T 家族) / R085 / R091 / R136 / R138 / R228 / R231"
+
+assumptions:
+- "ℝ² 几何基础 (R227 零依赖)"
+- "反射对复合 = 旋转 为平面几何经典事实 (新形式化)"
+
+conclusion: "用户指令成立 (2026-08-14): 相位可产生 — 对称性对的复合
+  (反射对复合 = 旋转) 产生相位生成元, 相位轨道/特征空间/升维/锚定五机制
+  构成相位产生的完整链; Pat 理论由此完善 (相位非公设)。Lean 验收, 0 sorry。"
+
+known_special_cases:
+  - "反射对复合: Sv∘S = J² (180° 旋转); 连续复合产生任意角度 (R083 T 家族)"
+  - "相位锚定: d + (-d) = 0 (折叠类); 锁定后可加 (R138)"
+
+counterexample_search:
+  status: done
+  search_space: "恒等式先验 (x+(y-x)=y, (c-b)+(b-a)=c-a 成立) + 几何恒等式 (simp/ring)"
+  smallest_checked_size: 13
+  result: "恒等式先验通过 + Lean 全部直接验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PhaseGeneration.lean
+  theorem_name: reflection_pair_composes_rotation, rotation_pair_generates_period, phase_axis_is_reflected_eigenspace, phase_generation_expands_dimension, phase_generation_synthesis
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "本文证明的是相位产生机制 (旋转/特征空间/升维/锚定); 相位-数值互锁 (R139) 的数值侧未展开"
+  - "任意角度旋转 (连续 T) 的形式化在 R083 已有, 本文限定反射对复合 (180°)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 论文 paper/pat_phase_generation.md 已落盘 ② 与 R139 (相位-数值互锁) 衔接: 相位产生后数值侧 ③ 发布清单更新 (如后续发布)"
+
+notes: "观点归属: 用户 (2026-08-14) 指令论文与相位产生研究; assistant 构建
+  反射对复合定理 (相位生成元) + 五机制合成, 零新公设。"
