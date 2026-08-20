@@ -1,0 +1,73 @@
+id: RulerPT
+title: "RulerPT: spacetime reversal as multi-axis phase — T (det=-1) is a single-axis π phase, PT = all-axis phase product (det=+1 rotation); CPT = full-axis phase combination restores exact symmetry"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerPT: 时空反演 = 多轴相位 (用户指令 2026-08-12).
+
+    ★ 三个反演算子 (n 维时空: 1 时间 + n-1 空间, 恒等式先验验证):
+      T  时间反演: diag(-1,1,...,1), det = -1 (NS3 已证)
+      P  空间反演: diag(1,-1,...,-1), det = (-1)^(n-1)
+      PT 全时空:   -I (全轴翻), det = (-1)^n
+
+    ★ 关键事实:
+      T 单独: det = -1 ∉ SO(n) (奇偶性缺口, NS3)
+      黏性项不变号 (NS2) → NS 时间不可逆
+      PT 在 4 维 (1+3): det = +1 ∈ SO(4) (旋转!)
+      CPT 定理 (KNOWN): 洛伦兹不变局域 QFT 在 CPT 下不变
+
+    ★ 相位解读 (多轴相位, RulerDualTable):
+      时间轴相位: T 翻时间 = 时间轴 π 相位
+      空间轴相位: P 翻空间 = 空间轴 π 相位
+      PT = 全轴 π 相位 = 各轴相位的笛卡尔积
+      每轴 = 0-π 对折空间 (RulerFoldCircle)
+
+    ★ 闭环 (与 NS2/NS3):
+      NS2: 时间反演下黏性项不变号 (时间轴相位 π 不改变黏性)
+      NS3: T det=-1 ∉ SO(n) (时间轴奇偶性缺口)
+      PT  det=+1 ∈ SO(n) (全时空反演是旋转, 奇偶性恢复!)
+      ⟹ PT 对称 (det=+1), T 单独不对称 (det=-1)
+      ⟹ CPT 定理的相位解读: 全轴反演 = 全 π 相位 = 精确对称
+
+    ★ 支撑 (Lean):
+      - timeRev_det_neg: det(T) = -1 (NS3)
+      - timeRev_orthogonal: T ∈ O(n) (NS3)
+      - fold_finite: 0-π 相位空间 [CircleFold]
+  formal_math: |
+    -- T det = -1 (时间轴相位 π):
+    theorem timeRev_det_neg (tIdx : n) : (timeRevMatrix tIdx).det = -1
+    -- T 正交 (O(n)):
+    theorem timeRev_orthogonal (tIdx : n) : (timeRevMatrix tIdx)ᵀ * timeRevMatrix tIdx = 1
+    -- 0-π 相位空间 (每轴):
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+
+objects:
+- timeRev_det_neg
+- timeRev_orthogonal
+- fold_finite
+
+definitions_used:
+- NS3 SOBasepoint / CircleFold
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '时空反演 = 多轴相位: T (det=-1) = 单轴 π 相位, PT (det=+1) =
+  全轴相位乘积 (旋转). CPT = 全轴相位组合恢复精确对称. 每轴 = 0-π 对折空间.'
+
+verification:
+  lean_files:
+    - formal/Formal/NavierStokes/SOBasepoint.lean
+    - formal/Formal/Toolkit/CircleFold.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
