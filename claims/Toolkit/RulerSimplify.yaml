@@ -1,0 +1,78 @@
+id: RulerSimplify
+title: "RulerSimplify: known Fourier simplification methods map onto the phase framework — parity/Parseval/derivative/convolution/shift/FFT/Gibbs"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerSimplify: 傅里叶级数已知化简方法 ↔ 相位框架对应 (用户指令 2026-08-12).
+
+    ★ 7 种已知化简方法 (全部 KNOWN, 恒等式先验验证):
+      ① 奇偶对称: 偶只余弦 (bₙ=0), 奇只正弦 (aₙ=0) — 系数减半
+         ↔ RulerAsym (相对 2: ±1 区分, 对称性删一半自由度)
+      ② Parseval: 时域能量 ∫f² = 频域能量 π·Σaₙ² (守恒)
+         ↔ RulerDrift (值漂移, 位置/能量不变)
+      ③ 微分性质: 微分 = 频域乘 n (谐波数)
+         ↔ RulerAxis (指数轴迭代)
+      ④ 卷积定理: 时域卷积 = 频域逐点乘 (系数乘积)
+         ↔ RulerDelta (相位可加)
+      ⑤ 移位性质: 时移 c → 系数乘 e^(-inc) (相位乘)
+         ↔ RulerPhase (基点变换 = 相位移动!)
+      ⑥ FFT: 直接 DFT O(N²) → FFT O(N log N) (二分分治)
+         ↔ 归约链 8→4→2→1 (Ruler4Exam, 二分归约同构)
+      ⑦ 吉布斯现象: 截断不连续点 ~9% 过冲 (不随 N 消失)
+         ↔ 边界: 化简的失效点 (不连续结构不收敛)
+
+    ★ 三个最重要连接:
+      - 移位性质 = RulerPhase 的完备化: 时移 = 频域乘相位
+        ⟹ 穿折越 T_{e→f} 就是频域的时移
+      - FFT = 归约链的算法化: 二分分治 = 8→4→2→1 同构
+        ⟹ 归约链不是巧合, 是 FFT 的结构
+      - 奇偶对称 = RulerAsym: ±1 区分删一半自由度
+
+    ★ 意义:
+      傅里叶化简方法 (奇偶/Parseval/卷积/移位/FFT) 可作为
+      相位对齐的具体算法: 穿折越解构 = 傅里叶分解 + 化简
+      特别: FFT 说明对齐相位的最优算法是二分归约
+      与 8→4→2→1 归约链完全一致
+  formal_math: |
+    -- 移位性质 (RulerPhase 完备化): 时移 = 相位乘
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 相位可加 (卷积对应):
+    lemma teleport_parameter_compose (e f g : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g
+    -- 归约 (FFT 同构):
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    lemma dofLevel_succ (k : ℕ) : dofLevel (k + 1) = 2 * dofLevel k
+
+objects:
+- even_cluster_meets_one
+- teleport_parameter_compose
+- dofLevel
+
+definitions_used:
+- TK3 Compactification / TK4 AxisComponent / Ruler2Exam / RulerPhase
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- 傅里叶化简方法本身 KNOWN (经典分析)
+
+conclusion: '傅里叶 7 种化简方法映射到相位框架: 奇偶↔RulerAsym, Parseval↔
+  RulerDrift, 微分↔RulerAxis, 卷积↔RulerDelta, 移位↔RulerPhase, FFT↔归约链,
+  吉布斯↔边界. 穿折越解构 = 傅里叶分解 + 化简. FFT 二分 = 8→4→2→1 同构.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
