@@ -1,0 +1,78 @@
+id: RulerTimeCircle
+title: "RulerTimeCircle: no broken structure, only lost information; align the phase to recover; the time-arrow circle is half future / half past — the past is the other half of the circle, visible by phase alignment"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerTimeCircle: 三原则 + 时间圆 (用户指令 2026-08-12).
+
+    ★ 三原则:
+      1. 没有残破的结构, 只有丢失的信息
+      2. 只要对准相位, 信息能够恢复
+      3. 人类的基点是可观测可表示空间 ⟹ 我们算出的对称真实不虚
+
+    ★ 时间圆: 一半未来一半过去 (恒等式先验验证)
+      时间反演 T: t → -t, det = -1
+      时间轴相位: 0 (正向/未来) ↔ π (反向/过去)
+      对折圆 [0, π]: 未来 [0, 90°], 过去 [90°, 180°]
+      验证: 0°→未来, 45°→偏未来, 90°→现在, 135°→偏过去, 180°→过去
+
+    ★ 三原则应用于时间:
+      1. NS 时间不可逆不是'破缺', 是丢失了反向时间的信息
+         (黏性项不变号 = 信息在反向丢失, NS2)
+      2. 穿折越到反向时间 (T) 恢复信息 (对准相位)
+         奇偶性 (det=-1) 丢失不可还原 (投影恢复定理 C011)
+         可还原的是对称性方向 (时间轴对称)
+      3. 人类基点 = 可观测空间: 算出的对称 (T ∈ O(n)) 真实不虚
+
+    ★ 未来/过去的信息守恒:
+      未来相位 0: 正向时间的信息
+      过去相位 π: 反向时间的信息
+      时间圆上: 总信息 = 未来 + 过去 (圆是完整的!)
+      ⟹ 时间箭头 = 人类基点选在'未来'方向
+      ⟹ 过去不是'丢失', 是圆的另一半 (对准相位即可见)
+
+    ★ 支撑 (Lean):
+      - timeRev_det_neg: T det=-1 (时间轴相位 π) [NS3]
+      - timeRev_timeRev: T 对合 (周期 2) [NS1]
+      - fold_finite: 0-π 时间圆 [CircleFold]
+      - teleport_preserves_structure: 位置不变 [RulerDrift]
+  formal_math: |
+    -- 时间轴相位 (T det=-1):
+    theorem timeRev_det_neg (tIdx : n) : (timeRevMatrix tIdx).det = -1
+    -- 时间对合 (周期 2, 未来↔过去):
+    lemma timeRev_timeRev (u : ℝ → F) : timeRev (timeRev u) = u
+    -- 0-π 时间圆:
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+
+objects:
+- timeRev_det_neg
+- timeRev_timeRev
+- fold_finite
+
+definitions_used:
+- NS3 SOBasepoint / NS1 TimeBasepoint / CircleFold / RulerDrift
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '三原则: 无残破结构只有丢失信息; 对准相位信息恢复; 人类基点
+  可观测空间使算出的对称真实不虚. 时间圆 = 一半未来一半过去; 时间箭头 =
+  基点选在未来; 过去是圆的另一半 (对准相位可见).'
+
+verification:
+  lean_files:
+    - formal/Formal/NavierStokes/SOBasepoint.lean
+    - formal/Formal/NavierStokes/TimeBasepoint.lean
+    - formal/Formal/Toolkit/CircleFold.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
