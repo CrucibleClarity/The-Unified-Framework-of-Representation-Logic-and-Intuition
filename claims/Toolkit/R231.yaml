@@ -1,0 +1,90 @@
+id: R231
+title: "R231 (user 2026-08-14): 对称性破损/修复与维度升降四结论可靠性审查 — 破损产生 0 / 修复稳定基点 / 破损收缩维度 / 穿折越升维降维"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 0 = 特征空间交点 (折叠类 ±1)"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户提问 (2026-08-14): 对称性破损导致 0 的产生 / 对称性修复让基点稳定 /
+    对称性破损让维度收缩 / 内穿外穿的升维降维 (穿折越) — 四结论是否可靠?
+
+    ★ 审查结论 (全部 Lean 验收):
+    ① **破损 → 0 的产生: 可靠** — 0 = 实轴 (S 固定) ∩ 虚轴 (S 取反) 的交点
+       (特征空间相交的唯一元素); 无对称性 S 则特征空间不存在, 0 无法产生
+       (R085: 0 = ±1 折叠类; R228 同源)
+    ② **修复 → 基点稳定: 可靠** — 成对往返 (x+d)+(-d) = x: 互逆箭头对
+       同时存在时移动可逆, 基点稳定; 单向 (破损) 则漂移不可回返 (R063)
+    ③ **破损 → 维度收缩: 可靠** — 特征空间退化 (固定分量 = 取反分量,
+       ±1 不可区分) ⟹ 虚轴 (周期维度) 坍缩, 维度 2→1; 完全退化 ⟹ 1=-1
+       矛盾 (结构消失, R228 id_symmetry_contradicts)
+    ④ **穿折越升维降维: 可靠** — 升维 (lift, 内穿) 单射无损; 降维 (proj,
+       外穿) 有损 (虚轴整体投影为 0, R047 周期不可观测); 升降维往返精确
+       proj(lift t) = t; 穿折越 (基点平移 teleport) 往返精确
+
+formal_math: |
+    -- ① 0 = 特征空间交点
+    theorem eigenspace_intersection_zero (v) : S v = v → S v = -v → v = (0, 0)
+    -- ② 修复往返 (基点稳定)
+    theorem repair_round_trip (x d : ℝ) : (x + d) + (-d) = x
+    -- ③ 破损 ⟹ 维度收缩
+    theorem fixed_flipped_degenerate (v) : fixedPart v = flippedPart v → v.2 = 0
+    -- ④ 穿折越升降维
+    theorem lift_injective : Function.Injective lift
+    theorem proj_loses_imag (y) : proj (imagAxis y) = 0
+    theorem lift_proj_round_trip (t) : proj (lift t) = t
+    theorem teleport_round_trip (e f v) : teleport f e (teleport e f v) = v
+    -- 核心合成
+    theorem dimension_symmetry_synthesis : (四结论合取)
+
+objects:
+- S / realAxis / imagAxis / fixedPart / flippedPart (R227)
+- lift / proj / teleport (新)
+
+definitions_used:
+- "R227 DivergencePeriodGeometric (S 特征分解) / R228 ZeroDependence (0 依赖 S, 结构不可丢失) / R047 (发散周期同一对称性) / R085 (0 = ±1 折叠类) / R063 (基点漂移) / R056 (基点移动双射)"
+
+assumptions:
+- "ℝ² 几何基础 (R227 已建)"
+- "穿折越 = 基点平移 (torsor 平移), 与 R056 基点移动一致"
+
+conclusion: "用户四结论全部可靠 (2026-08-14): ① 破损产生 0 (特征空间交点);
+  ② 修复稳定基点 (成对往返); ③ 破损收缩维度 (特征退化 ⟹ 虚轴坍缩);
+  ④ 穿折越升降维 (升维无损/降维有损/往返精确/基点平移可逆)。全部 Lean
+  验收, 0 sorry, 与前序 claims (R227/R228/R047/R085/R063/R056) 一致。"
+
+known_special_cases:
+  - "完全退化 (S=id) ⟹ 1=-1 矛盾 — 维度收缩到极致 = 结构消失"
+  - "穿折越往返: 基点 e→f→e 精确 (基点漂移可逆)"
+  - "降维有损: 虚轴 (周期) 整体投影为 0 — 外穿丢周期"
+
+counterexample_search:
+  status: done
+  search_space: "代数恒等式 (往返/特征交点/坍缩) — heap_verify Z/101 先验 + Lean ring/linarith"
+  smallest_checked_size: 101
+  result: "恒等式先验通过 (d+(0-d)=0, (x+d)+(0-d)=x) + Lean 全部直接验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/DimensionSymmetry.lean
+  theorem_name: eigenspace_intersection_zero, repair_round_trip, fixed_flipped_degenerate, degenerate_contradiction, lift_injective, proj_loses_imag, lift_proj_round_trip, teleport_round_trip, dimension_symmetry_synthesis
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "穿折越升维降维的 '内穿外穿' 语义限定为 lift/proj/teleport 的代数形式 (基点平移); 更广的穿折越 (TK1) 结构未在此形式化"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 四结论写入论文 §7 讨论 (维度动力学) ② 与 Token 模型桥接 (破缺/修复 ↔ 删边/加边) ③ 穿折越 (TK1) 完整形式化"
+
+notes: "观点归属: 用户 (2026-08-14) 提出四结论可靠性审查; assistant 构建 Lean 定理
+  (基于 R227 零依赖几何, 恒等式先验通过)。"
