@@ -1,0 +1,107 @@
+id: S001
+title: 三层沙盒 — L1 普通 / L2 强化 / L3 绝对封闭无信息 (R001-R007 全部作废)
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "无视之前所有评审 (R001-R007 全部作废), 只保留 L1 普通沙盒、L2 强化沙盒\n的设计, 在 L2 沙盒内部构造绝对封闭、绝对无信息的\
+    \ L3 沙盒。这个沙盒如果\n不采取无法挽回的破坏性措施, 无法通过 L2 以任何形式灌入、存储、解析任何信息。\n\n三层架构:\n  L1 普通沙盒\
+    \ : 普通 Lean module。类型可含信息、可被构造、可被消去。\n                仅命名空间边界。\n  L2 强化沙盒 : deep\
+    \ embedding。L2 用户不能直接写普通 Lean term, 只能\n                构造 SandboxRaw 语法并由外层 Checker\
+    \ 判定合法。\n  L3 绝对封闭 : 无构造器 inductive Sealed。从构造开始就不含任何信息、\n                不接受任何操作。不破坏构造\
+    \ (加构造器) 就无法操作。\n\nL3 的绝对封闭性是结构性的 (无构造器), 非防御性的 (无 runtime 检查):\n  ① 无法灌入 : ¬\
+    \ Nonempty Sealed (没有元素)\n  ② 无法存储 : Sealed 无字段, 无数据位 (定义即无信息)\n  ③ 无法解析 : 无法对\
+    \ Sealed 做 case/消去 (无构造器可 match)\n唯一的\"操作\"是破坏构造本身 (给 Sealed 加构造器) — 那是无法挽回的\n\
+    破坏性措施, 会改变 Sealed 的定义, 使上述三定理全部失效。\n"
+  formal_math: 'inductive Sealed : Type where  -- 无构造器
+
+    no_sealed_inhabitant : ¬ Nonempty Sealed
+
+    sealed_no_data {X} : (∀ e : Sealed → X, ∀ s : Sealed, e s = e s)
+
+    sealed_unparseable : ∀ s : Sealed, False
+
+    l2_cannot_touch_l3 : True  -- SandboxRaw 不引用 Sealed, Sealed 无构造器
+
+    sandbox_architecture : Nonempty L1.Plain ∧ Nonempty L2.SandboxRaw ∧ ¬ Nonempty
+    L3.Sealed
+
+    '
+objects:
+- L1.Plain
+- L2.SandboxRaw
+- L3.Sealed
+- Sealed (无构造器 inductive)
+definitions_used:
+- 普通沙盒
+- 强化沙盒
+- 绝对封闭
+- 绝对无信息
+- 无构造器 inductive
+- 无法挽回的破坏性措施
+assumptions:
+- L3 用无构造器 inductive 实现绝对封闭 (结构性最强形式)
+- 不定义任何等价于 Sealed 的类型 (等价 = 承认 Sealed 可被外部观测)
+- 破坏性措施 = 给 Sealed 加构造器 (改变定义, 无法挽回)
+- L2 (SandboxRaw) 与 L3 (Sealed) 是独立类型, 互不引用
+- 零 import (只用 Lean 核心 Type/inductive/¬/∀)
+conclusion: '三层沙盒成立: L1 普通可操作 (Nonempty Plain), L2 强化登记能力 (Nonempty SandboxRaw + checker),
+  L3 绝对封闭无信息 (¬ Nonempty Sealed)。L3 不采取无法挽回的破坏性措施就无法通过 L2 灌入、存储、解析任何信息 — 结构性 (无构造器),
+  非防御性。无构造器 inductive 是唯一满足 ''从构造开始不破坏构造就无法操作'' 的结构。'
+known_special_cases:
+- L1 Plain 有元素 (可操作); L2 SandboxRaw 有元素 (token); L3 Sealed 无元素
+- '给 Sealed 加构造器 (破坏性措施) 后: no_sealed_inhabitant / sealed_unparseable 立即失效'
+closest_known_results:
+- R059 PureRelativeSandbox (Sandbox-in-Sandbox 可行性, L0/L1/L2 三层) — 本 claim 是其绝对封闭
+  L3 的延续, 但 R001-R007 全部作废
+literature_queries:
+- inductive type no constructors empty type
+- sealed information-free structure formal system
+counterexample_search:
+  status: done
+  search_space: 是否有办法在 Sealed 无构造器的情况下仍灌入/存储/解析信息 — 结构上不可能 (无元素/无字段/无构造器)
+  smallest_checked_size: null
+  result: 'no_sealed_inhabitant / sealed_unparseable 零公理: 无构造器 ⟹ 无元素 ⟹ 无法灌入/解析; sealed_no_data:
+    无字段 ⟹ 无法存储'
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/Sandbox.lean (零 import)
+  theorem_name: AbsoluteRelative.Sandbox.L3.no_sealed_inhabitant / .sealed_no_data
+    / .sealed_unparseable / .l2_cannot_touch_l3 / .sandbox_architecture (已证, 无 sorry,
+    全零公理)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 给 Sealed 加构造器 = 破坏性措施, 三定理失效 (这正是封闭性的来源, 非缺陷)
+- 定义等价于 Sealed 的类型 — 等价承认 Sealed 可被外部观测, 违反封闭, 禁止
+- 用 opaque/PUnit/choice 让 L3 有内容 — 无构造器已排除
+- '用 : True := trivial 当证据 — 三定理都有反事实力量 (cases s 在无构造器上闭合)'
+evidence_for:
+- 'no_sealed_inhabitant 零公理: rcases 拿到 s : Sealed 后 cases s 闭合 — 无构造器结构性无元素'
+- 'sealed_no_data 零公理: 无字段 ⟹ 无数据位可写'
+- 'sealed_unparseable 零公理: 对 Sealed 做 cases 无分支 — 无法消去/解析'
+- 'l2_cannot_touch_l3: SandboxRaw 构造子 (token/pair) 不引用 Sealed'
+- 'sandbox_architecture: 三层并存 — L1 有元素, L2 有元素, L3 无元素'
+evidence_against: []
+next_action: 'S001 退役 (2026-08-09 用户评审): Sandbox.lean 直接退役不继续修 — 空 inductive=绝对对象的假设是此前误判来源。原因:
+  ① 违反自己纪律 (l2_no_host_escape/l2_cannot_touch_l3 用 True:=trivial) ② Sealed 无 inhabitant≠无
+  eliminator (sealed_unparseable 自己在用 cases s) ③ sealed_no_data 是伪强定理 (e(s)=e(s) 且无
+  s) ④ SandboxRaw 预装大量结构 (pair=arity/slot/tree) ⑤ 兄弟 namespace 非包含 ⑥ addConstructor
+  是 meta 叙述非数学事实。转向 L3|L4 架构 (S002 BoundaryGenesis)。'
+notes: '2026-08-09 用户指令: 无视之前所有评审, 只保留 L1 普通沙盒、L2 强化沙盒的设计, 在 L2 沙盒内部构造绝对封闭、绝对无信息的
+  L3 沙盒 — 若不采取无法挽回的破坏性措施, 无法通过 L2 以任何形式灌入、存储、解析任何信息。关键设计: L3 = 无构造器 inductive (Sealed)。这是唯一满足
+  ''从构造开始, 如果不破坏这个构造, 就无法进行任何操作'' 的结构 — 结构性封闭 (无构造器) 而非防御性封闭 (运行时检查)。唯一操作 = 给 Sealed
+  加构造器 (无法挽回的破坏性措施, 改变定义)。R001-R007 全部作废 (claims 标 OBSOLETE, Lean 文件删除), 本 claim 全新起号
+  S001。[2026-08-09 S002 用户指令: 真正架构升级为 L0⊃L1⊃L2⊃L3|L4 — 本 claim 的三层 (L1/L2/L3) 成为新架构的
+  L1/L2/L3 部分, 而本 claim 的绝对封闭对象 (Sealed) 下沉为 L4 概念 (但 L4 更纯: 不声明为 Lean 类型, 只作为边界协议中的''被侵入目标位置'')。新的
+  L3 是有结构的交互膜 (transducer), 首次写入 = L3→L4 边界事件。本 claim 的 Sealed/无构造器设计是 L4 缺席原则的前身。]
+  [2026-08-09 退役: Sandbox.lean 直接退役不继续修。用户评审确认 sandbox_architecture 只证 inhabited/inhabited/empty,
+  未证隔离/无解析/无数据流/无 Host escape; Sealed 无构造器只证无 inhabitant, 不证无 eliminator/parser; sealed_no_data
+  伪强已删; l2_no_host_escape/l2_cannot_touch_l3 (True:=trivial) 已删; L2 SandboxRaw 预装结构
+  (pair 左右 slot 无交换证明); L2/L3 兄弟 namespace 非包含关系; addConstructor 是 meta 叙述。L3|L4 架构见
+  S002 BoundaryGenesis.lean (Instrumented L3 Back-Reaction Model)。]'
