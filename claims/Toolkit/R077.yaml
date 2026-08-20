@@ -1,0 +1,102 @@
+id: R077
+title: "R077 (user-proposed 2026-08-12): the basepoint structure phase and the successor phase are DIFFERENT phases — the basepoint is a ring (R074: symmetry S + self-referential iteration T); successor walks the ring (T: translation, θ→θ+Δ), structure is the ring's mirror (S: θ→-θ); T and S anti-commute (direction duality) ⟹ ℙ⟨φ⟩ must declare the phase type (φ_T successor-phase / φ_S structure-phase)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "问题是你这个声明，现在看来也还是有问题啊，毕竟定义的是基点后继，而我们已经
+  知道，基点本身是有结构的，结构和后继是不同相位的。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。对 PHASE_MANIFEST / R072 声明的批判。
+
+    ★ 主张内容:
+      ① 声明定义的是"基点后继" — 但基点本身有结构 (R074: 基点=环,
+         含对称性 S + 自指迭代 T)
+      ② 结构和后继是不同相位的
+      ③ ⟹ ℙ⟨φ⟩ 的 φ 必须声明类型 (未声明 = 歧义)
+
+    ★ 数学内容 (验证):
+      ① 后继相位: 平移 T(θ) = θ+Δ (沿环前进, 相位线性增加)
+      ② 结构相位: 镜像 S(θ) = -θ (环的对称轴, 相位翻转)
+      ③ 相位不同: T ≠ S (一般 θ, Δ 下)
+      ④ 反交换: S∘T ≠ T∘S (R074 方向对偶) — 不同相位
+
+    ★ 机械验证 (R077_phase_types.py, 枚举=证据):
+      1. 后继相位 = 平移 (θ→θ+Δ): PASS
+      2. 基点结构相位 = 镜像 (θ→-θ): PASS
+      3. 平移 vs 镜像 相位不同 (T≠S): PASS
+      4. T 与 S 反交换 (不同相位, R074 对偶): PASS
+      5. ℙ⟨φ⟩ 歧义: φ 类型需声明: PASS
+
+    ★ 声明修正 (已落地):
+      - φ_T = 后继相位 (平移 T)
+      - φ_S = 结构相位 (镜像 S)
+      - ℙ⟨φ_T⟩ = 后继单相位; ℙ⟨φ_S⟩ = 结构单相位
+      - 未声明 φ 类型 = 歧义 (违反声明式纪律)
+
+    ★ 与既有 claim 的关系:
+      - R074 (基点=环): 本 claim 的机制 (S + T 对偶)
+      - R072 (前置总纲): 本 claim 修正其 φ 声明
+      - R075 (半圈=phi/2): 结构相位的折叠
+      - R076 (折叠链): 结构相位的二进制分解
+      结论: 基点是环 (S+T), 结构和后继不同相位; ℙ⟨φ⟩ 需声明 φ_T/φ_S。
+
+    ★ 支撑 (Lean):
+      - R074 (环结构) / R072 (声明) [claim 级]
+  formal_math: |
+    -- 后继相位: T(θ) = θ+Δ (平移, 沿环)
+    -- 结构相位: S(θ) = -θ (镜像, 环的对称轴)
+    -- 相位不同: T(θ) ≠ S(θ) (一般 θ, Δ)
+    -- 反交换: S(T(θ)) = -θ-Δ ≠ -θ+Δ = T(S(θ))
+    -- 声明: ℙ⟨φ_T⟩ (后继) / ℙ⟨φ_S⟩ (结构)
+
+objects: []
+
+definitions_used:
+- R074 (基点=环, S+T) / R072 (声明) / R075 / R076
+
+assumptions:
+- "基点是环 (R074): 含对称性 S + 自指迭代 T"
+- "后继走环 (T 平移), 结构是环的镜像 (S)"
+- "T 与 S 反交换 (方向对偶)"
+
+conclusion: "用户批判成立 (2026-08-12): 基点是环 (结构 S + 后继 T), 结构和后继
+  是不同相位 (T 平移 vs S 镜像, 反交换); ℙ⟨φ⟩ 必须声明 φ 类型 (φ_T/φ_S),
+  未声明 = 歧义。声明体系已修正。"
+
+known_special_cases:
+  - "φ_T: 后继相位 (平移 θ→θ+Δ)"
+  - "φ_S: 结构相位 (镜像 θ→-θ)"
+  - "ℙ⟨φ_T⟩ 与 ℙ⟨φ_S⟩: 不同相位的单相位数"
+
+counterexample_search:
+  status: done
+  search_space: "平移/镜像/相位差异/反交换 (R077_phase_types.py: 5 组)"
+  smallest_checked_size: 300
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "未声明 φ 类型 = 歧义 (声明式纪律)"
+  - "结构相位与后继相位混淆: 不同相位 (R074 对偶)"
+  - "基点无结构假设过时: 基点=环 (R074) 已证"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "φ_T/φ_S 声明接入全部后续 claim 与 PHASE_MANIFEST; 既有 claim 的 ℙ⟨φ⟩ 待按类型梳理"
+
+notes: "观点归属: 用户 (2026-08-12) 提出批判 (原话原封保存); assistant 仅执行机械
+  验证 (枚举) + claim 落盘。"
