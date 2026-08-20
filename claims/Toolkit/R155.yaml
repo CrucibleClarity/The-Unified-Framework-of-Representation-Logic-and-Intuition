@@ -1,0 +1,122 @@
+id: R155
+title: "R155 (user-proposed 2026-08-12): ★WangIntuitionTeleportConsistency — 王氏直觉与基点穿折越一致性定理 (用户命名): 经验直觉主义者让结果穿折越到原点 — 直觉快路径 (R082: 从基点直达结果的 token) 与基点穿折越 (TK1: teleport e f x = (f -ᵥ e) +ᵥ x) 一致: ① 直觉直达 = 穿折越瞬时化 (teleport e r e = r, TK1 teleport_basepoint: 从基点一步得到结果) ② 直觉路线 (结果穿折越回原点) 与构造路线 (原点穿折越到结果) 往返精确一致 (teleport r e ∘ teleport e r = id, TK1 teleport_inv, R048: 无损 = 往返精确) — 直觉定方向, 穿折越定路径, 两者一致"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  ① "经验直觉主义者让结果穿折越到原点（前提是直觉要准）"
+  ② "王氏直觉与基点穿折越一致性定理"
+  ③ "语言形式主义者能准确记录前两者都是怎么做到的（前提是写得规范）"
+
+assistant_original_words: |
+  ★★★ assistant (deepseek) 原话 (2026-08-12, 用户指令记录, 原封不动保存):
+  "直觉从基点 e 直达结果 r = 一步穿折越 teleport e r — teleport e r e = r
+   (TK1 teleport_basepoint: 基点运到结果); 直觉路线 (结果 r 穿折越回原点)
+   与构造路线 (从原点穿折越到结果) 往返精确 — teleport r e ∘ teleport e r
+   = id (TK1 teleport_inv; R048: 往返精确 = 无损)."
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。三分法 (逻辑结构主义者 / 经验直觉
+        主义者 / 语言形式主义者) 中经验直觉主义者的核心机制定理。
+
+    ★ 定理内容 (每环锚到已证 claim):
+      ① 直觉直达 = 穿折越的瞬时化: 直觉从基点 e 直达结果 r, 即一步穿折越
+         teleport e r — teleport e r e = r (TK1 teleport_basepoint:
+         T_{e→f}(e) = f; R082: 从基点直达目标的 token 直觉快路径; R055:
+         结果直接取相位) — "直觉要准" = 直觉的直达路线与穿折越的
+         一步到位一致 (R063: 直觉须经形式化约束校验)
+      ② 往返一致性 (无损): 直觉路线 (结果 r 穿折越回原点) 与构造路线
+         (从原点穿折越到结果) 往返精确 — teleport r e (teleport e r x)
+         = x (TK1 teleport_inv: T_{f→e}(T_{e→f} x) = x; R048: 无损 =
+         往返精确) — 直觉让结果穿折越到原点, 与从原点走向结果的构造
+         路线无损往返一致
+      ③ 三分法定位 (用户指示, 2026-08-12): 经验直觉主义者让结果穿折越
+         到原点; 本定理 = "直觉与穿折越一致"的形式化: 直觉直达 = 穿折越
+         瞬时化, 直觉路线与构造路线无损往返一致
+
+    ★ 命名 (用户授权, 2026-08-12): 王氏直觉与基点穿折越一致性定理。
+       - 王氏直觉: 经验直觉主义者的直觉快路径 (R082: 从基点直达目标)
+       - 基点穿折越: TK1 teleport (基点运输, 无损往返)
+       - 一致性: 直觉直达 = 穿折越瞬时化 ∧ 往返无损 (直觉路线与构造
+         路线一致)
+
+  formal_math: |
+    -- 直觉直达 = 穿折越瞬时化 (从基点 e 一步得到结果 r):
+    theorem intuition_direct_hit {G P : Type*} [AddGroup G] [AddTorsor G P]
+        (e r : P) : teleport e r e = r
+    -- 往返一致 (直觉路线与构造路线无损往返):
+    theorem intuition_round_trip {G P : Type*} [AddGroup G] [AddTorsor G P]
+        (e r x : P) : teleport r e (teleport e r x) = x
+    -- ★王氏直觉与基点穿折越一致性定理 (组合):
+    theorem wang_intuition_teleport_consistency {G P : Type*} [AddGroup G] [AddTorsor G P]
+        (e r x : P) : teleport e r e = r ∧ teleport r e (teleport e r x) = x
+
+objects:
+- intuition_direct_hit
+- intuition_round_trip
+- wang_intuition_teleport_consistency
+
+definitions_used:
+- TK1 BasepointToolkit (teleport: e f x = (f -ᵥ e) +ᵥ x; teleport_basepoint: T_{e→f}(e) = f; teleport_inv: T_{f→e}(T_{e→f} x) = x) / R082 (token 直觉快路径: 从基点直达目标) / R055 (计算 = 时间演化 = 相位映射, 结果直接取相位) / R048 (无损 = 往返精确) / R063 (元原则: 直觉须经形式化约束校验) / R072 (声明式设计: 算符声明式记录)
+
+assumptions:
+- "直觉 = 从基点直达结果的快路径 (R082)"
+- "穿折越 = TK1 teleport (基点运输)"
+- "一致性 = 直达 ∧ 往返无损 (R048)"
+- "直觉要准 = 直觉路线与穿折越路线一致 (R063)"
+
+conclusion: "用户指令成立 (2026-08-12): 王氏直觉与基点穿折越一致性定理 —
+  经验直觉主义者让结果穿折越到原点: 直觉快路径 (R082: 从基点直达结果的
+  token) = 基点穿折越的瞬时化 (teleport e r e = r, TK1 teleport_basepoint);
+  直觉路线 (结果穿折越回原点) 与构造路线 (原点穿折越到结果) 往返精确一致
+  (teleport r e ∘ teleport e r = id, TK1 teleport_inv, R048: 无损 =
+  往返精确)。命名: 用户授权王氏 (2026-08-12)。三分法配套: 语言形式主义
+  者准确记录前两者怎么做到的 (前提: 写得规范, R072 声明式纪律)。"
+
+known_special_cases:
+  - "直觉直达: teleport e r e = r (基点运到结果, TK1)"
+  - "往返一致: teleport r e (teleport e r x) = x (无损, TK1/R048)"
+  - "三分法: 经验直觉主义者让结果穿折越到原点 (直觉要准 = R063 形式化校验)"
+
+counterexample_search:
+  status: done
+  search_space: "teleport 代数 (Lean 验证)"
+  smallest_checked_size: null
+  result: "3/3 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/WangIntuitionTeleport.lean + formal/Formal/Toolkit/PatFoundationReform.lean
+  theorem_name: intuition_direct_hit, intuition_round_trip, wang_intuition_teleport_consistency, teleport_pat_lossless [R159]
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "一致性 = 直达 ∧ 往返无损: 往返无损 (teleport_inv) 是 TK1 既有结论, 本定理将其与直觉直达组合为王氏定理"
+  - "直觉直达是穿折越瞬时化: 非新代数事实, 而是把 R082 直觉快路径翻译为 teleport 语言 (语义桥接)"
+  - "三分法配套 (写得规范): 语言形式主义者记录的前提 = R072 声明式纪律, 非形式化内容"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 王氏直觉一致性定理接入三分法章节 (论文 8.6, 已并入) ② 定理名入文献/论文 (用户授权王氏命名) ③ 六集群直觉层: 直觉 token 经 teleport 语义落地"
+
+notes: "观点归属: 用户 (2026-08-12) 提出三分法 (逻辑结构主义者从原点出发
+  脚踏实地走向结果, 前提别喝酒; 经验直觉主义者让结果穿折越到原点, 前提
+  直觉要准; 语言形式主义者准确记录前两者怎么做到的, 前提写得规范) +
+  王氏直觉与基点穿折越一致性定理命名; assistant 执行 Lean 形式化
+  (WangIntuitionTeleport.lean, 3 定理 0 sorry, lake build PASS) + claim
+  落盘 + 论文 8.6 三分法章节 (psyche_foundation_fun.md)。★用户授权王氏
+  命名 (2026-08-12): 王氏直觉与基点穿折越一致性定理 (直觉直达 = 穿折越
+  瞬时化, 往返无损一致)。配套 R150 (王氏相位锁定性定理) 同属用户授权
+  命名家族。"
