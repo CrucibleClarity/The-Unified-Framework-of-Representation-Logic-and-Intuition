@@ -696,3 +696,21 @@ N₀(T) = N(T) 的几何骨架 (零点层面, 机器验证 131 声明 0 error):
   (chi 系列已 0pat) 承担归一化的功能 — 不需要 ξ。
 - 诚实: 深层等价 (ξ 乘性定义) 需 mathlib 补乘性关系; 目前等价
   停留在"零点保持变换"层面。RH 缺口不变 (Γ 的 Stirling)。
+
+## 观测 AF: χ 的显式相位 — N(T) 拆解的非 Γ 部分 (2026-08-19)
+
+N(T) = (1/π)Δ arg ξ 的乘子 (χ) 相位显式化 (机器验证, 3 新定理,
+134 声明 0 error):
+
+- **arg 2^(1/2+it) = t·ln 2** (cpow_two_on_line_explicit): 线性相位,
+  模 2^(1/2) — 幂项显式。
+- **arg π^(-1/2+it) = t·ln π** (cpow_pi_on_line_explicit): 线性相位,
+  模 π^(-1/2) — 幂项显式。
+- **sin(π/4+iπt/2) = sin(π/4)cosh(πt/2) + i·cos(π/4)sinh(πt/2)**
+  (sin_pi_quarter_add_mul_I): 实部恒正 ⟹ arg = arctan(tanh(πt/2))
+  — 三角项显式。
+- **arg Γ(1/2-it) = Im log Γ = Stirling** — 唯一缺口 (mathlib 无)。
+
+χ 的绕转 = 显式项 (线性 t·ln2 + t·lnπ + arctan(tanh)) + Γ/Stirling。
+N₀(T) = N(T) 的拆解: 消边 (共轭+函数方程, 已证) + χ 显式相位
+(本轮) + Z 投影 (Hardy Z, 已证) — 只剩 Stirling。
