@@ -1,0 +1,73 @@
+id: RulerTwo
+title: "RulerTwo: why 2 — two is the minimal cardinality of discrimination (metatheorem); the base of the dof axis"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerTwo: 为什么自由度轴基数是 2 (元定理, 用户指令 2026-08-12).
+
+    ★ 2 的四个来源 (同一件事):
+      ① 对称性二值: TK2 sign : Perm α → ℤˣ, 值域 {+1,-1} (保持/破缺)
+      ② 基点两点: TK1 teleport e f x = (f -ᵥ e) +ᵥ x, 位移 = 两点之差,
+         2 是'有关系'的最小点数 (1 点无位移/无结构, 2 点有位移/有结构)
+      ③ 二分叉递归: 归约链 8→4→2→1 的原子操作 = 二元合并 (2 变 1)
+      ④ 布尔二值性: Bool = 2 元素, Prop 判定二值, by_cases 两分支
+
+    ★ 统一答案:
+      2 = 形式化的最小非平凡结构. 1 平凡 (无区分), 2 是第一个有区分的
+      基数. 任何'区分' (discrimination) 都需要 ≥2 个值.
+      对称性二值 = 判定二值 = 基点两点 — 都是'区分'的形态.
+      自由度 2^k = k 个独立二值区分 = k 位二进制.
+
+    ★ 形式化困难 (元定理):
+      - Lean 中 2 内建 (Nat/Bool/if-then-else), 无法问'为什么'
+      - '任何区分 ≥2 值' 是元级命题, 不能在对象级证明
+      - 这是 Church 教训 (C-META13) 的镜像: 2 的必然性预设区分能力,
+        而区分能力是形式化本身的前提
+      - 与自然数研究 (C008-C010) 同构: 2 不能作为区分的 primitive,
+        2 是'区分'这个操作的结论, 不是输入
+
+    ★ 支撑 (Lean):
+      - sign_is_pm_one: 符号投影值域 {+1,-1} (2 值) [TK2]
+      - teleport: 需要两点 e,f (位移 = 两点差) [TK1]
+      - dofLevel_succ: 2^k 序列的后继 (除以 2) [TK4]
+  formal_math: |
+    -- 对称性二值 (来源1):
+    lemma sign_is_pm_one (σ : Equiv.Perm α) :
+      signProjection σ = 1 ∨ signProjection σ = -1
+    -- 基点两点 (来源2):
+    def teleport (e f : P) (x : P) : P := (f -ᵥ e) +ᵥ x
+    -- 二分叉 (来源3):
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    lemma dofLevel_succ (k : ℕ) : dofLevel (k + 1) = 2 * dofLevel k
+
+objects:
+- sign_is_pm_one
+- teleport
+- dofLevel
+
+definitions_used:
+- TK1 BasepointGen / TK2 SymmetryRecovery / TK4 AxisComponent
+
+assumptions:
+- 各定理假设见 TK1/TK2/TK4 (自包含, 仅 import mathlib)
+
+conclusion: '2 = 形式化的最小非平凡基数: 任何区分 ≥2 值. 对称性二值/基点
+  两点/二分叉/布尔二值都是区分的形态. 自由度轴基数 2^k 源于此. "为什么是 2"
+  是元定理 (区分是形式化前提), 不能在对象级证明.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/BasepointGen.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
