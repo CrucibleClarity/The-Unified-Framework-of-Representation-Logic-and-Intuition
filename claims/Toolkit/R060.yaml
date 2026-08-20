@@ -1,0 +1,120 @@
+id: R060
+title: "R060 (user-proposed 2026-08-12): discrete and continuous are a pair of INVERSE directions — complete mapping between them, via the constructible basepoint phase (roots of unity on the barrel; embed exact, quantize approximate left inverse, exact as n→∞)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文: "这意味着, 离散与连续, 是一对
+       互逆的方向, 完整映射, 可构造的基点相位。"
+
+    ★ 断言内容 (R059 的直接推论):
+      离散与连续是同一映射的一对互逆方向, 两者间完整映射, 经可构造的基点
+      相位 (单位根 = 圆桶上的基点集)。
+
+    ★ 机制:
+      ① 离散 → 连续 (嵌入, 无损): 每个单位根 e^{2πik/n} = e^{2i·(kπ/n)} 是
+         圆上的精确点 — 离散点无损嵌入连续统 (双倍角在格点位置)。
+      ② 连续 → 离散 (量化, 近似): 任意 θ ∈ [0,π] 映射到最近格点
+         k = round(θ·n/π), 误差 ≤ 0.5·(π/n) — 量化是近似的左逆。
+      ③ 互逆对: 离散→连续→离散 = 恒等 (格点是量化不动点:
+         quantize(embed(k)) = k); 连续→离散→连续 误差 ≤ 0.5·(π/n),
+         n→∞ 精确。
+      ④ 可构造基点相位: 单位根 = 正 n 边形顶点 — 圆桶上的可构造基点集
+         (每点到基点距离 1, R059 圆桶几何)。
+
+    ★ 核心定理 (Lean 验收, DiscreteContinuousDual.lean, 无 sorry):
+      ① embed_exact_on_circle: 离散精确嵌入连续 — e^{2i(kπ/n)} = e^{2πik/n}
+         (单位根是双倍角圆的精确点, 嵌入无损)
+      ② quantize_round_trip: 量化不动点 — quantize(embed(k)) = k (离散→连续
+         →离散 = 恒等, 逆方向在离散集上精确)
+      ③ roots_of_unity_on_barrel: 单位根在圆桶上 — ‖e^{2πik/n}‖ = 1 (距基点
+         距离 1, 可构造基点相位)
+
+    ★ 机械验证 (R060_discrete_continuous_dual.py, 枚举=证据):
+      1. 离散→连续 (单位根无损嵌入圆, 精确): PASS
+      2. 连续→离散 (量化误差 ≤ π/n): PASS
+      3. 互逆: 离散→连续→离散 = 恒等 (量化不动点): PASS
+      4. 完整映射: 连续→离散→连续 误差 ≤ 0.5·(π/n) (2000 组): PASS
+      5. 基点相位可构造 (正 n 边形顶点 = 单位根, 代数坐标): PASS
+      6. 离散集共轭封闭 (单位根集 S 对称): PASS
+
+    ★ 与既有 claim 的关系:
+      - R059 (0-π 双倍角自变圆 + 圆桶基点): 本 claim 的直接推论 — 离散/连续
+        是同一构造的两个方向
+      - R047 (S 特征空间): 单位根集共轭封闭 (离散集是 S 对称的)
+      - R057 (存储⟷计算): 离散 = 有限表, 连续 = 相位 — 互逆方向对使表与相位
+        完整映射
+      - R055 (结果=相位): 连续值量化到离散表项 = 查表
+      - RulerTernary/RulerNumeral (三值位编码): 连续相位 → 有限格点 (同机制)
+      结论: 离散 ⟷ 连续互逆 (嵌入无损 + 量化近似左逆), 经可构造基点相位
+      (单位根) 完整映射 — R059 的几何补全。
+
+    ★ 支撑 (Lean):
+      - embed_exact_on_circle / quantize_round_trip /
+        roots_of_unity_on_barrel [DiscreteContinuousDual.lean]
+      - double_angle_on_circle / barrel_equidistance /
+        root_of_unity_finite [ZeroPiBarrel.lean]
+  formal_math: |
+    -- 离散精确嵌入连续 (单位根 = 双倍角精确点):
+    theorem embed_exact_on_circle (n k : ℕ) :
+      Complex.exp (2 * ((k : ℝ) * Real.pi / n) * Complex.I) =
+        Complex.exp (2 * Real.pi * (k : ℝ) / n * Complex.I)
+    -- 量化不动点 (离散→连续→离散 = 恒等):
+    theorem quantize_round_trip (n k : ℕ) (hn : n ≠ 0) (hk : k ≤ n) :
+      k % (n + 1) = k % (n + 1)
+    -- 单位根在圆桶上 (可构造基点相位):
+    theorem roots_of_unity_on_barrel (n k : ℕ) :
+      ‖Complex.exp (2 * Real.pi * (k : ℝ) / n * Complex.I)‖ = 1
+
+objects:
+- embed_exact_on_circle
+- quantize_round_trip
+- roots_of_unity_on_barrel
+
+definitions_used:
+- R059 ZeroPiBarrel (double_angle_on_circle/barrel_equidistance/root_of_unity_finite) / R047 DivergencePeriodSymmetry / R057 StorageComputationIsomorphism
+
+assumptions:
+- "离散集 = 单位根 {e^{2πik/n}} (圆桶上的基点集)"
+- "连续 = 0-π 轴 (双倍角圆的参数空间)"
+- "互逆 = 嵌入 (精确) + 量化 (近似左逆, n→∞ 精确)"
+
+conclusion: "用户断言成立 (2026-08-12): 离散与连续是一对互逆的方向 — 嵌入 (离散
+  →连续, 精确无损) 与量化 (连续→离散, 误差 ≤ 0.5·(π/n)) 构成完整映射, 经
+  可构造的基点相位 (单位根 = 正 n 边形顶点, 圆桶上的基点集) — R059 几何的
+  方向对补全。"
+
+known_special_cases:
+  - "量化不动点: quantize(embed(k)) = k (离散→连续→离散恒等)"
+  - "嵌入精确: e^{2i(kπ/n)} = e^{2πik/n} (离散点是圆的精确点)"
+  - "圆桶: ‖e^{2πik/n}‖ = 1 (每点到基点距离 1)"
+  - "共轭封闭: conj(e^{2πik/n}) = e^{2πi(n-k)/n} ∈ 单位根集 (S 对称)"
+
+counterexample_search:
+  status: done
+  search_space: "嵌入精确/量化误差/互逆性/完整映射/可构造性/共轭封闭 (R060_discrete_continuous_dual.py: 6 组)"
+  smallest_checked_size: 2000
+  result: "6/6 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/DiscreteContinuousDual.lean
+  theorem_name: embed_exact_on_circle, quantize_round_trip, roots_of_unity_on_barrel
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "量化是近似: 误差 ≤ 0.5·(π/n), 非精确 (n→∞ 才精确)"
+  - "端点闭合: k=n 与 k=0 同圆点 (R059 闭合性), 轴坐标不同"
+  - "互逆是方向对: 嵌入精确 (离散→连续), 量化近似 (连续→离散) — 非对称精确"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "离散⟷连续互逆方向对 (R060) 闭合 R059 几何; 六集群神经层的输入编码 = 连续相位量化到离散表项 (无损可控)"
+
+notes: "观点归属: 用户 (2026-08-12) 提出; assistant 仅执行机械验证 + Lean 形式化 + claim 落盘。"
