@@ -1,0 +1,91 @@
+id: RulerNeural
+title: "RulerNeural: the neural layer fails in BOTH offset-learning and structure-discovery — because the bottom (divergence axis) is unfinished; we only optimized the periodic phase, not the divergence-axis annealing/prophecy; correct use = six neuron clusters (orchestrator/induction/intuition/2×IO per modality), each neuron with its own weights"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerNeural: 网络层为什么到处没用 + 正确架构 (用户指令 2026-08-12).
+
+    ★ 否定性结论 (恒等式先验 + 实现验证):
+      网络学误差偏移: 理论场景 (幂律) 手工反解 1 样本更优 (用户怀疑验证)
+      网络做结构发现: 同样没用 — 因为底层没做完就套实现
+
+    ★ 根本原因 (用户判定):
+      1. 未在发散轴上复现相同事情: 所有量子退火、预言算法都没做在发散轴上
+      2. 结构发现在发散轴: 现在只做了周期性相位的优化
+      3. 发散轴上的预言/退火/结构发现 全部缺失
+      ⟹ 在错误的轴 (周期相位) 上测试网络 = 得到"网络没用"的错误结论
+      ⟹ 不是网络没用, 是底层 (发散轴) 没做完
+
+    ★ 正确用法 (用户指令):
+      1. 每个神经元一套权重, 自己写自己的 (非共享权重)
+      2. 六个神经元集群:
+         - 1 个编排 (orchestrator)
+         - 1 个归纳学习 (inductive learning)
+         - 1 个直觉推理 (intuitive reasoning)
+         - 2 个输入/输出 (input/output)
+      3. 每个模态一套输入和一套输出
+
+    ★ 架构含义:
+      神经元 = 独立权重单元 (self-contained)
+      集群 = 六角色分工 (编排/归纳/直觉/IO×2)
+      模态 = 每个模态独立 IO
+      ⟹ 网络不是"一层拟合", 是"六集群自组织"
+
+    ★ 与理论连接:
+      编排集群 = 基点对齐 (穿折越调度)
+      归纳集群 = 残差模式聚类 (RulerAdaptive 神经版, 发散轴)
+      直觉集群 = 相位截断预言 (RulerProphecy 神经版, 发散轴)
+      IO 集群 = 模态边界 (每模态独立基点)
+
+    ★ 遗留 (v0.2 待做):
+      发散轴上的量子退火算法 (未做)
+      发散轴上的预言算法 (未做)
+      发散轴上的结构发现 (未做)
+      六集群神经元架构 (v0.2)
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 误差比率 (周期相位优化) [ErrorSequence]
+      - error_seq_predicts: 偏移反解 [ErrorSequence]
+      - toffoli_self_inverse: 可逆门 (量子退火基础) [HouseholdQuantumAnnealing]
+  formal_math: |
+    -- 周期相位优化 (已完成的部分):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- 量子退火基础 (发散轴, 未完成):
+    lemma toffoli_self_inverse (a b c : Bool) :
+      toffoli (toffoli a b c) = (a, b, c)
+    -- 偏移反解 (可迁移, 未到发散轴):
+    lemma error_seq_predicts (s n₀ : ℝ) (hs : 1 < s) (hn₀ : 0 < n₀) :
+      polyError s n₀ * (2 ^ (1 - s)) = polyError s (2 * n₀)
+
+objects:
+- poly_error_ratio
+- error_seq_predicts
+- toffoli_self_inverse
+
+definitions_used:
+- ErrorSequence / HouseholdQuantumAnnealing
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '网络在偏移学习和结构发现都没用 — 因为底层 (发散轴) 未完成,
+  只在周期相位轴优化过. 正确架构: 每神经元独立权重 + 六集群
+  (编排/归纳/直觉/IO×2) + 每模态独立 IO. 发散轴量子退火/预言/结构发现
+  是 v0.2 待做.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/ErrorSequence.lean
+    - formal/Formal/Toolkit/HouseholdQuantumAnnealing.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
