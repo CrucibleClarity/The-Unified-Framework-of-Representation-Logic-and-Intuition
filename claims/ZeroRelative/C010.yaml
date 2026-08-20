@@ -1,0 +1,104 @@
+id: C010
+title: "Basepoint-dependent generation law Γ : e ↦ σ_e — pure-heap terms are teleport-covariant; closure types are e-independent (R011: general theorem)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ★ 真正研究起点 (VISION §9-13): 生成律为什么会随基点改变, 如何改变?
+    Γ : H → (H → H), Γ(e) = σ_e。Chain_e := ⋂ {C | e∈C, σ_e(C)⊆C} (C009 v2, 无 Nat)。
+    ★★ 一般定理 (R011, 已证明): 纯 heap 内生生成律 (σ_e 只用 [·,·,·], 叶子 ∈ {e,x},
+    无字面量 0) 的最小闭包结构**不依赖基点 e**。机制:
+    T_{e→f}(x) := [x,e,f] 是任意 heap 上的自同构 (middle para-assoc 形式保证
+    translation 是同态), 故任意 pure-heap term t(e,x) 满足
+      T_{e→f}(t(e,x)) = t(f, T_{e→f}(x)),
+    由此 Chain(σ_f,f) = T_{e→f}(Chain(σ_e,e)) (exact teleport), 生成结构同构。
+    这是 universal-algebraic 原理 "homomorphism preserves evaluation of terms",
+    非新现象。
+    ★ 此前 (含 0 的表达式) 的分岔发现无效: σ_e(x)=[x,x,[x,e,0]]=x-e 含字面量 0,
+    而 0 在纯 heap 中非内生 (0 本身就是基点选择) — 用 0 即偷偷选定基点, 违反
+    "无特权基点"。故该分岔不是纯 heap 现象。
+    ★★ 撤回 (此前过强结论): 见 failure_modes — "产生结构类型分岔 ⟺ 使用超出
+    pure heap 的常数/结构" 过强。正确表述: pure heap terms 在基点变换下一般
+    协变; 结构分岔需要破坏该协变性; 额外常数/结构是可能的破坏来源之一, 但
+    非充分条件, 也非唯一机制。
+  formal_math: |
+    Let H : Type with [Heap H] (ternary op [x,y,z], para-assoc both forms +
+    identity laws). Let T_{e→f}(x) := [x,e,f]. Let PureGen be terms built from
+    [·,·,·] with leaves {x, e} only (no literal). Let eval t e x be the value of
+    term t at basepoint e, running point x. Let
+      Chain(σ,e) := ⋂ {C | e ∈ C ∧ σ(C) ⊆ C}.
+    Theorem (Lean-verified, no sorry):
+      (1) teleport_heap: T([x,y,z]) = [T x, T y, T z]
+      (2) eval_teleport:  T(eval t e x) = eval t f (T(x))   ∀ pure term t
+      (3) teleport_bijective: T_{e→f} bijective, inverse T_{f→e}
+      (4) chain_teleport_eq: Chain(σ_f, f) = T_{e→f}(Chain(σ_e, e))
+      (5) generatedStructureEquiv: Chain(σ_e,e) ≃ Chain(σ_f,f)
+    Hence the closure structure type does not depend on the basepoint e.
+
+objects: ["H : Type [Heap H]", "T_{e→f}(x) = [x,e,f]", "PureGen terms (leaves {e,x})", "Chain(σ,e) (C009 v2)"]
+definitions_used: ["Heap (with middle para-assoc form)", "PureGen", "Chain (C009 v2)", "teleport"]
+
+assumptions:
+  - "[Heap H] (任意 heap, 非仅 abelian)"
+  - "σ_e 由 [·,·,·] 构造, 叶子 ∈ {e,x}, 任意有限深度, 无字面量"
+conclusion: "纯 heap 内生 σ_e 的 Chain_e 结构类型与基点无关 (general invariance baseline)"
+
+known_special_cases:
+  - "σ_e(x) = [x,e,e] = x (identity): Chain_e = {e}, 类型 e 不变 (trivial)"
+  - "σ_e(x) = [x,e,x] = x - e + x = 2x - e (reflection): 类型 e 不变"
+  - "含 0 的 σ_e(x)=[x,x,[x,e,0]]=x-e: 分岔, 但 0 非纯 heap 内生 (用特权基点)"
+closest_known_results:
+  - "universal algebra: homomorphism preserves term evaluation (KNOWN)"
+  - "heap translation is an automorphism (standard heap theory, Hollings & Lawson 2017)"
+  - "C006 (step translation teleport: 与 teleport 协变一致)"
+  - "C007 (displacement equivalence)"
+  - "C009 (Chain 构造, Dedekind baseline)"
+literature_queries:
+  - "heap term operations universal algebra homomorphism"
+  - "translation automorphism torsor naturality"
+
+counterexample_search:
+  status: done
+  search_space: "纯 heap 表达式 (叶子 {e,x}, 无 0) 枚举 (H=Z/5, Z/7); 含 0/1 表达式对照; 非 abelian S3/D4 验证"
+  smallest_checked_size: "Z/7 (810 纯表达式深度≤3), S3/D4 (非 abelian 群 heap)"
+  result: |
+    纯 heap (无 0): 深度≤3 810 表达式, 0 个 e-dependent 闭包类型 (枚举一致);
+    S3/D4 非 abelian 群验证 teleport 保运算/cancel/互逆全成立 (确认任意 heap 有效)。
+    含 0 或 1 表达式: 24330 表达式 17580 (72%) e-dependent, 但常数非纯 heap 内生。
+    (experiments/finite_models/C010_heap_endogenous.py, C010_audit_split_primitives.py)
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/BasepointGen.lean"
+  theorem_name: |
+    PureGen.teleport_heap, PureGen.eval_teleport (协变),
+    PureGen.teleport_inv / teleport_inv' / teleport_bijective,
+    PureGen.chain_teleport_subset → chain_teleport_eq (exact teleport),
+    PureGen.generatedStructureEquiv / generated_structure_iso (结构同构)
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "【撤回】'产生基点分岔 ⇔ 使用超出 pure heap 的常数/结构' — 过强: 加常数不一定产生分岔 (枚举 72% 非 100%); 常数若随基点 teleport 仍可保持不变性"
+  - "【撤回】'任何外部常数破坏基点不变性' — 应为: 固定在 observer/frame 中而不随基点 teleport 的常数可能破坏 equivariance; 常数自身正确 teleport 则不一定分岔"
+  - "不得先假设 semiconjugacy (VISION §13 Step 4) — 本证明是定理 (由 heap 律 + 项纯性推出), 非假设"
+  - "含 0 表达式不是纯 heap 内生 — 需严格区分 (0 是特权基点)"
+  - "novelty: term naturality / homomorphism preservation 是标准 universal algebra, 不以 Lean 证明冒充新颖"
+
+evidence_for:
+  - "Lean: eval_teleport / chain_teleport_eq / generatedStructureEquiv 全证 (任意 Heap, 无 sorry)"
+  - "枚举: 810 纯 heap 表达式 (深度≤3) 0 个 e-dependent (与定理一致)"
+  - "非 abelian S3/D4 群验证 teleport 保运算全成立"
+  - "对照: 含 0/1 常数 72% e-dependent, 但非纯 heap 内生"
+evidence_against: []
+
+next_action: "(1) ★已完成: R011-R020 — 见前 (Aut-orbit invariance / context sufficiency / canonical quotient / probe family); (2) ★已完成: R020 三定理封口+第三/四轮修正: T1 射影结构 (Lean 已证 probe_scalar_inv_general/projective), T2 唯一确定性 (6=6 类 0 冲突), T3 minimality **假设修正为 {0}∪Gr(1,F_q^k)⊆K_realizable** (dimV≥k−1 只是 unrestricted-linear-model 下充分条件; 否则=可实现 kernel family 的 separating/hitting problem, 非普适 minimum); **2→2→4→5→6 降级**: 非 canonical sequence, 内禀对象 = partition lattice {Q_P:P⊆P^(k−1)} + refinement order, 序列只是一条路径; **matroid 连接 (非无损)**: kerD 保存完整带系数线性关系, matroid 只留'哪些 index set 支持非零依赖' — 是 forgetful/compression step (kernel relation space→forget coefficients/supports→representable matroid M(D)), 非 matroid 直接一般化 kernel; R020 封口为线性 benchmark (configuration→kerD→probe-language quotient); (3) ★已完成: Context 跨结构 + 两类交换图 (第二+三轮评审): 概念分层 P1 point fixed/P2 equivariant family/P3 observable invariant/P4 iso-class invariant; 两个交换图 (A) context→human O_f(Tx)=?O_e(x) [Lean: relcoord_equiv] (B) human→context T(I_e(m))=?I_f(m); 0 重做 (绝对点移动 vs 单位元角色 T(e)=f [Lean: teleport_bpt]); **不动点传送定理** [Lean: fixed_points_teleport 族]: T∘H_e=H_f∘T ⟹ T(FixH_e)=FixH_f — 今后 fixed-point 现象先查是否此定理直接推论 (KNOWN/DIRECT_COROLLARY), 真有价值的是 T∘H_e≠H_f∘T; **第二类不动点缺陷三分法**: A realization defect (T∘I_e≠I_f) / B operator defect (H_e∘I_e≠I_e∘H) / C teleport defect (T∘H_e≠H_f∘T); **两级结构 (第四轮)**: H(m)=m 时 B+C 已保证 teleported object 仍为 fixed point (不需要 A), A 控制 realization naturality (T I_e(m)=I_f(m)) — 拆成 fixed-role persistence (需 B+C) vs realization naturality (需 B+C+A), A defect 破坏 VALUE/realization 一致但不破坏 fixed ROLE (与 VALUE/ROLE 分离吻合); 下一步 = 把两级结构正式化 (Lean) + 在 basepoint-regeneration 系统检查哪种 compatibility 自然成立/哪种真 obstruction, 不再加 carrier; **char2 缩窄**: 只 additive negation x↦−x 的 realization 依赖 characteristic, 禁泛化 'inversion 是表示现象' (x↦−x/x↦x⁻¹/x↦1/x 是不同结构的 involution); **双轴分离**: carrier 内基点/context 改变 (可逆 teleport, 谈 naturality/equivariance) vs carrier/代数结构改变 (F₂²⇝S₃ 无自然 T, 仅给定 morphism A→B 后才谈 preservation, 否则'不同模型类似现象'非 teleport invariant); (4) ★已完成+封口: R021 Anti-Reification / Lambda-Elimination Audit (第四轮评审): **编码≠消去**, 判据 = factorization Γ(c,x)=Γ̄(x); non-eliminability witness P(s₁)=P(s₂) 且 O(s₁)≠O(s₂) ⟹ 无 Ō (Lean 已证 no_elimination/factor_implies_refine/r021_witness/unique_expansion_obstruction); 判决表全跑 (def elimination 不能/unique expansion 非唯一 8 expansion 共享 T₀ reduct/collision witness/λ compilation info 落参数或closure/full abstraction reflection 败/minimal R*=4); **封口理由 (第五轮)**: 信息不可消去本身已有成熟理论 — parametricity/representation independence (隐藏 representation≠信息消失), Padoa/Beth (同 reduct 不同 expansion = failure of implicit definability), definitional/Morita equivalence (Barrett-Halvorson: 新 sort 是否真实理论内容), realization theory/sufficient statistic/bisimulation (最小 hidden state), canonical quotient (成熟范式); 因此 '不可消去信息' 不是新问题, R021 的价值 = 建立 control layer + 发现真正未知 = regeneration; (5) ★已建立: R022 Regeneration Square (第五轮, 真正未知): context/basepoint **参与产生生成律** (e,E)↦Γ_{e,E}, 非给定 F 找 quotient; 比较 P∘Generate_{e,E} vs Generate_{f,E'}∘P; **架构推导的 obstruction**: 交换 (with pushforward low law) ⟺ Γ respects P-kernel (∀x x', Px=Px'→P(Γx)=P(Γx')), **Lean 已证 respectsKernel/commutes_implies_respects/pushforward_commutes, R022Regeneration.lean**; 该条件由 (P,Γ) 直接读出, 非 observable 定义的 quotient; R017 的 defect = 低层 STEP 选择非 pushforward (数值验证: 254 投影×3 律 0 不一致); 延伸目标 (未封口): 证明某类 basepoint-generated algebra 中 regeneration defect 必然由某个内禀 relational object 分类, 且该对象能从 generation architecture 本身推导 (非按 observable equivalence 定义) — 越过现有理论的关键判据: R*=minimal sufficient statistic 则仍是旧理论; (6) ★已完成: R023 Relational Complexity / Arity / k-Closure / Base Size (第六轮评审, 用户原话'找旧东西里本质相同、投影丢精度导致差异'): **用户要的现象确定存在且成熟**, 名字 = arity / relational complexity / tuple orbits / Wielandt k-closure / base size, 非新问题; 数值验证三轴 (`R023_relational_arity.py`): ① Alt(t) I=(0,1,..,t-1) vs J=(1,0,2,..) 在 ≤t−2 元 subtuple 全部不可区分但不同 orbit (t=3,4,5 验证; 交换 (01) 奇置换 ∉ Alt(t); 与 R015b pairwise 同但 triple 不同 同逻辑形态), ② Wielandt k-closure G≤G^(k)≤G^(k−1) (Alt(3): G^(1)=Sym(3)>G=Alt(3)=G^(2), 低元观察保留虚假对称群), ③ base size (GL(2,3): |Stab((1,0))|=6, |Stab((1,0),(0,1))|=1, base size=2 — 你们 stabilizer 链结果即 base-size 现象); **'一元完备/二元不完备'拆开**: 单 context 无内部 context-context relation (平凡完备, 非人类一元数学完备), 二元才首次出现 R(d1,d2), 真正发生 = 一元观察语言对二元 configuration 不充分; '完整/不完整'相对 observable/probe language, 非 context 数量; **多 context = matrix/linear map** D:F_q^k→F_q^m (kerD=全部线性关系, R020 已恢复), tensor 仅当真正多线性 interaction (B bilinear=二阶, T trilinear=三阶, 阶数由 interaction 元数+multilinearity 决定非 context 数量), 最一般 = relational structure E=(C,R1,R2,...) (graph/hypergraph/matroid/matrix/tensor/category 皆 realization); **研究问题重述**: 观察语言 arity 是否足以恢复完整 relational configuration — Q1⪯Q2⪯Q3⪯... 求最小 r 使 Q_r=Q_full, 这是 Context Sufficiency 与 relational complexity 的自然接口; 结论不支持'一元完备/二元不完备'而支持'最小充分关系元数', 双/三 context 实验 = 该问题的 toy model; 用户的'找本质相同现象'目标达成 (已知成熟有汇总), R020 的 configuration→kerD→probe-language quotient 与 arity 框架接口未见直接汇总 = 整理/接口工作非新定理 (KNOWN/DIRECT_COROLLARY); (7) ★已完成: R024 Information Loss / Incomplete Representation Map + Unified Language (第七轮评审, 停止深挖 relational complexity): **共同骨架** = 表示 P + 等价 ~ + failure of reflection (P(x)~P(y) 不能推出 x~y), 不同数学分支给同一逻辑现象起不同名字; **7 类现象地图** (`R024_unified_language.py` 各给具体有限模型 + (X,P,L,Q,R*) 元组): ①低元关系→完整关系 (relational complexity/k-closure, Alt(4) I vs J 1,2-ary 全同 3-ary 不同不同 orbit) ②不变量→对象 (spectrum/homology/dim/rank, Z/4 vs V4 同 order 不同构) ③局部→全局 (bundles/descent/cohomology/local-to-global, 平凡 vs Möbius 线丛局部全同全局 monodromy 不同) ④边缘→joint (全相关 vs 全反相关边缘全同 joint 不同) ⑤quotient/gauge→原结构 (basepoint/translation/gauge, (Z/6,0) vs (Z/6,3)) ⑥非忠实 functor→原对象 (abelianization S₃ vs C₂ 都到 C₂ 不同构) ⑦降维动力学→hidden state (Mori-Zwanzig/realization/bisimulation, 交替 vs iid 1-step 同 2-step 不同); **重要修正**: 信息丢失本身不产生逻辑矛盾, 而是 P(x)=P(y) 但另一 observable O(x)≠O(y), 若观察者错误假设 P complete 则从同 P-state 得两预测 = apparent contradiction (projection collision + wrong completeness assumption ⇒ apparent contradiction) — 补上'信息丢失→冲突理论'缺失的一步; **context 重新理解**: 单 context 退化 (无 context-context relation), 两 context 首次允许 R(d1,d2), 非'第二 context 不完整'而是'一元观察无定义域表达该类信息' (像单点不存在'两点共线'问题, 关系信息在 arity 足够后才存在, 比 measurement error 深); '完整/不完整'相对 observable/probe language 非 context 数量; **多 context 抽象答案**: 先 configuration, 关系类型定表示 — 线性=矩阵(kerD), 独立依赖=matroid, 多线性=tensor, 任意 r 元=relational structure/hypergraph, 可组合变换=category; 不预先决定 tensor, 由 canonical-observation 方法决定需保留哪种关系; **双目标**: A 现象地图 (跨域合成) + B Context Sufficiency 统一实验语言 (每类记录 (X,P,L,Q,R*)); 若已有更一般统一理论则找到它, 若无系统整理则 cross-domain synthesis 本身有价值 (非新定理, KNOWN/DIRECT_COROLLARY 标注); (8) ★已完成: R025 Basepoint as Compressed State / Forgetting Structure (第七轮评审) + R026 (V,J,u) 修正 (第八轮): **丢数域 = forgetting structure** (非 field hom), F₉/F₃ 三层正控制: FULL→FORGOTTEN(F₃²)→RESIDUAL((F₃²,J), J²=−I)→RECOVER (primitive element K=F(α) 模式, KNOWN); **R026 修正**: J 恢复的是**标量作用** F₉↷V (F₉≃F₃[J]⊆End(V)) 非完整域对象, 要把 V 变域需选 u∈V 作 1, 真正三层=(V,J,u): V 载体/J 压缩的扩域运算结构/u 选择单位元 realization — 数值验证 u=(1,0),(0,1),(1,1),(2,0) 全过: VALUE 1_u=u 移动 / ROLE 乘法单位元持续 / STRUCTURE (V,∗_u)≅(V,∗_{u'}) / OPERATOR 同一 J 表示乘 α — **结构信息在 J 中, 基点 u 选择 realization**, 即 'VALUE moves, ROLE persists' 又一实例; **基点=压缩状态竞争解释**: e_t=q(历史) 非原点, 严格测试复用 R021 witness: q(h1)=q(h2)⟹B(h1)=B(h2)? 全成立⟹B=B̄∘q (Lean reflect_implies_factor + **range 版 reflect_implies_factor_range: codomain=range q, 无 Inhabited 无 Classical.choice 隐藏边界**), 有碰撞⟹基点非完整状态; **三层判别 (评审 §5, R026 Part II)**: L1 行为压到任意 S (几乎总能=canonical quotient) / L2 压回同类型基点 E (translation 可 Q=c−e, coset 否 15>8 pigeonhole) / L3 仍用同一 generation schema (translation law 层面可 e'=c−e, coset law 也可 — 只有 exact absolute coset 非单从 d 可恢复, observable 依赖); **coset 结论缩窄 (评审 §2-4)**: 15>8 只证明'回不到原 8-state carrier Z/8', 不证明'genuinely irreducible' (任何 context 可 (e,c)↦新标签压成单状态); 真正相对架构: 要求 Q(e,c)∈H 仍 heap point 且同一 schema 才用 pigeonhole; Observable 敏感性: exact coset 15 类 vs 同构类 4 类, d 甚至 gcd(8,d) 就够; 最终判断: A translation 原 e 非 sufficient state d=c−e 才是 ('基点特殊'错误解释) / B coset 只证明单 d 无法恢复 exact coset 非 irreducible / C F₉ 正控制: context/operator 承载结构规则 + basepoint 承载 realization/identity choice, 应作为对照 basepoint-regeneration 现象的模型; (9) prior-art: R017 三现象 KNOWN, basepoint-regeneration + minimal residual + quotient 组合定向检索 NO_DIRECT_PRIOR_RESULT_FOUND; (10) ★已完成+封口: R027 Frame Test (第九轮评审): **基点可能只是 frame/trivialization, 非 state 非结构生成原因** — (V,J) J²=−I 是 1 维 F₉-空间, V∖{0} 是 F₉ˣ-torsor, 非零基点 u=选基/frame (φ_u:F₉≃V, z↦z·u), 换 u 是 gauge/frame change; Lean 封口定理 (`R027FrameTest.lean`): phi_bijective (真 frame 双射) / nonzero_has_inverse (纯算术逆元) / frame_commutes_J / frame_field_iso / alpha_value_moves (VALUE moves ROLE persists); **三种竞争解释 A compressed state / B regeneration / C frame** — C 是防误判机制; Frame Test (L4): ∃共同 latent Γ* 使 Γ_e=φ_eΓ*φ_e⁻¹? 存在⟹纯 gauge; 真 regeneration 需 Inv(Γ_e)≠Inv(Γ_f); **第十一轮封口**: (V,J,u) 落入标准 GL(V) base theory (pointwise stabilizer 平凡 ⟺ 含线性基, base size=dim V), R027/R028 是已知 control 非神秘结果; coverage audit 改 structure signature coverage ('约 12 个 carrier'→'约 12 个 algebraic test structures', 非 carrier cardinality coverage); 不补 Z/6,11,13,32 (gcd 公式已是定理); (11) ★已完成: R028 Frame Completion Test (第十轮): dim>1 机制覆盖, V=F₃² 阶梯 ∅→(u₁)→(u₁,u₂): rank 0/1/2, |Stab| 48/6/1, 平行 (u₁,2u₁) rank1 Stab6 不完成; **第十一轮限定**: 'R013-R015 全部=frame completion' 只限线性 benchmark (F₃² 中'关系'恰=线性依赖, span 存在; 一般 heap/group/graph/category/非线性 context 无 span) — 准确说法: R015 在线性 GL(V) 模型中被 frame completion 完全解释 (降成已知 control); (12) ★已完成: R029 Beyond Frame Sufficiency (第十一轮) + R029b 字面碰撞 (第十二轮修正): **完整 frame(rank=n)后是否仍有 frame 无法恢复的关系信息? 答案是'有'** — (V,ω) symplectic form 正控制 (`R029_beyond_frame.py`): D1=((1,0),(0,1)) ω=1 vs D2=((1,0),(1,2)) ω=2=−1, 都 rank2 complete frame, **GL orbit 同 (True) 但 Sp orbit 不同 (False)**; **第十二轮修正 Sp(2,F₃)=SL(2,F₃)**: ω(Au,Av)=det(A)ω(u,v), 保 ω ⟺ det A=1, 二维模型 SL/Sp 是同一 subgroup (mathlib 证 symplectic matrices det=1), R029 表格 SL/Sp 两行 = 同一控制非独立证据 (ledger 明写); H1(Context=Frame) 否 / **H2(Context=Frame+Relation) 是** (Q_frame=1 类, Q_full=2 类) — 同一 vector-space frame theory 在保留额外 tensor ω 后获得更细分类 (缩小 structure group 后 frame orbit 分裂 = classical G-structure, **R029=KNOWN CONTROL**); **措辞修正**: 不能说 'P(X₁)=P(X₂)' (D₁≠D₂ 对象仍不同), 正确的是 '[P(X₁)]_GL=[P(X₂)]_GL' 投影后在所选 equivalence 下无法区分 (R024 统一语言 P(x)∼P(y)⇏x∼y); **R029b 字面投影碰撞** (`R029b_literal_collision.py`): 固定相同 frame D=((1,0),(0,1)), 改变被遗忘结构 ω₁=det vs ω₂=2det, X₁=(V,ω₁,D), X₂=(V,ω₂,D), P(V,ω,D)=(V,D) ⟹ **P(X₁)=P(X₂) 严格相等** 但 ω₁(D)=1≠2=ω₂(D) ⟹ X₁≠X₂, 且 |Stab_D(GLen(2,3))|=1 (D 是基, 保 D 自同构只有 id) ⟹ 无 (V,D)-automorphism 把 ω₁ 变 ω₂ — **P(X₁)=P(X₂) 但 X₁≇_D X₂ 无 GL-orbit 歧义**; **第十二轮边界修正**: R029b 准确评级 = 'literal signature-forgetting collision WITH distinguished frame', 非 'intrinsically non-isomorphic bare symplectic structures' — 去掉 D 后 (V,ω₁)≅(V,ω₂) (ω₂=2ω₁=det(A)ω₁, A=diag(2,1) det=2), 与 Sp(2,3)=SL(2,3) 同一 determinant 机制; **R029c 裸 quadratic-form collision (评审 §2, `R029c_quadratic_collision.py`): 最强版拿掉 D** — V=F₃², Q₁=x²+y² vs Q₂=x²+2y², P(V,Q)=V ⟹ **P(V,Q₁)=P(V,Q₂)=V 严格相等**, Q₁ 无非零 isotropic (F₃ 非零平方只有 1) 而 Q₂(1,1)=1+2=0 有非零 isotropic, 二次空间同构必须保 {v:Q(v)=0}, 两集不同 (|Z₁|=1, |Z₂|=5, 无 M∈GL(2,3) 使 Q₂(Mv)=0⟺Q₁(v)=0) ⟹ **(V,Q₁)≇(V,Q₂), P(X₁)=P(X₂) 但 X₁≇X₂, 差异纯粹在被 forget 的 signature, 不需 distinguished frame**; 观察者拥有完整 carrier/全部坐标/完整 frame/完整线性运算, 一项数据没少, 只是 observation language 不含 Q — 两真正不同结构在贫化语言中变同一对象, 非'测量不够精确'而是'观察语言没有那个 structural symbol'; **统一 forget structure/reduct 框架**: (V,F₉-action)→V 丢 scalar-action / (V,J)→V 丢 operator / (V,ω)→V 丢 alternating relation / (V,Q)→V 丢 quadratic structure — 成熟思想 (reduct/forgetful construction), 非新理论; **Context 改写确认**: C=(Σ,operations,relations,frames,constraints,…), point tuple=configuration context / J=operator context / ω,Q=relational signature context / scalar action=algebraic context / frame=realization context; **两种信息丢失并列非排线**: Configuration loss (R028) vs Signature loss (R029b/R029c); **严格版本 (评审 §5)**: 非'维度不够投影丢精度'而是'richer structure 可在 reduct/observation 下与另一不同结构 collision' — X₁≁X₂ 但 P(X₁)=P(X₂), 若理论错误假设 P complete 则对同一 observed object 给不兼容 continuation: **structural signature loss + false completeness assumption → apparent contradiction**, 成熟数学事实无需 Transformer/隐藏高维/新假设; (13) ★已完成 (设计): R030 PureBase — 排除隐式插入的纯粹基点结构 (`formal/Formal/PureRelative/DESIGN.lean` + `docs/其他AI评审/R030_PureBase_Design.md`): **核验结论: 现有 λ 核不干净** — 即便允许 self-application (λx.xx), 仍预设两层外部机制: ① λ abstraction 作为语法机制 (不是 term 中的 base), ② Apply 作为 B×B→B primitive; 写作 lambda(base,base) 显式化 '存在独立于 base 的 lambda 角色', 与 Church numeral 预设 (n,f,x 三角色 + fⁿ 迭代元记号) 同类不干净; **设计目标 base(base,base)**: 同一 primitive 占据 operator/operand/basepoint 位置, operator/operand/result 是对象在关系中的 **role** 非 object type; **设计**: 单一 object ontology B + 唯一四元关系 Rel:B→B→B→B→Prop (relation-first); 四元而非三元 (三元 Rel a b c 易被读成 a(b)=c 强编码传统 application, 四元把 operator/operand/result 指派推迟到选 view 之后); View M := 选 base, zeroOf(v)=v.base (0_e≠0_f as objects 但同 structural role), AddRel(a,b,c):=Rel a base b c; **排除清单**: Nat/Church 编码/迭代计数/Vec/Fin/List.length/Finset.range (长度计数预设 Nat), Function.iterate/orbit:ℕ→H/fuel/递归步数 (迭代计数), 零元 0₊/特权基点 (必须由 View 选择), Value/Operator/Apply 作 object type 或函数, λ abstraction 作语法 primitive; **保留**: B:Type u + Rel + Lean 元层 (Prop/∀/=); **负结果边界 (须主动证伪)**: '纯粹 base' ≠ '裸集合' (无 Rel 则无计算, AbsolutelyBare 声明), 可消除 operation 作 object 但不能消除 relation/structure; **文献核验 (2026-08-09, arXiv API + websearch 经桥, 讨论引用全部确认真实)**: Küng 'Algebraic K₀ for unpointed homotopy Categories' arXiv:2407.20911 (unpointed Waldhausen, Grothendieck heap, 去 distinguished zero 活跃方向), De Faveri 'What is a Model of the Linear Lambda Calculus?' 2026 (semiclosed operad + reflexive object, abstraction 内部化), Della Penna et al. 'Addressing Machines as models of lambda-calculus' (无 process/datatype 区分, 单一地址 carrier), Vokřínek 'Heaps and unpointed stable homotopy theory' arXiv:1312.1709 (无 zero abelian heap), Heaps of modules (homological aspects, 2026 仍活跃), Bergstra 'On Ambiguity: the case of fraction' 2026 (fraction 分层但走 common-meadow 1/0=⊥ 未走到 '0=多个 relational objects 的 quotient'), Carlström 'Wheels' MSCS 2004, meadow/common meadow; **组合命题检索未找到 (NO_PRIOR_RESULT_FOUND, 仅指检索来源)**: ① 'traditional arithmetic value space 是 quotient; 0 的 fiber 含多 base/process/role states; division 在 richer space total/coherent 但在 zero fiber 不 respect quotient 无法下降成普通 scalar division', ② '消掉独立 operator object 与独立 apply primitive, operator/operand/result 全作同一 primitive 在关系中的 role', ③ '除法 = 基点/迭代/投影三种除的信息坍缩'; '除零可以' 本身完全不 novel (Riemann sphere/meadow/wheel/partial maps 成熟), 但 'zero fiber = richer process states 的 quotient + division 不能 descend' 完整组合无现成版本; **设计原则**: 能消 operation 作 object 但不能消 relation/structure; base(base,base) 不字面实现为 app:B→B→B (那会预设 App), 关系版本 Rel a b c d 表达同一 primitive 重复占据多 role; operator/operand/result 是读 Rel 时赋位置的角色; 换基点=(B,e)→(B,f) 同时 teleport 整套 arithmetic roles; **衔接**: RelationalHeap 模块 (蓝图) 把现有 Heap [a,b,c] 改写成 Rel a b c d := heap a b c = d 并证 operation↔functional relation 等价 — 决定 relation-first 表述可否维持; DESIGN.lean 零 import (纯类型论, 无 mathlib Function.Bijective, 自写单射∧满射∧关系保持), 已登记 Formal.lean, buildable; **实现阶段待做 (本次未做)**: PureBase.lean 纯声明 / RelationalHeap.lean heap op↔functional relation / View+Teleport addRel_teleport Lean 证明 / Descent.lean zero fiber 上 division 不能 descend 结构定理; (14) 待做: ★把 R029 signature loss 与 basepoint-regeneration 现象对照 (哪些现象是 signature 不充分而非 context 不充分), 两级结构 (fixed-role persistence B+C vs realization naturality B+C+A) 正式化 + 最小反例, 最小充分关系元数 r 的正式定义 (Lean), R021 definitional extension 完整化, C009 表示定理 Lean 证明, char2 专项控制, R030 实现 (PureBase/RelationalHeap/View/Teleport/Descent); (15) R010 prior-art 审计续"
+notes: "VISION 落实: (1) 真正起点 = basepoint-dependent generation law Γ:e↦σ_e; (2) C010 现为一般不变量定理 (R011): pure-heap terms 在基点变换下协变, 结构类型与基点无关 — 这是 VISION §9 问题 4/6 的答案 (现象 A/C 方向); (3) 分岔需要破坏 equivariance, context (常数/环境) 是可能来源之一但非充分非唯一; (4) 下一步 (R012) 转向 context 模型: 固定锚 vs teleport 锚; (5) 反民科自检: 允许负结果, 已修正过强结论, novelty 标注 KNOWN。"
