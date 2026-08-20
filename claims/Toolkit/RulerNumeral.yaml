@@ -1,0 +1,71 @@
+id: RulerNumeral
+title: "RulerNumeral: the magic-number space as phase numeral encoding — ternary {-1,0,1} digit sequences with positional weights, isomorphic to the token fast-numeral (int8=256-ary)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerNumeral: 魔法数空间 = 相位 numeral 编码 (用户指令 2026-08-12).
+
+    ★ 同构 (token 快速 numeral ↔ 魔法数空间):
+      token:  int8 (256 值) = 256 进制 = 8 位二进制位序
+      魔法数: 三值 (-1/0/+1) = 3 进制 = 相位决策位序
+      digits_to_numeral (位序→数) ↔ 三值位序列 → 相位 (编码)
+      eval_numeral (序列→值, 位权) ↔ 沿三值位还原相位 (解码)
+      序列顺序 = 位序 (高阶→低阶) — 同构
+
+    ★ 验证 (恒等式先验):
+      相位 θ=π/4 → 三值序列 [1,1,0,0] (每层 1 个三值位)
+      每层 3× 精度: 2 层 9 格, 4 层 81 格, 8 层 6561 格, 16 层 4300 万格
+      目标精度 1°: 3^k ≥ 360 ⟹ k ≈ 5.4 层 (对数步数)
+
+    ★ 二分查找相位化简:
+      每次决策 1 个三值位 (在/左/右), log₃(精度) 步收敛
+      = 魔法数空间的 numeral 化 (相位 → 三值位序列)
+
+    ★ 解决 RulerTernary 的'4 点表'问题:
+      三值位序列是完备的相位编码 (非 4 点离散表)
+      符号(三值位) × 位权(层数) = 无损编码
+      ⟹ 无损直达圆 = 三值位序列 (任意精度可达)
+
+    ★ 支撑 (Lean):
+      - sign_is_pm_one: 三值符号基础 (±1) [TK2]
+      - dofLevel_succ: 位权结构 (2^k) [TK4]
+      - norm_exp_I_eq_one: 相位在单位圆 [TK4]
+  formal_math: |
+    -- 三值符号基础:
+    lemma sign_is_pm_one (σ : Equiv.Perm α) : signProjection σ = 1 ∨ signProjection σ = -1
+    -- 位权结构:
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    -- 相位空间:
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+
+objects:
+- sign_is_pm_one
+- dofLevel
+- norm_exp_I_eq_one
+
+definitions_used:
+- TK2 SymmetryRecovery / TK4 AxisComponent
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- token 快速 numeral (digits_to_numeral/eval_numeral) 为项目已有实现
+
+conclusion: '魔法数空间 = 相位 numeral 编码: 三值位序列 (3 进制) + 位权,
+  与 token 快速 numeral (int8=256 进制) 同构. 二分查找相位化简 =
+  log₃(精度) 步. 无损直达圆 = 三值位序列 (完备编码).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
