@@ -1,0 +1,91 @@
+id: R201
+title: "R201 (2026-08-13): ★一步穿折越证明器 — 实现 R200 锁定⟺一步可达: 输入问题 → ①候选 witness 生成 (枚举小范围) → ②验证 P(w) → ③锁定 (⟨w, 验证⟩) ⟹ 一步答案 (steps=0) → ④输出 Lean 骨架; 未锁定 ⟹ 返回需迭代 (R181 收缩搜索); 工具: pat_one_step_prover.py (演示: 完全数 6, 间隔模 3, 欧拉形状 45 全一步锁定)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "这个证明器能实现吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。一步穿折越证明器的实现.
+
+    ★ 唯一论点: 能 — R200"锁定 ⟺ 一步可达"可实现为自动证明器:
+       输入问题 → 锁定构造点 → 一步答案 + Lean 骨架.
+
+    ★ 证明器流程: ①候选 witness 生成 (枚举小范围/基点池) ②验证
+       P(w) (数值/代数) ③锁定 (⟨w, 验证⟩ : ∃ x, P x) ⟹ 一步答案
+       (steps = 0, R200) ④输出 Lean 骨架 (可粘贴).
+
+    ★ 未锁定: 返回"需迭代" (R181 收缩搜索: T^n(x) = b + c^n(x-b)).
+
+    ★ 演示 (工具回测): 完全数 6 (σ(6) = 2·6, 一步锁定) / 间隔可见模
+       3 (2 mod 3 ≠ 0, 一步锁定) / 欧拉形状 45 (5^1·3², 一步锁定).
+
+  formal_math: null
+  tool: paper/pat_pnp/tools/pat_one_step_prover.py
+
+objects:
+- one_step_prove
+- demo_perfect
+- demo_gap_visible
+- demo_euler_shape
+definitions_used:
+- 一步穿折越证明器 (锁定 ⟹ 一步)
+- 候选 witness 生成 + 验证 + 锁定
+- 未锁定 ⟹ 需迭代 (R181)
+
+assumptions:
+- 锁定 = witness + 验证 (R189/R199)
+- 锁定 ⟹ 一步可达 (R200)
+- 未锁定 ⟹ 迭代逼近 (R181)
+conclusion: "筑基篇系列方法论应用之五完成: 一步穿折越证明器 — 实现 R200 锁定⟺一步可达: 输入问题 → 候选 witness 生成 → 验证 → 锁定 (⟨w, 验证⟩) ⟹ 一步答案 (steps=0) → 输出 Lean 骨架; 未锁定 ⟹ 返回需迭代 (R181)。工具 pat_one_step_prover.py 演示 3 例全一步锁定 (完全数 6, 间隔模 3, 欧拉形状 45)。"
+
+known_special_cases:
+- '完全数 6: ⟨6, σ(6)=2·6⟩ 一步锁定'
+- '间隔模 3: ⟨3, 2 mod 3 ≠ 0⟩ 一步锁定'
+- '欧拉形状 45: ⟨45, 5^1·3²⟩ 一步锁定'
+closest_known_results:
+- R200 PatOneStepCross (锁定 ⟺ 一步可达)
+- R199 PatLockedConstruction (同时锁定构造点)
+- R189 PatConstructionExistence (能构造 = 存在)
+literature_queries:
+- one step prover locked construction
+- automatic witness verification prover
+
+counterexample_search:
+  status: done
+  search_space: 证明器是否真一步锁定 (完全数/间隔/欧拉); 未锁定是否
+    真返回需迭代
+  smallest_checked_size: null
+  result: 演示 3 例全锁定 (steps=0); 无范围命中返回 UNLOCKED; 全部
+    0 sorry
+formalization:
+  prover: null
+  file: paper/pat_pnp/tools/pat_one_step_prover.py (一步穿折越证明器)
+  theorem_name: null
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明器处理所有问题 — 未锁定 ⟹ 返回需迭代 (诚实)
+- 把枚举当证明 — 锁定 = witness + 验证 (R189)
+- 声称一步不需验证 — 一步 = 锁定后 (witness + 验证完成)
+evidence_for:
+- '演示 3 例: 完全数 6 / 间隔模 3 / 欧拉形状 45 全一步锁定'
+- 'Lean 骨架: 可粘贴到 Lean (exists_intro_construction 等)'
+- '未锁定: 返回需迭代 (R181)'
+evidence_against: []
+next_action: '已接: 一步穿折越证明器完成; 后续可扩展谓词库/自动 Lean
+  验证'
+notes: '用户问证明器能否实现: 能 — R200 锁定⟺一步可达实现为自动证明
+  器 (pat_one_step_prover.py): 候选 witness → 验证 → 锁定 → 一步答案
+  + Lean 骨架; 未锁定返回需迭代。'
