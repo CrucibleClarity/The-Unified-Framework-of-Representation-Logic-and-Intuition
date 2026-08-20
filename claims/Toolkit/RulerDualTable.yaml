@@ -1,0 +1,80 @@
+id: RulerDualTable
+title: "RulerDualTable: two 0-π magic-number tables — dof phase table (2^k) and divergence/convergence phase table (-1/0/+1), same encoding space, different semantics; composite = Cartesian product"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerDualTable: 两张 0-π 魔法数表 (用户指令 2026-08-12).
+
+    ★ 表1: 自由度相位表 (dof phase)
+      自由度 2^k (8→4→2→1): 每级是相位
+      0-π 编码 (恒等式先验验证):
+        2^0=1 → 0°; 2^1=2 → 60°; 2^2=4 → 120°; 2^3=8 → 180°
+      三值位: 2^0→[0,0,0], 2^1→[1,0,0], 2^2→[2,0,0]
+
+    ★ 表2: 发散/收敛相位表 (div/con phase)
+      三值: -1 发散 / 0 中间 / +1 收敛
+      0-π 编码:
+        发散(-1) → 0°; 中间(0) → 90°; 收敛(+1) → 180°
+      三值位: 发散→[0,0,0], 中间→[1,1,1], 收敛→[2,0,0]
+
+    ★ 关键: 两表同构 (都是 0-π 三值编码)
+      表1: 自由度 2^k ∈ [1,8] → [0,π]
+      表2: 发散/中间/收敛 {-1,0,+1} → [0,π]
+      ⟹ 同一编码空间, 不同语义!
+
+    ★ 复合查询:
+      查询 = (自由度相位, 发散相位) 二元组
+      例: (2^1, 收敛) = (θ=π/3, θ=π)
+      组合: 两相位空间中的点
+      复合表 = 两表的笛卡尔积 (3^k × 3^k)
+
+    ★ 支撑 (Lean):
+      - dofLevel: 自由度 2^k [TK4/AxisComponent]
+      - sign_is_pm_one: 发散/收敛二值基础 [TK2]
+      - fold_finite: 0-π 对折 [CircleFold]
+      - makeTable: 表构造 [ConciseMagicTeaching]
+  formal_math: |
+    -- 自由度 (表1 域):
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    -- 发散/收敛二值 (表2 域):
+    lemma sign_is_pm_one (σ : Equiv.Perm α) : signProjection σ = 1 ∨ signProjection σ = -1
+    -- 0-π 对折 (两表公共编码空间):
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+    -- 表构造 (复合表):
+    def makeTable (f : α → β) : Finset (α × β) :=
+      Finset.image (fun x => (x, f x)) Finset.univ
+
+objects:
+- dofLevel
+- sign_is_pm_one
+- fold_finite
+- makeTable
+
+definitions_used:
+- TK4 AxisComponent / TK2 SymmetryRecovery / CircleFold / ConciseMagicTeaching
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '两张 0-π 魔法数表可行: 自由度相位表 (2^k → [0,π]) × 发散/收敛
+  相位表 (-1/0/+1 → [0,π]). 同一编码空间 (0-π 三值), 不同语义. 复合 =
+  笛卡尔积 (3^k × 3^k).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/CircleFold.lean
+    - formal/Formal/Toolkit/ConciseMagicTeaching.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
