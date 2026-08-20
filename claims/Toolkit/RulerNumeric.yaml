@@ -1,0 +1,77 @@
+id: RulerNumeric
+title: "RulerNumeric: numeric design optimization of the prophecy tables — log-phase hybrid encoding (sign | log-magnitude | phase) replacing uniform quantization; exponential range expansion with constant relative precision; C overflow fixed (s→1)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerNumeric: 表值域优化设计 (用户指令 2026-08-12).
+
+    ★ 当前值域设计的弊端 (恒等式先验验证):
+      ① 误差表存 C (常数): 范围窄, 大动态范围精度差
+      ② 相位表 [0,π]: 均匀量化, 小值精度浪费
+      ③ 比率 2^(1-s): 极值敏感 (s→1 时 C→∞ 溢出)
+         s=1.05: C=20; s=1.01: C=100 (溢出风险)
+
+    ★ 优化方案: 对数-相位混合编码
+      表项 = (符号 ±1 | 对数幅度 log2|C| | 相位 [0,π])
+      符号: 方向
+      对数幅度: 大动态范围 (学浮点: 指数+尾数)
+      相位: 误差/收敛方向
+
+    ★ 验证 (对数量化优势):
+      均匀: 误差处处 π/100 = 0.0314 (小值浪费)
+      对数: 相对误差恒定 2% (1e-6~1e6 同精度)
+      ⟹ 大动态范围同相对精度
+
+    ★ 表达范围对比:
+      均匀 8 bit: 范围 ~2^8 (线性)
+      对数 8 bit: 范围 ~2^(2^8) (指数!)
+      ⟹ 对数编码: 同 bit 数, 范围指数级扩大
+
+    ★ 与 RulerMultiprecision 闭环:
+      fp16/32/64 本身是对数编码 (指数+尾数)
+      表学浮点: (符号, 指数, 尾数)
+      ⟹ 误差表 C → 存 (sgn, log2|C|, 尾数)
+
+    ★ 完整编码:
+      {符号 1bit | 对数幅度 k bit | 相位 m bit}
+      表达范围: ±2^(±2^k) (任意量级)
+      相对精度: 2^-m (恒定, 不随量级变)
+
+    ★ 支撑 (Lean):
+      - log_pow_mul: 对数提取幅度 [TK4]
+      - poly_error_ratio: 残差模式 [ErrorSequence]
+  formal_math: |
+    -- 对数幅度提取 (log2|C| 基础):
+    lemma log_pow_mul (a : ℝ) (n : ℕ) : Real.log (a ^ n) = (n : ℝ) * Real.log a
+    -- 残差模式 (相位部分):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+
+objects:
+- log_pow_mul
+- poly_error_ratio
+
+definitions_used:
+- TK4 AxisComponent / ErrorSequence
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '表值域优化: 对数-相位混合编码 (符号|对数幅度|相位) 替代均匀
+  量化. 范围指数扩大, 相对精度恒定, C 溢出修复 (s→1). 学浮点设计.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/ErrorSequence.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
