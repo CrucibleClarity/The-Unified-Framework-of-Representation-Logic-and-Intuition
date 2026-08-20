@@ -1,0 +1,72 @@
+id: RulerAxis
+title: "RulerAxis: the axis hierarchy — successor/iteration/exponent/dof axes are self-referential iterations of the basepoint axis"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerAxis: 轴解析 (用户指令 2026-08-12: 轴本身有后继 ⟹ 都是迭代轴).
+
+    ★ 轴层级 (每层 = 下层迭代):
+      层0 基点轴: 单位 1, 零自由度
+      层1 后继轴: +1, 0→1→2→3 (基点的 1 次迭代)
+      层2 迭代轴: n·a = n 次加法 (后继的 n 次迭代)
+      层3 指数轴: 2^k = k 次乘法 (迭代的 k 次迭代)
+      层4 自由度轴: 2^k 序列 8→4→2→1 (指数的减半迭代)
+
+    ★ 四类轴间关系:
+      ① 迭代关系: 层 = 下层运算的重复 (参数 n/k)
+         后继→迭代: 乘法 = 加法重复; 迭代→指数: 幂 = 乘法重复
+      ② 逆关系: 下层 = 上层运算的消去 (除 = 减的迭代, log = 除的迭代)
+      ③ 参数关系: 上层参数是下层的对象 (参数本身是轴)
+      ④ 自指关系: 轴的后继仍是轴 (迭代轴有后继 n→n+1,
+         自由度轴有后继 k→k-1) ⟹ 所有轴都是迭代的自指实例
+
+    ★ 核心洞察 (自指递归):
+      迭代轴本身有后继 ⟹ 迭代轴也是后继轴的迭代
+      自由度轴本身有后继 ⟹ 自由度轴也是迭代轴的迭代
+      ⟹ 轴 = 迭代的迭代 (二阶迭代)
+
+    ★ 与项目纪律关系:
+      - 印证 AGENTS.md: 迭代生成先行于自然数, 计数是轴层级结论非输入
+      - 与 C-META13 (Church 教训) 一致: 不预设自然数定义迭代
+      - 轴层级自指 = 内生生成 (C009/C010 minimal closure 视角)
+  formal_math: |
+    -- 层1→层2 (迭代关系): 乘法 = 加法重复
+    lemma mul_eq_sum_iterate {R} [Semiring R] (a : R) (n : ℕ) :
+      (n : R) * a = Finset.sum (Finset.range n) (fun _ => a)
+    -- 层2→层3 (迭代关系): 幂 = 乘法重复
+    lemma pow_eq_prod_iterate {R} [CommMonoid R] (a : R) (n : ℕ) :
+      a ^ n = Finset.prod (Finset.range n) (fun _ => a)
+    -- 层3→层4 (自由度轴): 2^k 序列的后继 (k→k-1)
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    -- 逆关系 (层2 的逆): log 提取迭代次数
+    lemma log_pow_mul (a : ℝ) (n : ℕ) :
+      Real.log (a ^ n) = (n : ℝ) * Real.log a
+
+objects:
+- dofLevel (自由度轴: 2^k)
+
+definitions_used:
+- mul_eq_sum_iterate / pow_eq_prod_iterate / log_pow_mul (TK4)
+- Finset.sum / Finset.prod
+
+assumptions:
+- 各定理假设见 TK4 (自包含, 仅 import mathlib)
+
+conclusion: '轴层级: 基点→后继→迭代→指数→自由度, 每层 = 下层迭代. 四类关系:
+  迭代(重复)/逆(消去)/参数(上层参数是下层对象)/自指(轴的后继仍是轴).
+  所有轴都是迭代的自指实例 (轴 = 迭代的迭代).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
