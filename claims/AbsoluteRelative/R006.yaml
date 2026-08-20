@@ -1,0 +1,126 @@
+id: R006
+title: 'Rule/Derivation Priority Audit — 清场结果: 谁先不被公理决定 → Rule-first orientation 是可消去
+  presentation artifact'
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "R005 预设 Rule 先于 Derivation (leaf : Rule → Derivation Rule 构造层明确\nRule⟶Derivation),\
+    \ 不能用于证明 co-emergence。R006 修正定位为清场结果\n(用户评审 2026-08-09): 不是 rule/derivation co-emergence\
+    \ 的证据。\n\n① 当前真正证明的是: Derivation Rule 没增加信息 (zero-information wrapper)。\n   Derivation(R)\
+    \ ≃ R (R007 E1 完整等价, 比 Nonempty 等价强得多)。\n   当前 Derivation: 无 premises / 无 conclusion\
+    \ / 无 occurrence /\n   无 proof tree / 无多步 composition; 只是 Rule 的 zero-information\
+    \ wrapper。\n② \"谁先不被公理决定\" 说得太强: Rule→Derivation 与 Derivation→Rule 不是\n   两个独立模型,\
+    \ 是同一个 datatype 的 constructor 和 destructor —\n   forward/reverse 是同一份 datum 的两种读取方向。\n\
+    \   能证明: Rule→Derivation 箭头没增加信息, 不能被解释成 genuine genesis。\n   不能证明: 在真正同时拥有 rule/derivation\
+    \ 两个独立 role 的理论里,\n   二者优先级具有 model-theoretic independence。\n③ \"priority\" 目前根本还不是内部可表达命题:\
+    \ signature 中没有\n   Prior(Rule,Derivation), 没有时间, 没有 dependency order, 没有\n  \
+    \ genesis relation。与其说 priority=false / undecidable, 更准确是:\n   priority 目前不属于\
+    \ object theory 的 vocabulary。\n   Host 看见 constructor leaf : Rule → Derivation\
+    \ Rule 自然读成 \"Rule 先\",\n   但 R006 证明了这个方向可以通过 equivalence 擦掉。\n   最强结论: R005\
+    \ 中的 Rule-first orientation 是可消去的 presentation artifact。\n④ Occurrence 完全没有进入\
+    \ R006:\n   ledger: \"Rule/Derivation representation collapse 已证\" +\n       \
+    \    \"Rule/Derivation/Occurrence co-emergence 仍完全 OPEN\"。\n"
+  formal_math: 'Derivation (Rule) : leaf : Rule → Derivation Rule   (R005, 复用)
+
+    ruleOf : Derivation Rule → Rule                     (destructor, 同一 inductive
+    给出)
+
+    roundtrip {Rule} (r) : ruleOf (Derivation.leaf r) = r
+
+    same_datum_two_readings: (∀r, Nonempty (Derivation Rule)) ∧ (∀d, ∃r, ruleOf d
+    = r)
+
+    witness_existence_equiv: Nonempty (Derivation Rule) ↔ Nonempty Rule
+
+    priority_audit_conclusion: roundtrip ∧ witness_existence_equiv
+
+    完整等价 Derivation(R) ≃ R 见 R007 E1 (derivationEquivRule)。
+
+    '
+objects:
+- Derivation (复用 R005)
+- ruleOf
+- roundtrip
+- same_datum_two_readings
+- witness_existence_equiv
+definitions_used:
+- priority audit
+- representation collapse
+- presentation artifact
+- object theory vocabulary
+- 中性观察 (witness existence)
+- co-emergence
+assumptions:
+- 'R005 的 leaf : Rule → Derivation Rule 是 representation 预设, 非 emergence theorem'
+- 同一 inductive 同时给出 constructor (leaf) 与 destructor (ruleOf), 无 canonical 第一性
+- forward/reverse 是同一份 datum 的两种读取方向, 非两个独立模型
+- priority 目前不属于 object theory 的 vocabulary (signature 无 Prior / 时间 / 依赖序 / genesis
+  relation)
+- Occurrence 未进入 R006 (无 datatype / 无 interpretation / 无与 Derivation 的关系)
+- 不生产 derivation system (避免引入 Rule/Judgment/premise/conclusion/arity/direction/ordering)
+conclusion: 'R006 是清场结果: Rule/Derivation representation collapse 已证 (双向 leaf/ruleOf
+  + roundtrip + 中性观察 witness_existence_equiv 不可区分; 完整等价 Derivation(R)≃R 见 R007 E1)。最强结论:
+  R005 中的 Rule-first orientation 是可消去的 presentation artifact — Host 读 constructor
+  读成 ''Rule 先'' 是表示幻觉, 该方向可被 equivalence 擦掉。不能宣称: 两个独立 role 的 model-theoretic independence,
+  或 co-emergence。''Rule/Derivation/Occurrence co-emergence 仍完全 OPEN'' — Occurrence
+  未进入本 audit。下一步研究问题不叫 ''first validity structure'' (validity 已偷偏向 rule/derivation
+  语义), 改叫: 能否出现第一个 non-contractible、representation-independent internal structure
+  X (暂只叫 X, 不叫 Rule/Object/Relation/Derivation/Occurrence/Validity)'
+known_special_cases:
+- 'Rule = Empty: 无推导 (sanity); Rule witness 存在: 有推导 — 双向一致'
+closest_known_results:
+- R005 Derivation Provenance (post-rule observer model, 预设 Rule 优先); R007 Wrapper
+  Elimination (完整等价 + observer factorization, 封死 R006); B ≃ (Unit → B) nullary genesis
+  presentation 擦掉 (同型)
+literature_queries:
+- priority of rule derivation occurrence formal system
+- co-emergence validity structure role
+counterexample_search:
+  status: done
+  search_space: '正向 (leaf: Rule→Derivation) vs 反向 (ruleOf: Derivation→Rule) — 同一 inductive
+    的 constructor/destructor, roundtrip 成立, 中性观察不可区分'
+  smallest_checked_size: null
+  result: 'priority_audit_conclusion 零公理: 优先级不可观察 (双向 + witness_existence_equiv) —
+    定位为清场结果, 非 co-emergence 证据'
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/PriorityAudit.lean (复用 DerivationProvenance)
+  theorem_name: AbsoluteRelative.PriorityAudit.roundtrip / .same_datum_two_readings
+    / .witness_existence_equiv / .priority_audit_conclusion (已证, 无 sorry, 全零公理)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 直接构造 indexed derivation system (Derivation(Rules):Judgment→Type) 会引入 Rule/Judgment/premise/conclusion/arity/direction/ordering
+  — 禁止
+- 把 Rule→Derivation 优先级当 emergence theorem — 只是表示选择 (presentation artifact)
+- 把 reverse_model_exists 当 '独立反向模型' — 是同一 inductive 的 destructor, 同一 datum 两种读取方向
+- 宣称 '谁先不被公理决定' 的 model-theoretic independence — 未在双 role 理论中证明
+- 把 Occurrence 提前包括进 conclusion — 未进入 R006
+- 用 opaque/PUnit/choice 让优先级可观察 — 已排除 (中性不可观察)
+evidence_for:
+- 'roundtrip 零公理: ruleOf (leaf r) = r — Rule 与 Derivation witness 可逆对, 同一 inductive
+  的 constructor/destructor'
+- 'same_datum_two_readings: 双向都可构造 ⟹ forward/reverse 是同一 datum 两种读取方向'
+- 'witness_existence_equiv 零公理: 中性观察 (有无 witness) 下优先级不可区分 ⟹ priority 不属于 object theory
+  vocabulary'
+- 'priority_audit_conclusion 零公理: 清场结果 — Rule/Derivation representation collapse 已证'
+evidence_against: []
+next_action: 'R006 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 用户评审 (R006 修正定位): ① R006 有价值但定位为清场结果, 不是 co-emergence 证据 — 当前真正证明的是
+  Derivation(R)≃R (完整等价, 比 Nonempty 强得多); ② ''谁先不被公理决定'' 说太强 — forward/reverse 是同一份
+  datum 的两种读取方向 (同一 datatype 的 constructor/destructor), 不是两个独立模型; 能证箭头没增加信息 ⟹ 非 genuine
+  genesis, 不能证 model-theoretic independence; ③ priority 目前根本不是内部可表达命题 (signature 无
+  Prior / 时间 / 依赖序 / genesis relation) — 最强结论: Rule-first orientation 是可消去的 presentation
+  artifact; ④ Occurrence 完全没进入 R006 — ledger 应改为 ''Rule/Derivation representation
+  collapse 已证'' + ''Rule/Derivation/Occurrence co-emergence 仍完全 OPEN''; ⑤ R005/R006
+  从 emergence 主线退役 (与 B≃(Unit→B) 同型: presentation-equivalent 的两个 role 不允许利用语法差异生成结构);
+  ⑥ 下一步不叫 ''first validity structure'' (validity 偷偏向 rule/derivation 语义), 改叫 ''non-contractible、representation-independent
+  internal structure X''; ⑦ R007 Wrapper Elimination 只证三件事: E1 完整等价 / E2 observer
+  factorization / E3 trusted elimination。 [2026-08-09 作废: 无视之前所有评审, 三层沙盒全新设计]'
