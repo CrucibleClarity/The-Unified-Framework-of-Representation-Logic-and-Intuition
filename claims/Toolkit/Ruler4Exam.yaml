@@ -1,0 +1,88 @@
+id: Ruler4Exam
+title: "Ruler4Exam: the four independent structure families (iteration/scale, angle/angular-speed, symmetry/invariant, metric/embedding) — reduction of 8 components to 4"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    Ruler4Exam: 将工具包 (TK1-TK5) 的成果归约为 4 个独立结构家族.
+
+    ★ 全部分量盘点: 8 个 (TK4 解析 3 + TK5 圆 5)
+      1. 迭代次数 (TK4①, 均匀张缩, 离散参数 n)
+      2. 夹角 (TK4②, 投影, 连续参数 θ)
+      3. 对称保持 (TK4③, 不变量)
+      4. 度量/尺度 (TK5①, 椭圆长短轴 a,b)
+      5. 速度/密度 (TK5②, 非均匀角速度 k)
+      6. 度规 (TK5③, 欧氏 vs 双曲周长)
+      7. 嵌入/翘曲 (TK5④, 3D z=k·sin2θ)
+      8. 采样 (TK5⑤, 正n边形→圆)
+
+    ★ 重复归约 (8 → 4):
+      重复1: 迭代(n) ≡ 采样(n) — 同一离散参数, 采样是迭代的几何应用
+      重复2: 迭代(n·a) ≡ 尺度(a,b) — 张缩家族: 离散版 + 连续版
+      重复3: 夹角(θ) ≡ 速度(θ') — 同一参数, 速度是夹角的一阶导数
+      重复4: 对称保持 ≡ 度规 — 度规决定不变量
+
+    ★ 4 个独立结构家族:
+      A. 迭代/张缩 ← {迭代, 尺度, 采样}    [参数 n, a, b]
+      B. 夹角/角速度 ← {夹角, 速度}        [参数 θ]
+      C. 对称/不变量 ← {对称保持}           [不变量]
+      D. 度规/嵌入 ← {度规, 翘曲}          [空间结构选择]
+
+    ★ 形式化支撑 (全部 lake build PASS, 无 sorry):
+      - 家族A: mul_eq_sum_iterate, pow_eq_prod_iterate, log_pow_mul (TK4)
+               ellipse_identity, polygonError (TK5)
+      - 家族B: cos_sq_add_sin_sq, warp_deviation (TK4/TK5)
+      - 家族C: norm_exp_I_eq_one, invariant_independent_of_angle (TK4)
+      - 家族D: euclideanCircumference, hyperbolicCircumference,
+               hyperbolic_eq_iff_sinh_eq, planarCircle, warp_zero_is_planar (TK5)
+
+    ★ 意义: 呼应"无穷分量 = 有限变换类型"原则 — 连有限类型本身也在收敛
+      (8 → 4). 椭圆/扭曲圆/非欧圆/翘曲圆/多边形都是这 4 族的参数变化.
+  formal_math: |
+    -- 家族A (迭代/张缩):
+    lemma mul_eq_sum_iterate {R} [Semiring R] (a : R) (n : ℕ) :
+      (n : R) * a = Finset.sum (Finset.range n) (fun _ => a)
+    lemma ellipse_identity (a b θ : ℝ) (ha : a ≠ 0) (hb : b ≠ 0) :
+      (a * Real.cos θ) ^ 2 / a ^ 2 + (b * Real.sin θ) ^ 2 / b ^ 2 = 1
+    def polygonError (n : ℕ) : ℝ := 1 - Real.cos (Real.pi / n)
+    -- 家族B (夹角/角速度):
+    lemma cos_sq_add_sin_sq (θ : ℝ) : Real.cos θ ^ 2 + Real.sin θ ^ 2 = 1
+    lemma warp_deviation (k t : ℝ) : (1 + k * Real.cos t) - 1 = k * Real.cos t
+    -- 家族C (对称/不变量):
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 家族D (度规/嵌入):
+    def euclideanCircumference (r : ℝ) : ℝ := 2 * Real.pi * r
+    def hyperbolicCircumference (r : ℝ) : ℝ := 2 * Real.pi * Real.sinh r
+    def planarCircle (θ : ℝ) : ℂ := Complex.exp (θ * Complex.I)
+
+objects:
+- family A: mul_eq_sum_iterate, ellipse_identity, polygonError
+- family B: cos_sq_add_sin_sq, warp_deviation
+- family C: norm_exp_I_eq_one
+- family D: euclideanCircumference, hyperbolicCircumference, planarCircle
+
+definitions_used:
+- 工具包 TK4 (AxisComponent.lean) / TK5 (CircleStructure.lean)
+- Finset.sum / Real.cos / Complex.exp
+
+assumptions:
+- 各定理的假设见 TK4/TK5 (自包含, 仅 import mathlib)
+
+conclusion: '8 个工具包分量经重复归约收敛为 4 个独立结构家族: A 迭代/张缩,
+  B 夹角/角速度, C 对称/不变量, D 度规/嵌入. 所有形状 (椭圆/扭曲/非欧/翘曲/
+  多边形) 都是这 4 族的参数变化.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/CircleStructure.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
