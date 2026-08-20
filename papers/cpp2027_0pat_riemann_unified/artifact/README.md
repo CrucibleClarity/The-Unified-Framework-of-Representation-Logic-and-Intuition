@@ -7,7 +7,7 @@
 lean proof.lean   # 0 errors, 0 warnings, 0 sorry
 ```
 
-## Theorems (126, all 0pat)
+## Theorems (127, all 0pat)
 
 Merged from exercises XXIV–XXXVI (original namespaces preserved) plus
 new theorems in `RiemannUnifiedObservation`:
@@ -22,6 +22,7 @@ new theorems in `RiemannUnifiedObservation`:
 | Divergence/period | zeta_term_norm_split, period_pair_reduces, divergence_pair_reduces, term_conj_symmetry, functional_equation_bridges, complex_zeta_convergence_region |
 | Zeta conjugation | zeta_conj_of_one_lt_re (Re > 1, series), zeta_conj_of_re_lt_zero (Re < 0, functional equation), zeta_conj_of_critical_strip (0 < Re < 1, Mellin definition penetration), chi_conj, chi_mul_chi_one_sub |
 | Re/Im split | zeta_re_conj_symm (even real part), zeta_im_conj_antisymm (odd imaginary part), zeta_re_even_on_line, zeta_im_odd_on_line (critical line), zeta_eq_zero_iff_re_im (zero = common zero) |
+| Affine base-point shift | affine_image_critical_line_is_line (affine shifts keep the critical line a line; circle view only from inversion) |
 | Euler-circle split norm | zero_split_normSq (zero on the split cone Re²−Im² = 0), zero_not_on_euler_circles (zeros avoid both orthogonal Euler circles) |
 | p-adic split / zero region | zeta_eq_zero_iff_p_split (zero = common zero of odd/even parts), odd_part_extra_zero_on_imag_axis (extra odd-part zeros on the imaginary axis), riemannZeta_ne_zero_of_re_lt_zero, riemannZeta_ne_zero_of_re_eq_zero, nontrivial_zero_in_critical_strip (nontrivial zeros in 0 < Re < 1) |
 | Hardy Z | hardyZ_real: conj(Z(t)) = Z(t) — functional-equation multiplier unit modulus, conjugation cancellation |
@@ -37,7 +38,7 @@ the functional equation, zero symmetry, prime-factor zeros on the
 imaginary axis, trivial zeros from the trigonometric factor, the
 critical-line observation, the real axis as iteration of i
 (i^i = e^{−π/2}), and the completed zeta structure. The Riemann
-hypothesis itself is not claimed; the twenty-four observation records in
+hypothesis itself is not claimed; the twenty-five observation records in
 observation.md document the numerical evidence and the exact location
 of the gap.
 
