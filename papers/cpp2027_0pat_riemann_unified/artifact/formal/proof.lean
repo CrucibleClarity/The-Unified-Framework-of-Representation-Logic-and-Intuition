@@ -2642,6 +2642,20 @@ theorem odd_part_extra_zero_on_imag_axis (s : ℂ) :
       exact (Real.log_ne_zero).mpr (by norm_num)
     exact (mul_eq_zero.mp hre').resolve_right hl2
 
+theorem zero_split_normSq (z : ℂ) (hz : riemannZeta z = 0) :
+    (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 = 0 := by
+  have hri := (zeta_eq_zero_iff_re_im z).mp hz
+  rw [hri.1, hri.2]
+  norm_num
+
+/-- 零点避开两个正交欧拉圆: normSq(ζ(z)) = 0 ≠ ±1
+    (半径 1 圆 normSq=1 与半径 i 圆 normSq=-1 均不含零点). -/
+theorem zero_not_on_euler_circles (z : ℂ) (hz : riemannZeta z = 0) :
+    (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 ≠ 1 ∧
+      (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 ≠ -1 := by
+  have h0 := zero_split_normSq z hz
+  constructor <;> linarith
+
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
     ((2 : ℂ) ^ (s : ℂ) * (↑Real.pi : ℂ) ^ (s - 1 : ℂ) * Complex.sin (↑Real.pi * s / 2) * Complex.Gamma (1 - s))
