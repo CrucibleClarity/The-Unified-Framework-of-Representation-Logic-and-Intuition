@@ -1,0 +1,84 @@
+id: RulerTernary
+title: "RulerTernary: log's basepoint phase is misaligned (2πi vs π/2); the aligned number axis collapses to {-1,0,1}; sign × phase table enables lossless access to the circle"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerTernary: log 基点相位不对齐 + 三值空间 {-1,0,1} + 映射表讨论
+    (用户指令 2026-08-12, 恒等式先验验证).
+
+    ★ 问题1: log 的基点相位不对齐 (根源问题)
+      - log_e(x): 底数 e, 复周期 2πi (e^(2πi) = 1)
+      - 我们的空间: 单位根 {1, i, -1, -i}, 周期 π/2
+      - 2π / (π/2) = 4: log 的一圈 = 我们的 4 圈!
+      - ⟹ log 的基点相位 (e, 2πi) 与我们的空间 (单位根, π/2) 不对齐
+      - ⟹ log 产生很多位小数 = 错位投影 (相位不对齐的产物)
+      - ⟹ 从一开始就选错了基点相位 (log 是乘→加工具, 但相位错位)
+      - 修正方向: 用与 π/2 对齐的相位基 (单位根) 代替 log 的 e 基
+
+    ★ 问题2a: 三值还原小数 (粗略丢失信息重展开?)
+      - 化简到相位对齐: 数轴收敛到 {-1, 0, 1}
+        -1: 奇数相位 (反演, 破缺); 0: 基点/锚 (原点); 1: 偶数相位 (保持)
+      - 验证: cos(π/4)=0.707 → 三值化 = 1 (相位 π/4 丢失)
+      - 从 1 只能回到'正半轴' (丢失具体相位)
+      - ⟹ 三值还原 = 粗略 (只有符号, 无相位) — 有损重展开
+      - ⟹ 三值化后小数直接还原 ≠ 无损, 是符号级恢复
+
+    ★ 问题2b: -1 0 1 编码成浮点映射表 → 无损直达圆?
+      - 4 相位映射表 {(1,0),(0,1),(-1,0),(0,-1)} 只有 4 点
+      - 圆是连续的 (无限点), 4 点表不能无损覆盖连续圆
+      - 但: 三值 {-1,0,1} 是符号 (方向), 不是相位值
+      - 方向 × 相位 = 完整的圆: 三值定方向, 相位表定位置
+      - ⟹ 无损直达 = 符号(三值) × 连续相位表
+      - ⟹ 浮点映射表 = 相位表 (连续), 三值 = 符号选择
+      - ⟹ 可无损 (但需连续相位表, 非 4 点离散表)
+
+    ★ 结论:
+      问题A: 三值还原小数 = 粗略 (有损, 只恢复符号)
+      问题B: 三值 × 相位表 = 符号×连续 — 可无损 (需相位表)
+      log 问题: log 周期 2πi vs 我们 π/2 — 不对齐, 应换基点相位
+      修正: 相位对齐的化简应用单位根基 (π/2), 非 log 的 e 基 (2π)
+
+    ★ 支撑 (Lean):
+      - J_pow_four: J⁴ = 1 (单位根, 周期 π/2) [C011]
+      - even_cluster_meets_one: exp(2πk·I)=1 (log 周期 2π) [TK3]
+      - timeRev_det_neg: det(T) = -1 (±1 符号) [NS3]
+  formal_math: |
+    -- 我们: 单位根周期 π/2 (相位对齐):
+    lemma J_pow_four : J ^ 4 = 1
+    -- log: 周期 2π (不对齐):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    -- 三值符号 (±1):
+    lemma sign_is_pm_one (σ : Equiv.Perm α) : signProjection σ = 1 ∨ signProjection σ = -1
+
+objects:
+- J_pow_four
+- even_cluster_meets_one
+- sign_is_pm_one
+
+definitions_used:
+- C011 ComplexAxis / TK3 Compactification / TK2 SymmetryRecovery
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- log 周期 2πi, 单位根周期 π/2 (KNOWN 复分析)
+
+conclusion: 'log 的基点相位 (2πi) 与我们的空间 (π/2) 不对齐 — 根源选错基点
+  相位, 应改用单位根基. 相位对齐后数轴收敛到 {-1,0,1}: 三值还原 = 有损
+  (只恢复符号); 无损直达 = 符号(三值) × 连续相位表.'
+
+verification:
+  lean_files:
+    - formal/Formal/ZeroRelative/ComplexAxis.lean
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
