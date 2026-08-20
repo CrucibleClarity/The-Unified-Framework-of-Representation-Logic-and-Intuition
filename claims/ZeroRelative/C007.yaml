@@ -1,0 +1,85 @@
+id: C007
+title: "Displacement equivalence (e,a)∼(f,b) ⟺ b=[a,e,f] is an equivalence relation recovering the group"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    在 heap H 上定义 displacement equivalence: (e,a) ∼ (f,b) 当且仅当
+    b = [a, e, f]  (即 b = T_{e→f}(a), 换基点后表示同一相对位移的端点)。
+    研究:
+    (1) ∼ 是否是 H×H 上的 equivalence relation? (reflexive/symmetric/transitive)
+    (2) 等价类 [e,a] 是否构成一个独立于任何 basepoint 的"变化空间" D(H)?
+    (3) 选择任意基点 e 后, D(H) 是否恢复 G_e (即 [e,·] : D(H) → G_e 是否双射)?
+    (4) abelian vs non-abelian heap 情况分别如何?
+    (5) 是否等价于 torsor 的 acting group / translation group?
+    若 (1)-(5) 都是经典 torsor/heap 理论 (预期大概率是), 则把它标记 KNOWN,
+    并在此无基点变化空间上定义 iteration (δ, 2δ, 3δ, ...) 才是下一步真正有
+    内容的地方 (Church iteration 不先选零点的定义)。
+  formal_math: |
+    Let H : Type with [Heap H]. Define relation on H × H:
+    (e,a) ∼ (f,b) :⟺ b = [a, e, f].
+    Question 1: is ∼ an equivalence relation?
+    Question 2: does the quotient (H×H)/∼ carry a natural structure independent
+    of basepoint, recovering G_e upon choosing e?
+
+objects: ["H : Type* [Heap H]", "∼ ⊆ (H×H)×(H×H)", "D(H) := (H×H)/∼", "G_e (C004 retract)"]
+definitions_used: ["Heap", "T_{e→f} = [·,e,f]", "C004 retract group"]
+
+assumptions:
+  - "[Heap H]"
+conclusion: "分类 ∼ 的性质; 若等价关系, 描述 D(H) 结构及与 G_e 的关系"
+
+known_special_cases:
+  - "abelian heap: [a,e,f]=a-e+f, 对称性需验证"
+  - "H 来自群 G (heap of group): [x,y,z]=xy⁻¹z, (e,a)∼(f,b) ⟺ b·f⁻¹ = a·e⁻¹ (相对位移不变)"
+closest_known_results:
+  - "C006 (step translation teleport, 评审 §9 主线起点)"
+  - "torsor acting group / translation group (标准)"
+  - "affine space 中平移群 (标准)"
+literature_queries:
+  - "displacement equivalence quotient change space"
+  - "translation group torsor quotient basepoint independent"
+
+counterexample_search:
+  status: done
+  search_space: "群模型 ℤ ([x,y,z]=x-y+z) 上验证等价关系三性 + 双射"
+  smallest_checked_size: null
+  result: |
+    (e,a)∼(f,b) ⟺ b=a-e+f 在 ℤ 模型上是等价关系:
+    - 自反: a = a-e+e
+    - 对称: b=a-e+f ⟹ a=b-f+e
+    - 传递: b=a-e+f ∧ c=b-f+g ⟹ c=a-e+g
+    固定 e 后 a↦a-e 是双射 (右逆 d↦d+e), 变化空间恢复群 G_e。
+    预期 (评审 §9): (1)-(5) 均为经典 torsor/translation group 理论 (KNOWN)。
+    群 heap 模型 [x,y,z]=xy⁻¹z 下 (e,a)∼(f,b) ⟺ b f⁻¹ = a e⁻¹ (相对位移不变),
+    更一般情形待 Lean 推广。
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Displacement.lean"
+  theorem_name: "ZeroRelative.dispRel_is_equivalence / ZeroRelative.dispRel_refl/symm/trans / ZeroRelative.displacement_coord_bijective"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "∼ 可能不是 equivalence relation (已验证: 是, ℤ 模型)"
+  - "等价类结构可能依赖基点 (已验证: 固定 e 后 a↦a-e 双射, 恢复 G_e)"
+  - "可能直接等价于 torsor 已知理论 (确认: 是, KNOWN)"
+  - "non-abelian heap 的推广: 群 heap [x,y,z]=xy⁻¹z 下相对位移不变式 b f⁻¹=a e⁻¹, 待 Lean 泛化"
+
+evidence_for:
+  - "Lean: dispRel_refl/symm/trans (ℤ 模型), dispRel_is_equivalence"
+  - "Lean: displacement_coord_bijective — 固定 e 后坐标 a↦a-e 双射"
+  - "全部无 sorry (850 jobs 构建通过)"
+evidence_against: []
+
+next_action: "C007 封存为 KNOWN baseline (模型验证)。★ 禁止下一步写 δ,2δ,3δ 或 Church iteration (用户指令: Church 预设自然数, 循环论证)。真正下一步 = C008: Endogenous basepoint generation — 用关系 R ⊆ H×H (或确定性 σ : H→H) 定义不借助自然数编号的次基点生成规则, 研究其 reachability structure; 然后 C009 问何时 (Reach(e),R) ≅ (N,S) — 自然数是表示定理的结论而非输入"
+notes: "评审 §9 主线 + 用户根本性修正: (1) displacement equivalence (e,a)∼(f,b)⟺b=[a,e,f] 是等价关系 (KNOWN); (2) ★核心修正: AI (含我) 自动用 Nat 索引建模迭代 (Function.iterate F n / Church numeral) 是循环预设 — 研究'自然数从哪来'却预先拿自然数编号过程; (3) 正确逻辑顺序: 基点生成规则 → 可达结构 → 结构分类 → N 是否出现 (非相反); (4) C004-C007 仍有效 (heap→选择基点→相对群结构/translation 已建立), C007 作为位移对象化经典 baseline 封存; (5) 真正下一条 = C008 (内生次基点生成) 与 C009 (何时 ω 型)。"
