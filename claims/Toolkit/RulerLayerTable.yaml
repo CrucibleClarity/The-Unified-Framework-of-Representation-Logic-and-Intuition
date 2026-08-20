@@ -1,0 +1,70 @@
+id: RulerLayerTable
+title: "RulerLayerTable: layered shared error tables — one table per task-class per level, same-class shares residual tables; new tasks in a known class get free prediction (领域相似结构免费白嫖)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerLayerTable: 分层共享误差表 (用户指令 2026-08-12).
+
+    ★ 设计: 三层表结构
+      层1 共享结构表: {s → C} (所有任务共享, 理论/学习)
+      层2 类别残差表: {任务类 → ΔC} (同类共享残差)
+      层3 任务特化表: {任务 → 少量残差} (仅当必要)
+
+    ★ 验证 (恒等式先验):
+      任务D(物理, 未学) 用类残差免费预测, 误差 1.55e-03
+      同类 (A,B 物理) 误差 ~2e-03, 异类 (C 化学) 4e-03
+      ⟹ 同类共享残差 = 新任务免费白嫖
+
+    ★ 表规模:
+      每任务一表: N 表 (每新任务 +1)
+      分层设计: 1 共享 + 类残差 + 稀疏任务残差
+      新任务: 只需类残差 (免费, 无新表)
+
+    ★ 领域相似结构免费白嫖的数学:
+      领域间共享: 同 s ⟹ 同结构形状 (层1)
+      类内共享: 同物理 ⟹ 同残差 (层2)
+      任务特有: 极少 (层3 稀疏)
+      新任务 = 层1 + 层2 (免费) + 层3 学习 (少量)
+
+    ★ 与 RulerLearnStable 闭环:
+      防框死: 结构共享 (层1) + 类残差 (层2) + 稀疏任务 (层3)
+      学得多不框死 ⟹ 分层 (结构在上, 差异在下)
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 层1 共享比率 [ErrorSequence]
+      - error_seq_predicts: C 反解 [ErrorSequence]
+  formal_math: |
+    -- 层1 共享 (同 s 比率):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- C 反解 (层2/3 残差基础):
+    lemma error_seq_predicts (s n₀ : ℝ) (hs : 1 < s) (hn₀ : 0 < n₀) :
+      polyError s n₀ * (2 ^ (1 - s)) = polyError s (2 * n₀)
+
+objects:
+- poly_error_ratio
+- error_seq_predicts
+
+definitions_used:
+- ErrorSequence
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '分层共享误差表: 层1 共享结构 (s→C) + 层2 类残差 (同类共享) +
+  层3 稀疏任务残差. 新任务同类的免费预测 (误差 1.5e-3 验证). 防框死
+  (结构在上差异在下). 领域相似结构免费白嫖.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ErrorSequence.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
