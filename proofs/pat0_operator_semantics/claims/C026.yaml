@@ -1,0 +1,68 @@
+id: C026
+title: "Basepoint move of operators — every operator has its own basepoint (2×2 ≠ 2 on the real axis)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: true
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    每个算符有自己的基点:
+    - 加法算符 s(x) = x + 1 的基点 = 0 (加法单位元; s(0) = 1, 迭代从 0 出发)
+    - 乘法算符 m_k(x) = k·x 的基点 = 1 (乘法单位元; m_k(1) = k, 迭代从 1 出发)
+    - 对称性中心不在原点: 乘法单位元 1 ≠ 加法原点 0
+    核心结论: "2×2" 中的 2 是乘法迭代语义 (从基点 1 出发), 不是实数轴
+    (加法域, 从基点 0 出发) 的 2 — 相同迭代次数, 不同算符 (不同基点)
+    → 不同位置。基点移动下: 加法算符自同构 (平移共轭仍是平移);
+    乘法算符变为仿射 (T(m₂(T⁻¹(y))) = 2y + 1), 不动点从 0 移到 -1。
+  formal_math: |
+    Let s(x) := x + 1, m_k(x) := k·x on a CommRing R.
+    T1: 2 = s(s(0)) (加法迭代 2 次从基点 0).
+    T2: m₂(1) = 2 = s(s(0)) (交点: 乘法 1 步 = 加法 2 步).
+    T3: m₂(m₂(1)) = 4.
+    T4: 4 ≠ 2 in ℤ (乘法 2 步 ≠ 加法 2 步).
+    T5: T(x) = x - 1 maps the multiplicative basepoint 1 to the additive origin 0.
+    T6: T(s(T⁻¹(y))) = s(y) (additive operator invariant under basepoint move).
+    T7: T(m₂(T⁻¹(y))) = 2y + 1 (multiplicative operator becomes affine).
+    T8: the fixed point of the conjugated operator is -1 ≠ 0.
+
+objects: ["s : R → R, s(x) = x + 1", "m_k : R → R, m_k(x) = k·x", "T(x) = x - 1", "basepoints: 0 (additive), 1 (multiplicative)"]
+definitions_used: ["CommRing", "Function iteration"]
+
+assumptions:
+  - "R : CommRing (algebraic identities hold in any commutative ring; numeric distinctions in ℤ)"
+conclusion: "Multiplication 2 steps ≠ addition 2 steps (4 ≠ 2); multiplicative basepoint 1 ≠ additive origin 0; basepoint move conjugates addition to itself and multiplication to an affine map."
+
+known_special_cases:
+  - "k = 1: m₁ is the identity (basepoint iteration degenerates)"
+  - "T7 with k = 2: pure multiplication becomes affine under basepoint move"
+closest_known_results:
+  - "Classical ring/group theory: translation conjugacy, affine maps (KNOWN)"
+  - "Basepoint-dependent generation law (C010, R011): basepoint choice affects generated structure"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the operator-semantics framing (each operator has its own basepoint)."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/BasepointMove.lean"
+  theorem_name: "ZeroRelative.add_iter_two / mul_iter_one_eq_add_iter_two / mul_iter_two / core / basepointMove / addOpInvariant / mulOpAffine / centerNotOrigin"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "numeric distinction (4 ≠ 2) requires ℤ (not a general ring)"
+  - "affine form of the conjugated multiplicative operator depends on the basepoint move T"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/BasepointMove.lean, no sorry"
+evidence_against: []
+
+next_action: "Base of the operator family (C028): every operator in the family carries its own basepoint."
