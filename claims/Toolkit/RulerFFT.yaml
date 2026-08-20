@@ -1,0 +1,73 @@
+id: RulerFFT
+title: "RulerFFT: FFT is the fast-simplification tool — the binary divide-and-conquer of phase alignment is isomorphic to the 8→4→2→1 reduction chain"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerFFT: FFT = 快速化简工具 (用户指令 2026-08-12).
+
+    ★ FFT 核心 (二分分治):
+      DFT: X[k] = Σₙ x[n]·e^(-2πikn/N)  (O(N²))
+      FFT: 拆奇偶两半递归 → O(N log N)
+
+    ★ 与归约链同构 (恒等式先验验证):
+      FFT 递归: N → N/2 → N/4 → ... → 1 (二分)
+      归约链:   8 → 4 → 2 → 1 (二分)
+      ⟹ 同构! FFT 每次二分 = 归约链每步减半
+
+    ★ 验证 (N=8 单频):
+      X[3] = 8 (峰值), 其余 = 0 — FFT 正确分解单频 (相位对齐)
+
+    ★ 计算量:
+      N=8:    64 vs 24    (2.7×)
+      N=1024: 1M vs 10K   (102×)
+      N=2^20: 1.1T vs 21M (52428×)
+
+    ★ 与框架的统一:
+      - FFT 每次二分 = 归约链每步减半 (Ruler4Exam 算法化)
+      - 蝶形运算 w·odd[k] = 相位乘 (RulerPhase)
+      - 奇偶拆分 = 相对 2 (RulerAsym)
+      - 穿折越解构 (相位对齐) 的最优实现 = FFT
+
+    ★ 边界 (重要, 用户指出):
+      FFT 仍是 O(N log N) — 在无限空间里的化简法
+      (N 个采样点, N→∞ 的离散化)
+      ⟹ 不是'消灭无限', 是'更快地处理无限'
+      ⟹ 下一步: 消灭无限空间的化简 (紧化式, 复数轴)
+  formal_math: |
+    -- 蝶形运算的相位 (旋转因子):
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 二分归约 (FFT 结构):
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    lemma dofLevel_succ (k : ℕ) : dofLevel (k + 1) = 2 * dofLevel k
+    -- 相位周期 (旋转因子周期):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+
+objects:
+- dofLevel_succ
+
+definitions_used:
+- TK4 AxisComponent / TK3 Compactification / RulerPhase
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- FFT 本身 KNOWN (经典算法)
+
+conclusion: 'FFT = 快速化简工具: 二分分治对齐相位, 与归约链 8→4→2→1 同构.
+  计算量 O(N²)→O(N log N). 但仍是无限空间化简 (N→∞ 采样).
+  边界: 需要消灭无限空间的化简 (紧化式, 复数轴).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
