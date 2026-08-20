@@ -1,0 +1,63 @@
+id: C029
+title: "Basepoints ±1 = projection of a higher-dimensional structure — exactly two positions"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    基点正负 1 说明这是一个高维结构的投影, 出了 2 个位置:
+    - 加法基点 0: 一维结构 (实数轴) 的原点 — 单个位置
+    - 乘法基点 ±1: 两个位置 — 在一维数轴上无法内生产生, 只能是一维数轴
+      (实轴) 作为高维结构 (单位圆 S¹ / 四相位) 的投影:
+      单位圆上的点投影到实轴 (Re), 极值位置恰为 ±1;
+      投影到虚轴 (Im), 极值位置恰为 ±i。
+    - 四相位 {1, -1, i, -i} 是单位圆上 4 个特殊点: 每根投影轴出 2 个位置。
+    - Q2_0 格点 {-1, 0, 1, 2} 中的 ±1 = 这个投影的证据。
+  formal_math: |
+    Unit circle S¹ = {z : ℂ | ‖z‖ = 1}, real-axis projection Re.
+    T1: Re(S¹) ⊆ [-1, 1].
+    T2: the point with Re = +1 is exactly z = 1.
+    T3: the point with Re = -1 is exactly z = -1.
+    T4: projection extremes = {±1} (two positions).
+    T5: the four phases {1, -1, i, -i} project to ±1 on the real axis and ±i on the imaginary axis.
+
+objects: ["S¹ ⊂ ℂ (unit circle)", "Re/Im projections", "four phases {1, -1, i, -i}"]
+definitions_used: ["Complex", "norm", "projection"]
+
+assumptions:
+  - "z : ℂ with ‖z‖ = 1 (unit circle)"
+conclusion: "The multiplicative basepoints ±1 are the projection extremes of the unit circle onto the real axis — a one-dimensional axis cannot generate two positions internally."
+
+known_special_cases:
+  - "T5: phases project to {±1} (real) and {±i} (imaginary)"
+closest_known_results:
+  - "Classical: Re z ≤ ‖z‖, equality iff z real nonnegative (KNOWN)"
+  - "C028 (Q2_0 grid = basepoint cluster), C037 (symbol quantization)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the basepoint-reading: ±1 as projection evidence."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/HighDimProjection.lean"
+  theorem_name: "ZeroRelative.real_proj_range / real_proj_extreme_pos / real_proj_extreme_neg / real_proj_extremes / quad_phase_proj"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "projection loses information: Re is not injective on S¹ (C011 projection-induced structure loss)"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/HighDimProjection.lean, no sorry"
+evidence_against: []
+
+next_action: "Basis of C030 (symplectic projection and projection cancellation of the four phases)."
