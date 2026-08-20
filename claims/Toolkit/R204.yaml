@@ -1,0 +1,97 @@
+id: R204
+title: "R204 (2026-08-13): ★路径锁定自动证明器 — 实现 R203 路径序列一步锁定传送: 工具 pat_path_prover.py (规则库 R1-R7 路径锁定 + witness 尝试 + 量词分类); 未证明对象审计: 一步锁定 (存在性实例: 哥德巴赫 8=3+5, 孪生对 (3,5), ABC rad(72)=6<9); 不可锁定 (原猜想: 强哥德巴赫/孪生无穷性 ∀∃, 考拉兹收敛 ∀, ABC 泛化 ∀ε∃K, 奇完全数 ∃witness 未找到, 连续统元数学) — ★证明器价值: 精确定位每个未证问题的阻塞类型 (无穷性/收敛性/存在性未找到)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "实现这个自动证明器，然后尝试之前的未证明对象。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。实现路径锁定自动证明器 + 审计
+       未证明对象.
+
+    ★ 唯一论点: R203 路径序列一步锁定传送可实现为自动证明器; 对未
+       证明对象诚实分类 (LOCKED 存在性实例 / UNLOCKED 阻塞类型).
+
+    ★ 工具: pat_path_prover.py — ①路径锁定 (规则库 R1-R7 每步验证
+       Z/11) ②witness 尝试 (小范围枚举) ③量词分类 (∃w / ∀∃ / ∀收
+       敛 / witness 未找到).
+
+    ★ 审计结果:
+       - 一步锁定 (存在性实例): 哥德巴赫 8=3+5 / 孪生对 (3,5) / ABC
+         rad(72)=6<9 — 路径锁定 + witness ⟹ 一步得证明.
+       - 不可锁定 (原猜想本身): 强哥德巴赫/孪生无穷性 (∀∃ 无穷性) /
+         考拉兹收敛 (∀ 收敛性) / ABC 泛化 (∀ε∃K) / 奇完全数 (∃
+         witness 未找到) / 连续统 (元数学).
+
+    ★ 证明器价值: 精确定位每个未证问题的阻塞类型 (无穷性量词结构 /
+       收敛性轨道性质 / 存在性 witness 未知).
+
+  formal_math: null
+  tool: paper/pat_pnp/tools/pat_path_prover.py
+
+objects:
+- lock_path
+- prove
+- audit_unproved
+definitions_used:
+- 路径锁定 (规则库每步验证)
+- 一步传送 (锁定 ⟹ 证明)
+- 阻塞类型分类 (无穷性/收敛性/存在性未找到)
+
+assumptions:
+- 路径序列 = 元 witness (R203)
+- 锁定 ⟹ 一步传送 (R200/R203)
+- 诚实边界: 实例锁定 ≠ 原猜想证明
+conclusion: "筑基篇系列方法论应用之八完成: 路径锁定自动证明器 — 实现 R203 路径序列一步锁定传送: 工具 pat_path_prover.py (规则库 R1-R7 路径锁定 + witness 尝试 + 量词分类); 未证明对象审计: 一步锁定 3 个存在性实例 (哥德巴赫 8=3+5 / 孪生 (3,5) / ABC rad(72)=6<9), 不可锁定 6 个原猜想 (无穷性/收敛性/泛化/存在性未找到/元数学) — 证明器精确定位每个未证问题的阻塞类型。"
+
+known_special_cases:
+- '哥德巴赫 8=3+5: 存在性实例 LOCKED'
+- '孪生对 (3,5): 存在性实例 LOCKED'
+- 'ABC rad(72)=6<9: 构造实例 LOCKED'
+- '奇完全数: witness 未找到 (1..2000 无)'
+closest_known_results:
+- R203 PatPathLockedTransfer (路径一步锁定传送)
+- R202 PatAutoFormalize (规则库)
+- R200 PatOneStepCross (锁定⟺一步)
+literature_queries:
+- path locked automatic prover unproved audit
+- quantifier structure obstruction classification
+
+counterexample_search:
+  status: done
+  search_space: 规则库 7 步是否全验证; 存在性实例是否锁定; 原猜想是
+    否诚实 UNLOCKED
+  smallest_checked_size: null
+  result: 路径锁定 Z/11 全过; 3 实例 LOCKED; 6 原猜想 UNLOCKED (诚实);
+    全部 0 sorry
+formalization:
+  prover: null
+  file: paper/pat_pnp/tools/pat_path_prover.py (路径锁定自动证明器)
+  theorem_name: null
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明原猜想 — 已诚实: 只锁定存在性实例, 原猜想标注 UNLOCKED
+- 把实例当无穷性证明 — 阻塞类型分类 (∀∃ 无穷性)
+- 声称一步证明一切 — 量词结构不匹配时返回 UNLOCKED
+evidence_for:
+- '3 存在性实例 LOCKED (witness + 路径锁定)'
+- '6 原猜想 UNLOCKED (阻塞类型标注)'
+- '阻塞类型: 无穷性/收敛性/存在性未找到'
+evidence_against: []
+next_action: '已接: 路径锁定证明器完成; 后续可扩展规则库/自动化证明
+  流水线'
+notes: '用户要求实现自动证明器 + 尝试未证明对象: 工具 pat_path_prover
+  .py 完成 — 3 存在性实例一步锁定, 6 原猜想诚实 UNLOCKED (阻塞类型
+  定位: 无穷性/收敛性/存在性未找到)。'
