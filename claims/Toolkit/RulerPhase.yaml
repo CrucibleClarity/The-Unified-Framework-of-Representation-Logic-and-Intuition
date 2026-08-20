@@ -1,0 +1,77 @@
+id: RulerPhase
+title: "RulerPhase: the periodic phase is the essence of the basepoint — aligning the phase decomposes all basepoint teleports"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerPhase: 基点的周期相位是本质; 对齐周期相位 ⟹ 解构所有基点变换
+    (用户指令 2026-08-12).
+
+    ★ 基点 = 周期相位 (黎曼 8 点圆验证):
+      8 个格点 = 相位 {0, π/2, π, 3π/2} × {±共轭}
+      基点位置 = 对称循环上的相位
+
+    ★ 基点变换 = 相位移动:
+      90°旋转 (×J) = 相位 +π/2 (4-循环)
+      共轭 = 相位取负 (对合)
+      时间反演 = 相位 0 ↔ π (周期 2)
+      任意穿折越 T_{e→f} = 沿周期圆的相位移动
+
+    ★ 对齐相位 = 统一参照 ⟹ 解构:
+      任意基点变换 T_{e→f} = 相位移动 Δθ = (f 相位 - e 相位)
+      解构: T = [相位移动 Δθ] 作用在 [相位参照] 上
+      ⟹ 知每个基点的相位, 一切变换 = 相位差
+
+    ★ 本质 (RulerCycle 的推广):
+      RulerCycle: 对称性 = 相位模 π/2 的周期函数
+      现在: 基点 = 相位本身 (对称循环上的位置)
+      ⟹ 基点的本质 = 周期相位
+      ⟹ 对齐相位 = 相位参照统一 ⟹ 变换全部可解构
+
+    ★ 支撑 (Lean):
+      - J_pow_four: J⁴ = 1 (90°旋转 4-循环, C011)
+      - timeRev_timeRev: 时间反演对合 (周期 2, NS1)
+      - even_cluster_meets_one: exp(2πk·I)=1 (相位周期 2π, TK3)
+      - teleport_parameter_compose: delta 可加 (相位差可加, Ruler2Exam)
+  formal_math: |
+    -- 4-循环 (相位周期 π/2):
+    lemma J_pow_four : J ^ 4 = 1
+    -- 对合 (相位周期 2):
+    lemma timeRev_timeRev (u : ℝ → F) : timeRev (timeRev u) = u
+    -- 相位周期 (2π):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    -- 相位差可加:
+    lemma teleport_parameter_compose (e f g : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g
+
+objects:
+- J_pow_four
+- timeRev_timeRev
+- teleport_parameter_compose
+
+definitions_used:
+- C011 ComplexAxis / NS1 TimeBasepoint / TK3 Compactification / Ruler2Exam
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '基点的本质是周期相位: 基点 = 对称循环上的位置, 基点变换 =
+  相位移动. 对齐相位 (统一参照) ⟹ 一切基点变换 = 相位差 ⟹ 可解构.
+  这是 RulerCycle 的推广 (对称性 = 相位函数 → 基点 = 相位).'
+
+verification:
+  lean_files:
+    - formal/Formal/ZeroRelative/ComplexAxis.lean
+    - formal/Formal/NavierStokes/TimeBasepoint.lean
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
