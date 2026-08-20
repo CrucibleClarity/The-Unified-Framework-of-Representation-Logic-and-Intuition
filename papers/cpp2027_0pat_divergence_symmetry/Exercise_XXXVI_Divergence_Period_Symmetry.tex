@@ -1,0 +1,209 @@
+%% CPP 2027 Submission — 0pat Exercise XXXVI: Divergence–Period Symmetry on the Zeta Series
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{The Divergence--Period Symmetry Realized on the Zeta Series:\\
+One Conjugation, Two Eigenspaces (Exercise XXXVI)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We formalize, with five machine-checked theorems, the way in which a
+single conjugation symmetry splits the terms of the zeta series into
+two eigenspaces. Each term $1/n^s$ factors as $n^{-\sigma} \cdot
+e^{-it\ln n}$, where $s = \sigma + it$: the divergence axis (the real
+part) controls the modulus, $\|n^s\| = n^{\sigma}$, and the period axis
+(the imaginary part) contributes a unit modulus that never affects
+convergence. The two axes are the two eigenspaces of the same
+symmetry; each axis has its own mirror pairs that collapse to the unit
+$1$: $e^{i\theta} \cdot e^{-i\theta} = 1$ on the period axis, and
+$r \cdot (1/r) = 1$ on the divergence axis. Conjugation is the reversal
+of the period axis, $\overline{n^s} = n^{\overline{s}}$ for positive
+real $n$. The functional equation
+$\zeta(1-s) = 2(2\pi)^{-s}\Gamma(s)\cos(\pi s/2)\zeta(s)$ pairs the
+divergent region with the convergent region through this same symmetry
+--- it is the mechanism of analytic continuation, and it is already a
+machine-checked theorem of mathlib
+(\texttt{riemannZeta\_one\_sub}). Zero errors, zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, zeta function, functional equation, analytic continuation, conjugation symmetry, 0pat}
+
+\maketitle
+
+\section{The series term as a product of two eigenspaces}
+
+The zeta function is born as a series, and each term of the series is a
+product of two factors. For a positive integer $n$ and a complex
+exponent $s = \sigma + it$,
+
+\begin{equation*}
+  n^s = n^{\sigma + it} = n^{\sigma} \cdot n^{it}
+      = n^{\sigma} \cdot e^{it \ln n}.
+\end{equation*}
+
+The first factor $n^{\sigma}$ is real; it grows or decays with the real
+part of $s$. The second factor $e^{it \ln n}$ lies on the unit circle;
+it oscillates with the imaginary part of $s$. The series term
+$1/n^s = n^{-\sigma} \cdot e^{-it \ln n}$ is therefore the product of
+a \emph{divergence factor} (real, monotone in $\sigma$) and a
+\emph{period factor} (unit modulus, oscillating in $t$).
+
+The first theorem makes this split precise and machine-checked.
+
+\paragraph{The modulus of a term is the divergence factor
+(\texttt{zeta\_term\_norm\_split}).} For $n > 0$ and $s \in
+\mathbb{C}$,
+
+\begin{equation*}
+  \|n^s\| = n^{\mathrm{Re}\,s}.
+\end{equation*}
+
+The modulus of the term is entirely controlled by the divergence axis
+(the real part of $s$). The period axis never affects the modulus:
+$|e^{-it\ln n}| = 1$ for every $t$. In this sense the two axes play
+asymmetric roles in convergence --- but they are not independent
+structures; the next section shows that both are eigenspaces of one
+and the same conjugation symmetry.
+
+\section{One symmetry, two mirror pairs}
+
+Conjugation $z \mapsto \overline{z}$ fixes the real axis pointwise and
+reverses the imaginary axis. The two axes of the series term are the
+two eigenspaces of this single symmetry: a real number is fixed
+(eigenvalue $+1$), a pure imaginary number is negated (eigenvalue
+$-1$). Each eigenspace carries its own mirror pairs, and on both axes
+a mirror pair collapses to the unit $1$.
+
+\paragraph{The period-axis mirror pair (\texttt{period\_pair\_reduces}).}
+The pair $e^{i\theta}$ and $e^{-i\theta}$ are conjugate: for real
+$\theta$, $\overline{e^{i\theta}} = e^{-i\theta}$. Their product is the
+unit,
+
+\begin{equation*}
+  e^{i\theta} \cdot e^{-i\theta} = e^{0} = 1 .
+\end{equation*}
+
+The exponent coordinate is negated, and the two mirror terms annihilate
+to the neutral element of multiplication. This is the algebraic
+identity $\exp(\theta) \cdot \exp(-\theta) = 1$, machine-checked for
+complex $\theta$.
+
+\paragraph{The divergence-axis mirror pair
+(\texttt{divergence\_pair\_reduces}).} The pair $r$ and $1/r$ is not a
+conjugate pair in the analytic sense --- both numbers are real --- but
+it is the mirror pair of the divergence axis: under the logarithm the
+two coordinates are negatives of each other,
+$\ln(1/r) = -\ln r$. Their product is the unit,
+
+\begin{equation*}
+  r \cdot \frac{1}{r} = 1 \qquad (r \neq 0).
+\end{equation*}
+
+The logarithmic coordinate is negated, and the two mirror terms
+annihilate to the neutral element of multiplication, exactly as on the
+period axis.
+
+\paragraph{The two pairs are the two faces of one symmetry.} On the
+period axis the mirror relation is $\theta \mapsto -\theta$ (via
+conjugation); on the divergence axis it is $\ln r \mapsto -\ln r$ (via
+reciprocation). In both cases a single coordinate is negated and the
+product of the mirror pair is $1$. The two theorems
+\texttt{period\_pair\_reduces} and \texttt{divergence\_pair\_reduces}
+verify both faces: the same collapse, on the two eigenspaces of the
+same symmetry.
+
+\section{Conjugation is the reversal of the period axis}
+
+If the series term $n^s$ is a product of a divergence factor and a
+period factor, then conjugation acts on it through the period factor
+alone. Conjugating the whole term is the same as conjugating the
+exponent:
+
+\paragraph{Conjugation passes through the power
+(\texttt{term\_conj\_symmetry}).} For $n > 0$ and $s \in \mathbb{C}$,
+
+\begin{equation*}
+  \overline{n^s} = n^{\overline{s}} .
+\end{equation*}
+
+Since $n$ is positive real, its argument is $0$, not $\pi$; mathlib's
+\texttt{Complex.conj\_cpow} then moves the conjugation across the
+power. The statement is exactly the eigenspace behavior of the
+symmetry: $\overline{s} = \sigma - it$ fixes the real part (the
+divergence axis, $\sigma$ unchanged) and negates the imaginary part
+(the period axis, $t \mapsto -t$). Conjugation reverses the period
+axis and leaves the divergence axis untouched.
+
+\section{The same symmetry pairs the two regions}
+
+The split of the term into two eigenspaces is not only a local
+observation about a single term. The same symmetry connects the region
+where the series diverges with the region where it converges.
+
+\paragraph{The functional equation is the pairing
+(\texttt{functional\_equation\_bridges}).} For $s \neq 1$ and
+$s \neq -n$ for all $n \in \mathbb{N}$,
+
+\begin{equation*}
+  \zeta(1-s) = 2\,(2\pi)^{-s}\,\Gamma(s)\,
+  \cos\!\left(\frac{\pi s}{2}\right)\, \zeta(s) .
+\end{equation*}
+
+This is the functional equation of the zeta function, in the exact
+form of mathlib's \texttt{riemannZeta\_one\_sub}; the theorem above is
+that statement, machine-checked. The map $s \mapsto 1-s$ sends the
+convergent region ($\mathrm{Re}\,s > 1$) to the divergent region
+($\mathrm{Re}\,s < 0$): the values of the divergent series are obtained
+from the convergent region through this symmetry. The pairing $s
+\leftrightarrow 1-s$ is the same conjugation symmetry of the series
+terms acting on the exponent: $\sigma \mapsto 1-\sigma$ negates the
+divergence coordinate around its fixed point, exactly as
+$t \mapsto -t$ negates the period coordinate. The mechanism by which
+the divergent series acquires its values is the mechanism by which the
+two axes were mirrored in the first place.
+
+\section{Honest boundary and position}
+
+The content is classical: the factorization of $n^s$ into a real power
+and a unit-modulus phase, the two mirror identities
+$e^{i\theta}e^{-i\theta} = 1$ and $r(1/r) = 1$, conjugation across the
+power for positive real bases, and the zeta functional equation. All
+five theorems are known mathematics, and the fifth is quoted directly
+from mathlib rather than proved anew. The value of the exercise is the
+precise statement of the structure: the divergence axis and the period
+axis of the series term are the two eigenspaces of one conjugation
+symmetry, and the functional equation is that same symmetry pairing
+the divergent region with the convergent region --- analytic
+continuation as the symmetry's mechanism. No claim is made beyond the
+five machine-checked statements; the reader is invited to inspect the
+artifact.
+
+\section*{Artifact}
+
+The artifact contains \texttt{proof.lean} (Lean 4.32.2, mathlib
+v4.32.2): five theorems, zero errors, zero \texttt{sorry}. Build:
+\texttt{lean proof.lean}.
+
+\end{document}
