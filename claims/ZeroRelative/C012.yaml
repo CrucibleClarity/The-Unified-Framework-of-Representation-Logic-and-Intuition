@@ -1,0 +1,93 @@
+id: C012
+title: "Prime positions in the drift frame — 漂移视角下素数的位置观测: 素数只落基点一步; 反演对偶位置 p/2 非整数; 无理轴无整数点"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    对 docs/关于黎曼猜想的思考.md 中"素数会不会是平移真实后继迭代丢失结构后
+    的投影"的观测化: 在零点漂移框架 (群模型 ℤ/ℚ/ℝ, [x,y,z] = x-y+z) 下,
+    形式化几个具体位置 (OBSERVATION/KNOWN, PrimeDriftPositions.lean):
+    - 位置 1 (漂移向量 = 新基点后继): 基点 e 漂移 d 到 e+d, 新基点视角的
+      后继 = 漂移向量: T_{e→e+d}(e+d) - (e+d) = d (relcoord 实例)。
+    - 位置 2 (漂移视角后继位置): 第 n 个后继位置 = e + (n+1)·d — 漂移框架
+      的后继梯子即漂移轴整数点。
+    - 位置 3 (素数落点): 素数 p 沿漂移轴的整数位 {n·p} 中, 素数恰好只落在
+      基点一步处: Prime(n·p) ↔ n = 1 — 其余位置必为合数 (整数分解)。
+    - 位置 4 (反演对偶): 1/(1/a + 1/b) = ab/(a+b) (平移-反演对偶位置)。
+    - 位置 5 (对称位置丢失整数性): 素数 p 的对称位置 p/2 永非整数 (p ≠ 2)
+      — 对偶对 "1 ↔ 1/(1/a+1/b)" 在素数处不闭合于整数轴。
+    - 位置 6 (无理轴无整数点): 漂移向量 d 无理 ⟹ 平移轴 {n·d} 无任何非零
+      整数位置: (n:ℝ)·d = (m:ℝ) → n = 0 — "无理数需要走回头路": 从无理
+      漂移轴回到数轴整数位必须离开漂移方向。
+  formal_math: |
+    Group model ℤ: [x,y,z] = x - y + z; T_{e→f}(x) := [x,e,f].
+    (1) drift_vector_is_successor: ∀e d:ℤ, T_{e→e+d}(e+d) - (e+d) = d
+    (2) successor_positions_in_drift_frame: ∀e d n:ℤ, T_{e→e+d}(e+n·d) = e+(n+1)·d
+    (3) prime_positions_on_drift_axis: ∀p n:ℕ, Nat.Prime p → (Prime(n·p) ↔ n = 1)
+    (4) inversion_dual_position: ∀a b:ℚ, a≠0 → b≠0 → a+b≠0 →
+        1/(1/a + 1/b) = a·b/(a+b)
+    (5) prime_inversion_misses_integers: ∀p:ℕ, Prime p → p≠2 → ∀n:ℕ, (p:ℚ)/2 ≠ (n:ℚ)
+    (6) irrational_drift_axis_no_int_points: ∀d:ℝ, Irrational d →
+        ∀n m:ℤ, (n:ℝ)·d = (m:ℝ) → n = 0
+
+objects:
+  - "T_{e→f}(x) = [x,e,f] (基点变换 teleport)"
+  - "漂移向量 d = f - e"
+  - "漂移轴整数位 {e + n·d}"
+  - "反演对偶位置 1/(1/a+1/b)"
+objects_note: null
+definitions_used: ["PureGen.teleport (C010)", "relcoord 观测 (C010)", "Nat.Prime", "Irrational"]
+
+assumptions:
+  - "群模型 ℤ / ℚ / ℝ ([x,y,z] = x-y+z)"
+  - "漂移方向 d 固定 (平移轴)"
+conclusion: "漂移视角下: 素数恰好只落基点一步 (位置 3); 反演对称位置 p/2 在整数轴外 (位置 5); 无理漂移轴无整数点 (位置 6) — 素数的'平凡'与'丢失结构'假设在这些位置上可精确陈述, 但全部是经典事实的实例, 不构成对素数分布的任何新断言"
+
+known_special_cases:
+  - "p = 2: p/2 = 1 是整数 (对称位置闭合, 唯一例外)"
+  - "n = 0: 0·p = 0 非素数 (漂移轴原点)"
+closest_known_results:
+  - "整数分解: 素数唯一分解 (KNOWN)"
+  - "无理数定义: 无整数倍数 (KNOWN)"
+  - "调和均值恒等式 (KNOWN)"
+  - "C010 (teleport 基线)"
+  - "C011 (复数轴投影构造, 漂移基点在 i)"
+literature_queries: []
+
+counterexample_search:
+  status: done
+  search_space: "构造性定理, Lean 验收; 位置 6 覆盖任意无理数"
+  smallest_checked_size: null
+  result: "全部定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/PrimeDriftPositions.lean"
+  theorem_name: |
+    drift_vector_is_successor / successor_positions_in_drift_frame /
+    prime_positions_on_drift_axis / inversion_dual_position /
+    prime_inversion_misses_integers / irrational_drift_axis_no_int_points
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "这些位置都是经典事实实例 (KNOWN), 不得视为黎曼猜想的进展或素数分布的新发现"
+  - "'素数只落基点一步'仅对'以素数为漂移向量的平移轴'成立, 不是素数分布论断"
+  - "位置 3 的正向 ⟸ 方向不需要 n·p 为素数 (p | n·p 恒成立), 已按最精确形式陈述"
+
+evidence_for:
+  - "Lean: 6 个定理全证 (无 sorry), 全量 lake build 通过"
+  - "位置 6 对任意无理数 d 成立 (非特例)"
+evidence_against: []
+
+next_action: "(1) 与 C011 衔接: 在复数轴上观察整数位 (乘法生成律 σ_z(w) = z·w 的 Chain); (2) 若需继续素数方向: 先提出可证伪的分布断言再形式化"
+
+notes: "对应 docs/关于黎曼猜想的思考.md 的具体位置观测。全部 KNOWN — 观测目的: 把直觉联想的'位置'精确化, 为后续是否值得继续提供锚点。"
