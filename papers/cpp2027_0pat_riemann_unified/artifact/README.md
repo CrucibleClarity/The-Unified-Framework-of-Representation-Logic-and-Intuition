@@ -7,7 +7,7 @@
 lean proof.lean   # 0 errors, 0 warnings, 0 sorry
 ```
 
-## Theorems (130, all 0pat)
+## Theorems (131, all 0pat)
 
 Merged from exercises XXIV–XXXVI (original namespaces preserved) plus
 new theorems in `RiemannUnifiedObservation`:
@@ -22,6 +22,7 @@ new theorems in `RiemannUnifiedObservation`:
 | Divergence/period | zeta_term_norm_split, period_pair_reduces, divergence_pair_reduces, term_conj_symmetry, functional_equation_bridges, complex_zeta_convergence_region |
 | Zeta conjugation | zeta_conj_of_one_lt_re (Re > 1, series), zeta_conj_of_re_lt_zero (Re < 0, functional equation), zeta_conj_of_critical_strip (0 < Re < 1, Mellin definition penetration), chi_conj, chi_mul_chi_one_sub |
 | Re/Im split | zeta_re_conj_symm (even real part), zeta_im_conj_antisymm (odd imaginary part), zeta_re_even_on_line, zeta_im_odd_on_line (critical line), zeta_eq_zero_iff_re_im (zero = common zero) |
+| Edge cancellation | zero_left_right_bijection (off-line zeros mirror left/right halves via ρ ↦ 1−ρ̄; skeleton of zero-count conservation) |
 | Base point i | critical_line_equidistant_basepoint_i (line = perpendicular bisector of i and 1+i), recip_basepoint_i_on_unit_circle (T(z) = 1/(z−i) − 1 sends the line to the unit circle) |
 | Base point 1 | on_line_iff_equidistant_base_one (on-line ⟺ equidistance to 0 and −1; critical-line circle = unit circle) |
 | Affine base-point shift | affine_image_critical_line_is_line (affine shifts keep the critical line a line; circle view only from inversion) |
@@ -40,7 +41,7 @@ the functional equation, zero symmetry, prime-factor zeros on the
 imaginary axis, trivial zeros from the trigonometric factor, the
 critical-line observation, the real axis as iteration of i
 (i^i = e^{−π/2}), and the completed zeta structure. The Riemann
-hypothesis itself is not claimed; the thirty observation records in
+hypothesis itself is not claimed; the thirty-one observation records in
 observation.md document the numerical evidence and the exact location
 of the gap.
 
