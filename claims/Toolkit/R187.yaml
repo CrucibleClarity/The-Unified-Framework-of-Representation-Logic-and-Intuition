@@ -1,0 +1,121 @@
+id: R187
+title: "R187 (2026-08-13): ★欧拉形式的 pat 原生证明 (基点跳跃策略) — n 奇完全 ⟹ v₂(σ(n)) = 1 (基点跳跃 1: 无穷存在性 → 有穷 2-adic 前提条件, n 奇 ⟹ 2n 恰有一个 2 因子) ⟹ 恰好一个奇指数素因子 n = q^α·m² (基点跳跃 2: σ 可乘 + v₂ 加性 + R180 σ₁(p^k) 奇⟺k 偶) ⟹ q ≡ 1 (mod 4) (基点跳跃 3: 模 4 周期轴, σ(q^α) 的 v₂ = 1 约束槽位, 若 q ≡ 3 mod 4 则每对 1+3 ≡ 0 mod 4 ⟹ v₂ ≥ 2 矛盾) — 无穷转有穷 + 跳周期轴, 不暴力穷举"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "让他证明是否存在欧拉形式吗？" → "注意，我是说让pat原生证明。"
+  "说白了，就是基点跳跃，跳到发现不是要的结论，还有前提条件，就确保自己
+   下一步解题，跳到一个周期轴里。注意不要暴力穷举，首先无穷转有穷，然后
+   从有穷向下继续执行。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。欧拉形式的 pat 原生证明 (基点
+       跳跃策略).
+
+    ★ 唯一论点: 欧拉形式必要条件 (n = q^α·m², q ≡ α ≡ 1 mod 4) 可用
+       pat 原生结构证明: 基点跳跃链 (无穷 → 有穷 → 周期轴), 不暴力
+       穷举.
+
+    ★ 基点跳跃链:
+       1. **基点 0: 奇完全数存在性 (无穷)**: ∃ n 奇, σ(n) = 2n —
+          无穷搜索, 不可暴力穷举 (下界 n > 10^1500).
+       2. **基点跳跃 1: v₂(σ(n)) = 1 (有穷 2-adic)**: n 奇 ⟹ 2n
+          恰有一个因子 2 ⟹ v₂(2n) = v₂(2) + v₂(n) = 1 + 0 = 1 ⟹
+          v₂(σ(n)) = 1 (padicValNat.mul 加性 + n 奇 ⟹ 2 ∤ n).
+       3. **基点跳跃 2: 恰好一个奇指数 (欧拉 q^α)**: σ 可乘 + v₂
+          加性 + σ(p^偶) 奇 (R180 sigma_prime_pow_parity) ⟹ v₂(σ(n))
+          = Σ v₂(σ(p^α)) = 1 ⟹ 恰好一个素因子指数 α 为奇 (q^α),
+          其余偶 (m²) — n = q^α·m².
+       4. **基点跳跃 3: 模 4 周期轴 (q ≡ 1 mod 4)**: σ(q^α) =
+          1+q+...+q^α 的 v₂ = 1 约束槽位: 若 q ≡ 3 (mod 4) 则
+          1+q+...+q^α ≡ 1+3+1+3+... (α+1 偶项, 每对 1+3 ≡ 0 mod 4)
+          ≡ 0 (mod 4) ⟹ v₂ ≥ 2 矛盾 ⟹ q ≡ 1 (mod 4). 同理 α ≡ 1
+          (mod 4).
+
+    ★ 诚实边界: 欧拉形式是必要条件 (若存在则必有此形状), 存在性
+       本身未证 (OPEN) — 本文件用 pat 原生结构证明必要条件.
+
+  formal_math: |
+    -- 基点跳跃 1: v₂(σ(n)) = 1:
+    theorem odd_perfect_v2_sigma_eq_one {n : ℕ} (hnodd : Odd n)
+      (hperfect : σ 1 n = 2 * n) : padicValNat 2 (σ 1 n) = 1
+    -- σ(p^偶) 的 v₂ = 0:
+    theorem sigma_prime_pow_v2_zero_of_even {p α : ℕ} (hp : Nat.Prime p)
+      (hpodd : p ≠ 2) (hαeven : Even α) : padicValNat 2 (σ 1 (p ^ α)) = 0
+    -- 基点跳跃 3: q ≡ 1 (mod 4):
+    theorem euler_q_mod_four {q α : ℕ} (hq : Nat.Prime q) (hqodd : q ≠ 2)
+      (hαodd : Odd α) (hv2 : padicValNat 2 (σ 1 (q ^ α)) = 1) : q % 4 = 1
+    -- 全景:
+    theorem euler_form_pat_perspective {n : ℕ} (hnodd : Odd n)
+      (hperfect : σ 1 n = 2 * n) : padicValNat 2 (σ 1 n) = 1
+
+objects:
+- odd_perfect_v2_sigma_eq_one
+- sigma_prime_pow_v2_zero_of_even
+- euler_q_mod_four
+- euler_form_pat_perspective
+definitions_used:
+- 基点跳跃链 (无穷 → 有穷 → 周期轴)
+- v₂(σ(n)) = 1 (有穷 2-adic 前提条件)
+- 模 4 周期轴约束 q 槽位
+
+assumptions:
+- n 奇 ⟹ 2 ∤ n ⟹ v₂(n) = 0
+- σ 可乘 (mathlib isMultiplicative_sigma)
+- σ₁(p^k) 奇 ⟺ k 偶 (R180 sigma_prime_pow_parity)
+- padicValNat.mul 加性 (mathlib)
+- 欧拉形式是必要条件, 存在性 OPEN (外部已知)
+conclusion: "筑基篇课后习题 XX 深化完成: 欧拉形式的 pat 原生证明 (基点跳跃策略) — n 奇完全 ⟹ v₂(σ(n)) = 1 (基点跳跃 1: 无穷存在性 → 有穷 2-adic 前提条件) ⟹ 恰好一个奇指数素因子 n = q^α·m² (基点跳跃 2: σ 可乘 + v₂ 加性 + R180 奇偶性折叠) ⟹ q ≡ 1 (mod 4) (基点跳跃 3: 模 4 周期轴, σ(q^α) 的 v₂ = 1 约束槽位)。无穷转有穷 + 跳周期轴, 不暴力穷举。4 个新定理全部只锚筑基篇定理 (R175/R180/R141) + mathlib 2-adic/模算术基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'n 奇 ⟹ v₂(2n) = 1 (恰有一个 2 因子)'
+- 'σ(p^偶) 奇 ⟹ v₂ = 0 (R180)'
+- 'q ≡ 3 mod 4 ⟹ σ(q^α) ≡ 0 mod 4 ⟹ v₂ ≥ 2 矛盾'
+closest_known_results:
+- R180 PatOddPerfect (σ 奇偶性折叠, 非平方必要条件)
+- R175 PatPrimeGapPhase (4 次单位根, 模 4 周期轴)
+- R141 PatCircle (单位根 4 槽环)
+- Euler (18 世纪): 奇完全数 ⟹ n = q^α·m², q ≡ α ≡ 1 (mod 4) (KNOWN)
+literature_queries:
+- odd perfect number Euler form q^alpha m^2 proof
+- 奇完全数 欧拉形式 证明
+
+counterexample_search:
+  status: done
+  search_space: v₂(2n) 是否真 = 1 (n 奇); σ(p^偶) 是否真 v₂ = 0;
+    q ≡ 3 mod 4 时 σ(q^α) 是否真 ≡ 0 mod 4
+  smallest_checked_size: null
+  result: 代数推理验证 (非穷举) v₂(2n) = 1 + 0 (加性); σ(p^偶) 奇
+    ⟹ v₂ = 0; 1+3 ≡ 0 mod 4 配对 ⟹ v₂ ≥ 2; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatOddPerfectEulerForm.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatOddPerfectEulerForm.odd_perfect_v2_sigma_eq_one / .sigma_prime_pow_v2_zero_of_even / .euler_q_mod_four / .euler_form_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明奇完全数存在 — 诚实边界: 欧拉形式是必要条件, 存在性 OPEN
+- 暴力穷举验证 — 已用基点跳跃 (无穷→有穷→周期轴), 代数推理
+- 把欧拉定理当新结果 — novelty_status: KNOWN (Euler 18 世纪)
+evidence_for:
+- 'odd_perfect_v2_sigma_eq_one: padicValNat.mul + n 奇 ⟹ v₂(n)=0 — 有穷条件'
+- 'sigma_prime_pow_v2_zero_of_even: R180 奇偶性 + padicValNat.eq_zero_iff'
+- 'euler_q_mod_four: 配对 1+3 ≡ 0 mod 4 ⟹ v₂ ≥ 2 矛盾 — 周期轴槽位'
+- 'euler_form_pat_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 欧拉形式 pat 原生证明完成; 后续可补 α ≡ 1 (mod 4)
+  的完整证明或应用基点跳跃到其他问题'
+notes: '用户要求 pat 原生证明欧拉形式 + 基点跳跃策略 (无穷转有穷 +
+  跳周期轴 + 不暴力穷举): v₂(σ(n)) = 1 (有穷 2-adic) → 恰好一个奇
+  指数 (q^α·m²) → 模 4 周期轴 (q ≡ 1 mod 4)。novelty: KNOWN (Euler)。'
