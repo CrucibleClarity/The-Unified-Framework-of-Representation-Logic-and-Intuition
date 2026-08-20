@@ -1,0 +1,205 @@
+%% CPP 2027 Submission — 0pat Exercise XXV: Orthogonal Euler Circles as an Observation Frame
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Orthogonal Euler Circles as an Observation Frame:\\ The Chinese
+Remainder Theorem and Prime Observability (Exercise XXV)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We report the third completed exercise of a re-formalization program
+(``0pat''): the insight that the prime axis can be observed through two
+orthogonal Euler circles --- the periodized number line $\mathbb{Z}/p\mathbb{Z}$
+as a circle, two such circles at coprime moduli as an orthogonal coordinate
+system --- is re-stated in pure known mathematics and formally proved in
+Lean 4 / mathlib with \emph{no} pat framework concepts and \emph{no}
+complex plane. The re-statement is the algebra of double-modulus
+observation: two orthogonal circles ($\mathbb{Z}/p\mathbb{Z} \times
+\mathbb{Z}/q\mathbb{Z}$) compose into the circle of the product modulus
+by the Chinese remainder theorem
+(\texttt{ZMod.chineseRemainder}); a prime factor $p$ of $a$ is visible
+as the zero projection on the $\mathbb{Z}/p\mathbb{Z}$ circle; distinct
+primes are distinguished by nonzero projection on each other's circles;
+a prime observed on a non-own circle is a unit of that circle's group,
+satisfying Fermat's little theorem $p^{q-1} \equiv 1 \pmod q$; and on
+its own circle a prime satisfies the complete Fermat algebra
+$a^p \equiv a \pmod p$. Seven theorems, zero errors, zero
+\texttt{sorry}, mathlib v4.32.2.
+\end{abstract}
+
+\keywords{Lean, formalization, Chinese remainder theorem, Fermat's little theorem, circle group, 0pat, reproducibility}
+
+\maketitle
+
+\section{The observation frame}
+
+The starting insight of this exercise is that the prime axis can be
+observed through circles. The number line, periodized modulo $p$, is the
+circle $\mathbb{Z}/p\mathbb{Z}$; the mapping between the real axis and a
+circle is already formalized in pure known mathematics (stereographic
+projection $\mathbb{R} \cup \{\infty\} \cong S^1$ and the covering map
+$\mathbb{R} \to \mathbb{R}/2\pi\mathbb{Z}$), so observing integers on a
+circle is a legitimate coordinate choice, not a new structure. The
+question posed here is whether \emph{two} such circles, orthogonal to
+each other, form an observation frame for the prime axis.
+
+The answer, in pure known mathematics, is the algebra of double-modulus
+observation. Two circles at moduli $p$ and $q$ are orthogonal exactly
+when $p$ and $q$ are coprime: the product circle
+$\mathbb{Z}/p\mathbb{Z} \times \mathbb{Z}/q\mathbb{Z}$ then composes
+into the single circle $\mathbb{Z}/pq\mathbb{Z}$ of the product modulus.
+The composition is the Chinese remainder theorem, present in mathlib as
+\texttt{ZMod.chineseRemainder}: for coprime $m, n$, the rings
+$\mathbb{Z}/mn\mathbb{Z}$ and $\mathbb{Z}/m\mathbb{Z} \times
+\mathbb{Z}/n\mathbb{Z}$ are isomorphic. This is the coordinate law of the
+frame: a number $a$ has exactly one position in each circle, and the pair
+of positions determines $a$ modulo the product.
+
+The frame is legitimate because the composition law is an isomorphism:
+observing through two orthogonal circles loses nothing that observing
+through the product circle would keep. The frame is useful because prime
+structure becomes visible in the projections: this is the content of the
+theorems below.
+
+\section{Prime observability in the frame}
+
+Seven theorems, all machine-checked, state what the frame sees. Each
+statement is classical mathematics; the novelty is the exact formulation
+of the observation and the machine-checked proof.
+
+\paragraph{The coordinate law (orthogonal\_frame\_crt).} For coprime
+$m, n$, the product of the two orthogonal circles is the circle of the
+product modulus: \texttt{ZMod.chineseRemainder} gives
+$\mathbb{Z}/(mn)\mathbb{Z} \simeq \mathbb{Z}/m\mathbb{Z} \times
+\mathbb{Z}/n\mathbb{Z}$ as rings. This is the law that makes the frame a
+coordinate system: two orthogonal circle positions determine one position
+on the product circle, and conversely.
+
+\paragraph{Prime factors are visible (factor\_observable\_zero).} If $p$
+is prime and $p \mid a$, then $a$ projects to $0$ on the
+$\mathbb{Z}/p\mathbb{Z}$ circle: $(a : \mathbb{Z}/p\mathbb{Z}) = 0$. A
+prime factor of $a$ is therefore directly observable as a zero in the
+corresponding coordinate --- the first coordinate of the frame detects
+the factor.
+
+\paragraph{Distinct primes are distinguished (distinct\_primes\_observable).}
+If $p$ and $q$ are distinct primes, then $p$ projects to a nonzero
+element of the $\mathbb{Z}/q\mathbb{Z}$ circle. The proof is
+divisibility-theoretic: $q \nmid p$ (a prime divides a prime only if
+they are equal), hence $p \bmod q \ne 0$. The frame therefore assigns
+each prime a position that no other prime occupies: prime positions in
+the frame are unique.
+
+\paragraph{Observation on a non-own circle (prime\_unit\_on\_other\_circle).}
+A prime $p$ observed on a circle of a different prime modulus $q$ is a
+unit of that circle's group: $p^{q-1} \equiv 1 \pmod q$, by Lagrange's
+theorem applied to the multiplicative group
+$(\mathbb{Z}/q\mathbb{Z})^\times$ of order $q-1$ (the circle-group size
+theorem, reused from Exercise XXIV). The prime is a regular point of the
+foreign circle --- it occupies a group element, not the zero --- and its
+position is governed by the circle's group law.
+
+\paragraph{Observation on its own circle (fermat\_little\_complete).}
+On the circle of its own modulus, a prime satisfies the complete Fermat
+algebra: for every $a$, $a^p \equiv a \pmod p$. This is the full form of
+Fermat's little theorem (coprime case via the unit group and Lagrange;
+non-coprime case via congruence lifting), reused from Exercise XXIV.
+Together with the previous paragraph: on its own circle the prime is the
+modulus itself (everything is governed by $p$); on every other circle it
+is a unit subject to that circle's group.
+
+\section{Relation to the exercise series}
+
+This exercise connects the two previous ones. Exercise XXIV established
+the prime circle: a prime $p$ is the modulus of the circle
+$\mathbb{Z}/p\mathbb{Z}$ and its algebra is Fermat's little theorem.
+Exercise XXIII established that composites are prime factorizations. The
+orthogonal frame completes the picture: a composite $n = pq$ is observed
+as the product circle $\mathbb{Z}/pq\mathbb{Z}$, which the coordinate law
+factors into the two orthogonal circles $\mathbb{Z}/p\mathbb{Z} \times
+\mathbb{Z}/q\mathbb{Z}$; the prime factors are the zero-projections of
+the frame (factor observability), and their circle-algebra is Fermat's
+theorem. The frame is the geometric form of the Chinese remainder
+theorem, and the observability theorems are its prime-theoretic reading.
+
+The honest boundary of the exercise is stated as in the previous ones:
+every theorem is a restatement of classical mathematics
+(\texttt{novelty\_status: KNOWN}), the proofs are machine-checked with
+zero \texttt{sorry} against mathlib v4.32.2, and no claim is made beyond
+the statements listed. In particular, the frame changes coordinates; it
+does not change the distribution of primes.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 272 lines),
+importing \texttt{Mathlib.Data.ZMod.Basic},
+\texttt{Mathlib.GroupTheory.OrderOfElement}, and
+\texttt{Mathlib.Data.Nat.Prime.Basic}. The seven theorems:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & mathlib anchor \\
+\midrule
+\texttt{orthogonal\_frame\_crt} & $m \perp n \Rightarrow \mathbb{Z}/mn \simeq \mathbb{Z}/m \times \mathbb{Z}/n$
+  & \texttt{ZMod.chineseRemainder} \\
+\texttt{factor\_observable\_zero} & $p \mid a \Rightarrow (a : \mathbb{Z}/p) = 0$
+  & \texttt{ZMod.val\_injective}, \texttt{mod\_eq\_zero\_of\_dvd} \\
+\texttt{distinct\_primes\_observable} & $p \ne q \Rightarrow (p : \mathbb{Z}/q) \ne 0$
+  & \texttt{Nat.Prime.eq\_one\_or\_self\_of\_dvd} \\
+\texttt{card\_units\_zmod\_prime} & $|(\mathbb{Z}/p)^\times| = p-1$
+  & explicit bijection (Ex. XXIV) \\
+\texttt{fermat\_little} & $\gcd(a,p)=1 \Rightarrow a^{p-1} \equiv 1$
+  & \texttt{orderOf\_dvd\_card} \\
+\texttt{fermat\_little\_complete} & $\forall a,\ a^p \equiv a \pmod p$
+  & \texttt{Nat.ModEq.pow} \\
+\texttt{prime\_unit\_on\_other\_circle} & $p \ne q \Rightarrow p^{q-1} \equiv 1 \pmod q$
+  & Lagrange + CRT-free unit group \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Compiled with Lean 4.32.2 / mathlib v4.32.2, zero errors, zero
+\texttt{sorry}, zero new axioms. The file is self-contained; the
+circle-group-size and Fermat theorems are restated inside it (reused
+from Exercise XXIV) so that the exercise does not depend on any other
+exercise file.
+
+\section{Conclusion}
+
+The orthogonal Euler frame is a legitimate coordinate system for
+observing the prime axis: its coordinate law is the Chinese remainder
+theorem, its prime observations are Fermat's little theorem and the
+zero/nonzero projection theorems, and all of it is machine-checked in
+pure known mathematics. The frame is the geometric form of the CRT, and
+it connects the composite factorization of Exercise XXIII with the prime
+circle of Exercise XXIV. Coordinates change; distributions do not ---
+the honest boundary is kept, and the frame's value is observational
+clarity, not new number theory.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
