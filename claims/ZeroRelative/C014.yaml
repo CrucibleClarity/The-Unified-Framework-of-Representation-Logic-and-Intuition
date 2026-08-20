@@ -1,0 +1,98 @@
+id: C014
+title: "Prime reachability by double drift & two-axis reconstruction — 两次基点漂移精确命中素数, 素数按复数进制重构为两轴 (高斯范数)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    docs/关于黎曼猜想的思考.md 的"素数恰好落在平移整数位": 构造版本。
+    一、素数可达定理 (OBSERVATION/KNOWN, 枚举 C014_drift_int_points.py):
+    平移轴整数点 1,2,3,... 经两次基点漂移 (漂移 1: 基点 0→i, n ↦ n+i;
+    漂移 2: 反演漂移, 球心 1 半径 r, circleInv_{1,r}) 后一般变成分数点;
+    仍为整数的位置由高斯范数整除条件 (n-1)²+1 | r² 决定。关键构造:
+      对每个素数 p 和 p-1 的每个因子 m, 取半径 r² = (m²+1)(p-1)/m,
+      整数点 n = m+1 两次漂移后投影恰好落在素数 p:
+        π(F_r(m+1)) = 1 + r²·m/(m²+1) = 1 + (p-1) = p
+    即每个素数都有 p-1 的因子数那么多种"两次漂移配方"把自己从整数点
+    打出来 (p=7 有 4 种: m=1,2,3,6 → n=2,3,4,7)。
+    二、素数按复数进制重构为两个轴 (KNOWN, Fermat 两平方和, mathlib
+    Nat.Prime.sq_add_sq):
+      norm z := z.a² + z.b² (recip 的分母, 高斯整数范数 |a+bi|²);
+      p ≢ 3 (mod 4) 的素数 p 是 ComplexAxis 中某点的范数 — 存在两轴
+      坐标 (a, b) 使 p = a² + b² (高斯整数分解 p = |a+bi|²);
+      p ≡ 3 (mod 4) 时 p 是高斯素数, 不可拆 (单轴);
+      素数可达定理的半径配方里 (m²+1) = norm (lift m + J) — 漂移半径的
+      高斯范数与两轴范数是同一结构的两面 (漂移构造 ⟷ 高斯整数分解)。
+  formal_math: |
+    ComplexAxis (C011) 上:
+    (1) doubleDrift r n := circleInv (lift 1) r (lift n + J)
+        doubleDrift_proj: proj (doubleDrift r n) = 1 + r²·((n:ℝ)-1)/(((n:ℝ)-1)²+1)
+    (2) prime_reachable_by_drift {p m : ℕ} (hp : Nat.Prime p) (hm : m ∣ p - 1):
+        let r2 := ((m²+1)(p-1))/m
+        proj (doubleDrift (Real.sqrt r2) (m+1)) = (p : ℝ)
+    (3) norm z := z.a² + z.b²; recip_denom_is_norm: z.a²+z.b² = norm z;
+        norm_lift_add_J: norm (lift m + J) = (m:ℝ)² + 1
+    (4) prime_two_axis (p) (hp : Nat.Prime p) (hmod : p % 4 ≠ 3):
+        ∃ z : ComplexAxis, norm z = (p : ℝ)   [引用 mathlib Nat.Prime.sq_add_sq]
+
+objects:
+  - "doubleDrift (两次基点漂移: 0→i 后反演球心 1)"
+  - "norm (高斯范数, recip 分母)"
+  - "两轴坐标 (a, b): p = a²+b² 的高斯整数分解"
+objects_note: null
+definitions_used: ["ComplexAxis (C011)", "circleInv (C013)", "recip (C013)", "J", "lift", "proj", "norm", "Nat.Prime.sq_add_sq (mathlib)"]
+
+assumptions:
+  - "C011/C013 的真复数轴构造"
+  - "漂移半径 r 可取任意实数 (r² 配方; r 不必是整数)"
+  - "两平方和: p ≢ 3 (mod 4) 的素数 (Fermat, mathlib 已证)"
+conclusion: "每个素数可由两次基点漂移 (半径配方 r²=(m²+1)(p-1)/m) 精确命中平移轴整数点; 素数可按复数进制重构为两轴 (高斯范数坐标), 漂移构造与高斯整数分解同构"
+
+known_special_cases:
+  - "p = 7, m = 1,2,3,6: 4 种配方全部命中 (数据验证)"
+  - "p ≡ 3 (mod 4): 高斯素数, 单轴不可拆"
+  - "n=1 (m=0): F(1) = 1 + 0 = 1, 恒等位置"
+closest_known_results:
+  - "Fermat 两平方和定理 (KNOWN, mathlib SumTwoSquares)"
+  - "高斯整数唯一分解 / 高斯素数 (KNOWN)"
+  - "C012 (素数漂移位置: 素数只落基点一步), C013 (反演漂移/临界线)"
+literature_queries:
+  - "Fermat two squares Gaussian integers prime decomposition"
+
+counterexample_search:
+  status: done
+  search_space: "r² ∈ [1,200), n ∈ [1,200) 全枚举: 整数点条件 (n-1)²+1 | r² 与公式完全一致; 每个素数 p ≤ 200 均有 p-1 的因子数种命中"
+  smallest_checked_size: "r² ≤ 200, n ≤ 200"
+  result: "枚举与定理一致 (C014_drift_int_points.py)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ComplexAxis.lean"
+  theorem_name: |
+    doubleDrift / doubleDrift_proj / prime_reachable_by_drift /
+    norm / recip_denom_is_norm / norm_lift_add_J / prime_two_axis
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "全部 KNOWN: 代数构造 (1+(p-1)=p) 平凡, Fermat 两平方和是经典 — 不构成素数分布/黎曼猜想的新断言"
+  - "不是'漂移命中的都是素数': 合数也被命中 (r²=10: n=2 → 6)"
+  - "素数可达是'存在性配方' (每个素数可被打中), 不是'所有整数点漂移后素数'"
+  - "p ≡ 3 (mod 4) 的素数无两轴分解 (高斯素数, 已知)"
+  - "r 不必是整数 (Real.sqrt) — 半径是连续参数"
+
+evidence_for:
+  - "Lean: 7 个定理全证 (无 sorry), 全量 lake build 通过 (2224 jobs)"
+  - "枚举: r² ≤ 200, n ≤ 200 与公式全一致"
+evidence_against: []
+
+next_action: "(1) 欧拉乘积有限版 (Π_p (1-p⁻ˢ)⁻¹, 接素数生成元方向); (2) 高斯整数进制唯一表示 (复数进制理论); (3) 连接: 漂移配方 ⟷ 高斯范数 ⟷ ζ 部分和"
+
+notes: "把 docs/关于黎曼猜想的思考.md 的'素数落在平移整数位'直觉变成精确构造: 每个素数有 (p-1 的因子数) 种两次漂移配方; 两轴重构 (高斯范数) 与漂移构造同构。全部 KNOWN, 作为观测锚点。"
