@@ -1,0 +1,64 @@
+id: C031
+title: "Discretization — four-phase discrete group, recip = conjugation (full operator structure per pair), basepoint cluster"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: true
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    离散化 — 全算符还原下, 每对不再是 J 单独生成的 C₄, 而是完整算符家族的载体:
+    T1: 四相位 = J 的离散轨道 (4 元素, C₄)
+    T2: recipOp (倒数, 基点 ±1) 在单位圆上 = 共轭反射 (normSq z = 1 ⟹ 1/z = conj z)
+        — J 轨道外的独立生成元
+    T3: 共轭与 J 反交换 conj(Jz) = -J(conj z) — 每对相位空间扩展为 D4
+        (8 元素: 4 旋转 × 2 反射)
+    T4: 四相位离散投影对消 (任意方向和 = 0)
+    T5: 基点簇 {0, ±1, ±i} = 5 位置 (中心 + 双轴投影极值)
+    观测结论预告: 全算符还原下每对不再是 1 个 J 复平面, 结构维度不是 12。
+  formal_math: |
+    T1: {1, i, -1, -i} = J-orbit (4 elements, C₄).
+    T2: ‖z‖ = 1 ⟹ z⁻¹ = conj z (reciprocal = conjugation on the unit circle).
+    T3: conj(Jz) = -J(conj z) (anticommutation) — the pair space is D4.
+    T4: discrete projection cancellation (sum over the four phases is 0 in any direction).
+    T5: basepoint cluster {0, ±1, ±i} (center + two projection axes' extremes).
+
+objects: ["J-orbit {1, i, -1, -i}", "recipOp (x⁻¹)", "conjugation conj", "D4 dihedral group", "basepoint cluster {0, ±1, ±i}"]
+definitions_used: ["Complex", "group orbit", "dihedral group", "unit circle"]
+
+assumptions:
+  - "z : ℂ, ‖z‖ = 1 for T2"
+conclusion: "The four phases form C₄ under J; adding the reciprocal/conjugation reflection extends each pair to D4; the basepoint cluster has 5 positions {0, ±1, ±i}."
+
+known_special_cases:
+  - "T5: the cluster center 0 plus the two projection axes' extremes ±1 and ±i"
+closest_known_results:
+  - "Classical: dihedral group structure of unit-circle symmetries (KNOWN)"
+  - "C030 (projection cancellation), C028 (operator basepoints)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the full-operator reading of each phase pair (C₄ → D4)."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Discretization.lean"
+  theorem_name: "ZeroRelative.quad_phase_card / recip_is_conjugate / conjugate_anticommutes_J / discrete_projection_cancel / basepoint_cluster"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "reciprocal = conjugation holds on the unit circle only (‖z‖ = 1)"
+  - "C₄ → D4 extension requires the reflection generator outside the J-orbit"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/Discretization.lean, no sorry"
+evidence_against: []
+
+next_action: "C033 (dual projection: wave-particle duality as Re/Im projections)."
