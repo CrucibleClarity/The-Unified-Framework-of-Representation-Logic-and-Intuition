@@ -64,8 +64,8 @@ counterexample_search:
 
 formalization:
   prover: Lean4
-  file: "src/pat-excercises/exercises/37_riemann_unified/proof.lean"
-  file_note: "4 定理在 37 项目 proof.lean 内 (依赖同文件共轭穿透/无零点定理); 独立文件拆分待后续"
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "proof.lean 全量复制入 formal 项目 (175 声明, 独立编译通过); 定理在其中"
   theorem_name: |
     zeta_neg_nat_ne_zero_of_odd / rh_iff_all_zeros_on_line_in_strips /
     offline_zero_gives_half_strip / zeta_two_arg_eq_arg_chi
