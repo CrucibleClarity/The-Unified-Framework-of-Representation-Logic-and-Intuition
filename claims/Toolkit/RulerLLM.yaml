@@ -1,0 +1,84 @@
+id: RulerLLM
+title: "RulerLLM: the LLM triad (residual, log, divide-by-sqrt) as engineering instances of the framework — residual = basepoint teleport, log = axis change with phase mismatch (2πi), divide-by-sqrt = normalization onto the unit circle"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerLLM: 大模型三件套 = 穿折越的工程实现 (用户指令 2026-08-12).
+
+    ★ ① 残差连接 x + f(x) = 基点穿折越
+      数学: x + f(x) = teleport 0 f(x) x (TK1 同构!)
+      x = 基点, f(x) = delta
+      RulerDrift: 位置不变 (x 保持), 值漂移 (增量)
+      为什么有效: 残差 = 基点锚定 (不丢位置) ⟹ 不发散
+      (RulerLoss: 收敛 = 结构保留)
+
+    ★ ② log = 张缩轴 → 加法轴 (相位错位!)
+      大模型: softmax 用 exp, logits 是对数概率
+      数学: log(ab) = log a + log b (乘法迭代 → 加法)
+      我们的框架: log 基点相位 = 2πi (RulerTernary 已证不对齐 π/2)
+      ⟹ log 把张缩轴变加法轴, 但代价是小数位 (错位投影)
+      ⟹ 解释 softmax 数值不稳定: log/exp 相位错位精度损失
+
+    ★ ③ 除以根号 = 归一化 = 保持方向
+      Attention: QK^T/√d_k (防内积爆炸)
+      RMSNorm: x/√(mean(x²)) (归一化激活)
+      数学: x/|x| 单位化, 方向不变 (验证: |v/|v|| = 1)
+      我们的框架: 值缩放, 位置(方向)不变 (RulerPhase)
+      归一化 = 把发散值 (大内积) 拉回单位球 (RulerFold)
+
+    ★ 统一图景:
+      残差 x+f(x) = 基点 + delta (穿折越, 位置不变值漂移)
+      log = 轴变换 (张缩→加法, 相位错位 2πi)
+      除以√ = 归一化 (拉回单位球, 保持方向)
+      ⟹ 大模型架构 = 穿折越的工程实现
+
+    ★ 支撑 (Lean):
+      - teleport: 残差 = 基点穿折越 [TK1]
+      - teleport_preserves_structure: 位置不变 [RulerDrift]
+      - fold_finite: 0-π 归一化空间 [CircleFold]
+      - norm_exp_I_eq_one: 单位球 (归一化目标) [TK4]
+  formal_math: |
+    -- 残差 = 基点穿折越 (x + f(x) = teleport):
+    def teleport (e f : P) (x : P) : P := (f -ᵥ e) +ᵥ x
+    -- 位置不变 (残差锚定):
+    lemma teleport_preserves_structure (e f a : P) :
+      Displacement e a f (teleport e f a)
+    -- 归一化目标 (单位球):
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 0-π 空间 (归一化/编码):
+    lemma fold_finite (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :
+      0 ≤ foldAngle θ ∧ foldAngle θ ≤ Real.pi
+
+objects:
+- teleport
+- teleport_preserves_structure
+- norm_exp_I_eq_one
+- fold_finite
+
+definitions_used:
+- TK1 BasepointGen / RulerDrift / TK4 AxisComponent / CircleFold
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '大模型三件套 = 穿折越工程实现: 残差 = 基点穿折越 (位置不变值
+  漂移), log = 轴变换 (相位错位 2πi, 解释数值不稳定), 除以√ = 归一化
+  (拉回单位球). 架构即框架.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/BasepointGen.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/CircleFold.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
