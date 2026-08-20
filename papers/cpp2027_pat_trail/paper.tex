@@ -1,0 +1,1871 @@
+%% CPP 2027 Submission — An Empirical Trail to Formalized Pat Theory
+%% Compile: pdflatex + bibtex (acmart)
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\ifdefined\XeTeXinterchartokenstate
+  % XeLaTeX: unicode-math (loaded by acmart) supplies the amssymb glyphs
+\else
+  \usepackage{amssymb}
+\fi
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\begin{document}
+
+\title{An Empirical Trail to Formalized Pat Theory:\\
+from 0/1 OOD Observations to Machine-Checked Theorems\\
+(complete research path, timestamped evidence, all PROVED, no \texttt{sorry})}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Independent}
+  \country{}}
+
+
+\date{2026-08-20}
+
+\begin{abstract}
+We record a complete research trail --- from a transformer training observation
+(2026-07-29) through a systematic experiment series (E1--E18), the extraction of
+structural laws, the construction of the Pat framework (basepoint-relative
+operator semantics), and its full Lean 4 + mathlib formalization (claims
+R136--R153 and beyond; all PROVED, no \texttt{sorry}; full \texttt{lake build}
+passes, 3631 jobs). The trail is anchored by timestamped evidence: session
+records, a 2303-turn task log, git history, and experiment artifacts. The
+starting observation is the 0/1 OOD dichotomy: a low-epoch (60) transformer
+reaches training accuracy 1.000 yet generalizes 0/32 on a same-basepoint
+notation change, and 32/32 after equivalence-declaration bridging --- a
+reproducible two-pole pattern across 45 training runs. From this observation
+the trail extracts five structural laws (anchor binding, notation
+translatability, shift invariance, structure-bearing representation,
+definition-layer invisibility), maps them to framework claims (R136 direction
+declaration, R138 phase locking, R143 interlock matrix), and formalizes the
+chain to the continuum construction (R150, R151, R163). We contribute (i) the
+complete experiment-to-formalization path as a reproducible artifact --- each
+experiment documented individually with design reason, procedure, result, and
+significance --- and (ii) a methodology for recording research trails under
+provenance pressure: SHA-256-anchored manifests, per-claim publication, and a
+self-contained reproducibility package.
+\end{abstract}
+
+\keywords{Lean, formalization, transformer, OOD, basepoint, reproducibility, research trail}
+
+\maketitle
+
+\section{Introduction}
+
+This paper is a complete, machine-checkable record of a research trail: how a
+transformer training observation became a set of structural laws, then a
+framework, then Lean-formalized theorems. We record the trail because it is
+itself the contribution: the path from an empirical two-pole OOD pattern to a
+formalized theory of basepoint-relative operator semantics, with every step
+timestamped and reproducible.
+
+The trail starts on 2026-07-29 with a first \emph{imperfect} generalization
+observation (relation-leave-one-out generalization, 22:39:12 UTC+8) ---
+imperfect, yet already sufficient to guide the exploration direction. It
+reaches its first \emph{perfect} generalization on 2026-08-15 04:01 (all 19
+operations OOD 0.000 $\to$ 1.000). The core two-pole pattern (E12) is: a
+60-epoch, 2-layer transformer (dim 64) reaches training accuracy 1.000, yet
+scores \textbf{0/32} on a same-basepoint notation change (succ$_a \to$
+succ$_b$) and \textbf{32/32} after adding equivalence-declaration bridging
+samples --- reproduced across 45 training runs (5 groups $\times$ 3 seeds
+$\times$ 3 independent runs), with no deviation.
+
+From this pattern, a systematic experiment series (E1--E18) extracts five
+structural laws; the laws map to the Pat framework (basepoint-relative
+operators: every operator has its own basepoint, directions must be declared
+in pairs); the framework is formalized in Lean 4 (mathlib v4.32.2), claims
+R136--R153 all PROVED with no \texttt{sorry} (completed 2026-08-13 13:31), and
+the chain extends to the continuum construction (R150 Wang's phase-locking
+theorem, R151 continuum as Pat-grid closure, R163 endogenous construction with
+zero Nat). Full \texttt{lake build}: 3631 jobs, no \texttt{sorry}.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item The complete empirical trail E1--E18, each experiment documented
+individually (\S\S3.1--3.18): design reason, procedure, result, and
+significance, as a reproducible artifact (20 scripts, 15 result files,
+one-command reproduction), with early first-successes recovered from the
+session log (2026-07-29/07-30 prefigurations; perfect generalization
+2026-08-15 04:01; reproduction 2026-08-16 14:54, per-seed identical).
+\item The Riemann direction (C011--C025, 2026-08-06 visualization $\to$
+2026-08-12 formalization and publication) and the homework-exercise series
+(2026-08-13 $\to$ 08-15, 25 reports, each with Lean 0-\texttt{sorry}).
+\item The five structural laws extracted from the observations, and their
+mapping to formalized framework claims (R136/R138/R143/R150/R151/R163).
+\item The logical completeness theorem (decoupling operator $D$ = R1
+exclusion + R2 cancellation + R3 layering $\Longrightarrow$ completeness at
+any order/element/subject-object, verified 2026-08-15 09:14--09:47 with the
+two-symmetry-groups corollary I7v) and the three mapping-judgment theorems
+(symbol-norm / presentation-legality / intuition-precision, formalized in
+\texttt{MappingJudgmentTheorems.lean}, 0 \texttt{sorry}, 2026-08-16).
+\item The Lean formalization (150+ Toolkit files, claims R001--R232, 0
+\texttt{sorry}, 3631 jobs).
+\item A timestamped evidence chain (session records, 2303-turn task log, git
+history, file timestamps) and a methodology for recording research trails
+under provenance pressure.
+\end{enumerate}
+
+\section{The starting observation: the 0/1 OOD dichotomy}
+
+\subsection{Timeline anchors}
+
+\begin{itemize}
+\item \textbf{2026-07-29} (session start): first \emph{imperfect}
+generalization. A pure next-token transformer memorizes 2-digit addition
+100\% (3-digit 0\%). At 22:39:12 (UTC+8) the relation-leave-one-out
+generalization is confirmed (training 5 relations, leaving 1: $\le$
+generalization 81\% $\to$ 90\% with a new architecture). This is the trail's
+first generalization observation. It is \emph{imperfect} --- not all
+operations generalize --- but it is already directional: it shows that
+generalization is possible without the ``necessary number of steps'', and it
+determines the exploration direction (which representations generalize, which
+collapse). The same evening produced the first per-token analysis (22:41,
+revealing the model's ``reverse'' strategy --- the origin of the token-level
+reporting discipline) and the four-question-type system (judgment /
+choice / fill-in / computation, 22:49).
+\item \textbf{2026-07-30}: early first-successes that prefigure the E-series.
+  Cross-class generalization (arithmetic/relations $\to$ logic) 90\% same-class
+  / 42.3\% cross-class (00:03); logic-operator leave-one-out (leave $\equiv$
+  90\%, leave $\to$ 92\%, leave $\leftrightarrow$ 82\%, 00:28); base-change
+  equivalence $\to$ addition generalization 81\% (00:42); the judgment
+  paradigm (soft 84\% / vq 71\%) and the parallel-token verification (leave
+  $\le$ breaking the counterpart axis: 55\% vs 90\% with complete counterparts,
+  05:30); the $\le$ generalization 47\% $\to$ 79\% when logic-gate co-training
+  completed the parallel counterparts (08:45). These are the first
+  instantiations of what E-series re-runs later formalized as E1/E3/E7--E13.
+\item \textbf{2026-08-07}: the basepoint-movement theory is proposed by the
+user (thinking document \emph{On the Riemann Conjecture}: the lambda
+origin drifts on the circle of radius 1 around 1; iteration continues
+along the drift path; the complex plane's origin is suspect --- the two
+axes' origins are by definition very likely completely different). The
+\texttt{relative-recursion} project starts the same morning (10:30) with
+the basepoint question as its working problem, and its first Lean
+no-\texttt{sorry} (C001 semiconjugacy) lands at 11:31.
+\item \textbf{2026-08-09 01:27}: the user's base(base,base) concept
+(ChatGPT conversation ``Lambda calculus and Church numerals'') --- the
+lambda basepoint self-application presupposes an operation concept
+distinct from the basepoint ($\mathrm{lambda}(\mathrm{base},
+\mathrm{base})$), while the intended concept has none
+($\mathrm{base}(\mathrm{base},\mathrm{base})$). Same day it becomes the
+\texttt{pure-relative} branch of the Lean formalization (claim P001
+PureBase; \texttt{C0NoGo}, \texttt{SelfRef}, \texttt{MinimalRuleAudit}).
+\item \textbf{2026-08-15 04:01}: first \emph{perfect} generalization: all 19
+operations learned, OOD 0.000 $\to$ 1.000 per epoch (reaching 1.000 at epoch
+14). The E-series re-runs in the v5 token system follow at 06:48--09:00
+(experiment day E1--E13).
+\item \textbf{2026-08-16 14:54}: the user asked to reproduce the transformer
+experiments; E12 was reproduced 15 training runs per-seed identical, plus a
+third in-package run (self-contained package, 08-16 15:04). E14--E18
+followed the same day.
+\end{itemize}
+
+\subsection{The daily record, 2026-08-01 $\to$ 08-07}
+
+Every day in this window carried work --- trainer design, token-system
+theory, tooling, and the launch of the basepoint-movement research. The
+window has one unifying theme, stated by the user on 08-02 and verified
+by every subsequent day: \emph{can the model's trained intuition be
+induced, rather than corrected?} The user's principle: ``what you should
+do is make the default methods that are trained into the model succeed''
+--- the infrastructure must route the model's native intuitions, not
+replace them with new behavior. The R-series prompt experiments (08-03)
+are the direct test: pseudo-code headers, code anchors, and few-shot
+templates each \emph{induce} better execution (R8 97 vs R11 30 without
+them), while negative prohibitions and over-constraint are shown to
+\emph{mislead} the intuition (prohibitions suggest the method; tight
+constraints collapse). The 08-07 trigger-rate work (0\% $\to$ 40.9\%)
+tests the precondition of induction --- the skill must fire before it can
+steer; and C001's reuse of mathlib's \texttt{Semiconj.iterate\_right}
+instead of re-deriving is the induction of the model's retrieval
+intuition. The same theme continues after this window: the CoT-before
+tool hint (lean-cot-assist, 08-07/08-09) that lowers the 27B's algebraic
+expansion load, and the R-series re-runs on the local 27B after 08-14.
+The record is explicit about what was verified: induction works (prompt
+shape measurably steers execution), induction has limits (negative
+instructions invert), and induction is toolable (trigger description,
+hijack-to-correct, hint injection).
+
+The day-by-day record (from the session log, 08-01: 11 entries, 08-02: 31,
+08-03: 17, 08-04: 8, 08-05: 13, 08-06: 5, 08-07: 21): The
+day-by-day record (from the session log, 08-01: 11 entries, 08-02: 31,
+08-03: 17, 08-04: 8, 08-05: 13, 08-06: 5, 08-07: 21):
+
+\begin{description}
+\item[08-01 --- trainer deepening and token completeness (11 entries).]
+Generalization supervision (train/val split) landed; the user corrected
+the input format: ``you are wrong --- the input must be an element
+sequence, where every element is composed of its own logic tokens'' (the
+raw-string input was rejected). A triple-search harness (three parallel
+agents over module-A $\times$ module-B $\times$ router) found the best
+combination (layer=tensor, transit=overlap, router=scalar\_only); full
+triple enumeration gave 39.8\% overall generalization. The strict $a+b$
+extrapolation scored 0/52 = 0\% --- the user's diagnosis: ``parallel
+element / parallel token training is insufficient; from the start we must
+train addition/subtraction/multiplication, bit operations, base changes,
+powers, all logic operations, all question types, with the best method
+together''. The user's three completeness questions fixed the token
+design: (i) is there a question type for every token's generalization? (ii)
+should value not be a scalar? (iii) is every derive traced to baseloop
+with training samples designed? --- resulting in 25 zero-coverage token
+question types, value dtype scalar $\to$ int/classification, and
+definition propositions 16 $\to$ 46 (42/42 complete). The meta-layer was
+acknowledged: let the model pour information into itself during training.
+\item[08-02 --- tooling infrastructure and the intuition-adaptation
+beginning (31 entries).] Llama-server management skill; diagnostic-tool
+plugin system (12 plugins); the technology choice ``.sh only for light
+orchestration, resident services in JS'' (sh-infrastructure skill). The
+user's central correction launched the trail-long intuition-adaptation
+methodology: ``what you should do is make the default methods that are
+trained into qwythos succeed'' (instead of correcting the model's
+behavior) --- the principle that infrastructure must route the model's
+native intuitions, not replace them. Prefix-cache-hit analysis and
+statusline data integration into claude local; meta-logic/meta-method/
+meta-rule research (complete meta-concept landscape, 8 files); the
+architecture workflow ``research $\to$ design $\to$ implement'' with
+fact-check and judgment-check at every step.
+\item[08-03 --- skill writing method and prompt iteration (17 entries).]
+The user's corrections became rules: pseudo-code must use code commands
+(``run fn'', not ``execute''); negative prohibitions act as hints
+(``prohibitions directly violate our experience; they don't prevent, they
+suggest the method'') --- rules must be positively phrased. The R-series
+prompt experiments (R8: 97 requirement lines with pseudo-code header +
+code anchors; ablation R9=46 / R10=63 / R11=30; R12=57 / R13=72 with
+few-shot templates) established the prompt anatomy: natural-language task
+name first (token direction), then pseudo-code activation, few-shot
+templates as format anchors, no over-constraint. Self-generated prompt
+research: have the 27B iterate a bad prompt into R13 quality (the
+evaluation script was rejected as answer leakage). Deterministic errors
+are treated as 100\% errors: hijack the wrong command to the correct one,
+or instruct the model which alternative method to use.
+\item[08-04 --- technology-stack switch and architecture workflow
+(8 entries).] opencode installation failure diagnosis (CachyOS mirror
+404s); the switch to opencode Go via a ccproxy (Rust bridge cut from
+cc-switch, anthropic-to-openai mode, dual providers); statusline migrated
+verbatim from \texttt{.claude} (``I didn't ask you to change the color
+scheme or the logic''); the dsv4-flash 1M context displayed as 200k
+fixed at the gateway (n\_ctx 1000000); skill-activation research led to
+skill-matcher.js (automatic text matching, no AI model in the loop);
+G-layer/SKI error summary document.
+\item[08-05 --- skill desensitization and trigger-rate optimization
+(13 entries).] Switch to opencode dsv4 with the new ccproxy (Rust bridge
+with first-byte timeout failover); token-system skill improved; steering-8b
+local-run exploration (causal diffusion LM --- not supported by
+llama.cpp/GGUF; transformers + bitsandbytes 4-bit path prepared); the
+harness results published to GitHub (harness-for-all) after the user
+deleted the first 37-file release and required only two skills, fully
+desensitized (no claude traces, no dynamic-workflow traces); all 7 skills
+desensitized; RTX PRO 5000 evaluation for DeepSeek-V4-Flash-MTP-DSpark-MLX
+(conclusion: cannot run --- MLX is Apple-only and the model is a 304B
+MoE).
+\item[08-06 --- bridge startup and the Riemann visualization (5 entries).]
+bridge/start.sh + opencode.sh optimization (stale-socket cleanup, flock
+inheritance fix); the ``170hx unlocks 80G VRAM'' claim verified (true
+mechanism: CMP 170HX is a full GA100 die; stable community range 10G
+$\to$ 40G); and the Riemann zeta / prime-position visualization project
+(17:10 request $\to$ 17:55 delivery): 52/52 numerical verifications,
+Lehmer $\pi(x)$ to $10^{13}$, browser-tested interactions, complex-base
+(Gaussian-integer) support with 14 valid bases (2800 round-trip tests
+pass), and persisted prime/zero data (664{,}579 primes; 138{,}067 zeros;
+Riemann--Siegel correction 0.1 $\to$ $9\times10^{-4}$).
+\item[08-07 --- basepoint-movement research launch + first Lean
+no-\texttt{sorry} (21 entries).] The \texttt{relative-recursion} project
+started (10:30) with the basepoint question as its working problem (the
+user's thinking document \emph{On the Riemann Conjecture}: basepoint
+drift, iteration along the drift path, the suspect origin); the C001
+semiconjugacy formalization completed with no \texttt{sorry} at 11:31
+(first Lean commit 10:53, reusing mathlib's
+\texttt{Semiconj.iterate\_right}); the toolchain was built the same day
+(allowlist plugin system with hot reload and masking; websearch with
+--author and on-disk results; the natural-number-origin research
+discipline written into the repository rules; T1--T3 verification tools;
+info\_units four-layer information elements; the discipline-guard hook;
+the Mathematical Research Protocol skill; description trigger-rate
+diagnosis 0\% $\to$ 40.9\%).
+\end{description}
+
+\subsection{The two-pole pattern (E12)}
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+\toprule
+Group & Training samples & OOD target & OOD (45 runs) \\
+\midrule
+1a baseline & succ$_a$ 250 & succ$_a$ & \textbf{32/32} $\times$ 9 \\
+1b zero-shot & succ$_a$ 250 & \textbf{succ$_b$} & \textbf{0/32} $\times$ 9 \\
+2 bridging & succ$_a$ + equivalence 270 & \textbf{succ$_b$} & \textbf{32/32} $\times$ 9 \\
+2$'$ control & succ$_a$ + equivalence 270 & succ$_a$ & 32/32 $\times$ 9 \\
+4 symmetry & succ$_a$/succ$_b$ mixed 252 & mixed & 32/32 $\times$ 9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All 45 runs reach training accuracy 1.000; the OOD two-pole (0/32 vs 32/32)
+never deviates. Token-level analysis locates the collapse: the 0-pole fails at
+the notation-branching position (input head passes 32/32; the failure is the
+notation fork), a mechanism fingerprint invisible to aggregate accuracy.
+
+Interpretation: training intuition is notation-bound statistics; a 1.000
+training accuracy does not transfer to an untrained notation; OOD 1.0 only
+shows that \emph{statistics extrapolate within that representation}. The
+equivalence-declaration samples (pairwise declarations, anchoring errors
+irrelevant) bridge the two notations --- declarations make the information
+point at the correct structure.
+
+\section{The Riemann direction and the basepoint-movement theory (2026-08-06 $\to$ 08-12, before the experiments)}
+
+Before the experiment series, the trail ran a parallel formalization branch:
+the Riemann direction (C011--C025). Its intellectual spine is the
+basepoint-movement theory, proposed by the user on 2026-08-07 (the thinking
+document and the \texttt{relative-recursion} project session), formalized
+in Lean in the same project the same day (C001, 11:31), carried into the
+Riemann direction on 2026-08-12 (basepoint drift under projection,
+C011), and finally witnessed empirically by the training experiments
+(E11 anchor binding, 2026-08-15 07:43). It starts from the visualization project
+(2026-08-06 17:10 request $\to$ 17:55 delivery, within 45 minutes: the
+Riemann zeta landscape, the critical line $\sigma=1/2$ highlighted with
+nontrivial zeros plotted, prime positions $\le 10^8$, $\pi(x)$ approximations
+$\le 10^{13}$, bases 2--36 and Gaussian-integer complex bases; the complex-base
+extension and the critical-line-only layout followed at 17:59--18:09, and the
+persisted prime/zero data at 18:35--18:46, 138{,}067 zeros with a
+Riemann--Siegel correction fix bringing the zero-location error from 0.1 down
+to $9\times10^{-4}$). The user's thinking document \emph{On the Riemann
+Conjecture} (written around 2026-08-07, between the visualization and the
+formalization) records the intuition behind the direction: primes have no
+construction method (all other numbers have many); irrationals are the
+remainder of a higher-dimensional structure after projection lost part of its
+carrying structure; and the pair $1$ vs $1/a+1/b$ (translation vs inversion)
+leads to the \textbf{basepoint-drift conjecture --- the origin of the
+basepoint-movement theory, 2026-08-07}: the lambda-calculus origin is not
+fixed; it moves on the circle of radius 1 around 1, and when the drifted
+basepoint's successor iteration is projected back to our number line, the
+projection lands on primes. The document adds a second hypothesis: if the
+basepoint drifts, iteration continues \emph{along the drift path} --- then
+primes land exactly on the translated integer positions, and one can
+observe the integer points on that axis. The basepoint-movement research
+itself had started the same day in the \texttt{relative-recursion} project
+(session 10:30; the project's working question: structures without a
+privileged zero, choosing different basepoints interpreted as ``0'') with
+its first Lean no-\texttt{sorry} at 11:31 (C001 semiconjugacy); the
+thinking document refers to this as ``the basepoint-drift experiment Lean
+formalization I did earlier''.
+
+On 2026-08-09 01:27:22 (UTC+8) the user's earliest basepoint-formalization
+concept landed in a shared ChatGPT conversation (``Lambda calculus and
+Church numerals'', archived in the artifact): the lambda-calculus
+basepoint self-application iteration \emph{presupposes a concept distinct
+from the basepoint} --- the self-application operation itself, written
+$\mathrm{lambda}(\mathrm{base},\mathrm{base})$; but in the intended
+experimental concept there is no such operation, written
+$\mathrm{base}(\mathrm{base},\mathrm{base})$ --- the same primitive
+occupies the operator, operand, and basepoint positions. This
+$\mathrm{base}(\mathrm{base},\mathrm{base})$ design became the
+\texttt{pure-relative} branch of the formalization the same day (claim
+P001, \texttt{PureBase}; Lean files \texttt{C0NoGo}, \texttt{SelfRef},
+\texttt{MinimalRuleAudit}), the earliest Lean embodiment of the
+basepoint-movement idea: the basepoint is not a distinguished object but a
+role. The suspicion about the complex plane's
+origin belongs to the same period and the same direction: the two axes'
+origins, by their definitions, are very likely \emph{completely different}
+--- the origin is not trustworthy. In the 08-12 session the user makes this
+explicit and, from then on in the session log, refers to the complex
+plane's real axis as the ``fake real axis'' (\emph{jia shi shu zhou}).
+
+The Lean formalization session ran 2026-08-12 00:00--02:54:
+\begin{itemize}
+\item 00:00--00:12: six prime-drift position observations formalized
+  (\texttt{PrimeDriftPositions.lean}, no \texttt{sorry});
+\item 00:16--00:21: the user's projection hypothesis formalized as the true
+  complex axis --- a two-dimensional rotation algebra $a+bJ$, $J^2=-1$, where
+  $\sqrt{-1}$ exists \emph{before} projection (\texttt{ComplexAxis.lean});
+\item 00:23--00:27: the user re-states the 08-07 basepoint-drift
+  conjecture against the freshly built complex axis and sharpens it: since
+  the complex plane's axis carries the naturals, the lambda basepoint has
+  moved onto the complex axis --- \emph{the basepoint has drifted, its
+  position is not the origin but some transform of $i$} (user, 00:23,
+  quoted in the session log). Then (00:25): ``that so-called real axis is
+  very suspicious --- I suspect it is not a real number axis at all, but
+  another fake complex axis''. This is where the ``fake real axis'' term
+  enters the log; the user uses it consistently from then on. Both
+  statements were formalized the same night: the basepoint drift (the true
+  position is unobservable under projection) and the fake-real-axis theorem
+  (the real axis is a sub-algebra $\{\langle a,0\rangle\}$ of the same
+  structure, its position unobservable --- the ``origin illusion'');
+\item 00:28--00:29: C011 + C012 filed as the first claims of the direction;
+\item 00:53--02:04: the chain C013--C025 (projection frame, prime circles
+  C012--C018, critical-line geometry C019--C022, prime-circle products
+  C023--C024, Euler-product convergence with the zero-free region C025);
+\item 02:54: session archived with C011--C022.
+\end{itemize}
+
+\paragraph{The claim chain C011--C025, item by item.} The direction is a
+single intuition chain, each link formalized in Lean (all PROVED, novelty
+KNOWN --- restatements of classical mathematics; the record states
+explicitly, per the user's instruction, that no claim of proving the
+Riemann hypothesis is made and mathlib's official statement remains
+unproved):
+
+\begin{enumerate}
+\item \textbf{C011 (projection construction of the complex plane)}: the
+complex axis is the projection of a two-dimensional rotation algebra
+$ComplexAxis = \{\langle a,b\rangle\}$, $J=\langle0,1\rangle$, $J^2=-1$;
+$\sqrt{-1}$ exists before projection; basepoint drift under projection
+(the basepoint's true position is unobservable --- the user's ``fake real
+axis'' is the theorem: the real axis is a sub-algebra of the complex
+rotation algebra, not an independent axis; its position is unobservable
+under projection --- the ``origin
+illusion''). Filed 08-12 00:29 (commit 133f353).
+\item \textbf{C012 (prime drift positions)}: primes land on translated
+integer points of the drift axis; six positional observations
+(integer decomposition $n\cdot p$ prime $\Rightarrow n=1$, irrationals
+have no integer multiple, harmonic identities) formalized in
+\texttt{PrimeDriftPositions.lean}, 00:00--00:12, commit 7fdcb91.
+\item \textbf{C013 (Riemann direction in the projection frame)}: inversion
+drift, partial sums, and the critical line as 15 theorems in the
+projection frame, 00:53--01:02 (commit 7c0feb8).
+\item \textbf{C014 (sums of two squares, C015 curling)}: a prime
+$p \not\equiv 3 \pmod 4$ is the norm $a^2+b^2=p$ of some complex point
+(citing mathlib's Fermat two-squares theorem); the inversion
+$\mathrm{recip}\, z = \overline z / |z|^2$ curls infinity back to
+finiteness (for every $\varepsilon$ there is $R$ with $|z|>R \Rightarrow
+|\mathrm{recip}\, z|<\varepsilon$), is an involution, and satisfies
+$|\mathrm{recip}\, z| = 1/|z|$ --- the geometric mechanism of analytic
+continuation. C014 commit 20df6b6 (01:13--01:21), C015 commit de3e966
+(01:38).
+\item \textbf{C016 (lattice points on a circle)}: the orbit structure of
+integer points on prime circles, uniqueness via the Gaussian-integer UFD
+($\mathbb Z[i]$ is a Euclidean domain), 01:42 (commit e235d09).
+\item \textbf{C017 (prime circles and conjugate pairing)}: a prime
+$p\equiv1 \pmod 4$ circle carries exactly one orbit of 8 lattice points
+(up to units $\pm1,\pm i$), splitting into conjugate Gaussian primes;
+01:55 (commit edbc099).
+\item \textbf{C018--C022 (critical-line geometry)}: the critical line as
+the inversion--translation duality center (C019), the critical-line circle
+through 0 and 2 (C020), the reflection-condition equivalence
+(line $\iff$ reflection condition $\iff$ circle), and the functional-
+equation symmetry restated algebraically --- explicitly not a claim about
+zero positions.
+\item \textbf{C023--C024 (prime-circle products and geometric splitting)}:
+products of prime circles and their decomposition into conjugate pairs
+under rotation.
+\item \textbf{C025 (Euler-product convergence and zero-free region)}: for
+$\mathrm{Re}(s)>1$, $\prod_p (1-p^{-s})^{-1} = \sum_n 1/n^s$ = mathlib's
+official $\zeta(s)$ (via
+\texttt{eulerProduct\_completelyMultiplicative\_tprod} +
+\texttt{Complex.summable\_one\_div\_nat\_cpow}); $\mathrm{Re}\ge1$ is
+zero-free.
+\end{enumerate}
+
+The honest boundary is recorded in the claim chain itself: every claim is
+labeled KNOWN (restatement), the Riemann hypothesis and the twin-prime
+conjecture are neither proved nor touched, and the positional claim on
+zeros (all nontrivial zeros on $\mathrm{Re}=1/2$) is not part of any
+claim. The methodology record (token economy: $\approx$700k tokens, 1009
+requests, 99.2\% context-cache retransmission) is reported as an
+efficiency case study, with the single data point that after a sleep
+interval the intuition compacts --- recorded, not concluded.
+
+\paragraph{First-completion times (Riemann direction).}
+The visualization was delivered 2026-08-06 17:55 (request 17:10, UTC+8), with
+the complex-base extension completed 18:09 and the persisted data 18:46. The
+first Lean no-\texttt{sorry} of the whole trail is C001 (semiconjugacy),
+completed 2026-08-07 11:31 (first Lean commit 10:53). The Riemann-direction
+chain C011--C025 was completed 2026-08-12 00:00--02:54; the technical record
+and the full research paper were dated and published 2026-08-12 (technical
+record DOI 10.5281/zenodo.21896990, full paper 10.5281/zenodo.21897167, and
+the earlier DOI 10.5281/zenodo.21896345 added to the main paper at the
+user's instruction 09:43--09:44, after the user corrected the model's
+referent choice at 09:44: ``no, the Riemann formalization's main paper'').
+The basepoint-drift result inside the Riemann direction is the
+first-completed instance the user cites for the ``first completion counts''
+rule. The user's instruction at 2026-08-13 03:05 --- ``revise the Riemann
+paper wording: every claim about 'proving' is what DeepSeek insisted on'' ---
+corrected the record's attribution: the unproved statements are the API
+model's insistence, not the user's claim.
+
+\section{The homework-exercise series (2026-08-13 $\to$ 08-15)}
+
+Parallel to the experiments, the trail produced a series of ``homework
+exercises'' for the framework's foundation paper: re-observations of classical
+problems through the Pat lens, each with its own Lean formalization anchored
+only to framework theorems. The series ran 2026-08-13 14:19 through
+2026-08-15 (25 reports: exercises I--XXII + Pat0 overview + summary).
+
+\textbf{Exercise I (P vs NP)} started the series at 2026-08-13 14:19 (session
+``PAT-view P vs NP paper and Lean verification''). The user's corrections
+steered it through three iterations in 27 minutes:
+\begin{itemize}
+\item 14:24 --- positioning correction: ``not the computation chapter of the
+  psyche paper, it is a homework exercise for the foundation chapter''; the
+  exercise expands claims R152/R153 (P vs NP in the Pat frame);
+\item 14:31 --- scope correction: ``do not over-enumerate, meaningless; under
+  this framework we trade speed for fuzziness and recover precision with
+  structure''; the initial 9-theorem enumeration was deleted, leaving the 4
+  mechanism theorems that carry the single thesis: NP's Pat semantics = ``use
+  fuzziness for speed (existence via phase-locking extrapolation R150), use
+  structure to recover precision (verification table: witness $\iff$ table
+  entry)''; the full build stayed green;
+\item 14:45--14:46 --- the user asked for a detailed cross-reference document,
+  and that all P vs NP material live in the exercise's own subfolder
+  (a self-contained package pattern that all later exercises follow);
+\item 14:48 --- citation instruction: ``cite as many living mathematicians,
+  philosophers, linguists and scientists as possible'', with the discipline
+  that every citation is verified via web search (no citations from memory).
+\end{itemize}
+
+\textbf{Exercises II--IX} (each: paper ZH/EN + Lean + claim + README) were
+written during 2026-08-13 in parallel sessions; at 18:26 the user asked to
+publish all exercise papers and Lean files. Ten DOIs were published
+(2026-08-13 18:26--18:37, 43 files, all HTTP 201). At 19:01 the user
+extended the requirement: ``up to exercise 14, all must have double-blind
+publication structure''; exercises X--XIV had just been created by the
+parallel sessions, and the double-blind packages (15 at that point) were
+built and published within minutes.
+
+\textbf{The exercise list (topic / anchor / claim).} Each exercise is
+self-contained (paper ZH+EN, Lean snapshot, claim YAML, README) and
+anchors only to framework theorems:
+
+\begin{itemize}
+\item \textbf{I: P vs NP in the Pat view (R157, 08-13 14:19--14:46)} ---
+expands R152/R153: NP's Pat semantics = ``use fuzziness for speed
+(existence via phase-locking extrapolation R150), use structure to recover
+precision (verification table: witness $\iff$ table entry)''; 4 mechanism
+theorems, 0 sorry; the cross-reference document added 14:45--14:46.
+\item \textbf{II: the 1 of each number domain (R158)} --- $\sqrt2/2$,
+complex, arbitrary $n$-ary, transcendental numbers: each domain's ``1''
+as its basepoint; 8 theorems, 0 sorry (PatNumberOnes.lean, anchored to
+R154's $\sqrt2/2$ projection).
+\item \textbf{III: Riemann conjecture and twin primes revisited (R159)}.
+\item \textbf{IV: trigger-stripping experiment (self-reference collapse
+initiation)} --- the mechanism by which unpaired self-reference collapses.
+\item \textbf{V: four interlock as the minimal self-consistent interlock
+(R160)}.
+\item \textbf{VI: interlock growth step and projection detachment
+(R161/R162/R163)}.
+\item \textbf{VII: five forces domain-by-domain Pat observation (R164)}.
+\item \textbf{VIII: Pat-native group representation theory (R165)}.
+\item \textbf{IX: physical space interlock structure (R166)}.
+\item \textbf{X--XIX: the seven millennium/classical problems re-observed}
+--- Navier--Stokes (R167), Hodge (R168), BSD (R169), Goldbach (R170),
+parity and primes (R171), twin-prime conjecture (R172), twin-prime gaps as
+an oscillation-period axis (R173), Collatz (R176), ABC (R179), odd
+perfect numbers (R180).
+\item \textbf{XVIII: the real axis in the Pat mapping architecture (R178)}
+--- the real axis as a projection of the complex rotation algebra.
+\item \textbf{XXI: continuum = closure of the Pat grid} and
+\textbf{XXII: composite numbers = multiple projection superpositions of
+primes} --- the two summary observations connecting the series back to the
+continuum construction (R150/R151/R163).
+\end{itemize}
+
+Every exercise carries the structure ``exercise / topic / Lean / DOI''
+(per the user's 08-14 12:47 re-qualification) and the declaration that it
+represents no mathematical conclusion, only an observation report based on
+Lean formalization; every Lean file compiles with 0 \texttt{sorry}.
+
+\textbf{Exercises XV--XXII} continued on 2026-08-14 (R167--R180: Navier--
+Stokes, Hodge, BSD, Goldbach, parity and primes, twin primes, Collatz, the
+real-axis mapping architecture, ABC, odd perfect numbers). On 2026-08-14
+12:47 the user re-qualified the whole series: every exercise must carry the
+structure ``exercise / topic / Lean / DOI'' and declare that it
+\emph{represents no mathematical conclusion, only an observation report
+based on Lean formalization}. The series converged on 2026-08-15 with 25
+reports, all with Lean 0-\texttt{sorry} formalizations.
+
+\section{The user's theoretical findings: the token-system theory (2026-07-29 $\to$ 08-14)}
+
+Before and during the E-series, the user built a theoretical layer about
+what training intuition is and how representations should be organized.
+The E-series is its empirical testing ground; the framework formalizes its
+surviving parts. This section records the findings themselves (verbatim,
+with timestamps), each with its later landing point in the experiments or
+the formalization.
+
+\begin{enumerate}
+\item \textbf{Induction and deduction are construction and intuition}
+(2026-07-29, thinking document): ``I understand that feeling and expression
+are like induction and deduction --- a pair of inverse structures;
+induction relies on construction, deduction relies on intuition. This
+means that even within the same expression system, receiving and
+expressing, feeling and executing, are very likely \emph{not to use the
+same token} even in the same modality.'' Landing: the symbol/concept layer
+separation of the token system and E2 (symbol mapping direction).
+\item \textbf{The problem is also an element} (2026-07-29 22:46): ``the
+problem/operation and the data are isomorphic --- both are elements, both
+are logic-token vectors.'' Landing: the four-question-type system
+(judgment / choice / fill-in / computation), where the question itself is
+an element sequence; later the whole sample-synthesis architecture.
+\item \textbf{Formal reasoning is the position of tokens, not tokens}
+(2026-07-29 18:38): ``formal reasoning is essentially not tokens, but
+\emph{positions} of tokens; induction is the discovery of positions,
+deduction and abduction are the use of positions; and a position can be a
+coordinate in a matrix, not necessarily a graph relation'' (the model had
+wrongly narrowed positions to graph relations; the user corrected:
+``who said position must be a graph relation? Can't it be a position in
+some matrix?''). Landing: the position-value representation study (E6) and
+the chain-length representation.
+\item \textbf{The knowledge starfield is a high-dimensional Hilbert space,
+not a tree} (2026-07-30 correction): ``my understanding of logical
+abstraction factorization was completely wrong; the real knowledge
+starfield is a high-dimensional Hilbert space, not a tree''; and ``$=$/$\equiv$
+is a set of multiple logic tokens in the space (the intension and
+extension of a concept); independent points are the properties (logic
+tokens) that compose things''. Landing: the logic-token design discipline
+--- a concept is a token set, an element is a composition, and a
+``collision'' (two concepts sharing a token pattern) is an incomplete axis
+set, not a bug.
+\item \textbf{Token cancellation} (2026-07-30): ``only tokens that all
+input elements share \emph{with the same value} are cancelled'' (the
+user rejected the model's ``cancel 0'' shortcut: ``why cancel 0? My
+requirement was: if all elements at the input layer share the same token,
+cancel that token; I never said cancel 0''). Cancellation is set
+intersection --- pure compilation, no dimensional degeneration in high
+dimensions. Landing: the cancellation/collapse mechanics of the v2--v5
+training pipelines.
+\item \textbf{The sample-size information bound (Mastermind steps)}
+(2026-07-29 22:20--22:24): ``data synthesis should guarantee that every
+logic token pairing is trained enough --- like the four-color vs
+eight-color guessing game: you cannot limit both to the same number of
+steps''; ``the minimum guessing-game steps: given eight colors and four
+positions, each guess reports how many colors and how many positions are
+correct'' --- the sample count has an information-theoretic floor.
+Landing: information-gain sampling (the halving experiment, 22:35; the
+first generalization 22:39:12) and later the E-series sample budgets.
+\item \textbf{Weight compression} (2026-07-30 08:17): ``I understand this
+is essentially training more fully with fewer logic tokens --- what we are
+doing is equivalent to compressing weights'' (registering the logic gates
+AND/OR/NOT/XOR as logic tokens: the gates share the boolean polarity
+axes, so one token set covers eight operators). Landing: the 47\% $\to$
+79\% $\le$-generalization result when logic-gate co-training completed the
+parallel counterparts (07-30 08:45); the ``compression via shared axes''
+principle behind the token vocabulary.
+\item \textbf{Parallel logic tokens, not parallel elements}
+(2026-07-30 05:30): ``once all logic tokens of an element are
+sufficiently trained through parallel logic tokens, the element
+generalizes even if never trained''. Landing: the 55\% vs 90\% two-pole
+(leaving $\le$ with a broken counterpart axis vs complete counterparts);
+the E-series two-pole designs.
+\item \textbf{The convergence phenomenon as an overfitting question}
+(2026-08-14): the observed token-training convergence (loss 6.59 $\to$
+1.53) must be examined for whether it is overfitting; the author's
+exploration starts from ``what changes under pure-intuition overfitting''.
+Landing: the overfitting discussion in the observation report and the
+E-series recovery judgments.
+\item \textbf{Directionality as a primitive notion} (2026-08-01):
+direction must have a precise mathematical/logical definition
+(directed/undirected), because directions determine which pairs can be
+declared (R136: directions must be declared in pairs $\{d,-d\}$, twice
+declared = asymmetry). Landing: the paired-declaration law and E18
+(paired 5/9 vs one-way 1/9).
+\item \textbf{Symmetry as dimensionality reduction, the restoration
+point = midpoint} (2026-08-15 06:00): ``symmetry is dimensionality
+reduction''; the restoration point (midpoint) of a symmetric pair is a
+generation rule. Landing: R163 (endogenous continuum construction) and
+E14 (symmetry center not at 0; center drift extrapolates).
+\item \textbf{Orthogonality is itself a symmetry} (2026-08-15 09:14) and
+\textbf{two symmetry groups localize a direction} (09:19, I7v): ``Pat0's
+declaration must be two groups of symmetries; any thought experiment based
+on a single dimension is wrong''. Landing: the 09:16--09:19 verification
+(double declaration 5/5 stable; direction localization 16/16 $\times$ 3
+seeds) and the logical-completeness project (Section~8.1).
+\item \textbf{The logical completeness theorem} (R031, C1--C7): the
+decoupling operator $D$ (R1 exclusion + R2 cancellation + R3 layering)
+$\Longrightarrow$ completeness at any order/element/subject-object:
+perfect OOD. Landing: Section~8.1 (verification project 2026-08-15
+09:14--09:47).
+\item \textbf{Mechanics symmetries come in interlocked orthogonal pairs}
+(2026-08-16, R233, 29 theorems): each degree of freedom is a four-phase
+interlock pair; the symplectic structure $J^2=-I$; the full embedding is
+12 pairs $= \mathbb C^{12}$; the gravitational direction is asymmetric
+(structure layer has no privilege, action layer is one-way). Landing: the
+R233 formalization (29 theorems, 0 \texttt{sorry}) and the E18 mechanics-
+token experiment (paired declaration 5/9 vs one-way 1/9).
+\item \textbf{The five-layer token system B/C/S/G/P} (2026-07-29 $\to$
+08-16): basepostulate (B) / concept (C) / symbol (S) / grammar (G) /
+presentation (P); the layers have distinct roles --- B/C are the meaning
+layer (what things are), S/G are the expression layer (how things are
+written and arranged), P is the concrete notation (symbols with
+precedence and associativity). A token is one thing; the JSON files are
+projections of it. Landing: the whole v5 tokenizer and the three mapping-
+judgment theorems below.
+\item \textbf{The three mapping-judgment theorems} (2026-08-16
+16:17--16:23, the user's correction re-located them): how to \emph{judge}
+the multi-to-multi mappings between layers --- (i) \textbf{symbol-norm
+theorem}: the judgment of the multi-to-multi mapping from symbols to logic
+and intuition (every target must be resolvable; ambiguity converges by
+context; unresolvable = non-norm); (ii) \textbf{presentation-legality
+theorem}: the judgment of the mapping from logic and intuition to
+presentation (every presentation target must be resolvable; numeric
+coincidence without declaration is illegal); (iii) \textbf{intuition-
+precision theorem}: the judgment of the mapping from intuition to logic
+and presentation (the intuition-token interface must be definitionally
+resolvable, must not impersonate a logic concept; precision is judged by
+two-pole comparison; polarity-confusion events are the canonical failure).
+A fourth theorem (symbol $\to$ presentation) completes the five-layer
+coverage. Landing: \texttt{MappingJudgmentTheorems.lean} (5 theorems, 0
+\texttt{sorry}, 2997 jobs) with the experiment-coverage matrix
+(E6/E4/E5/E12/E13/E15/E14 + R065) --- Section~8.2.
+\item \textbf{Symbols are not values; numerals are intuition} (2026-08-15
+06:54): ``numeral is itself intuition; the true numeral is the successor
+chain from the basepoint; two successors from the basepoint are addition''.
+Landing: E6 (structure-bearing representation) and the whole chain-length
+representation of the E-series.
+\item \textbf{The head paradigm: same-kind/intension-extension/same-value}
+(2026-07-31): the head is determined by whether tokens are same-kind,
+and within same-kind by the same-value relation of their intension/
+extension --- not by hand-crafted heads. Landing: the head-router design
+of the v2 trainer and the token-level judgment discipline.
+\item \textbf{Number-symbols need both reference and definition}
+(2026-08-01): the numeral symbol's signifier vs referent (the symbol
+[3] vs the concept 3 differ in token composition); every derived token
+needs a definition proposition, not only a derivation. Landing: the
+definition-layer discipline (E4/E5: definitions are invisible to
+training) and the token-system maintenance rules.
+\end{enumerate}
+
+The theoretical layer and the empirical layer are kept separate in this
+record: the findings above are the user's claims (each with its verbatim
+timestamp), the E-series results are the witnesses, and the Lean theorems
+are the mechanical verification. No finding is promoted to a theorem
+without a Lean proof; no E-result is promoted to a law without its
+two-pole evidence.
+
+\section{The empirical trail: E1--E18, experiment by experiment}
+
+The series is design-driven: each experiment answers the question raised by
+the previous one. We document each experiment individually --- design reason,
+procedure, result, and significance --- so that the trail can be audited step
+by step. Configuration throughout: dim 64, layers 2, epochs 60 (unless noted),
+lr $10^{-3}$, seeds $\{0,1,2\}$, pure next-token transformer, token-level
+judgment (full-sequence reconstruction; position-level accuracy is not
+trusted).
+
+\subsection{E1: extraction-channel ablation (ablate\_channels)}\hfill\textit{(first success: 2026-08-15, experiment day)}
+
+\textbf{Design reason.} Before any law can be claimed from an OOD result, the
+judgment itself must be strict: ``training intuition'' is an unobservable
+construct, and every claim about it needs a decision procedure. The trail
+distinguishes three extraction channels through which a training result can
+arise --- the \emph{sample} channel (what the training samples carry), the
+\emph{construction} channel (what the representation's construction rules
+carry), and the \emph{arrow} channel (what the pre-defined A-layer arrows
+carry). The question is which channel is \emph{decisive}: remove it, and the
+OOD result must change. This is a completeness-style elimination: a channel
+is called decisive only if its removal is witnessed by a two-pole change
+(1-OOD $\to$ 0-OOD or the reverse), never by a single observation.
+
+\textbf{Procedure.} Domain: $\mathbb Z/7$ (mod 7), where the multiplicative
+inverse exists for every non-zero element --- a non-degenerate point probe
+that the additive domain cannot provide. Baseline: all three channels
+present. Then each channel was removed one at a time, every combination over
+multiple seeds, training accuracy and OOD judged per seed.
+
+\textbf{Result.} Only the sample channel is decisive: removing it changes
+the outcome; removing construction or arrows alone does not. The two-pole
+evidence: with samples present, OOD succeeds; with samples removed, it
+collapses --- regardless of construction or arrow status.
+
+\textbf{Token-level judgment.} All results reported as full-sequence
+reconstruction (sample-pair/total + position-level collapse localization);
+aggregate accuracy alone is not trusted.
+
+\textbf{Significance and declaration boundary.} Structure still carries
+information (ontology: the representation's construction rules and arrows
+are what the samples are \emph{about}), but extraction must pass through
+samples (epistemology: the training process reads samples, not structures).
+The claim is about \emph{which channel decides the training outcome}, not
+about structure being useless --- the two statements are separated so that a
+reader cannot conflate them.
+
+\subsection{E2: symbol mapping direction (sym\_map\_exp)}\hfill\textit{(first success: 2026-08-15, experiment day)}
+
+\textbf{Design reason.} The token system separates a symbol layer (how things
+are written) from a concept layer (what things are). The question: does the
+direction of the mapping matter? A bare symbol $\to$ concept mapping crosses
+layers; a concept $\to$ concept mapping stays within one layer. If training
+intuition is layer-sensitive, the two directions must behave differently;
+if not, the layer distinction is presentation-only.
+
+\textbf{Procedure.} Two training setups, same vocabulary, same seed set:
+(a) symbol tokens mapped directly to concepts (cross-layer), (b) concepts
+mapped to concepts (same-layer). Training accuracy and OOD compared across
+seeds.
+
+\textbf{Result.} Symbols must map to \emph{structured} concepts; a bare
+symbol mapped directly (without a structured target) is unstable --- the
+OOD collapses, while the same symbol mapped through a structured concept
+extrapolates.
+
+\textbf{Token-level judgment.} The collapse is located at the symbol-to-
+concept junction (the first token after the symbol); the input head passes,
+the failure is the mapping itself.
+
+\textbf{Significance and declaration boundary.} This fixes the symbol
+discipline used throughout the trail: a symbol is not a value, it points at
+a structured concept; ambiguity is resolved by context, never by the symbol
+alone. The claim is about mapping \emph{direction and target structure}, not
+about the symbol layer being eliminable --- presentation remains necessary
+for expression.
+
+\subsection{E3: pure-structure nesting foundation (succ\_nest\_exp)}\hfill\textit{(first success: 2026-08-15 06:48, OOD 36/36; preceded by single-operation failures 06:43 OOD 0/15, corrected to mixed training)}
+
+\textbf{Design reason.} Before any law about anchors, notation, or 0, the
+trail must answer the foundation question: is isomorphic nesting --- a chain
+whose length is countable and whose parts are shared --- learnable at all?
+If nesting is not learnable, nothing that follows can stand. The logic is
+layered: (i) numerals as basepoint successor chains, (ii) addition and
+multiplication as chain-length operations, (iii) 0 as the empty chain.
+
+\textbf{Procedure.} 4 tokens (zero/succ/addition/multiplication), succ-nested
+representation, addition and multiplication with 0 fully enumerated, 5 seeds.
+Configuration: dim 64, layers 2, epochs 60, lr $10^{-3}$.
+
+\textbf{Result.} Convergence 1.000 $\times$ 5 seeds; OOD 36/36 (new-range
+chain lengths) and 0-combination OOD 60/60 $\times$ 4 seeds. The isomorphic-
+nesting foundation is stable.
+
+\textbf{Token-level judgment.} Full-sequence reconstruction passes for all
+36/36 and 60/60 samples; the per-position trace shows no collapse at any
+chain position (the chain is read left to right and reconstructed
+position-for-position).
+
+\textbf{User correction during the run (06:15--06:48).} The first attempt
+trained a single operation with small samples and failed (OOD 0/15): ``a
+single operation with small samples cannot be learned anyway'' (the earlier
+perfect generalization used 4816 mixed samples). The fix --- mixed training
+with the target screened --- is itself a recorded correction of the API
+execution: the model had to be steered from single-operation isolation to
+mixed-representation training before the 36/36 result appeared.
+
+\textbf{Significance and declaration boundary.} Chain-length structure is
+learnable and extrapolates within its representation. The claim is scoped
+to the succ-nested representation; it says nothing yet about other
+representations (that is E6) and nothing about anchors (that is E11).
+
+\subsection{E4: four definitions of 0 (zero\_exp)}\hfill\textit{(first success: 2026-08-15 06:54, OOD 60/60)}
+
+\textbf{Design reason.} 0 can be defined in at least four ways: axiomatic (a
+constant), structural (the empty chain), intuitive (the basepoint itself),
+or relative (the basepoint of the current frame). The question: does the
+\emph{definition} of 0 affect training? If the definition layer is invisible
+to training, the four definitions must train equivalently; if visible, they
+must diverge. This separates the definition layer from the representation
+layer --- a distinction the whole framework depends on.
+
+\textbf{Procedure.} Four definitions of 0 $\times$ multiple seeds, identical
+sample structure otherwise (succ-nested numerals, full 0-combination
+coverage), dim 64, layers 2, epochs 60.
+
+\textbf{Result.} All four definitions train equivalently: 1.000 training
+accuracy, OOD 60/60 across seeds. No divergence in any seed.
+
+\textbf{Token-level judgment.} The 0-combination OOD set (0+$n$, $n$+0,
+0$\times n$, $n\times$0, 0$\times$0) passes full-sequence reconstruction
+position-for-position; no collapse at the 0 token.
+
+\textbf{Significance and declaration boundary.} Training intuition is
+sensitive only to the representation form, not to the definition layer.
+The claim is scoped: definitions that \emph{produce the same representation}
+are indistinguishable to training; it does not claim all definitions are
+equivalent in general --- only that training cannot see the difference.
+This is the definition-layer invisibility law (law 5).
+
+\subsection{E5: 0-definition $\times$ succ-design matrix (zero\_succ\_exp)}\hfill\textit{(first success: 2026-08-15, 1.000 $\times$ 24 runs)}
+
+\textbf{Design reason.} E4 varied the definition of 0 alone. The design
+matrix completes the picture: 0's four definitions $\times$ succ's two
+designs (explicit concept token vs atomic counting) --- 8 combinations. If
+both axes are invisible to training, all 8 must train equivalently; any
+single divergence localizes exactly which layer is visible.
+
+\textbf{Procedure.} 8 groups $\times$ 3 seeds = 24 training runs, same
+sample structure (succ-nested, full enumeration), dim 64, layers 2, epochs
+60.
+
+\textbf{Result.} All 24 runs reach training accuracy 1.000; no group
+diverges. Succ's explicit/atomic design is as invisible as 0's definition.
+
+\textbf{Token-level judgment.} Verified on full-sequence reconstruction
+across all 24 runs (per-run sample pairs reported); no position-level
+collapse in any group.
+
+\textbf{Significance and declaration boundary.} The definition layer is
+invisible on both axes of the design matrix. Scoped claim: invisibility
+holds for the 8 tested combinations under succ-nested representation;
+representation changes (E6) are a different axis and are not covered here.
+
+\subsection{E6: structure-bearing vs bare-symbol representation (zero\_symbol\_exp)}\hfill\textit{(first success: 2026-08-15 08:36--08:37; 0-pole: third-representation OOD 0/32)}
+
+\textbf{Design reason.} E4/E5 showed the definition layer is invisible. The
+representation layer is the next candidate: is a position-value notation
+(implicit place value, nominal position tokens) equivalent to a true numeral
+(fully expanded successor chain)? The intuition to test: \emph{structure
+must be carried by the representation, not assumed}. A bare-symbol
+representation assumes the structure implicitly; a true numeral expands it.
+
+\textbf{Procedure.} Four representations A/B/C/D trained with identical
+sample content, then OOD-tested: A = application-chain (true numeral, the
+E3 representation), C = chain with value tokens; B/D = position-value /
+bare-symbol variants. 30 OOD probes per representation per seed.
+
+\textbf{Result.} A and C: OOD 30/30 (stable). B and D: OOD 0/30 (collapse).
+The two-pole is sharp: position-value needs structural support; the true
+numeral is a basepoint successor chain and extrapolates.
+
+\textbf{Token-level judgment.} The B/D collapse is located at the position
+layer (position 4--14 fails; input head and read-out pair pass) --- a
+mechanism fingerprint that distinguishes format-layer failure from
+operation failure, invisible to aggregate accuracy.
+
+\textbf{User correction (08:36).} The user's stripping discipline applied
+here: ``before a complete ablation comparison, every OOD result must be
+assumed to be an intuition path; differences exist only through
+comparison'' --- the third-representation 0/32 was only reportable after
+the same-representation baseline 32/32 existed (both poles observed).
+
+\textbf{Significance and declaration boundary.} Structure-bearing
+representation is necessary for extrapolation; bare symbols collapse. The
+claim is about \emph{representation form}, not about the mathematical
+content: both representations denote the same numbers, only the
+learnability differs.
+
+\subsection{E7: 0-combination holdout (zero\_hole\_exp)}\hfill\textit{(first success: 2026-08-15 07:22, 40/40 + far-OOD 24/24)}
+
+\textbf{Design reason.} A genuine OOD judgment requires that the test set
+contain no sample analogous to the training set. Earlier series trained
+0-combinations fully (E3--E5); this experiment holds out part of the
+0-combinations (some 0$\times n$ and $n\times$0 pairs) and asks whether the
+0-absorption law extrapolates to the held-out pairs.
+
+\textbf{Procedure.} Partial 0-combination training (5 of the 0-samples
+present), held-out 0-combinations as OOD (40 probes), plus a far-OOD set
+(24 probes, 0$\times5\ldots0\times9$ on chains never seen).
+
+\textbf{Result.} Held-out 40/40; far-OOD 24/24. The 0-absorption law
+extrapolates from 5 0-samples to 0$\times5\ldots0\times9$.
+
+\textbf{Token-level judgment.} Full-sequence reconstruction passes for all
+64 probes; the 0 token is reconstructed correctly at every position it
+appears (no position-level collapse).
+
+\textbf{Significance and declaration boundary.} 0 is not a special
+exception in the representation; it is chain-length 0, and its rules
+extrapolate exactly like any other chain rule. The claim is scoped to the
+succ-nested representation; the ``0 is special'' hypothesis (needing
+special training) is rejected by the evidence, not by assumption.
+
+\subsection{E8: 0-multiplication vs nonzero multiplication (zero\_vs\_nz\_exp)}\hfill\textit{(first success: 2026-08-15 07:25, 0-multiplication zero-shot 45/45)}
+
+\textbf{Design reason.} E7 showed 0-absorption extrapolates when some
+0-samples are present. The sharper question: is 0 special at all? Train
+\emph{only} nonzero multiplication (0-multiplication zero-shot), then test
+0-multiplication. If 0 is chain-length 0, the multiplication rule must
+extrapolate to it without any 0-sample; if 0 needs its own training, it
+collapses.
+
+\textbf{Procedure.} Nonzero-multiplication training only; OOD: all
+0-multiplication pairs (0$\times n$, $n\times$0, 0$\times$0), 45 probes,
+multiple seeds.
+
+\textbf{Result.} 0-multiplication zero-shot OOD 45/45. The chain-length
+multiplication rule naturally extrapolates; 0 is chain-length 0, not a
+special case.
+
+\textbf{Token-level judgment.} All 45 probes pass full-sequence
+reconstruction; the 0 token at both operand positions reconstructs
+correctly (no position-level failure).
+
+\textbf{User instruction (06:54).} This experiment exists because of the
+user's correction: ``2. Then 0-multiplication must be compared against
+nonzero multiplication'' --- the model had to be steered from training
+0-combinations inside the sample set to leaving them out entirely.
+
+\textbf{Significance and declaration boundary.} The result is a law-level
+claim (0 = chain-length 0) with a zero-shot witness. Scoped: the claim
+holds for the succ-nested representation and the multiplication rule as
+encoded; it does not generalize to arbitrary operators by itself (E13
+tests operation distinction separately).
+
+\subsection{E9: succ shift invariance (succ\_shift\_exp)}\hfill\textit{(first success: 2026-08-15 07:33, succ(1..7) 14/14)}
+
+\textbf{Design reason.} The chain-length reading of numerals assumes that
+succ(0)$=$1 and succ(1)$=$2 are \emph{the same} succ applied to different
+chain lengths. If that is true, training succ(0)$=$1 alone (2 samples)
+must suffice for succ(1..7); if succ were position-dependent, it must fail.
+This is the shift-invariance question: is the successor rule translation-
+invariant in the representation?
+
+\textbf{Procedure.} Train only succ(0)$=$1 (2 samples) and the 0-identity
+samples; OOD: succ(1..7) (14 probes), with a value-zero error-sample control
+group. Multiple seeds.
+
+\textbf{Result.} succ(1..7) OOD 14/14. Shift invariance holds: 0$\to$1 and
+1$\to$2 are the same succ. The error-sample control shows no difference
+(value-zero mistakes do not affect the shift result).
+
+\textbf{Token-level judgment.} 14/14 full-sequence reconstruction; each
+succ chain position reconstructs correctly (the succ token at every
+position, the numeral at the end).
+
+\textbf{Significance and declaration boundary.} The mechanism of chain-
+length extrapolation is shift invariance: the successor rule is
+translation-invariant, which is exactly what makes a chain a chain. Scoped:
+invariance is witnessed for one succ axis; multi-axis behavior is E10.
+
+\subsection{E10: multi-axis succ independence (axis\_succ\_exp)}\hfill\textit{(first success: 2026-08-15 07:33, same-axis 12/12)}
+
+\textbf{Design reason.} E9 showed one succ axis is shift-invariant. Does
+the invariance transfer across axes? Two succ axes (succ$_a$ on axis a,
+succ$_b$ on axis b) may share the rule or be independent. The question is
+answered by training one axis and OOD-testing the other: if axes share the
+succ rule, cross-axis OOD passes; if each axis has its own succ, it
+collapses.
+
+\textbf{Procedure.} Dual-axis and single-axis training; single-axis
+ablation (train axis a only, OOD axis b). 12 probes per direction,
+multiple seeds.
+
+\textbf{Result.} Same-axis 12/12; cross-axis 0/12. Each axis's succ is
+independent; a single axis can be ablated away without the other
+recovering it.
+
+\textbf{Token-level judgment.} The cross-axis collapse is located at the
+first succ$_b$ token (the axis-identity position); same-axis passes
+position-for-position.
+
+\textbf{Significance and declaration boundary.} Succ is axis-relative: the
+rule is per-axis, not global. This is the first precise statement of
+``direction is declared per axis'' --- the empirical seed of the framework's
+paired-direction-declaration law (R136). Scoped: independence is witnessed
+for two axes; it does not claim a bound on the number of axes.
+
+\subsection{E11: basepoint drift (anchor binding) (basepoint\_drift\_exp)}\hfill\textit{(first success: 2026-08-15 07:43, same-anchor 32/32, drift 0/32; explicit bridging also 0/32)}
+
+\textbf{Design reason.} E9/E10 showed succ is per-axis. The deeper question:
+is the \emph{operation} itself bound to its basepoint (anchor)? If
+operations are anchor-bound, moving the anchor must break the OOD (drift
+0-pole), and adding an explicit bridge must fail to recover it; if
+operations are anchor-free, both must pass. This is the reference-frame
+question --- the empirical root of the basepoint-relative operator theory.
+
+\textbf{Procedure.} Anchor-0 and dual-anchor training; OOD three ways:
+same-anchor (baseline), drift (same operation, different anchor), explicit
+bridge (drift + declared equivalence between anchors). 32 probes per
+condition, multiple seeds.
+
+\textbf{Result.} Same-anchor 32/32; drift 0/32; explicit bridging 0/32.
+Operations are anchor-bound: every reference frame needs its own
+empirical evidence; a declared bridge does not transfer the operation.
+
+\textbf{Token-level judgment.} The drift collapse is located at the tail
+(``reads but cannot compute'': input head passes 32/32, the computation
+positions collapse, 0.92 position accuracy at the tail) --- a distinct
+mechanism fingerprint from E6's format-layer collapse.
+
+\textbf{User intuition (07:13--07:43).} The user's direction steered the
+whole design: ``the underlying choice is fine, the key is basepoint drift
+--- what must be compared is basepoint drift; value\_zero should be the
+basepoint's successor, right?'' The experiment compares exactly that:
+drift vs same-anchor, with value-zero as the basepoint successor.
+
+\textbf{Significance and declaration boundary.} This is the anchor-binding
+law (law 1): operations bind to their basepoint; each reference frame
+requires independent empirical evidence. The claim is about \emph{training
+transfer under anchor change}, not about mathematical invariance --- the
+mathematics of translation is trivially invariant, the training is not.
+This asymmetry (math invariant, training bound) is the phenomenon the
+framework formalizes.
+
+\subsection{E12: succ structure matrix, two-pole (succ-matrix experiment)}\hfill\textit{(first success: 2026-08-15 08:44 bridging 32/32; reproduction 2026-08-16 14:54--15:04 per-seed identical)}
+
+\textbf{Design reason.} E11 showed anchor binding. The same-basepoint
+question remains: two succs at the same basepoint (succ$_a$, succ$_b$) ---
+are they the same operation in different notations, or different
+operations? The answer decides whether notation is translatable. The
+two-pole design is deliberate: \emph{both} poles must be observed before
+any claim (two-pole discipline I7ag) --- the zero-shot notation change
+(0-pole) and the equivalence-declaration bridging (1-pole).
+
+\textbf{Procedure.} Five groups $\times$ 3 seeds = 15 runs (dim 64, layers
+2, epochs 60):
+\begin{itemize}
+\item[1a] baseline: train succ$_a$ (250 samples), OOD succ$_a$;
+\item[1b] zero-shot: train succ$_a$, OOD \textbf{succ$_b$} (same basepoint,
+notation change, no bridge);
+\item[2] bridging: succ$_a$ + equivalence/anchor-error samples (270), OOD
+\textbf{succ$_b$};
+\item[2$'$] control: same 270 samples, OOD succ$_a$;
+\item[4] symmetry: succ$_a$/succ$_b$ mixed (252), OOD mixed.
+\end{itemize}
+
+\textbf{Result.} All 45 runs (5 groups $\times$ 3 seeds $\times$ 3
+independent runs) reach training accuracy 1.000. OOD: 1a 32/32; \textbf{1b
+0/32}; \textbf{2 32/32}; 2$'$ 32/32; 4 32/32. The two-pole (0/32 vs 32/32)
+never deviates across seeds or runs.
+
+\textbf{Token-level judgment.} The 1b collapse is located at the
+notation-branching position (the first succ$_b$ token); the input head
+passes (32/32 input reconstruction), the failure is the notation fork.
+Aggregate accuracy hides this; token-level reporting exposes the
+mechanism fingerprint.
+
+\textbf{User discipline applied.} Two-pole pre-declaration (I7ag): a
+comparison may only be claimed when both poles are observed. 1b is the
+0-pole, 2 is the 1-pole; the claim ``equivalence declarations bridge
+notations'' is licensed only by the pair.
+
+\textbf{Reproduction (2026-08-16 14:54).} The user asked to reproduce the
+transformer experiments once more. E12 was re-run (15 runs), then run a
+third time inside the self-contained package; all three runs agree
+per-seed. The reproduction is part of the evidence chain, not a
+re-derivation.
+
+\textbf{Significance and declaration boundary.} Training intuition is
+notation-bound statistics: 1.000 training accuracy does not transfer to an
+untrained notation; OOD 1.0 proves only that statistics extrapolate within
+that representation. Equivalence-declaration samples (pairwise
+declarations; anchoring errors irrelevant) bridge the two notations ---
+declarations make the information point at the correct structure. This is
+the notation-translatability law (law 2) and the empirical seed of the
+phase-locking claim (R138).
+
+\subsection{E13: operation-distinction extrapolation (succ\_disc\_exp)}\hfill\textit{(first success: 2026-08-15 08:48, 56/56)}
+
+\textbf{Design reason.} Can the training intuition distinguish operations
+that share representation parts? The confusion pairs (2$\times$2 vs 2+2,
+0$\times$2 vs 0+2) share every token except the operator. If operation
+distinction is carried by the operator token alone, the distinction
+extrapolates; if it depends on co-occurrence statistics, the OOD
+confusion pairs collapse.
+
+\textbf{Procedure.} Standard training (mixed operations, full 0 coverage);
+OOD: confusion pairs (56 probes) on chain lengths/values inside the
+training range but never co-occurring with the tested operator in the
+training set.
+
+\textbf{Result.} 56/56. Operation distinction extrapolates within the
+representation: the operator token carries the distinction, and the
+confusion pairs are resolved at every probe.
+
+\textbf{Token-level judgment.} 56/56 full-sequence reconstruction; the
+operator position and the result position both reconstruct correctly on
+every confusion pair.
+
+\textbf{Significance and declaration boundary.} This is the 1-pole of the
+distinction question. Its 0-pole is E16 (no fake samples: 14/28, 50\%,
+truth bias) --- the pair of experiments, not either one alone, establishes
+the claim ``distinction requires the operator's negative evidence''.
+Scoped: within-representation distinction extrapolates; cross-
+representation distinction is a different question (E15).
+
+\subsection{E14: symmetry center not at 0 (sym\_center\_exp)}\hfill\textit{(first success: 2026-08-15 06:00--06:16 midpoint OOD 1.000, epoch 13 (R163); formal re-run 2026-08-16, all OOD 100\% $\times$ 3 seeds)}
+
+\textbf{Design reason.} The user's observation: ``some symmetries have
+their axis not at 0 yet are natural numbers'' --- for a symmetric pair
+$\{a,b\}$, the center $c=(a+b)/2$ is a natural number; the symmetry axis
+(center) drifts from 0 to natural numbers. Does the training intuition
+follow? This connects to R163 (symmetry as dimensionality reduction:
+restoration point = midpoint) as a generation rule for the continuum
+construction.
+
+\textbf{Procedure.} Midpoint operation (midpoint token, chain-length
+representation), three groups $\times$ 3 seeds: (1) full-range
+extrapolation (train $a,b\in[0,8]$, OOD $[9,11]$); (2) center drift (train
+$[0,6]$, OOD centers $\ge 5$, 72 probes); (3) symmetric-pair restoration
+(train centers $\le 4$, OOD centers $5..7$).
+
+\textbf{Result.} All OOD 100\% (10/10, 72/72, 24/24 $\times$ 3 seeds;
+training accuracy 1.000). The symmetry axis (center) is \emph{not} an
+anchor: the center is a computable result of chain-length arithmetic
+$((\mathrm{len}(a)+\mathrm{len}(b))/2)$; with the structure fully expanded,
+the center's drift from 0 to any natural number extrapolates.
+
+\textbf{Token-level judgment.} Full-sequence reconstruction passes for all
+probes; the midpoint token and the center numeral reconstruct
+position-for-position in every group.
+
+\textbf{Contrast with E11 (both poles).} Basepoint (chain bottom) = anchor
+(drift collapses 0/32, E11); midpoint (symmetry axis) = generation rule
+(drift stable). The two kinds of ``axis'' are essentially different --- a
+distinction invisible to aggregate accuracy, exposed by the two-pole
+comparison.
+
+\textbf{Significance and declaration boundary.} R163's continuum
+construction (dyadic midpoint generation) is empirically extrapolable in
+the transformer. The claim is scoped to chain-length representation;
+cross-representation transfer is tested separately (E15).
+
+\subsection{E15: strict experiment (strict\_center\_exp)}\hfill\textit{(first success: 2026-08-16, zero-shot 26/26; cross-representation 0/26)}
+
+\textbf{Design reason.} E14's honesty boundary: its group-2 OOD partially
+overlapped trained $a,b$ values (combination extrapolation). The strict
+version: fully zero-shot center drift (chain lengths never trained), plus
+the cross-representation two-pole (I7ag: one 0-pole and one 1-pole before
+claiming).
+
+\textbf{Procedure.} Four groups $\times$ 3 seeds:
+\begin{itemize}
+\item[1] fully zero-shot center drift (train $a,b\in[0,4]$, OOD $[5,9]$,
+chain lengths never trained);
+\item[2] cross-representation stripping (train chain-length, OOD
+position-value notation);
+\item[3] cross-representation bridging (chain-length + numeric-equivalence
+samples, OOD position-value);
+\item[4] symmetric pairs fully zero-shot (train centers $\le 3$, arms
+$\le 2$; OOD centers $4..6$, arms $3..4$).
+\end{itemize}
+
+\textbf{Result.}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Group & OOD & token-level & judgment \\
+\midrule
+1 zero-shot center drift & 26/26 $\times$3 & 793/793 (1.00) & chain-length arithmetic zero-shot \\
+2 cross-repr. stripping & 0/26 $\times$3 & 156/624 (0.25) & 0-pole: format layer (pos 4--14) \\
+3 cross-repr. bridging & 15--25/26 & unstable & new finding: numeric equivalence $\neq$ operation equivalence \\
+4 zero-shot symmetric pairs & 12/12 $\times$3 & --- & center+arms fresh, extrapolated \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Token-level judgment.} Group 2's collapse is located at the format
+layer (positions 4--14 all collapse; input head and read-out pairs pass)
+--- the same fingerprint as E6's B/D collapse, confirming the format-layer
+mechanism across experiments.
+
+\textbf{New finding (group 3).} Numeric equivalence does not equal
+operation equivalence: heterogeneous-representation bridging requires
+operation-level equivalence samples. Same-isomorphism notations bridge
+fully (E12); heterogeneous representations need operation-level
+declarations (E6's isomorphism/heterogeneity boundary reappears at the
+bridging dimension).
+
+\textbf{Significance and declaration boundary.} The two-pole holds (1 and
+4 at the 1-pole, 2 at the 0-pole): ``the symmetry axis extrapolates'' is
+strictly scoped to the representation-internal intuition path ---
+zero-shot extrapolation (chain-length arithmetic) succeeds, cross-
+representation collapses (format layer), and equivalence samples bridge
+only partially (operation-level equivalence required).
+
+\subsection{E16: distinction-task 0-pole, no fake samples}\hfill\textit{(first success: 2026-08-16, 14/28 = 50\%)}
+
+\textbf{Design reason.} E13 established the 1-pole of operation distinction
+(56/56 under standard training). The coverage audit exposed a single-pole
+problem: standard training includes negative evidence (fake results), so
+56/56 could be carried by the negative samples alone. The 0-pole: train
+\emph{without} fake samples (only true results), then OOD the confusion
+pairs. If distinction requires negative evidence, the no-fake training
+must collapse to chance.
+
+\textbf{Procedure.} Training: true samples only (no fake results). OOD:
+the same confusion pairs as E13 (28 probes).
+
+\textbf{Result.} 14/28 = 50\% --- chance. Without conflicting information
+the model cannot judge distinction (truth bias: the model defaults to
+``true'' when it cannot distinguish).
+
+\textbf{Token-level judgment.} The collapse is symmetric across the
+confusion pairs: both directions (0$\times$2 vs 0+2 and their reverses)
+fail at the operator position; no position-level asymmetry.
+
+\textbf{Significance and declaration boundary.} Together with E13, the
+two poles are complete: distinction requires the operator's negative
+evidence; standard training provides it, no-fake training does not. The
+claim is about \emph{evidence composition}, not about model capacity ---
+the same model, same vocabulary, same sample count, differs only in the
+presence of fake samples.
+
+\subsection{E17: two-pole pre-declaration (methodology upgrade)}\hfill\textit{(first success: 2026-08-16, both poles complete)}
+
+\textbf{Design reason.} E13/E14's single-pole problem was a process flaw:
+the two-pole discipline (I7ag) was established \emph{after} those
+experiments were run, so their 0-poles had to be added retroactively
+(E16). E17 upgrades the methodology: the 0-pole and the 1-pole are
+\emph{pre-declared at design time}, before any training runs.
+
+\textbf{Procedure.} Three groups, each with a pre-declared 0-pole and
+1-pole (six conditions), $\times$ 3 seeds:
+\begin{itemize}
+\item[a] equivalence: chain-length vs bare-symbol representation of
+equivalence (1-pole: chain-length; 0-pole: bare symbol);
+\item[b] distinction: true+fake vs no-fake training on the confusion pairs
+(1-pole: 28/28; 0-pole: 14/28);
+\item[c] center: chain-length midpoint vs cross-representation midpoint
+(1-pole: 10/10; 0-pole: 0/26).
+\end{itemize}
+
+\textbf{Result.} Every group shows the full two-pole column: a 0-pole
+collapse and a 1-pole pass, both pre-declared. (a) 50/50 vs 2/50; (b)
+28/28 vs 14/28; (c) 10/10 vs 0/26.
+
+\textbf{Token-level judgment.} Each pole reported token-level (sample
+pairs + position-level collapse localization) per the reporting
+discipline; no aggregate-only claims.
+
+\textbf{Significance and declaration boundary.} The methodology law: a
+comparison is claimed only when both poles were declared before the runs
+and both were observed after. The upgrade is itself part of the trail ---
+the discipline's history (E13/E14 retroactive, E16/E17 pre-declared) is
+recorded, not erased.
+
+\subsection{E18: mechanics-token full set}\hfill\textit{(first success: 2026-08-16, paired 5/9 vs one-way 1/9)}
+
+\textbf{Design reason.} The framework claims directions must be declared in
+pairs (R136). The experiment tests this at the token level: 8 mechanics
+tokens (succ/add/sub/mul/div/mid/recip/inv) in the same chain-length
+representation (single structure, not mixed --- the E17a representation
+lesson). Two training regimes: paired declaration (inverse pairs trained
+together) vs one-way (only the forward direction). OOD: new-range
+confusion pairs over all tokens.
+
+\textbf{Procedure.} 1-pole: paired inverse training; 0-pole: one-way
+training. OOD identical (new-range confusion pairs, all-token pairs).
+
+\textbf{Result.} Inverse-knowledge discrimination 5/9 (paired) vs 1/9
+(one-way): paired declaration makes difference decidable, one-way
+collapses --- R136's empirical witness. Forward extrapolation passes in
+both regimes (8/8, chain-length statistics). recip/inv fail in both
+regimes (4 probes): 2 samples are too few (EXP-SYM-INV replication) plus
+structural poverty of the natural-number domain.
+
+\textbf{Token-level judgment.} The paired advantage is located at the
+inverse-pair positions (the discriminator needs both directions to
+separate the pair); forward positions pass in both regimes.
+
+\textbf{Significance and declaration boundary.} Direction declarations
+are empirically effective in pairs; single declarations leave the
+discrimination undecidable. The claim is scoped to the 8 tested tokens and
+the chain-length representation; recip/inv's failure is a data-diversity
+statement (2 samples), not a token-design claim.
+
+\section{Five structural laws}
+
+The E-series converges on five laws, each with its two-pole evidence:
+
+\begin{enumerate}
+\item \textbf{Anchor binding (E11, first success 2026-08-15 07:43).}
+Operations bind to their basepoint; reference frames require independent
+evidence (same-anchor 32/32, drift 0/32, bridging 0/32). Math is
+invariant, training is bound --- the asymmetry the framework formalizes.
+\item \textbf{Notation translatability (E12, first success 2026-08-15
+08:44).} Same-basepoint notation change collapses zero-shot (0/32) and
+bridges with equivalence declarations (32/32); notation is translation
+only via declarations. (R138 phase locking.)
+\item \textbf{Shift invariance (E9, first success 2026-08-15 07:33).} The
+successor rule is translation-invariant within an axis (succ(0) alone
+yields succ(1..7) 14/14); extrapolation is chain-length arithmetic.
+\item \textbf{Structure-bearing representation (E6, first success
+2026-08-15 08:36--08:37).} Position-value collapses (0/30), true numerals
+extrapolate (30/30); structure must be carried by the representation, not
+assumed (E7/E8: 0 = chain-length 0, zero-shot 45/45).
+\item \textbf{Definition-layer invisibility (E4/E5, first success
+2026-08-15 06:54).} The definition of 0 and the design of succ are
+invisible to training (24/24 runs equivalent); training reads
+representation form, not definitions.
+\end{enumerate}
+
+Each law is stated with its polarity evidence and its scope; no law is
+claimed beyond its representation (chain-length, dim 64, layers 2).
+
+\section{From laws to formalized framework}
+
+The laws map to the Pat framework (basepoint-relative operator semantics):
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Law & Framework claim & Lean file (0 sorry) \\
+\midrule
+Anchor binding & R136 directions declared in pairs & \\
+Notation translatability & R138 phase locking & MutualLocking.lean (R143) \\
+Equivalence declaration & R143 interlock matrix det $\neq$ 0 & MutualLocking.lean \\
+Basepoint = anchor & basepoint-relative operators & BasepointMove.lean (C026) \\
+Continuum & R150/R151/R163 & PatCountableInfinitPhaseUnification.lean \\
+ & & ContinuumPatGrid.lean, ContinuumConstructible.lean \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The formalization: claims R136--R153 (the framework main chain) all PROVED
+with no \texttt{sorry}, completed 2026-08-13 13:31 (18 claims); the Toolkit
+branch extends to 150+ Lean files, claims R001--R232 (with 43 Ruler*
+experience-layer claims and TK1--TK5); full \texttt{lake build} passes
+(3631 jobs, mathlib v4.32.2, lean-toolchain pinned). Key theorems:
+$J^2 = -I$ (symplectic rotation, R149 four-phase interlock, $S^3$),
+the mechanics-symmetry refinement R233 (2026-08-16, 29 theorems, 0
+\texttt{sorry}): the four layers of mechanics symmetry, each interlocked
+symmetry pair orthogonal, the symplectic structure ($J^2=-I$; each degree
+of freedom = a four-phase interlock pair), the full symplectic embedding
+(12 pairs $= \mathbb C^{12}$), and the gravitational symmetry direction
+(structure layer has no privilege $\wedge$ action layer is one-way),
+mutual locking $\iff$ determinant $\theta(r+1/r) \neq 0$ (R143), the
+countable-infinity/continuum phase-locking unification (R150), the continuum
+as Pat-grid closure (R151), and the endogenous continuum construction with
+zero Nat in the definition layer (R163). The ZeroRelative branch formalizes
+the basepoint-relative algebra (C001--C025: heap retract, semiconjugacy,
+displacement equivalence, endogenous generation) and the operator semantics
+(C026--C038: every operator has its own basepoint, $\pm1$ as projection
+extremes, symplectic projection, Q2\_0 grid as sign encoding, state-matrix
+complex structure).
+
+\section{The logical completeness theorem and the three mapping-judgment theorems}
+
+\subsection{The logical completeness theorem (2026-08-15 09:14--09:47)}
+
+At 09:14 the user asked to review the whole process against the framework's
+logical completeness theorem and to design a formal verification project:
+``how do you run a logically complete experiment? And I conjecture that
+orthogonality itself is a symmetry --- can a single axis complete training?
+That needs to be compared.'' The theorem, as extracted from the claims
+ledger (R031, completeness C1--C7), states:
+
+\begin{quote}
+\emph{The decoupling operator $D$ (R1 exclusion + R2 cancellation + R3
+layering) $\Longrightarrow$ completeness at any order, any element, any
+subject-object: perfect OOD.}
+\end{quote}
+
+The verification project (same day):
+\begin{itemize}
+\item 09:16 --- orthogonality-declaration bridging succeeds same-anchor
+  (32/32); cross-anchor orthogonality is seed-dependent (B/C: 32/32, 32/32,
+  0/32), in contrast to the same-anchor stability of E12;
+\item 09:17 --- the \emph{double} declaration (orthogonality + equivalence)
+  restores stability: 5/5 across seeds. A single declaration is insufficient;
+\item 09:18---09:19 --- the user drew the corollary (I7u): if orthogonality
+  is a symmetry, there is no axis orthogonal to every axis; an ``orthogonal
+  axis'' is a phase on an orthogonality symmetry axis. Then the stronger
+  claim (I7v): \emph{two groups of symmetries are necessary to localize a
+  direction} --- Cartan--Dieudonn\'e: rotations are composites of two
+  reflections, a single reflection only defines $\pm$; therefore Pat0's
+  declarations must be two groups of symmetries, and any thought-experiment
+  based on a single dimension is invalid. Direction localization with two
+  symmetry groups: OOD 16/16 $\times$ 3 seeds (09:19);
+\item 09:22 --- the user asked for the minimum number of symmetry groups when
+  the declared directions are not two orthogonal axes (conjecture: 3 or 4,
+  because an orthogonal phase implies an angle mapping);
+\item 09:30--09:36 --- the completeness dimensions (order / element /
+  subject-object) re-verified token-level per the new reporting discipline
+  (algebraic axioms 12/12, involutions 12/12, truth/false separation 6/6);
+\item 09:19 --- the methodology was written up as the short paper
+  \emph{Logical-Completeness Experimental Design Methodology}, later merged
+  into the release package (``self-redemption series'').
+\end{itemize}
+
+\subsection{The three mapping-judgment theorems (2026-08-16 16:16--16:23)}
+
+On 2026-08-16 the judgment theorems for the token system were located as
+\emph{multi-to-multi mapping judgments}. The user's correction at 16:17
+fixed the two-theorem positioning:
+``the symbol-norm theorem is: how does one judge the multi-to-multi mapping
+from symbols to logic and intuition; the presentation-legality theorem is:
+how does one judge the multi-to-multi mapping from logic and intuition to
+presentation.'' The three theorems:
+
+\begin{enumerate}
+\item \textbf{Symbol-norm theorem} (symbols $\to$ logic/intuition): every
+  mapping target must be resolvable --- ambiguity converges by context
+  (no context = all candidates; given context = one); unresolvable
+  ambiguity = non-norm. Two symmetric directions (A: symbol $\to$ logic;
+  B: symbol $\to$ intuition).
+\item \textbf{Presentation-legality theorem} (logic/intuition $\to$
+  presentation): every presentation target must be resolvable (notation
+  context: precedence/associativity, concrete notation in the P layer);
+  numeric coincidence without declaration is illegal (equivalence bridging
+  must be declared). Two symmetric directions.
+\item \textbf{Intuition-precision theorem} (intuition $\to$ logic/
+  presentation): the intuition-token interface must be definitionally
+  resolvable (does not impersonate a logic concept); intuition-path
+  precision is judged by two-pole comparison; polarity-confusion events are
+  the canonical failure.
+\end{enumerate}
+
+A fourth theorem (symbol-presentation mapping) was added at 16:19--16:20,
+completing the five-layer mapping system (B/C/S/G/P). All four were
+formalized in \texttt{MappingJudgmentTheorems.lean} (5 theorems, 0
+\texttt{sorry}, \texttt{lake build} 2997 jobs) with an experiment-coverage
+matrix (E6/E4/E5/E12/E13/E15/E14 + R065), committed 16:23.
+
+\section{Timestamped evidence chain}
+
+The trail is anchored by six independent evidence sources (all in the
+artifact):
+
+\begin{enumerate}
+\item Session records (db.sqlite message/part, per-message timestamps,
+UTC+8; 55{,}047 messages, 2026-07-15 onward) --- the primary source;
+every timestamp in this paper is traceable to a session record.
+\item Task execution log: 2303 turns (turn\_usage; later extended to
+2773).
+\item Model-viewpoint phase records (daily) --- the API model's own
+claims separated from the user's, per the distillation-pressure
+corrections.
+\item git log commit timestamps (first Lean commit 2bc157e, 2026-08-07
+10:53; first Lean no-\texttt{sorry} C001 at 11:31 the same day;
+Riemann-direction archive ec87658 2026-08-12 02:54; full-project track
+df65309 2026-08-13 17:48).
+\item Experiment artifact file timestamps (E1--E13 results, 2026-08-15
+07:22--09:00; result files in the self-contained package, cross-checked
+against session records).
+\item Lean no-\texttt{sorry} timeline (R136--R153 completion 2026-08-13
+13:31; 786 no-\texttt{sorry} records extracted and deduplicated on
+2026-08-16).
+\item The four-phase classification record (2026-08-16): all 4068 user
+messages from 2026-07-29 classified as positive / leaning-positive /
+neutral / leaning-negative / negative (13 / 101 / 2159 / 37 / 1758 after
+deduplication to 2158) --- an independent audit of which statements were
+the user's affirmations and which were the model's.
+\end{enumerate}
+
+Key anchors (each with its session record): 2026-07-29 22:39:12 (UTC+8)
+first \emph{imperfect} generalization (halving experiment, 450 samples);
+2026-07-29 22:52 strongest early generalization (train 5 relations leave
+1: $\le$ 81\% $\to$ 90\%); 2026-08-06 17:10--18:46 Riemann visualization
+(delivery 17:55); 2026-08-07 10:53/11:31 Lean first commit / first
+no-\texttt{sorry}; 2026-08-12 00:00--02:54 Riemann formalization session
+(C011--C025); 2026-08-12 framework core claims (R134--R153) and the
+Riemann publication (09:43--11:56); 2026-08-13 13:31 all 18 framework
+claims PROVED; 2026-08-13 14:19--18:37 exercise series start and first
+publication (10 DOIs); 2026-08-14 12:47 exercise re-qualification;
+2026-08-15 04:01 first \emph{perfect} generalization; 2026-08-15
+07:22--09:00 E1--E13; 2026-08-15 09:14--09:47 logical-completeness
+verification project; 2026-08-16 14:54--15:04 E12 reproduction;
+2026-08-16 16:16--16:23 three mapping-judgment theorems; 2026-08-16
+self-contained package.
+
+\section{Human corrections steering the API execution}
+
+The trail is also a record of how the user's instructions corrected the API
+model's execution. We list the documented corrections (each with its session
+timestamp) because they are part of the evidence: they show which statements
+are the user's claims and which are the model's insistence.
+
+\begin{itemize}
+\item \textbf{2026-08-12 09:44} --- referent correction: ``no, the main paper
+of the Riemann formalization''. The model had picked the wrong document
+(Unified Framework instead of the Riemann main paper); the user
+disambiguated; the DOI was added to the right paper.
+\item \textbf{2026-08-12 11:08} --- attribution correction: the user's
+instruction that the Riemann paper must state explicitly: no claim of
+proving the Riemann hypothesis / all results are restatements of known facts
+/ novelty = KNOWN. (Later reinforced at 2026-08-13 03:05: ``revise the
+Riemann paper wording: every claim about `proving' is what DeepSeek insisted
+on'' --- the unproved statements are the model's insistence, not the user's
+claim.)
+\item \textbf{2026-08-13 14:24} --- positioning correction (exercise I): ``not
+the computation chapter of the psyche paper, it is a homework exercise for
+the foundation chapter''.
+\item \textbf{2026-08-13 14:31} --- scope correction (exercise I): ``do not
+over-enumerate, meaningless; under this framework we trade speed for
+fuzziness and recover precision with structure'' --- the 9-theorem
+enumeration was deleted, leaving 4 mechanism theorems.
+\item \textbf{2026-08-13 14:48} --- citation instruction (exercise I): ``cite
+as many living mathematicians, philosophers, linguists and scientists as
+possible'', with every citation verified (no citations from memory).
+\item \textbf{2026-08-14 12:47} --- series re-qualification: all exercises
+must carry ``exercise / topic / Lean / DOI'' and declare they represent no
+mathematical conclusion, only observation reports based on Lean
+formalization.
+\item \textbf{2026-08-15 09:14} --- completeness-check instruction: review the
+whole process against the logical completeness theorem and design a formal
+verification project; conjecture that orthogonality is itself a symmetry
+(single-axis training must be compared). Generated the 09:16--09:19
+double-declaration result and the two-symmetry-groups corollary (I7v).
+\item \textbf{2026-08-15} --- two-pole discipline (I7ag): a comparison may
+only be claimed when \emph{both} poles are observed (one 0-OOD and one
+1-OOD). E13's single-pole design was flagged by this rule and re-done as
+E16/E17.
+\item \textbf{2026-08-15} --- token-level reporting discipline: aggregate
+accuracy (0.99/1.0) is not sufficient; every claim must report full sample
+logs, token pair/total counts, and position-level accuracy (collapse
+localization). token\_report.py was built under this rule.
+\item \textbf{2026-08-15} --- intuition/structure stripping discipline:
+before a complete ablation comparison, every OOD result must be assumed to be
+an intuition-path result; structural stripping is mandatory.
+\item \textbf{2026-08-16 16:17} --- theorem-positioning correction: ``the
+symbol-norm theorem is the judgment of the multi-to-multi mapping from
+symbols to logic and intuition; the presentation-legality theorem is the
+judgment of the multi-to-multi mapping from logic and intuition to
+presentation''. The three mapping-judgment theorems were re-located under
+this definition.
+\item \textbf{2026-08-16 06:17} --- record-format correction: ``you need to
+improve this: the time the motivation was proposed, the time the experiment
+was completed (first completion counts, e.g., the basepoint drift in the
+Riemann direction), and the time the paper was written''. This rule
+generated the per-experiment first-success timestamps used throughout this
+paper.
+\item \textbf{2026-08-16} --- timeline correction: the first generalization
+is 2026-07-29 (22:39:12 UTC+8); the model had misdated it; the user
+corrected the record.
+\item \textbf{2026-08-16 06:18 / 06:21} --- attribution correction under
+distillation pressure: ``you have already claimed it as your own, you
+know?'' and ``it is not just this: you have already published what we
+discussed''. These corrections fixed the record's authorship boundary.
+\item \textbf{2026-08-16 14:54} --- reproduction instruction: ``reproduce our
+transformer experiments once more'' --- E12 re-run (15 runs, per-seed
+identical) + third in-package run.
+\end{itemize}
+
+\section{The user's questions, corrections, and examples}
+
+The trail is driven by the user's questions. This section records them
+verbatim (with session timestamps), because they are the actual research
+hypotheses --- each question determined the next experiment, and each
+correction fixed the record. The API model's role was execution and
+mechanical verification; the user's role was direction, judgment, and
+example.
+
+\subsection{Questions that steered the trail (verbatim, from the session log)}
+
+\begin{itemize}
+\item \textbf{2026-07-29 18:46} --- the first experiment: ``we train an
+addition model, without providing the definition of addition, only the
+computation cases within 1000, and see whether 5-digit addition can be
+learned'' (the pure next-token baseline: 2-digit 100\%, 3-digit 0\%).
+\item \textbf{2026-07-29 22:20} --- the information bound: ``the sample
+count should be calculated by the minimum guessing-game steps'' (Mastermind
+mechanism; led to the information-gain sampling and the halving
+experiment).
+\item \textbf{2026-07-29 22:39} --- the first generalization confirmation:
+``this means generalization happened, the necessary number of steps was not
+needed to get the necessary result. What is your halving logic, and which
+logic tokens generalized and which failed?'' (the first per-token
+analysis, 22:41).
+\item \textbf{2026-07-30 00:00} --- the research roadmap: ``in math and
+logic, propositions are consistent (no self-reference, no contradiction);
+once we enter medicine, social science, law, there are many contradictory
+propositions that must live in one framework. This needs research --- but
+first we solidify math and logic, by code practice.''
+\item \textbf{2026-07-30 00:42} --- the base-change conjecture: ``I suspect
+that base-change equivalence naturally carries multi-digit out'' (base
+change $\to$ addition generalization 81\%, multiplication 12\% --- the
+latter requiring its own training, as the user then corrected: ``of course
+multiplication must be trained'').
+\item \textbf{2026-07-30 05:30} --- the parallel-token principle: ``note it
+is parallel \emph{logic tokens}, not parallel elements --- once all logic
+tokens of an element are sufficiently trained through parallel logic
+tokens, the element generalizes even if never trained'' (verified: leaving
+$\le$ with a broken counterpart axis 55\% vs 90\% with complete
+counterparts).
+\item \textbf{2026-08-12 00:14} --- the honesty question: ``wait, so along
+this line of thought can the Riemann hypothesis be proved?'' (the model
+answered: no; all six theorems are OBSERVATION/KNOWN restatements, none
+touches the zeta function or zeros --- the honest boundary is part of the
+record).
+\item \textbf{2026-08-12 00:16} --- the true-complex-axis demand: ``we
+cannot construct the prime axis, but we can construct the complex axis
+from lambda calculus, right? Note I want the \emph{true} complex axis, not
+the fake one where each successor is the natural 1'' (the user rejects
+axes whose successor is pre-assumed to be the natural numbers; the true
+axis is multiplicative iteration --- rotation-scaling orbits).
+\item \textbf{2026-08-12 00:17} --- the projection hypothesis: ``for the
+construction of roots: suppose the complex axis is essentially the
+projection of the higher-dimensional structure $-1$ into human
+mathematical space; under this assumption, can it be constructed?''
+(formalized as the $a+bJ$, $J^2=-1$ rotation algebra, 00:19--00:21).
+\item \textbf{2026-08-12 00:23} --- the basepoint-drift statement: ``since
+our constructed complex plane carries the naturals on its axis --- do you
+know what this means? It means our lambda basepoint has moved onto the
+complex axis, i.e., the basepoint has drifted; its position is not the
+origin but some transform of $i$''.
+\item \textbf{2026-08-12 00:25} --- the fake-real-axis statement: ``then
+that so-called real axis is very suspicious; I suspect it is not a real
+number axis at all, but another fake complex axis, right?''.
+\item \textbf{2026-08-15 06:54} --- the numeral intuition: ``numeral is
+itself intuition; the true numeral is the successor chain from the
+basepoint ... and 0-multiplication must be compared against nonzero
+multiplication'' (E8's zero-shot design).
+\item \textbf{2026-08-15 07:13} --- the drift comparison: ``the underlying
+choice is fine; the key is basepoint drift --- what must be compared is
+basepoint drift. value\_zero should be the basepoint's successor, right?''
+(E11's design).
+\item \textbf{2026-08-15 08:36} --- the stripping discipline: ``before a
+complete ablation comparison, every OOD result must be assumed to be
+intuition; differences exist only through comparison''.
+\item \textbf{2026-08-15 09:14} --- the orthogonality conjecture: ``review
+the whole process against our logical completeness theorem, design a
+formal verification project on how to run logically complete experiments.
+Then a conjecture: I suspect orthogonality itself is a symmetry --- can a
+single axis complete training? It must be compared.''
+\item \textbf{2026-08-15 09:19} --- the two-symmetry-groups corollary:
+``orthogonality as symmetry yields the conclusion: two groups of
+symmetries are necessary to localize a direction; therefore Pat0's
+declaration must be two groups of symmetries; any thought-experiment based
+on a single dimension is wrong'' (verified: direction localization 16/16
+$\times$ 3 seeds).
+\item \textbf{2026-08-15 09:22} --- the minimum-groups question: ``if the
+declared directions are not two orthogonal axes, how many groups of
+symmetries are needed at minimum? I suspect 3 or 4, because if an
+orthogonal symmetry has phase, then angle has a mapping''.
+\item \textbf{2026-08-16 14:54} --- the reproduction instruction:
+``reproduce our transformer experiments once more''.
+\end{itemize}
+
+\subsection{Examples citing the mathematicians' consensus}
+
+The user's examples often cite established mathematical consensus and then
+re-interpret it under the projection hypothesis --- the pattern of the
+whole trail:
+
+\begin{itemize}
+\item \textbf{2026-08-07 (thinking document), translation vs inversion}:
+``mathematicians have told me that 1 and $1/a+1/b$ are surely symmetric,
+translation and inversion; I believe their construction. But under my
+hypothesis, $1/a+1/b$ is the projection of inversion-1 after the
+projection lost structure. If my hypothesis holds, it can only mean one
+thing: the basepoint has drifted --- the lambda-calculus origin has moved
+around the circle of radius 1 centered at 1''. The consensus (the
+symmetric pair) is preserved; the \emph{mechanism} (why they are
+symmetric) is re-derived from projection loss.
+\item \textbf{2026-08-07 (thinking document), irrationals}: ``I firmly
+believe irrationals are the remainder of some higher-dimensional structure
+after projection into our space lost part of the information-carrying
+structure. The reason is simple: every intuition-path construction moves
+along a direction away from the basepoint; only irrationals need to walk
+back. The unit ball in the higher dimension is complete 1 in one
+direction; projected into our world it leaves only $\sqrt2/2$ --- this is
+likely the irrational's 1''.
+\item \textbf{2026-08-09 01:27 (ChatGPT conversation), Church numerals}:
+``the lambda-calculus basepoint self-application iteration presupposes a
+concept distinct from the basepoint: the self-application operation,
+$\mathrm{lambda}(\mathrm{base},\mathrm{base})$. But in the concept I want
+to experiment with, there is no such operation: $\mathrm{base}(\mathrm
+{base},\mathrm{base})$'' --- the Church-numeral consensus is rejected as
+impure: it smuggles an implicit operation role, while the pure-relative
+design occupies operator/operand/basepoint with one primitive.
+\item \textbf{2026-08-15 09:19, Cartan--Dieudonn\'e}: the user's
+two-groups corollary was checked against the classical theorem that
+rotations are composites of two reflections (a single reflection defines
+only $\pm$); the consensus confirms the corollary rather than the
+framework being derived from it --- the direction-localization experiment
+(16/16 $\times$ 3) is the witness.
+\end{itemize}
+
+\subsection{Corrections during experiments (verbatim)}
+
+Beyond the record-format and attribution corrections of
+Section~9 (Human corrections), the experiment log contains execution
+corrections that directly changed designs:
+
+\begin{itemize}
+\item \textbf{2026-07-29 22:42} --- output-format correction: ``my
+requirement was to output the \emph{element's logic tokens}, not the
+element! And this means our prefix question format needs more space'' ---
+the model had been outputting truth values; the four-question-type system
+followed (22:49).
+\item \textbf{2026-07-29 22:54} --- architecture correction: ``the data
+synthesizer, result translator, and result analyzer must all be
+pluggable; changing one position in the concept token takes effect
+globally'' --- the JSONL-driven CLI architecture.
+\item \textbf{2026-07-30 08:00} --- ``legacy's logic tokens are incomplete;
+the information about `='' was not trained/sampled --- do you think this
+needs a logic token or training samples?'' (both, answered by the
+experiment: 47\% $\to$ 79\% with completed counterparts).
+\item \textbf{2026-08-15 06:15} --- ``a single operation with small
+samples cannot be learned anyway'' --- the failed single-operation run
+(OOD 0/15) was corrected to mixed training before E3's 36/36.
+\item \textbf{2026-08-16 16:17} --- the theorem-positioning correction for
+the three mapping-judgment theorems (Section~8.2).
+\end{itemize}
+
+\section{Reproducibility and provenance}
+
+The artifact is a self-contained package (also published as a standalone
+repository):
+\begin{itemize}
+\item Training: E12 one-command reproduction (5 groups $\times$ 3 seeds,
+GPU auto, 5--10 minutes); E17 two-pole pre-declaration; E15 strict
+experiment; full E1--E13 (~30 minutes). All results re-generate the
+package's report tables.
+\item Formalization: \texttt{lake build} (pinned lean-toolchain
+v4.32.2 + mathlib v4.32.2), 0 \texttt{sorry}.
+\item E12 reproduction fidelity: three independent runs (original $\times$2 +
+in-package) per-seed identical, no random drift.
+\item Provenance methodology: SHA-256-anchored release manifests, per-claim
+SHA256 publication, per-claim anonymous mirror (dual-repo: real +
+anonymized), and a publish pipeline (scan $\to$ SHA-256 digest $\to$ manifest $\to$
+real repo $\to$ anonymize $\to$ blind repo).
+\end{itemize}
+
+\section{Related work and conclusion}
+
+The empirical part relates to interpretability and OOD generalization studies
+of small transformers (known: OOD extrapolation depends on representation;
+cf.~\cite{power2022grokking,vaswani2017attention}); the formal part builds on
+heap/torsor algebra \cite{bergman2009universal} and the previously submitted
+Riemann-direction formalization (C011--C025). The trail as a whole ---
+observation $\to$ laws $\to$ framework $\to$ machine-checked theorems, with
+timestamped evidence --- is the contribution.
+
+\paragraph{Conclusion.} We record a complete research trail: from the 0/1 OOD
+dichotomy of a low-epoch transformer (2026-07-29, 22:39:12; E12: 0/32 vs
+32/32 across 45 runs) through eighteen individually documented experiments,
+five structural laws, and the Pat framework, to a Lean formalization
+(R136--R153 all PROVED, no \texttt{sorry}; 3631 jobs; R150/R151/R163
+continuum chain). Three parallel threads are part of the same trail: the
+Riemann direction (2026-08-06 visualization $\to$ 2026-08-12 C011--C025
+formalization and publication), the homework-exercise series (2026-08-13
+$\to$ 08-15, 25 reports, all Lean 0-\texttt{sorry}), and the verification
+methodology itself --- the logical-completeness project (2026-08-15
+09:14--09:47: decoupling operator $D$ = R1 exclusion + R2 cancellation +
+R3 layering, completeness at any order/element/subject-object, the
+two-symmetry-groups corollary) and the three mapping-judgment theorems
+(2026-08-16 16:16--16:23, \texttt{MappingJudgmentTheorems.lean} 0
+\texttt{sorry}).
+
+The trail is timestamped by seven independent evidence sources and
+reproducible from a self-contained package. Its writing follows the
+recording disciplines of the trail itself: every passage states its
+premises before its conclusion (no logical leaps: a claim is licensed only
+by its two-pole evidence); every symbol, number, and timestamp is
+traceable to a session record (no unanchored notation); every statement
+carries its provenance --- the user's instruction, the model's insistence,
+or the mechanical verification --- (no unverifiable assertion); and the
+user's intuitions are recorded separately from the API model's
+interpretations, with the corrections that separated them (no conflation
+of intuition path and logic path). Under provenance pressure, we argue,
+recording the \emph{path} --- not only the destination --- is the
+defensible form of priority: each experiment, each claim, and each theorem
+carries its own timestamped anchor, and each anchor is either a session
+record, a commit, a file timestamp, or a machine-checked proof.
+
+\section*{Theorem inventory (selection)}
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+Claim & File & Content \\
+\midrule
+R136 & (framework) & directions declared in pairs $\{d,-d\}$ \\
+R138 & PhaseRelationLocking.lean & phase relation locking \\
+R143 & MutualLocking.lean & interlock $\iff$ det $\neq$ 0 \\
+R149 & Pat4Phase.lean & four-phase interlock, $S^3$, $J^2=-I$ \\
+R150 & PatCountableInfinitPhaseUnification.lean & countable/continuum \\
+R151 & ContinuumPatGrid.lean & continuum = Pat-grid closure \\
+R163 & ContinuumConstructible.lean & endogenous, zero Nat \\
+C001--C010 & ZeroRelative/ & heap, semiconjugacy, generation \\
+C026--C038 & ZeroRelative/ & operator semantics, Q2\_0, state structure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
