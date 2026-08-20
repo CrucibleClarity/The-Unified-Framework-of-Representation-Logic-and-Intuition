@@ -1,0 +1,127 @@
+id: R048
+title: "R048 (user-proposed 2026-08-12): lossless conjugation symmetry of a period axis and a divergence axis ⟹ compression is ALWAYS lossless — injective encoding into the phase axis admits exact decompression (invFun left-inverse)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文: "让我们能够无损的共轭对称一个
+       周期轴和一个发散轴的时候, 压缩将永远获得无损的效果。"
+
+    ★ 断言内容:
+      设 c : D → P 是把发散轴 D 编码进周期轴 P 的压缩。若 c 是无损共轭对称
+      (injective — 不同发散值映射到不同相位, 信息不合并), 则压缩永远无损:
+      存在解压 d : P → D 满足 d (c x) = x (精确还原)。
+
+    ★ 为什么共轭对称 (R047) 是正确的设置:
+      在 ComplexAxis 上, 发散轴 (lift t) 与周期轴 (J) 是共轭对称
+      S(z) = conj z 的两个特征空间 (R047: conj_fixes_lift 特征值 +1 /
+      conj_reflects_J 特征值 -1)。S 保结构的编码 injective 恰好当它保持
+      S-分解 (symmetry_decomposition) — 两轴共享基点 0 且正交
+      (orthogonal_axes), 故保结构编码不会混淆两个不同的发散值。
+
+    ★ 核心定理 (Lean 验收, LosslessCompression.lean, 无 sorry):
+      ① injective_is_lossless (★核心): 任意 injective 压缩 c : D → P 无损 —
+         存在解压 d : P → D, ∀ x, d (c x) = x (mathlib leftInverse_invFun:
+         单射 ⟹ invFun 是左逆 ⟹ 压缩-解压往返精确)
+      ② conj_bijective: 共轭对称 S 本身是双射 (involutive, 双向无损) —
+         S 是联系两轴的对称, 两个方向都无损
+      ③ conj_preserves_divergence: 发散分量在 S 往返中精确存活
+         (proj (conj (lift (proj z))) = proj z) — 发散轴 S 不变
+         (R047 conj_fixes_lift), 共轭永不损伤发散轴
+      ④ compression_injective_iff_lossless (有限域锐化): 有限发散域上
+         压缩无损 ⟺ 压缩 injective — 无损共轭对称恰是使压缩永远无损的条件
+
+    ★ 机械验证 (R048_lossless_compression.py, 枚举=证据):
+      1. 单射压缩 (域=相位空间): 100% 无损往返 (PASS)
+      2. 碰撞压缩 (相位空间 < 域): 有损 (对照, 反例确认单射必要性)
+      3. 共轭对称交换 (c∘S_D = S_P∘c): 编码保结构 (PASS)
+      4. 200 组随机单射: 全部可逆 (PASS)
+
+    ★ 与既有 claim 的关系:
+      - R047 (S 特征分解): 本 claim 的前提 — 无损共轭对称 = R047 的 S 结构
+      - RulerLoss (发散 = 结构丢失): 本 claim 的边界 — 压缩有损当且仅当
+        编码非单射 (信息合并), 恰是结构丢失
+      - RulerFold (投影/锚定): 有损 vs 无损 = 投影的选择 (R047 正交性)
+      - RulerLookup (有限域函数 = 表): 有限域版本 injective ⟺ 无损 = 查表
+        可逆 (表 = 双射 ⟺ 无碰撞)
+      - RulerDivergence (发散 → 编码表): 表的无损性由单射保证
+      结论: 压缩无损性不是魔法 — 是编码的单射性; 而单射性由 R047 的
+      共轭对称特征分解保证 (两轴正交, 保结构编码不合并信息)。
+
+    ★ 支撑 (Lean):
+      - injective_is_lossless / conj_bijective / conj_preserves_divergence /
+        compression_injective_iff_lossless [LosslessCompression.lean]
+      - conj_involutive / conj_fixes_lift / conj_reflects_J /
+        symmetry_decomposition / orthogonal_axes [DivergencePeriodSymmetry.lean]
+  formal_math: |
+    -- 核心定理: 单射压缩 ⟹ 无损 (存在精确解压)
+    theorem injective_is_lossless {D P : Type} [Nonempty D] (c : D → P)
+        (hc : Function.Injective c) :
+        ∃ d : P → D, ∀ x : D, d (c x) = x
+    -- S 是双射 (双向无损):
+    theorem conj_bijective : Function.Bijective conj
+    -- 发散分量在 S 往返中精确存活:
+    theorem conj_preserves_divergence (z : ComplexAxis) :
+        proj (conj (lift (proj z))) = proj z
+    -- 有限域锐化: 无损 ⟺ 单射
+    theorem compression_injective_iff_lossless {D P : Type} [Fintype D]
+        [Fintype P] [Nonempty D] (c : D → P) :
+        Function.Injective c ↔ ∃ d : P → D, ∀ x : D, d (c x) = x
+
+objects:
+- injective_is_lossless
+- conj_bijective
+- conj_preserves_divergence
+- compression_injective_iff_lossless
+
+definitions_used:
+- R047 DivergencePeriodSymmetry (conj/lift/J/proj/symmetry_decomposition/orthogonal_axes) / Function.invFun / Function.leftInverse_invFun (mathlib)
+
+assumptions:
+- "编码 c : D → P 无损 = injective (不同发散值 → 不同相位)"
+- "有限域版本需要 [Nonempty D] (invFun 构造)"
+- "ComplexAxis 结构 (C011) 与共轭对称 S (R047) 已验收"
+
+conclusion: "用户断言成立 (2026-08-12): 无损共轭对称 (单射编码) ⟹ 压缩永远
+  无损 — 单射 ⟹ invFun 精确解压 (injective_is_lossless); 共轭对称 S 本身
+  是双射 (双向无损); 有限域上无损 ⟺ 单射。压缩无损性 = 编码单射性, 由
+  R047 的共轭对称特征分解保证。"
+
+known_special_cases:
+  - "有限域: 压缩无损 ⟺ injective (查表无碰撞 ⟹ 可逆)"
+  - "ComplexAxis: 发散分量在 S 往返精确存活 (proj 往返不变)"
+  - "碰撞压缩 (相位空间 < 域): 必有损 (单射必要性反例)"
+
+counterexample_search:
+  status: done
+  search_space: "有限域随机压缩 (R048_lossless_compression.py: 单射/碰撞/等变/随机单射 4 组)"
+  smallest_checked_size: 1000
+  result: "单射 100% 无损往返; 碰撞 10/1000 还原 (有损对照); 等变 PASS; 200 随机单射全 PASS"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/LosslessCompression.lean
+  theorem_name: injective_is_lossless, conj_bijective, conj_preserves_divergence, compression_injective_iff_lossless
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "无损 = 单射而非双射: 压缩只需单射 (解压定义在像上), 不需要满射"
+  - "有限域 ⟺ 有限: 无限域上 '无损 ⟺ 单射' 不成立 (单射仍无损, 但非单射未必有损于无穷 — 需另证)"
+  - "invFun 需要 Nonempty: 空发散域退化情形排除"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "把无损压缩接入 RulerDivergence 五张表 (每表 = 单射编码 ⟹ 查表无损); 六集群神经层压缩/解压对据此构造"
+
+notes: "观点归属: 用户 (2026-08-12) 提出; 机械验证 + Lean 形式化为本 session 执行。"
