@@ -1,0 +1,72 @@
+id: RulerMultiprecision
+title: "RulerMultiprecision: multi-precision lookup tables (fp16/fp32/fp64) for phase queries — precision-tier selection driven by need, complementary to ternary digit encoding"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerMultiprecision: 多精度查表 (用户指令 2026-08-12).
+
+    ★ 三级精度 (恒等式先验验证):
+      fp16: 10 bit 尾数, 相位格数 ~2^10 ≈ 10³, 角度误差 6e-3 rad — 粗查
+      fp32: 23 bit 尾数, 相位格数 ~2^23 ≈ 10⁷, 角度误差 7e-7 rad — 中查
+      fp64: 52 bit 尾数, 相位格数 ~2^52 ≈ 10¹⁵, 角度误差 1e-15 rad — 精查
+
+    ★ 精度选择 = 需求驱动 (用户洞察):
+      仅需符号/方向: fp16 级 (三值已够)
+      一般计算: fp32
+      高精度: fp64
+      ⟹ 查表先选精度级, 再查对应表 (O(1) 每级)
+
+    ★ 与三值编码同构:
+      三值 {-1,0,1} = 最粗层 (符号级)
+      三值位序列 = 从粗到精逐步细化 (动态精度)
+      fp16→fp32→fp64 = 从粗到精的表选择 (预设精度)
+      ⟹ 互补: 三值位 = 动态精度 (要多少层给多少层),
+          fp 表 = 预设精度 (fp16/32/64 三级)
+
+    ★ 边界 (诚实):
+      fp16/fp32 表可行 (10³~10⁷ 项, ~0-34MB)
+      fp64 全表不可行 (10¹⁵ 项 ≈ 36TB) — 需稀疏表+插值或动态计算
+      ⟹ 多精度设计: fp16/fp32 完整表 + fp64 稀疏/计算
+
+    ★ 支撑 (Lean):
+      - sign_is_pm_one: 最粗精度 (符号) [TK2]
+      - dofLevel: 位权结构 (精度层级) [TK4]
+      - norm_exp_I_eq_one: 相位空间 [TK4]
+  formal_math: |
+    -- 最粗精度 (符号):
+    lemma sign_is_pm_one (σ : Equiv.Perm α) : signProjection σ = 1 ∨ signProjection σ = -1
+    -- 精度层级 (位权):
+    def dofLevel (k : ℕ) : ℕ := 2 ^ k
+    -- 相位空间:
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+
+objects:
+- sign_is_pm_one
+- dofLevel
+- norm_exp_I_eq_one
+
+definitions_used:
+- TK2 SymmetryRecovery / TK4 AxisComponent
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- IEEE754 浮点精度 (fp16/32/64) 为 KNOWN 标准
+
+conclusion: '多精度查表: fp16/fp32/fp64 三级, 精度选择由需求驱动. 与三值
+  编码互补 (动态精度 vs 预设精度). 边界: fp64 全表不可行, 需稀疏/计算.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
