@@ -1,0 +1,59 @@
+id: TK3
+title: "Toolkit/Compactification: one-point compactification (Option), unit circle, basepoint cluster decomposition via layers"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    自包含工具包 (只 import mathlib): 无限紧致化 + 基点簇分层分解.
+
+    ★ 一点紧化: Option X = X ∪ {infinity}, embed 单射, infinity 不在像中,
+      紧化完备 (每点 = 原空间点或 ∞)
+    ★ 单位圆 S¹ = Metric.sphere 0 1 (圆轴): |z|=1, exp(θ·I) ∈ S¹
+    ★ 欧拉恒等式: exp(π·I) = -1 (π 与 e 在圆上合一)
+    ★ 分层分解 (基点 delta 分解原则):
+      层1: exp(2π·I) = 1 (单点验证)
+      层2: exp(2πk·I) = exp(2π·I)^k = 1 (exp_nat_mul 幂性质, 参数 k 不穷举)
+      层3: exp((2k+1)π·I) = exp(2πk·I)·exp(π·I) = 1·(-1) = -1 (exp_add 组合)
+
+    数学定位: 经典 (一点紧化/欧拉公式标准), 形式化价值 = 分层分解方法:
+    不一次性解耦复杂结构, 每层独立验证, 层间只组合. KNOWN (拓扑/复分析).
+  formal_math: |
+    def infinity {X} : Option X := none
+    def embed {X} (x : X) : Option X := some x
+    lemma embed_injective : Function.Injective (@embed X)
+    lemma infinity_not_in_image (x : X) : infinity ≠ embed x
+    lemma compactification_cases (p : Option X) : (∃ x, p = embed x) ∨ p = infinity
+    def unitCircle : Set ℂ := Metric.sphere 0 1
+    lemma exp_two_pi_I_eq_one : Complex.exp ((2 * Real.pi) * Complex.I) = 1
+    lemma exp_pi_I_eq_neg_one : Complex.exp (Real.pi * Complex.I) = -1
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    lemma odd_cluster_meets_neg_one (k : ℕ) : Complex.exp (((2k+1)π) * I) = -1
+
+objects:
+- infinity
+- embed
+- unitCircle
+
+definitions_used:
+- Option (一点紧化载体)
+- Metric.sphere
+- Complex.exp / exp_nat_mul / exp_add
+
+assumptions:
+- 自包含: 仅 import mathlib
+
+conclusion: '一点紧化把 ∞ 纳入有限结构; 圆轴上 π/e 是结构常数; 基点簇交汇
+  按分层分解证明 (层1 单点 + 层2 幂 + 层3 组合), 不穷举参数.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/Compactification.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
