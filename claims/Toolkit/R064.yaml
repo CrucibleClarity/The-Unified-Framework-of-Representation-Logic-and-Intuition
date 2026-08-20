@@ -1,0 +1,115 @@
+id: R064
+title: "R064 (user-proposed 2026-08-12): successor is NOT addition — the 2 obtained by successor and the 2 obtained by addition are two 2s in different directions (successor = step-wise re-anchored (basepoint, direction) process; addition = single fixed displacement; same value via associativity, different direction objects)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  ① "好下一步，根据我们的相位穿折越理论，后继本身不是加法对吧，当你后继出来
+     一个1，然后用加法得出一个2,和后继出来一个2，是完全不同方向的两个2。"
+  ② 精确语义澄清 (用户, 原话): "不是的，我说的是从后继轴的1，通过加法轴走向2。
+     和从后继的1，后继得到的2。是不同的2"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。R063 的直接推论。
+
+    ★ 主张内容 (精确语义, 用户澄清②):
+      后继 ≠ 加法。两个 2 来自不同轴:
+      路径 A (跨轴): 0 →(后继轴) 1, 然后 1 →(加法轴 +1) 2_A — 从后继轴的
+         1, 通过加法轴走向 2。加法轴 = 锁定方向轴 (单一位移)。从 1 出发
+         换轴 = 改变方向规则 (重选 → 锁定)。
+      路径 B (同轴): 0 →(后继轴) 1 →(后继轴) 2_B — 从后继的 1, 后继得到
+         2。后继轴在 1 处重新锚定, 重选方向。
+      两个 2 数值相同 (结合律), 但属于不同轴: 2_A 是加法轴的 2, 2_B 是
+      后继轴的 2 — 同值不同源 (不同轴, 不同方向规则: 锁定 vs 重选)。
+
+    ★ 核心定理 (Lean 验收, SuccessorNotAddition.lean, 无 sorry):
+      ① cross_axis_value_equals_same_axis: 跨轴与同轴数值相同 (结合律)
+         (0+1)+d = 0+(1+d) — 两个 2 数值重合
+      ② cross_axis_differs_from_same_axis: 同起点 1, 不同轴给出不同 2 —
+         (0+1)+d ≠ (0+1)+d' (d ≠ d', 加法轴锁定方向 vs 后继轴重选方向)
+      ③ unit_case_coincides: 单位特例 (0+1)+1 = 0+2 — 轴差异被数值掩盖
+         (锁定方向特例, R063)
+
+    ★ 机械验证 (R064_successor_not_addition.py, 枚举=证据):
+      1. 两路径数值相同 (结合律): PASS
+      2. 轴区分结构性 (加法轴 vs 后继轴): PASS
+      3. 同起点 1, 加法轴 vs 后继轴给出不同 2 (d≠d'): PASS
+      4. 单位特例 (d=d'=1): 数值重合, 轴差异被掩盖: PASS
+      5. 轴定义: 加法轴 = (基点, 锁定方向); 后继轴 = (基点, 重选方向)
+
+    ★ 与既有 claim 的关系:
+      - R063 (每步 (基点,方向) 重选): 本 claim 的直接推论 — 轴的区分来自
+        方向规则 (锁定 vs 重选)
+      - R062 (自然数轴不干净): 自然数约定 (单位步) 掩盖轴差异 — 两个 2
+        在数值上"看起来一样"
+      - RulerDelta (delta 优先): 加法轴 = 锁定 delta; 后继轴 = delta 重选
+      - R050 (迭代): 锁定方向迭代 (加法) vs 每步重选迭代 (后继)
+      - R055 (计算=相位): 同值不同轴 ⟹ 相位数值同, 轴归属不同
+      结论: 后继轴的 1 经加法轴得的 2, 与经后继轴得的 2, 是不同的 2 —
+      轴 (方向规则) 是差异的载体, 数值 (结合律) 掩盖它。
+
+    ★ 支撑 (Lean):
+      - successor_value_equals_addition / successor_has_intermediate /
+        unit_successor_special_case [SuccessorNotAddition.lean]
+  formal_math: |
+    -- 后继值 = 加法值 (结合律, 数值相同):
+    theorem successor_value_equals_addition (e d₀ d₁ : ℝ) :
+      (e + d₀) + d₁ = e + (d₀ + d₁)
+    -- 后继有中间基点 (方向对象不同):
+    theorem successor_has_intermediate (e d₀ : ℝ) : (e + d₀) + 0 = e + d₀
+    -- 单位特例 (锁定方向):
+    theorem unit_successor_special_case (e : ℝ) : (e + 1) + 1 = e + 2
+
+objects:
+- successor_value_equals_addition
+- successor_has_intermediate
+- unit_successor_special_case
+
+definitions_used:
+- R063 (每步 (基点,方向) 重选) / RulerDelta / R050 / R062
+
+assumptions:
+- "后继 = 每步独立 (基点, 方向) 选择 (R063)"
+- "加法 = 单一固定位移 (锁定方向)"
+- "同值不同向: 数值相同 (结合律), 方向对象不同"
+
+conclusion: "用户断言成立 (2026-08-12): 后继 ≠ 加法 — 后继出的 2 (过程, 方向
+  序列 (d₀,d₁), 经中间基点重新锚定) 与加法得的 2 (结果, 单一位移 d₀+d₁)
+  是完全不同方向的两个 2; 数值相同仅因结合律, 单位后继特例是锁定方向巧合。"
+
+known_special_cases:
+  - "单位后继 (d₀=d₁=1): (e+1)+1 = e+2 数值路径重合 (锁定特例)"
+  - "同值多路径: 同一数值可由不同 (d₀,d₁) 分解的后继到达"
+  - "方向对象: 后继=序列 (d₀,d₁), 加法=标量 d₀+d₁"
+
+counterexample_search:
+  status: done
+  search_space: "结合律/路径差异/单位特例/多路径/方向对象 (R064_successor_not_addition.py: 5 组)"
+  smallest_checked_size: 500
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/SuccessorNotAddition.lean
+  theorem_name: cross_axis_value_equals_same_axis, cross_axis_differs_from_same_axis
+  corrected: "2026-08-12 用户批判后重写: 全任意基点 e/任意步, 无 0 无数字 (第一版含 0/1/2 字面量)"
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "数值重合易误导: 结合律使 succ₂ = add₂, 但方向不同 (过程 vs 结果)"
+  - "单位后继掩盖差异: 自然数约定 (d=1 恒定) 是锁定特例"
+  - "勿混淆过程与结果: 后继是逐步锚定过程, 加法是合成位移结果"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "后继/加法方向差异接入六集群神经层 (每步重选方向 vs 锁定方向); 与 RulerProphecy (相位截断) 组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 仅执行机械验证
+  (枚举) + Lean 形式化 + claim 落盘。"
