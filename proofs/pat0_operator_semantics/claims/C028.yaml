@@ -1,0 +1,66 @@
+id: C028
+title: "Operator family — formalization of all operators with their basepoints and the Q2_0 grid positions"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: true
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    全部算符形式化, 每个算符有自己的基点:
+    - addStep x = x+1 (加法), 基点 0 (加法单位元) — 算术链 0, 1, 2, 3, ...
+    - mulStep x = k·x (乘法), 基点 1 (乘法单位元) — 幂链 1, k, k², k³, ...
+    - pow (幂迭代), 基点 1 (不动点)
+    - negOp x = -x (取负), 基点 0 (不动点, 反射中心) — 对合
+    - recipOp x = x⁻¹ (倒数), 基点 ±1 (不动点) — 对合
+    - sqrtOp x = √x (开方), 基点 1 (收缩基点) — 收缩向基点
+    Q2_0 对照: 量化格点 {-1, 0, +1, +2} 恰好落在 pat0 的基点簇上 —
+    每个权重数字被量化到 "最近的基点/基点迭代位置":
+    q=0 → -1 (反射基点), q=1 → 0 (加法基点), q=2 → +1 (乘法基点),
+    q=3 → +2 (基点迭代: 1+1 = 2·1 = 2).
+  formal_math: |
+    negOp(x) = -x, recipOp(x) = x⁻¹, sqrtOp(x) = √x on ℝ.
+    neg_involution: negOp (negOp x) = x (reflection involution).
+    (Additional theorems in the file: recip/sqrt fixed points, basepoint identities.)
+
+objects: ["addStep/mulStep/pow/negOp/recipOp/sqrtOp : ℝ → ℝ", "basepoints 0, 1, ±1", "Q2_0 grid {-1, 0, 1, 2}"]
+definitions_used: ["Real functions", "fixed points", "involution"]
+
+assumptions:
+  - "operators on ℝ (real axis)"
+conclusion: "Every operator has its own basepoint (fixed point/identity); the Q2_0 quantization grid {-1,0,1,2} coincides with the basepoint cluster {±1, 0, 2}."
+
+known_special_cases:
+  - "negOp: involution at basepoint 0"
+  - "recipOp: involution at basepoints ±1"
+  - "sqrtOp: contraction toward basepoint 1"
+closest_known_results:
+  - "Classical fixed-point theory (KNOWN)"
+  - "C026 (basepoint move), C037 (Q2_0 symbol quantization)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the basepoint-cluster reading of the Q2_0 grid."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/OperatorFamily.lean"
+  theorem_name: "ZeroRelative.neg_involution (and operator basepoint theorems in the file)"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "recipOp requires x ≠ 0 (division by zero excluded)"
+  - "sqrtOp is real-valued only on x ≥ 0"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/OperatorFamily.lean, no sorry"
+evidence_against: []
+
+next_action: "Q2_0 grid ↔ basepoint cluster mapping used by C037 (Q2_0 symbol quantization)."
