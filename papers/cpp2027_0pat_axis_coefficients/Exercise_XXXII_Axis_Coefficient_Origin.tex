@@ -1,0 +1,141 @@
+%% CPP 2027 Submission — 0pat Exercise XXXII: Imaginary-Axis Coefficient Type and the Origin
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Imaginary-Axis Coefficient Type and the Origin\\
+(Exercise XXXII)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We compute the origin of the split-complex Euler circle frame with the
+coefficient type of the imaginary axis made explicit. The imaginary
+axis represents the imaginary part of the complex numbers; its
+coefficients may be taken as natural numbers (discrete axis
+$\{n \cdot i : n \in \mathbb{N}\}$) or as real numbers (continuous axis
+$\{t \cdot i : t \in \mathbb{R}\}$). Four machine-checked theorems:
+under natural coefficients, the real axis meets the imaginary axis at
+$\{(0,0)\}$ (solving $x = n \cdot i$ forces $x = 0$ and $n = 0$);
+under real coefficients, the intersection is again $\{(0,0)\}$
+(solving $x = t \cdot i$ forces $x = 0$ and $t = 0$); the transposition
+maps the real axis onto the imaginary axis --- the transposed real axis
+is the imaginary axis with real (continuous) coefficients; and the
+transposition preserves natural coefficients (the natural imaginary
+axis maps to the natural real axis). The origin is $(0,0)$ under both
+coefficient conventions. Zero errors, zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, split-complex, coefficient type, origin, transposition, 0pat}
+
+\maketitle
+
+\section{The computation}
+
+The orthogonal Euler circle frame (Exercises XXVII--XXXI) lives in the
+split-complex plane $a + bj$, $j^2 = +1$. The imaginary axis represents
+the imaginary part of the complex numbers. This exercise makes the
+coefficient type of the imaginary axis explicit and computes the origin
+under each convention.
+
+\section{The two computations}
+
+\paragraph{Under natural coefficients (origin\_natural\_coefficients).}
+The imaginary axis is the discrete set $\{n \cdot i : n \in
+\mathbb{N}\}$; the real axis is the continuous real line. A point on
+both axes has the form $x$ (real axis) and $n \cdot i$ (natural
+imaginary axis); solving $x = n \cdot i$ forces $x = 0$ and $n = 0$.
+The intersection is the single point $(0,0)$. Under natural
+coefficients, the origin is $(0,0)$.
+
+\paragraph{Under imaginary-part (real) coefficients
+(origin\_imaginary\_part).} The imaginary axis is the continuous set
+$\{t \cdot i : t \in \mathbb{R}\}$. Solving $x = t \cdot i$ forces
+$x = 0$ and $t = 0$. The intersection is again the single point
+$(0,0)$. Under real coefficients, the origin is $(0,0)$.
+
+The two computations agree: the origin of the frame is $(0,0)$ whether
+the imaginary axis is discrete (natural coefficients) or continuous
+(real coefficients). The natural coefficient $n = 0$ and the real
+coefficient $t = 0$ are the unique solutions of their equations.
+
+\section{The transposition}
+
+\paragraph{The real axis transposes to the imaginary axis
+(transpose\_realAxis\_eq\_imaginaryAxis).} The transposition
+$(a,b) \mapsto (b,a)$ maps the real axis $\{(x, 0)\}$ onto the
+imaginary axis $\{(0, x)\}$: the transposed real axis is the imaginary
+axis, with real (continuous) coefficients. If the coefficients of the
+imaginary axis are locked to natural numbers, the transposed real axis
+is the imaginary axis computed by imaginary part (continuous) --- the
+transposition itself does not discretize.
+
+\paragraph{Natural coefficients are preserved by transposition
+(transpose\_natural\_imaginary\_is\_natural\_real).} The natural
+imaginary axis $\{n \cdot i\}$ maps under transposition to the natural
+real axis $\{(n, 0)\}$. Discrete stays discrete: transposition changes
+the axis, not the coefficient type.
+
+\section{Honest boundary and position}
+
+The content is elementary algebra; the value is the explicit separation
+of the two coefficient conventions and the proof that they agree on the
+origin. The result concerns the frame; no claim is made about the
+Riemann zeta function. The analysis of $\zeta$ remains the open span of
+the bridge.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 175 lines),
+importing only \texttt{Mathlib.Data.Real.Basic} and basic tactics. The
+split-complex structure (30 lines, as in Exercises XXVII--XXXI) is
+self-contained. Four theorems, compiled with Lean 4.32.2 / mathlib
+v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{origin\_natural\_coefficients} & axes meet at $\{(0,0)\}$ ($n \in \mathbb{N}$) & ext; cast \\
+\texttt{origin\_imaginary\_part} & axes meet at $\{(0,0)\}$ ($t \in \mathbb{R}$) & ext; simp \\
+\texttt{transpose\_realAxis\_eq\_imaginaryAxis} & $T(\text{real axis}) = \text{imaginary axis}$ & ext; simp \\
+\texttt{transpose\_natural\_...} & natural coefficients preserved & ext; rcases \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+With the coefficient type of the imaginary axis made explicit, the
+origin of the Euler circle frame is computed twice --- under natural
+coefficients and under imaginary-part (real) coefficients --- and both
+computations give $(0,0)$. The transposition maps the real axis onto
+the imaginary axis with continuous coefficients and preserves natural
+coefficients. The frame is fully determined; the analysis of $\zeta$
+remains the open span of the bridge.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
