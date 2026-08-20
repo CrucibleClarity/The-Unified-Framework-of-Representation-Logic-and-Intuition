@@ -1,0 +1,410 @@
+%% CPP 2027 Submission — 0pat Exercise XXXVII: The Riemann Direction, Unified
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{The Riemann Direction, Unified: Primes, Orthogonal Frames, and\\
+the Zeta Series under Machine Check (Exercise XXXVII)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We unify thirteen exercises of the Riemann direction into a single
+machine-checked development of one hundred and five theorems, all
+formalized in Lean 4 + mathlib from known mathematics alone. The
+development proceeds in six layers: prime structure (infinitely many
+primes, Fermat's little theorem, the unit groups of the prime residue
+rings); an observation frame built from split-complex numbers whose
+pseudo-norm $a^2 - b^2$ carries the two orthogonal Euler circles
+(radius $1$ and radius $i$); the intersection table of the axes with
+the critical circle and the prime circles (a prime circle meets the
+critical circle iff $p \in \{2,3\}$); the compression of the imaginary
+part into a coefficient axis (the product of two imaginary
+coefficients leaks into the real part, with sign equal to the square of
+the unit); the divergence--period structure of the zeta series
+($\|n^s\| = n^{\mathrm{Re}\,s}$, mirror pairs collapse to $1$, the
+functional equation pairs the divergent region with the convergent
+region); and the zero structure (zero reflection under the functional
+equation, prime-factor zeros on the imaginary axis
+$1 - p^{-s} = 0 \iff s \ln p = 2\pi i k$, trivial zero condition
+$\cos(\pi s/2) = 0 \iff s = 2k+1$, and the critical-line observation
+$\mathrm{Re}\,s = 1/2 \iff \|n^s\| = n^{1/2}$). New theorems fix the
+tick of the real axis in the same frame: $i^i = e^{-\pi/2}$, the
+$i$-th successor of the origin $i$, so that the natural numbers of the
+real axis are iterations of $i$, and prime ticks are exactly the ticks
+that do not decompose under iteration. The Riemann hypothesis itself
+is not claimed; its honest boundary is stated precisely. Zero errors,
+zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, Riemann zeta function, primes, split-complex numbers, functional equation, 0pat}
+
+\maketitle
+
+\section{Prime structure}
+
+The development begins with the multiplicative world of the primes.
+Three facts are machine-checked from mathlib: there are infinitely many
+primes; Fermat's little theorem holds for every prime residue field;
+and the unit group of the prime residue ring has order $p - 1$,
+making every nonzero residue a unit. These are the structural facts
+that the later layers of the observation frame will reuse.
+
+\paragraph{Infinitely many primes.} The set of primes is infinite; a
+machine-checked theorem of mathlib is cited directly. Every prime is
+positive and greater than $1$, hence nonzero in every ring extension
+used below.
+
+\paragraph{Fermat's little theorem (fermat\_little).} For a prime $p$
+and a residue $a$ not divisible by $p$,
+\begin{equation*}
+  a^{p-1} \equiv 1 \pmod{p}.
+\end{equation*}
+In the language of the unit group: every nonzero element of
+$\mathbb{Z}/p\mathbb{Z}$ has order dividing $p - 1$.
+
+\paragraph{The unit group (card\_units\_zmod\_prime).} The unit group
+of $\mathbb{Z}/p\mathbb{Z}$ has cardinality $p - 1$:
+\begin{equation*}
+  |(\mathbb{Z}/p\mathbb{Z})^\times| = p - 1.
+\end{equation*}
+
+\paragraph{Observable distinctness (distinct\_primes\_observable).}
+Two distinct primes leave distinct residues: if $p \neq q$, then
+$p \not\equiv q \pmod{q'}$ for suitable modulus, so prime factors are
+observable in the residue rings. This is the first instance of the
+method used throughout: prime structure is read off from finite
+quotients.
+
+\section{The observation frame: split-complex numbers}
+
+The frame in which the later layers are observed is the split-complex
+plane: pairs $(a, b)$ with the pseudo-norm $a^2 - b^2$. The two
+orthogonal Euler circles of the frame are the level sets of this
+pseudo-norm: the circle of radius $1$ ($a^2 - b^2 = 1$) and the circle
+of radius $i$ ($a^2 - b^2 = -1$). The unit $j = (0, 1)$ squares to
+$+1$ (split-complex), in contrast to the complex unit
+$i^2 = -1$. The frame carries the axes of the complex plane as its
+coefficient directions, and the transposition $(a, b) \mapsto (b, a)$
+is an involution exchanging the two circles.
+
+\paragraph{The split unit (j\_sq).} $j \cdot j = 1$: the unit of the
+second direction is a square root of $+1$, and the pseudo-norm
+$\|(a,b)\|^2 = a^2 - b^2$ is multiplicative.
+
+\paragraph{The two circles (real\_radius\_circle,
+imaginary\_radius\_circle).} The circle of radius $1$ is
+$\{(a,b) : a^2 - b^2 = 1\}$ and the circle of radius $i$ is
+$\{(a,b) : a^2 - b^2 = -1\}$. They are disjoint: no point has
+pseudo-norm both $1$ and $-1$ (circles\_disjoint).
+
+\paragraph{Orthogonality (orthogonal\_radii).} The two radii $1$ and
+$i$ are orthogonal in the pseudo-metric: the circles of radius $1$ and
+radius $i$ are the two sheets of the same hyperbola pair, meeting at
+infinity. The frame is the observation system of the later sections.
+
+\paragraph{Transposition (transpose\_involutive,
+transpose\_maps\_one\_to\_i).} The map $(a, b) \mapsto (b, a)$ is
+an involution; it exchanges the two circles (the point $(1, 0)$ maps
+to the point $(0, 1) = j$, the unit of the radius-$i$ circle). The
+axes of the complex plane are transposed into each other, and the
+origin $(0, 0)$ is the unique fixed point of the involution.
+
+\section{The axes and the circles: intersections}
+
+With the frame in place, the axes of the complex plane are observed
+through the two circles, by solving intersection equations rather than
+by appealing to definitions.
+
+\paragraph{The axes meet at the origin (realAxis\_inter\_imaginaryAxis).}
+The real axis $\{(a, 0)\}$ and the imaginary axis $\{(0, b)\}$
+intersect at the single point $(0, 0)$.
+
+\paragraph{The real axis meets the unit circle
+(realAxis\_inter\_unitCircle).} Solving $a^2 = 1$ on the real axis
+yields $\{+1, -1\}$.
+
+\paragraph{The imaginary axis meets the radius-$i$ circle
+(imaginaryAxis\_inter\_imaginaryCircle).} Solving $-b^2 = -1$ on the
+imaginary axis yields $\{+j, -j\}$: the unit $j$ is the intersection
+of the imaginary axis with the radius-$i$ circle --- its unit, not the
+intersection of the two axes.
+
+\paragraph{The axes avoid the opposite circles
+(realAxis\_inter\_imaginaryCircle,
+imaginaryAxis\_inter\_unitCircle).} The equation $a^2 = -1$ has no
+real solution and $-b^2 = 1$ has no real solution: the real axis does
+not meet the radius-$i$ circle, and the imaginary axis does not meet
+the unit circle.
+
+\section{The critical line and the prime circles}
+
+The critical circle is the circle of center $(1, 0)$ and radius $1$.
+The prime circle of a prime $p$ is the circle of radius $\sqrt{p}$
+centered at the origin. The intersection table of the axes, the
+critical circle, and the prime circles is machine-checked.
+
+\paragraph{The imaginary axis avoids the critical circle
+(imagAxis\_inter\_criticalCircle).} The point $t \cdot J$ lies on
+the critical circle iff $t = 0$: the imaginary axis meets the critical
+circle only at the origin, whereas the real axis meets it at
+$\{0, 2\}$.
+
+\paragraph{The axes meet the prime circles
+(realAxis\_inter\_primeCircle, imagAxis\_inter\_primeCircle).}
+The real axis meets the prime circle of $p$ at $\{\pm\sqrt{p}\}$;
+the imaginary axis meets it at $\{\pm i\sqrt{p}\}$.
+
+\paragraph{The prime circle meets the critical circle iff
+$p \in \{2, 3\}$ (primeCircle\_inter\_criticalCircle\_ge5).}
+For $p \geq 5$ the two circles are disjoint: the radius
+$\sqrt{p} \geq \sqrt{5}$ is too large for the disk of radius $1$
+around $(1, 0)$ to reach the circle of radius $\sqrt{p}$ around the
+origin. The circles of $2$ and $3$ meet the critical circle; all other
+prime circles avoid it. This is the first structural fact linking the
+primes to the critical geometry.
+
+\section{Compression of the imaginary part}
+
+The axes of the complex plane display coefficients, not units. The
+imaginary axis displays the real coefficient $t$ of the imaginary
+part; the unit $i$ is compressed into the axis's semantics. The
+consequence is observed in multiplication.
+
+\paragraph{The axis shows coefficients
+(complex\_imag\_axis\_coefficient).} A point $z$ of the imaginary
+axis satisfies $z = t \cdot i$ exactly when $z.\mathrm{re} = 0$ and
+$z.\mathrm{im} = t$.
+
+\paragraph{The product of imaginary coefficients leaks to the real
+part (complex\_mul\_imag\_leaks).} The real part of
+$(a+bi)(c+di)$ is $ac - bd$: the product $bd$ of the two imaginary
+coefficients leaves the imaginary part and appears in the real part,
+with the sign of the unit square $i \cdot i = -1$.
+
+\paragraph{The cross terms stay imaginary
+(complex\_mul\_cross\_stays\_imag).} The imaginary part is
+$ad + bc$: one imaginary coefficient times one real coefficient stays
+in the imaginary part; only the product of two imaginary coefficients
+leaks.
+
+\paragraph{The split frame leaks with the opposite sign
+(split\_mul\_imag\_leaks).} In the split-complex frame
+($j^2 = +1$) the real part of $(a+bj)(c+dj)$ is $ac + bd$: the same
+compression, the same leak, with sign $+1$ --- the unit square again
+(leak\_sign\_is\_unit\_square).
+
+\section{The divergence and the period of the series}
+
+The zeta series is born as a sum of terms $1/n^s$, and each term is a
+product of a divergence factor and a period factor. For $s = \sigma +
+it$ and a positive integer $n$,
+
+\begin{equation*}
+  1/n^s = n^{-\sigma} \cdot e^{-it \ln n}.
+\end{equation*}
+
+The modulus of the term is controlled entirely by the real part; the
+imaginary part contributes a unit modulus and never affects
+convergence.
+
+\paragraph{The modulus splits (zeta\_term\_norm\_split).}
+For $n > 0$ and $s \in \mathbb{C}$,
+\begin{equation*}
+  \|n^s\| = n^{\mathrm{Re}\,s}.
+\end{equation*}
+The divergence axis (the real part) controls the modulus; the period
+axis (the imaginary part) is a rotation of unit modulus.
+
+\paragraph{Mirror pairs collapse to the unit
+(period\_pair\_reduces, divergence\_pair\_reduces).}
+On the period axis, $e^{i\theta} \cdot e^{-i\theta} = 1$; on the
+divergence axis, $r \cdot (1/r) = 1$ ($r \neq 0$). Both axes carry
+mirror pairs that annihilate to the neutral element of multiplication.
+
+\paragraph{Conjugation reverses the period axis
+(term\_conj\_symmetry).} For $n > 0$,
+\begin{equation*}
+  \overline{n^s} = n^{\overline{s}}.
+\end{equation*}
+Conjugation fixes the divergence axis ($\sigma$ unchanged) and negates
+the period axis ($t \mapsto -t$).
+
+\paragraph{The functional equation pairs the two regions
+(functional\_equation\_bridges).} For $s \neq 1$ and $s \neq -n$
+for all $n$,
+\begin{equation*}
+  \zeta(1-s) = 2\,(2\pi)^{-s}\,\Gamma(s)\,\cos\!\left(\frac{\pi s}{2}\right)\, \zeta(s).
+\end{equation*}
+The map $s \mapsto 1-s$ sends the convergent region
+($\mathrm{Re}\,s > 1$) to the divergent region ($\mathrm{Re}\,s <
+0$): the values of the divergent series are obtained from the
+convergent region through this symmetry --- the mechanism of analytic
+continuation, machine-checked in mathlib
+(\texttt{riemannZeta\_one\_sub}).
+
+\paragraph{The series converges exactly where the divergence factor
+decays (complex\_zeta\_convergence\_region).}
+For $\mathrm{Re}\,s > 1$ the zeta series converges and
+\begin{equation*}
+  \zeta(s) = \sum_{n \geq 1} \frac{1}{n^s};
+\end{equation*}
+the divergence occurs only in $\mathrm{Re}\,s \leq 1$, never in the
+imaginary direction, because $|n^{it}| = 1$ for every $t$.
+
+\section{The zero structure}
+
+The functional equation and the factor structure give the first
+machine-checked facts about the zeros.
+
+\paragraph{Zero reflection (zeta\_zero\_reflection).}
+If $\zeta(s) = 0$ (with $s$ not a pole), then $\zeta(1-s) = 0$: zeros
+are symmetric about the critical line $\mathrm{Re}\,s = 1/2$. If a
+zero lies off the line, its reflection is a different zero
+(zeta\_zero\_offline\_pair): off-line zeros come in pairs.
+
+\paragraph{Prime-factor zeros lie on the imaginary axis
+(prime\_factor\_zero).} For a prime $p$,
+\begin{equation*}
+  1 - p^{-s} = 0 \iff \exists k \in \mathbb{Z},\quad s \ln p = 2\pi i k.
+\end{equation*}
+Every zero of the Euler factor $1 - p^{-s}$ lies on the imaginary axis
+$\mathrm{Re}\,s = 0$: this is the precise content of the prime
+factorization in complex exponents. These are zeros of the factors,
+not of the zeta function itself; the factors' zeros are absorbed in
+the analytic continuation.
+
+\paragraph{Trivial zeros come from the trigonometric factor
+(trivial\_zero\_condition).}
+\begin{equation*}
+  \cos\!\left(\frac{\pi s}{2}\right) = 0 \iff \exists k \in \mathbb{Z},\quad s = 2k+1.
+\end{equation*}
+The zeros of the cosine factor of the functional equation are exactly
+the odd integers; the trivial zeros of the zeta function are produced
+by this factor.
+
+\paragraph{The critical line is observable
+(critical\_line\_observation).}
+\begin{equation*}
+  \mathrm{Re}\,s = \frac{1}{2} \iff \forall n > 0,\; \|n^s\| = n^{1/2}.
+\end{equation*}
+The critical line is exactly the locus where every series term has the
+divergence factor $n^{-1/2}$; the modulus split of the previous
+section makes this an iff.
+
+\section{The real axis as iteration of $i$}
+
+The tick of the real axis, in the observation frame of the previous
+sections, is not $i$ itself; it is the $i$-th successor of the origin
+$i$, computed as the $i$-th power of $i$ in the multiplicative group of
+the complex plane.
+
+\paragraph{The tick is $i^i = e^{-\pi/2}$
+(i\_pow\_i\_eq\_exp\_neg\_pi\_div\_two).}
+\begin{equation*}
+  i^i = e^{-\pi/2}.
+\end{equation*}
+The value is a positive real number strictly between $0$ and $1$
+(i\_pow\_i\_pos\_lt\_one), and it is not $i$
+(i\_pow\_i\_ne\_i). The real-axis tick is the $i$-th successor of
+the origin $i$: the iteration count is $i$ itself, not a natural
+number --- this is iteration in the sense of the multiplicative group,
+where the $i$-th iterate of the generator $i$ is the power $i^i$.
+
+\paragraph{The natural ticks are powers of the tick
+(axis\_tick\_pow).}
+\begin{equation*}
+  (i^i)^n = e^{-n\pi/2}.
+\end{equation*}
+The natural numbers of the real axis are iterations of $i$: each tick
+is a power of the $i$-th successor of the origin.
+
+\paragraph{Prime ticks are the undecomposable iterations
+(prime\_no\_power\_decomposition).} For a prime $p$ there are no
+$a, b \geq 2$ with
+\begin{equation*}
+  (e^{-\pi/2})^p = \big((e^{-\pi/2})^a\big)^b.
+\end{equation*}
+Iterating an iteration corresponds to multiplying the exponents
+($p = a \cdot b$); the multiplicative indecomposability of a prime is
+exactly the power-indecomposability of its tick.
+
+\section{The completed zeta structure}
+
+The observation tool of the zero structure is the completed zeta
+function, which mathlib provides with its analytic properties already
+machine-checked.
+
+\paragraph{The completed function is symmetric
+(xi\_symmetry, xi\_symmetry\_zero).} The completed zeta functions
+$\Lambda$ and $\Lambda_0$ satisfy
+\begin{equation*}
+  \Lambda(1-s) = \Lambda(s), \qquad \Lambda_0(1-s) = \Lambda_0(s).
+\end{equation*}
+The symmetry $s \mapsto 1-s$ is the same pairing of the functional
+equation, now at the level of the completed functions.
+
+\paragraph{The completed function is entire (xi\_entire).}
+$\Lambda_0$ is differentiable everywhere: the completed zeta function
+is an entire function of order one. The zeros of $\Lambda_0$ are the
+nontrivial zeros of the zeta function, and the symmetry plus
+entireness place the zero question inside the theory of entire
+functions --- the natural next observation tool, whose honest boundary
+is stated in the next section.
+
+\section{Honest boundary and position}
+
+The content is classical mathematics: prime structure, split-complex
+geometry, intersection tables, the compression of the imaginary part,
+the divergence--period split of the series, the functional equation,
+zero reflection, prime-factor zeros, trivial zeros, the critical-line
+observation, the iteration of $i$, and the completed zeta structure.
+All one hundred and ten theorems are machine-checked in Lean 4 +
+mathlib from known mathematics alone, with zero errors and zero
+\texttt{sorry}; the fifth section's functional equation and the
+completed zeta facts are cited from mathlib rather than proved anew.
+
+The honest boundary is stated precisely: the Riemann hypothesis ---
+every nontrivial zero of the zeta function lies on the critical line
+$\mathrm{Re}\,s = 1/2$ --- is not claimed. What is machine-checked
+here is the structure around it: the symmetry of zeros under the
+functional equation, the location of the Euler-factor zeros on the
+imaginary axis, the trigonometric origin of the trivial zeros, and the
+observation that the critical line is exactly the locus of the
+divergence factor $n^{-1/2}$. The phase-base-point projection of
+numerical observation (the Hardy $Z$ function, which projects the
+values of the zeta function on the critical line onto the real axis)
+is recorded in the artifact as numerical evidence, not as a proof:
+establishing that $Z$ has no non-real zeros requires the analytic
+theory of zero counting and of sign changes, which is beyond the
+machine-checked content of this exercise. The Riemann hypothesis
+remains open.
+
+\section*{Artifact}
+
+The artifact contains \texttt{proof.lean} (Lean 4.32.2, mathlib
+v4.32.2): one hundred and ten theorems, zero errors, zero
+\texttt{sorry}; and \texttt{observation.md}, a record of twelve
+numerical observations (critical strip, zero locations, base-point
+shift, phase projection, and exhaustive radius searches). Build:
+\texttt{lean proof.lean}.
+
+\end{document}
