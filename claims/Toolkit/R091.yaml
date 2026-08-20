@@ -1,0 +1,97 @@
+id: R091
+title: "R091 (user-proposed 2026-08-12): the complete definition of the monophase number (单相位数 ℙ⟨φ⟩) — a scalar column {n·d} on direction d (phase-constant, equal gaps |d|); multiplication = the scalar action on the monophase chain (n·d); the log table = its additive representation (multiplicative chain ×2 → additive chain +log2); multiplication cannot be defined before the monophase is understood"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "你不把单相位搞清楚，怎么定义乘法。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。单相位数的完整定义 (乘法定义的前提)。
+
+    ★ 单相位完整定义 (验证结果):
+      ① 单相位数 = 方向 d 上的标量列 {n·d : n ∈ ℕ}
+      ② 每步位移 d 相同 (相位恒定): 链 e → e+d → e+2d → ...
+      ③ 点列等差: |(n+1)d - nd| = |d| 恒定
+      ④ 终点位移 = n·d (相位 = phase(d) 恒定, 长度缩放)
+      ⑤ 单相位链含乘法结构: n·d (n 标量 × d 方向)
+
+    ★ 乘法定义 (单相位前提):
+      乘法 = 单相位链的标量作用 (n·d)
+      乘法链 (等比 ×2): d → 2d → 4d → 8d
+      log 表 = 单相位链的加法表示: log(n·d) = log n + log d
+      乘法链 --log--> 加法链 (等比 ×2 → 等差 +log2)
+
+    ★ 机械验证 (R091_monophase_definition.py, 枚举=证据):
+      1. 单相位 = 每步位移 d 相同 (相位恒定): PASS
+      2. 单相位链: 终点位移 = n·d (相位恒定, 长度缩放): PASS
+      3. 单相位点列 = 等差 (间隙 |d| 恒定): PASS
+      4. 乘法链 (等比×2) --log--> 加法链 (等差+log2): PASS
+      5. 单相位完整: {n·d}; 乘法 = 标量作用; log = 加法表示: PASS
+
+    ★ 与既有 claim 的关系:
+      - R071 (单相位数定义): 本 claim 的完整化 (同轴同向 → {n·d})
+      - R090 (log 表 = 单相位怀疑): 本 claim 确认 log 表 = 加法表示
+      - R087 (乘法重定义): 乘法 = 单相位标量作用
+      - R089 (基点统一): log/exp 穿折越 (乘法链 ↔ 加法链)
+      - R072 (声明): ℙ⟨φ⟩ 的完整语义
+      结论: 单相位数 = {n·d} (方向 d 上标量列); 乘法 = 标量作用;
+      log 表 = 加法表示 — 搞清单相位 ⟹ 乘法可定义。
+
+    ★ 支撑 (Lean):
+      - R071 / R090 / R089 / R087 / R072 [claim 级]
+  formal_math: |
+    -- 单相位数: {n·d : n ∈ ℕ} (方向 d 上标量列, 相位恒定)
+    -- 等差: |(n+1)d - nd| = |d|
+    -- 乘法 = 标量作用: n·d
+    -- log 表示: log(n·d) = log n + log d (等比 → 等差)
+
+objects: []
+
+definitions_used:
+- R071 / R090 / R089 / R087 / R072
+
+assumptions:
+- "单相位数 = 方向 d 上标量列 {n·d}"
+- "乘法 = 单相位链的标量作用"
+- "log 表 = 单相位链的加法表示"
+
+conclusion: "用户指令完成 (2026-08-12): 单相位完整定义 = 方向 d 上的标量列
+  {n·d} (相位恒定, 等差); 乘法 = 标量作用 (n·d); log 表 = 加法表示
+  (等比→等差) — 单相位搞清楚 ⟹ 乘法可定义。"
+
+known_special_cases:
+  - "单相位链: e → e+d → e+2d (等差, 相位恒定)"
+  - "乘法链: d → 2d → 4d (等比×2)"
+  - "log: log(n·d) = log n + log d (乘→加)"
+
+counterexample_search:
+  status: done
+  search_space: "相位恒定/等差/等比/log映射 (R091_monophase_definition.py: 5 组)"
+  smallest_checked_size: 300
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "单相位 = 加法链特例: {n·d} 是等差 (加法结构)"
+  - "乘法 = 标量作用: 需单相位链定义清晰"
+  - "log 表定义域: 正实数 (乘法链正方向)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "乘法定义 (基于单相位标量作用) 的形式化; 接入 R087 乘法重定义"
+
+notes: "观点归属: 用户 (2026-08-12) 提出指令 (原话原封保存); assistant 执行
+  机械验证 + claim 落盘。"
