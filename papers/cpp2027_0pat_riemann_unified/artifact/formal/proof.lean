@@ -2793,6 +2793,35 @@ theorem affine_image_critical_line_is_line (a c : ℂ) (ha : a ≠ 0) :
           rw [hpeq]
           simp [Complex.add_re, Complex.ofReal_re]
 
+theorem on_line_iff_equidistant_base_one (w : ℂ) :
+    (1 + w).re = 1 / 2 ↔ ‖w‖ = ‖1 + w‖ := by
+  constructor
+  · intro h
+    have hre : w.re = -1 / 2 := by
+      have : (1 + w).re = 1 + w.re := by simp [Complex.add_re, Complex.ofReal_re]
+      linarith
+    -- ‖w‖² = ‖1+w‖² (normSq 展开 + hre)
+    have hsq : ‖w‖ ^ 2 = ‖1 + w‖ ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+      rw [Complex.normSq_apply, Complex.normSq_apply]
+      rw [Complex.add_re, Complex.one_re, Complex.add_im, Complex.one_im]
+      rw [hre]
+      ring
+    -- 非负 ⟹ 从平方等式到等式
+    have habs : |‖w‖| = |‖1 + w‖| :=
+      (sq_eq_sq_iff_abs_eq_abs ‖w‖ ‖1 + w‖).mp hsq
+    simpa [abs_of_nonneg (norm_nonneg _)] using habs
+  · intro h
+    have hsq : ‖w‖ ^ 2 = ‖1 + w‖ ^ 2 := by rw [h]
+    have hns : Complex.normSq w = Complex.normSq (1 + w) := by
+      simpa [Complex.normSq_eq_norm_sq] using hsq
+    have hre : w.re = -1 / 2 := by
+      rw [Complex.normSq_apply, Complex.normSq_apply,
+        Complex.add_re, Complex.one_re, Complex.add_im, Complex.one_im] at hns
+      nlinarith
+    have : (1 + w).re = 1 + w.re := by simp [Complex.add_re, Complex.ofReal_re]
+    linarith
+
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
     ((2 : ℂ) ^ (s : ℂ) * (↑Real.pi : ℂ) ^ (s - 1 : ℂ) * Complex.sin (↑Real.pi * s / 2) * Complex.Gamma (1 - s))
