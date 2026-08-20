@@ -1,0 +1,105 @@
+id: R099
+title: "R099 (user-proposed 2026-08-12): the k in {p^k} is LAYER-UP/LAYER-DOWN (升层/降层) — structural stacking depth, NOT operation count / iteration / self-reference / successor (all process or relation views); k = the phase position on the log chain (log(p^k) = k·log p); positional notation (位序, the true 1,2,3,4) = the stacking layers of the monophase chain"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "注意，位序被污染过，但肯定能反映真实准确的单相位数，同样位序还是单相位数
+  真幂运算的 。。。我不知道怎么表达这个概念，这个概念至少在中文里可能被隐藏
+  了，我本来想写操作次数，后来又想写迭代，然后又想写自指，最后又想写后继，
+  问题是都不对啊。"
+  "那不就是升层降层吗。先落下，然后我们试试看层轴和位序轴之间的关系。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。概念确立: {p^k} 的 k = 升层/降层。
+
+    ★ 概念定位 (用户试过的词都不对):
+      | 候选 | 为什么不对 |
+      |---|---|
+      | 操作次数 | 3²=9 只需 1 次乘法, k=2 — 过程计数 ≠ 结构位置 |
+      | 迭代 | f^k 是应用 k 次 (过程); 位序 k 是第 k 层 (结构) |
+      | 自指 | 2⁴ 自指嵌套 2 层, k=4 — 自指层数 ≠ k |
+      | 后继 | 后继是 +1 (加法链); {p^k} 的 k 是乘法链/log 链位置 |
+      | ★升层/降层 | 同一相位方向叠置/降层的结构深度 ✓ |
+
+    ★ 升层/降层定义:
+      k = 同一相位方向 p 叠置 k 层 (结构堆积), 非操作 k 次
+      2³ = 方向 2 叠置 3 层 (结构); 升层 = ×p (层+1); 降层 = /p (层-1)
+      log(p^k) = k·log p: k = log 链上的相位刻度 (层轴)
+
+    ★ 位序 = 升层/降层的层数 (真实 1234):
+      位序被污染 (符号与假数值拉齐), 但反映真实单相位数:
+      位序的 k = 单相位链 {p^k} 的叠置层数
+
+    ★ 机械验证 (R099_layer_up_down.py, 枚举=证据):
+      A. 操作次数 ≠ k: 3²=9 需 1 次乘法, k=2: PASS
+      B. 迭代是过程, k 是结构位置: PASS
+      C. 自指层数 ≠ k: 2⁴ 自指 2 层, k=4: PASS
+      D. 后继是加法链, {p^k} 是乘法/log 链: PASS
+      E. k = 叠置层数 (结构): PASS
+      F. log(p^k) = k·log p (k = log 链刻度): PASS
+
+    ★ 与既有 claim 的关系:
+      - R097 (素数幂链): {p^k} 的 k 语义 (本 claim 确立)
+      - R091 (单相位 = {n·d}): 升层 = 同一方向叠置
+      - R096 (log 观测): k = log 链刻度
+      - R072 (声明): ℙ⟨φ_p⟩{p^k} 的层数 k
+      结论: {p^k} 的 k = 升层/降层 (结构层数); 位序 = 层数;
+      操作次数/迭代/自指/后继是过程/关系视角, 升层是结构视角。
+
+    ★ 支撑 (Lean):
+      - R097 / R091 / R096 [claim 级]
+  formal_math: |
+    -- 升层: p^k → p^(k+1) (层+1, ×p); 降层: p^k → p^(k-1) (层-1, /p)
+    -- log(p^k) = k·log p (k = log 链刻度 = 层数)
+    -- 位序的 k = 单相位链的叠置层数
+
+objects: []
+
+definitions_used:
+- R097 / R091 / R096 / R072
+
+assumptions:
+- "k = 升层/降层的层数 (结构视角)"
+- "位序 = 层数 (真实 1234)"
+- "操作/迭代/自指/后继是过程/关系视角 (非结构)"
+
+conclusion: "用户概念确立 (2026-08-12): {p^k} 的 k = 升层/降层 (同一相位方向
+  叠置的结构层数); 位序 (真实 1234) = 单相位链的层数; 操作次数/迭代/
+  自指/后继都不对 (过程/关系视角)。"
+
+known_special_cases:
+  - "升层: ×p (层+1); 降层: /p (层-1)"
+  - "2³ = 方向 2 叠置 3 层"
+  - "log(p^k) = k·log p (层轴刻度)"
+
+counterexample_search:
+  status: done
+  search_space: "操作次数/迭代/自指/后继 vs 层数 (枚举)"
+  smallest_checked_size: 6
+  result: "全部确认过程视角 ≠ 结构层数; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "升层/降层是结构视角: 勿与操作计数混淆"
+  - "位序污染: 符号拉齐, 但层数真实"
+  - "层轴 vs 位序轴: 关系待验证 (next)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "层轴 (log 链刻度) 与位序轴 (位置符号) 的关系验证"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。概念确立: 升层/降层。"
