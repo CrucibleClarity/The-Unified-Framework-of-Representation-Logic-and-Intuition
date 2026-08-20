@@ -1,0 +1,120 @@
+id: R002
+title: Registration-Blind L3 Architecture — 四层沙箱 (L1 registration 漏洞堵截)
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: 'R001 漏洞: L1 不只"拥有工具", 还做了 register/naming/classification/
+
+    availability。若 L2 类型或语义依赖 registry, 则即使 L2 看不到 Lean Host,
+
+    registration 本身仍可能成为隐藏的信息注入通道。
+
+    修复: 四层架构 L0 ⊃ L1 Capability Substrate ⊃ L2 Blind Membrane ⊃
+
+    L3 Absolute Sandbox。核心: L1 proposes, L2 verifies, L3 changes —
+
+    L1 只能产生匿名 Proposal, L2 不知道 proposal 来自哪个工具, L3 只接受
+
+    L2 认证的状态变化。registration 被彻底移出逻辑链:
+
+    L2 的 public types 必须在 Registry 完全不存在时就能定义。
+
+    R001 修正: atom/merge 也不中性 (merge 提供二元 arity/position), 真正的
+
+    L3⁰ 连 atom/merge 都没有 — 不可观察的 world state。
+
+    '
+  formal_math: "四层: L0 Lean Host ⊃ L1 Capability Substrate (工具+registry, untrusted)\n\
+    \      ⊃ L2 Blind Membrane ⊃ L3 Absolute Sandbox\nL3Content : PUnit (不可观察, 无 isAtom/isMerge/left/right/Eq/Rel)\n\
+    L3State := { stage : Stage, content : L3Content }\nProposal := { action : L3Action\
+    \ } (L3Action = noop | promoteTo Stage)\nStrictCertificate : Stage → Stage → Type\n\
+    \  stay {s} : StrictCertificate s s\n  certifiedEmergence : L3EmergenceClaim →\
+    \ StrictCertificate stage0 stage1\nl2Verify : Proposal → StrictCertificate s t\
+    \ → L3State → Option L3State\n  (唯一 State→State 权限; 类型上无 Registry/handle)\nL1Tool\
+    \ := L3State → Proposal (只能看→提议, 不能改)\nRegistry := List L1Tool (存在, 但 L2/L3 类型不引用)\n"
+objects:
+- L3Content
+- L3State
+- Proposal
+- L3Action
+- StrictCertificate
+- l2Verify
+- L1Tool
+- Registry
+- l3Step
+definitions_used:
+- deep embedding
+- registration-blind
+- capability monotonic
+- anonymous proposal
+- proof-erased upgrade
+- noninterference
+assumptions:
+- 不能消灭'某处选择了一个工具', 但可证明 registration 对实验世界语义不可见 (≠ 消灭 registration)
+- L1 整体是 untrusted observer side, 非 Pure 世界
+- L2 的 public types 必须在 Registry 完全不存在时就能定义 (两棵树在 type-definition 层不相交)
+- L3⁰ 无任何 distinction capability, 连 atom/merge 都没有
+- Certificate 不能储存在 L3 世界里作数据属性, 升级后 proof-erase
+- 最强隔离 = 让不该出现的数据根本不属于接口类型 (类型隔离), 非 private/opaque 隐藏
+conclusion: 'L2 类型上无 Registry→L3 数据流 (verify : Proposal → Certificate → L3State →
+  Option L3State); 唯一 State→State 权限在 l2Verify; L1Tool 只能 View→Proposal; 注册顺序/无用工具/metadata
+  不影响 L3 (G3/G4/G5); registration noninterference — registry 不同但 proposal 相同 ⟹ L3
+  trace 相同。★ 修正 (R003): 本 claim 曾用 L3Content : PUnit 作为 L3 内容, 被 R003 否决 — PUnit 预置
+  ∃x,∀xy,x=y (存在且唯一), 把 first-existence 压成已存在; 真正 L3⁰ 应无 content 字段 (见 ZeroContent.lean)'
+known_special_cases:
+- stage0 只有 noop/promoteTo 动作, 但 stage0→stage1 需 certifiedEmergence (L3EmergenceClaim
+  当前未证, 无法升级)
+- PUnit 作为 L3Content 使零公理; L3 无 observation capability 是架构保证
+closest_known_results:
+- R001 AbsoluteRelative Microkernel (L2, 本分支前身, atom/merge 在此被修正为非中性)
+literature_queries:
+- noninterference security typed programming
+- capability-based security logical isolation
+counterexample_search:
+  status: done
+  search_space: 'registration 注入: 验证 l2Verify 类型无 Registry 参数, L3Content 无 observation,
+    L1Tool 无 State→State'
+  smallest_checked_size: null
+  result: 'G1-G7 全过: L2/L3 类型不引用 Registry, L3 内容不可观察, 工具只能提议'
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/RegistrationBlind.lean
+  theorem_name: AbsoluteRelative.l3_no_observation_capability / .l3_no_history / .g7_only_l2_mutates
+    / .g3_registration_order_irrelevant / .g2_no_registry_in_public_types / .g4_unused_capability_irrelevant
+    / .g5_metadata_erasure / .g6_no_handle / .g1_registry_free / .registration_noninterference
+    / .tool_equiv_noninterference / .registration_has_no_observable_effect / .l3_upgrade_proof_erased
+    (已证, 无 sorry; 核心隔离定理 G1/G2/G5/G6/G7/l3_no_observation 零公理, G3/G4/noninterference
+    因 Stage DecidableEq 的 Bool 比较引入 propext 为 Lean artifact)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 'L2 若接收 Registry 参数 (verify : Registry → ...) 则 registration 仍注入 — 已用类型隔离消除'
+- L1Tool 若类型为 L3State→L3State 则 L1 有写权限 — 已用 View→Proposal 消除
+- L3Content 若用 PureRaw (atom/merge) 则 stage0 不中性 — 已用 PUnit 消除
+- Certificate 若存 L3State 则 history 泄漏 — 已 proof-erase
+- EmergenceClaim 当前占位 False, stage0→stage1 无法 certified (真正的 emergence 未证明)
+evidence_for:
+- 'l2Verify : Proposal → StrictCertificate s t → L3State → Option L3State — 类型上无 Registry/handle
+  (G2/G6)'
+- L3Content = PUnit — L3⁰ 无公开 observation (l3_no_observation_capability)
+- L1Tool = L3State → Proposal — L1 无 State→State 权限 (G7)
+- g5_metadata_erasure — 工具 extensionally 等价则 L3 无法区分
+- registration_noninterference / tool_equiv_noninterference — registry 不同但 proposal
+  相同 ⟹ trace 相同 (observer representation independence 架构落实)
+- l3_upgrade_proof_erased — L3State 无 history/certificate 字段
+evidence_against: []
+next_action: 'R002 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 用户评审诊断 R001 漏洞: L1 registration 是隐藏信息注入通道。四层架构: L0 ⊃ L1 Capability
+  Substrate ⊃ L2 Blind Membrane ⊃ L3 Absolute Sandbox。核心: L1 proposes, L2 verifies,
+  L3 changes; 类型隔离 (Registry 不属于 L2/L3 接口类型) 而非 private/opaque 隐藏。R001 修正: atom/merge
+  非中性, L3⁰ 用 PUnit 不可观察 world state。G1-G7 + Registration Noninterference 全过。 [2026-08-09
+  AbsoluteRelative_Audit: DEPRECATED — R001-R003 旧架构遗留, 不再进入 Absolute L3 trusted root;
+  审计问题见各文件 DEPRECATED header; 新 trusted path = Formal/AbsoluteRelative/Trusted (R004
+  v2 核心)] [2026-08-09 作废: 无视之前所有评审, 三层沙盒全新设计]'
