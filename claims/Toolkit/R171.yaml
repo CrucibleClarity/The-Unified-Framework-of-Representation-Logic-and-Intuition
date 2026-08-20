@@ -1,0 +1,141 @@
+id: R171
+title: "R171 (筑基篇课后习题 XIV, 2026-08-13): ★奇偶性的本质与素数的奇偶性观测 — 奇偶性 = 模 2 折叠 (2 槽环 R141; 偶 = 对称对还原 2n=n+n R170/R085; 奇 = 对称对+1 2n+1=n+(n+1)); 素数在奇偶性投影下坍缩 (除 2 外全奇数, mathlib Prime.eq_two_or_odd: p=2 ∨ Odd p); ★二者共享基点 = 2 (模 2 折叠的周期 = 素数域唯一偶素数例外 = 临界线圆上的点 R145 critical_circle_points: ‖2-1‖=1)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "新的习题，观测奇偶性的本质，然后从这个角度观测素数，有可能需要选对二者共享的基点？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XIV: 奇偶性的
+       本质与素数的奇偶性观测.
+
+    ★ 唯一论点: 奇偶性 = 模 2 折叠 (2 槽环, 偶 = 对称对还原, 奇 =
+       对称对 + 1); 素数在奇偶性投影下坍缩 (除 2 外全奇数); ★二者
+       共享基点 = 2 (模 2 折叠的周期 = 素数域的唯一例外 = 临界线圆
+       上的点).
+
+    ★ 奇偶性的本质 (pat 视角):
+       - 偶数 = 对称对之和: 2n = n + n (R170 哥德巴赫对称对; R085
+         折叠类 0) — 偶数 = 对称对折叠还原
+       - 奇数 = 对称对 + 1: 2n + 1 = n + (n+1) — 奇数 = 相邻对称对
+       - 奇偶性 = 模 2 投影: n ↦ n mod 2 ∈ {0, 1} (R141: 单位根
+         2 槽环的两个槽) — 数轴折叠到两个类 {偶, 奇} (R085)
+
+    ★ 从奇偶性观测素数:
+       - ★2 是唯一偶素数 (mathlib Prime.eq_two_or_odd: 素数 p ⟹
+         p = 2 ∨ Odd p) — 素数集合在奇偶性投影下坍缩: 除 2 外全部
+         落在奇数类 (奇偶性"看不出"素数分布, 信息坍缩)
+       - 素数奇偶性坍缩: 素数 p ≠ 2 ⟹ p 奇数 (≡ 1 mod 2)
+
+    ★ ★共享基点: 2 — 奇偶性侧 = 2 槽环的周期 (模 2 折叠由 2 定义,
+       R141 n=2); 素数侧 = 2 是唯一偶素数 (two_unique_even_prime),
+       且 2 在临界线圆上 (R145 critical_circle_points: ‖2-1‖ = 1)
+       — 二者在 2 处交汇 (共享基点: 奇偶性周期 = 素数唯一例外).
+
+    ★ 诚实边界: 结构观测 (奇偶性 = 模 2 折叠, 共享基点 2), 非素数
+       分布理论. 全部新定理只锚本框架 + mathlib 数论基础
+       (Prime.eq_two_or_odd), 不用外部引理.
+
+  formal_math: |
+    -- 偶数 = 对称对还原:
+    theorem even_is_symmetric_pair (n : ℝ) : 2*n = n + n
+    -- 奇数 = 对称对 + 1:
+    theorem odd_is_symmetric_pair_plus_one (n : ℝ) : 2*n + 1 = n + (n+1)
+    -- 偶数的 2 槽环 0 槽:
+    theorem even_two_slot (n : ℕ) (h : Even n) : n % 2 = 0
+    -- 奇数的 2 槽环 1 槽:
+    theorem odd_two_slot (n : ℕ) (h : Odd n) : n % 2 = 1
+    -- ★2 = 唯一偶素数:
+    theorem two_unique_even_prime {p : ℕ} (hp : Nat.Prime p) : p = 2 ∨ Odd p
+    -- 素数奇偶性坍缩:
+    theorem primes_parity_collapse {p : ℕ} (hp : Nat.Prime p) (h2 : p ≠ 2) : Odd p
+    -- ★共享基点 2:
+    theorem two_shared_basepoint :
+      (∀ p : ℕ, Nat.Prime p → p = 2 ∨ Odd p) ∧ (‖(2 : ℂ) - 1‖ = 1)
+    -- ★全景:
+    theorem parity_prime_perspective (n : ℝ) :
+      (2*n = n + n) ∧ (2*n + 1 = n + (n+1)) ∧ (‖(2 : ℂ) - 1‖ = 1)
+
+objects:
+- even_is_symmetric_pair
+- odd_is_symmetric_pair_plus_one
+- even_two_slot
+- odd_two_slot
+- two_unique_even_prime
+- primes_parity_collapse
+- two_shared_basepoint
+- parity_prime_perspective
+definitions_used:
+- 奇偶性 = 模 2 折叠 (2 槽环)
+- 偶数 = 对称对还原
+- 奇数 = 对称对 + 1
+- 素数奇偶性坍缩 (2 唯一偶素数)
+- 共享基点 2
+
+assumptions:
+- 奇偶性 = 模 2 投影 (R141 2 槽环)
+- 偶数/奇数 = 对称对结构 (R170/R085)
+- 2 唯一偶素数 (mathlib Prime.eq_two_or_odd)
+- 2 在临界线圆上 (R145)
+- 诚实边界: 结构观测, 非素数分布理论
+conclusion: "筑基篇课后习题 XIV 完成: 奇偶性的本质与素数的奇偶性观测 — 奇偶性 = 模 2 折叠 (2 槽环, 偶 = 对称对还原 2n=n+n, 奇 = 对称对+1 2n+1=n+(n+1)); 素数在奇偶性投影下坍缩 (除 2 外全奇数, 2 = 唯一偶素数); ★共享基点 = 2 (模 2 折叠周期 = 素数唯一例外 = 临界线圆上的点 ‖2-1‖=1)。8 个新定理全部只锚本框架 + mathlib 数论基础, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '素数 2: 唯一偶素数 (奇偶性例外)'
+- '素数 p ≠ 2: 全奇数 (奇偶性坍缩)'
+- '偶数 2n: 对称对还原 (2n = n+n)'
+- '奇数 2n+1: 相邻对称对 (n 与 n+1)'
+closest_known_results:
+- R170 PatGoldbach (对称对 2n = p+q)
+- R141 PatCircle (单位根 2 槽环)
+- R085 MirrorFoldZero (折叠类)
+- R145 CriticalPrimeCircles (临界线圆, 2 ∈ 圆)
+literature_queries:
+- parity essence mod 2 fold prime observation
+- two unique even prime shared basepoint
+
+counterexample_search:
+  status: done
+  search_space: 偶数是否真 = 对称对还原 (ring); 奇数是否真 = 对称对+1
+    (ring); 2 是否真唯一偶素数 (mathlib Prime.eq_two_or_odd); 2 是否
+    真在临界线圆 (R145)
+  smallest_checked_size: null
+  result: even_is_symmetric_pair (ring); two_unique_even_prime
+    (Prime.eq_two_or_odd_primed 直接引用); two_shared_basepoint
+    (two_unique_even_prime + R145); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatParityPrime.lean (新增 8 定理)
+  theorem_name: ZeroRelative.PatParityPrime.even_is_symmetric_pair / .odd_is_symmetric_pair_plus_one / .even_two_slot / .odd_two_slot / .two_unique_even_prime / .primes_parity_collapse / .two_shared_basepoint / .parity_prime_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称素数分布理论 — 诚实边界: 结构观测 (奇偶性 = 模 2 折叠)
+- 用外部引理 — 只用 mathlib 数论基础 Prime.eq_two_or_odd (数论标准)
+- 忽略共享基点 — 2 是奇偶性周期 = 素数唯一例外交汇点
+evidence_for:
+- 'even_is_symmetric_pair / odd_is_symmetric_pair_plus_one: ring —
+  对称对结构'
+- 'two_unique_even_prime: Prime.eq_two_or_odd_primed 直接引用 — 2 唯一偶素数'
+- 'two_shared_basepoint: two_unique_even_prime + R145 critical_circle_
+  points — 共享基点 2'
+- 'parity_prime_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 共享基点 2 在素数分布 (黎曼/孪生 R159)
+  中的角色深化, 或奇偶性折叠与模 p 折叠的推广'
+notes: '筑基篇课后习题 XIV — 奇偶性 = 模 2 折叠 (2 槽环, 偶 = 对称对
+  还原 2n=n+n, 奇 = 对称对+1 2n+1=n+(n+1)); 素数奇偶性坍缩 (2 唯一
+  偶素数, Prime.eq_two_or_odd); ★共享基点 2 (周期 = 例外 = 临界线圆
+  上的点)。用户提示"选对二者共享的基点" — 答案是 2 (奇偶性结构
+  常数 = 素数唯一例外)。工程: 一次 build 通过, 0 sorry。'
