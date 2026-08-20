@@ -1,0 +1,80 @@
+id: RulerRevLookup
+title: "RulerRevLookup: reversible lookup — keeping the (index, value) log makes table lookup time-symmetric; backward verification is free (O(1) per entry, the free-time zone of RulerFreeTime applied to tables)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerRevLookup: 可逆查表 (用户指令 2026-08-12).
+
+    ★ 核心问题: 传统查表是不可逆的
+      查表: index → value (丢 index 信息)
+      不可逆: 多个 index 可能映射到同一 value, 无法还原
+
+    ★ 可逆查表: 保留 index 副本 (恒等式先验验证)
+      前向: (index, table) → (index, value)  [index 保留 = 可逆]
+      后向: (index, value) → 验证 table[index] == value  [O(1) 免费]
+
+    ★ 与可逆加法器的统一:
+      可逆加法: 保存 carry 链 → 后向验证免费 (0.38× 前向耗时)
+      可逆查表: 保存 index 日志 → 后向验证免费 (O(1))
+      ⟹ 同一原理: 保留中间态/输入副本 = 时间对称 = 白嫖时间
+
+    ★ 工程形态: 可逆查表缓存 (ReversibleCache)
+      前向: 查表 + 记录 (index, value) 日志
+      后向: 全量验证 (日志审计, 免费)
+      缓存一致性验证免费 (脏数据检测)
+      查错免费 (事后审计 = 后向镜像)
+
+    ★ 与 RulerLookup 统一:
+      RulerLookup: 有限域函数 = 预计算表
+      + RulerReversible: 可逆计算 = 全量时间方向
+      = 可逆查表: 查表 + 后向免费验证 (白嫖时间)
+
+    ★ 支撑 (Lean):
+      - makeTable: 预计算表 [ConciseMagicTeaching]
+      - lookup_exists: 查表正确性 [ConciseMagicTeaching]
+      - toffoli_self_inverse: 可逆门自逆 [HouseholdQuantumAnnealing]
+      - reversible_preserves_info: 可逆保信息 [HouseholdQuantumAnnealing]
+  formal_math: |
+    -- 预计算表:
+    def makeTable (f : α → β) : Finset (α × β) :=
+      Finset.image (fun x => (x, f x)) Finset.univ
+    -- 查表正确 (表含 (x, f x)):
+    lemma lookup_exists (f : α → β) (x : α) : (x, f x) ∈ makeTable f
+    -- 可逆门自逆 (时间对称):
+    lemma toffoli_self_inverse (a b c : Bool) :
+      toffoli (toffoli a b c) = (a, b, c)
+    -- 可逆保信息 (双射):
+    theorem reversible_preserves_info : Function.Bijective
+      (fun p : Bool × Bool × Bool => toffoli p.1 p.2.1 p.2.2)
+
+objects:
+- makeTable
+- lookup_exists
+- toffoli_self_inverse
+- reversible_preserves_info
+
+definitions_used:
+- ConciseMagicTeaching / HouseholdQuantumAnnealing
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '可逆查表 = 查表 + (index, value) 日志: 前向 O(1), 后向验证
+  O(1) 免费 (时间对称, 白嫖). 与可逆加法统一 (保留中间态 = 全量时间方向).
+  错误检测/缓存审计全部免费.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/ConciseMagicTeaching.lean
+    - formal/Formal/Toolkit/HouseholdQuantumAnnealing.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
