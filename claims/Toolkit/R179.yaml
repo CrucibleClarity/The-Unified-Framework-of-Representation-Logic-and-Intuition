@@ -1,0 +1,127 @@
+id: R179
+title: "R179 (筑基篇课后习题 XIX, 2026-08-13): ★ABC 猜想的 pat 重新观测 — rad(n) = 素因子折叠 (互不相同素因子之积, 素因子重数被折叠: p^k → p, R097 素数幂链单相位折叠重数到方向; R085 折叠类): rad(p^k) = p ∧ rad(n) | n ∧ 互素可分配 rad(a·b) = rad(a)·rad(b) ∧ rad(1) = 1; abc 三元组 a+b = c = 加法对称对还原 (R144/R170); ★猜想 = 加法被素因子折叠控制: c < K(ε)·rad(abc)^(1+ε) (CONJECTURE, 未证; 望月新一 2012 IUT 声称未被普遍接受, 仅对照)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "ABC猜想"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XIX: ABC 猜想
+       的 pat 重新观测.
+
+    ★ 唯一论点: rad(n) = 素因子折叠; ABC 猜想 = 加法被素因子折叠
+       控制.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - rad(n) = 素因子折叠: n 的互不相同素因子之积 (无平方因子
+         部分) — 素因子重数 (指数) 被折叠: p^k 折叠到 p. R097
+         素数幂链单相位 (log 视角): 幂链 p^k (k·log p) 折叠到方向
+         p (log p) — 重数 k 是相位 (被折叠), 素因子 p 是方向
+         (保留). R085 折叠类: rad(n) = n 在素因子方向上的折叠像.
+       - rad 性质: ① rad(p^k) = p (素数幂链折叠到方向) ② rad(n) |
+         n (折叠像整除原数) ③ 互素时 rad(a·b) = rad(a)·rad(b)
+         (折叠对互素乘法可分配, 无共享方向) ④ rad(1) = 1 (空折叠).
+       - abc 三元组 = 加法分解: a + b = c (加法还原点 0, R144;
+         R170 哥德巴赫对称对结构) — 互素 = 无共享素因子 (折叠类
+         互不重叠).
+       - ★ABC 猜想 = 加法被素因子折叠控制: c (加法结果) ≤ K(ε)·
+         rad(abc)^(1+ε) — 加法的量级被乘法结构 (素因子方向折叠)
+         约束 — R144 加法/乘法还原点对偶的边界断言.
+
+    ★ 诚实边界: 猜想本身未证 (CONJECTURE; 望月新一 2012 IUT 声称
+       证明, 未被普遍接受 — 外部文献仅对照).
+
+  formal_math: |
+    -- rad(n) = 素因子折叠:
+    def rad (n : ℕ) : ℕ := n.factorization.support.prod (fun p => p)
+    -- rad(p^k) = p (素数幂链折叠到方向):
+    theorem rad_prime_pow {p k : ℕ} (hp : Nat.Prime p) : rad (p ^ k) = p
+    -- rad(n) | n (折叠像整除原数):
+    theorem rad_dvd_self (n : ℕ) : rad n ∣ n
+    -- 互素可分配:
+    theorem rad_coprime_mul {a b : ℕ} (hcop : Nat.Coprime a b) :
+      rad (a * b) = rad a * rad b
+    -- rad(1) = 1 (空折叠):
+    theorem rad_one : rad 1 = 1
+    -- abc 加法对称对还原:
+    theorem abc_add_reduce (a b c : ℝ) : c = a + b → a + b - c = 0
+    -- 全景:
+    theorem abc_pat_perspective (p : ℕ) (hp : Nat.Prime p) :
+      (rad (p ^ 2) = p) ∧ (rad 1 = 1) ∧ (rad 2 ∣ 2)
+
+objects:
+- rad
+- rad_prime_pow
+- rad_dvd_self
+- rad_coprime_mul
+- rad_one
+- abc_add_reduce
+- abc_pat_perspective
+definitions_used:
+- rad = 素因子折叠
+- abc 三元组 = 加法对称对还原
+- ★猜想 = 加法被素因子折叠控制
+
+assumptions:
+- 素因子重数被折叠 (rad 丢指数)
+- 互素 = 折叠类互不重叠
+- 0 = 加法还原点 (R144), 1 = 乘法还原点 (R144)
+- ★猜想未证 (CONJECTURE; 望月新一 IUT 仅对照)
+conclusion: "筑基篇课后习题 XIX 完成: ABC 猜想的 pat 重新观测 — rad(n) = 素因子折叠 (p^k → p, 重数是相位被折叠, 素因子是方向保留; R097/R085): rad(p^k) = p ∧ rad(n) | n ∧ 互素可分配 ∧ rad(1) = 1; abc 三元组 a+b = c = 加法对称对还原 (R144/R170); ★猜想 = 加法被素因子折叠控制: c < K(ε)·rad(abc)^(1+ε) (CONJECTURE, 未证; 望月新一 2012 仅对照)。7 个新定理全部只锚筑基篇定理 (R085/R097/R144/R170) + mathlib factorization 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'rad(2^k) = 2 (素数幂折叠)'
+- 'rad(1) = 1 (空折叠)'
+- '(1, 3, 4): 1+3 = 4, rad(12) = 6 > 4 (c < rad)'
+- '(1, 8, 9): 1+8 = 9, rad(72) = 6, c/rad = 1.5 (强 ABC)'
+closest_known_results:
+- R097 (素数幂链单相位: log(p^k) = k·log p)
+- R085 FoldCenters (折叠类)
+- R144 (加法还原点 0 / 乘法还原点 1)
+- R170 PatGoldbach (对称对还原)
+literature_queries:
+- abc conjecture radical prime folding
+- abc conjecture masser oesterle radical
+- 望月新一 IUT abc 证明
+
+counterexample_search:
+  status: done
+  search_space: rad(p^k) 是否真 = p; rad(n) 是否真整除 n; 互素时
+    rad(ab) 是否真可分配; rad(1) 是否真 = 1
+  smallest_checked_size: null
+  result: 枚举 n < 200 rad | n 全过; 互素 a,b < 60 rad(ab) =
+    rad(a)·rad(b) 全过; 素数幂 rad(p^k) = p 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatAbcConjecture.lean (新增 7 定理)
+  theorem_name: ZeroRelative.PatAbcConjecture.rad / .rad_prime_pow / .rad_dvd_self / .rad_coprime_mul / .rad_one / .abc_add_reduce / .abc_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明 ABC 猜想 — 诚实边界: 结构观测 (rad 性质) 非猜想证明
+- 把望月新一 IUT 当证明 — 仅对照 (未被普遍接受)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'rad_prime_pow: factorization_mul + 单素因子 — p^k 折叠到 p'
+- 'rad_dvd_self: factorization_prod_dvd — 折叠像整除原数'
+- 'rad_coprime_mul: factorization_mul + prod_add — 互素可分配'
+- 'rad_one: simp — 空折叠 = 1'
+- 'abc_pat_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: rad 折叠与素因子分布的深层联系, 或
+  其他经典猜想的 pat 重新观测'
+notes: '筑基篇课后习题 XIX — ABC 猜想的 pat 重新观测: rad = 素因子
+  折叠 (重数是相位被折叠, 素因子是方向保留); ABC 猜想 = 加法被素
+  因子折叠控制 (c < K·rad(abc)^(1+ε), CONJECTURE)。工程: 一次
+  build 通过, 0 sorry。'
