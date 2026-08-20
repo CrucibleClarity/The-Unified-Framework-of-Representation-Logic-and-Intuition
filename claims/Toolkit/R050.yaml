@@ -1,0 +1,131 @@
+id: R050
+title: "R050 (user-proposed 2026-08-12): the iteration-direction axis (a divergence axis) and its conjugate axis — via the conjugation relation, ANY iteration between same-direction axes sharing a basepoint is losslessly compressible"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文: "构造迭代这个方向的轴, 然后这是
+       个发散轴, 把他的共轭轴构造出来, 然后通过共轭映射关系证明, 共享基点的
+       同方向轴的任意迭代之间, 都可以无损压缩。"
+
+    ★ 构造 (按用户指令):
+      ① 迭代方向轴 (发散轴): 实轴, 基点 e, 单位步 σ(x) = x + 1 — 迭代 n 次
+         得 e + n, 迭代方向 = 发散轴 (n 无界增长)。ComplexAxis 上 = lift 轴
+         (R047 的发散轴): lift (e+n) = lift e + lift n (lift_add)。
+      ② 共轭轴: R047 的周期轴 (J 方向), 与发散轴由共轭对称 S(z) = conj z 联系
+         (S 固定发散轴 conj_fixes_lift, 反射周期轴 conj_reflects_J)。
+      ③ 共轭映射关系: conj 是加法同态 (conj_add) ⟹ 保持迭代方向
+         conj (lift x + lift n) = conj (lift x) + conj (lift n); 发散轴
+         S-固定 ⟹ conj (lift (x+n)) = lift (x+n) — 迭代关系在共轭下存活。
+      ④ 结论: 任意两个迭代计数 m, n 之间, 映射 c(z) = z + lift (n-m)
+         (迭代差方向) 单射 ⟹ 无损 (R048: injective ⟹ lossless), 解压
+         d(z) = z + lift (m-n)。两轴共享基点 0 (R047 发散/周期对), 迭代
+         方向恰是发散方向。
+
+    ★ 核心定理 (Lean 验收, IterationLossless.lean, 无 sorry):
+      ① conj_add: 共轭是加法同态 — 迭代方向在共轭下存活
+      ② conj_preserves_iterate: 共轭保持 n 次迭代 — conj (lift (x+n)) =
+         lift (x+n) (迭代轴 S-固定, conj_fixes_lift + lift_add)
+      ③ iteration_axis_injective: 迭代方向映射 c(z) = z + lift n 单射 —
+         发散轴上不同点在迭代下永不合并
+      ④ iteration_direction_lossless: 迭代方向可无损压缩 — ∃ d, d (z + lift n)
+         = z (R048 应用到迭代映射)
+      ⑤ any_two_iterations_lossless: 任意两个同方向迭代计数 m, n 之间,
+         z ↦ z + lift (n-m) 无损 — 共享基点的同方向轴的任意迭代之间都可无损
+         压缩
+
+    ★ 机械验证 (R050_iteration_lossless.py, 枚举=证据):
+      1. conj 保加法 (1000 例): PASS
+      2. conj 保迭代 (发散轴=固定点集, 迭代在共轭下保持): PASS
+      3. 任意两迭代间 (m,n) 迭代差无损往返 (200 组): PASS
+      4. 迭代方向压缩单射: PASS
+
+    ★ 与既有 claim 的关系:
+      - R047 (发散/周期 = S 特征空间): 本构造的轴对 = 发散轴 (lift) 与周期轴 (J)
+      - R048 (单射 ⟹ 无损): 本 claim 直接应用 — 迭代映射单射 ⟹ 无损
+      - R049 (任意方向对无损): 本 claim 是"同方向迭代"版本 — 迭代差 = 同一
+        方向上的平移 (d 沿发散方向)
+      - RulerCycle (对称周期 2): 迭代方向在共轭下周期 2 (S 对合)
+      - C011 (lift_add/lift_mul): 迭代轴 = lift 轴的加法结构
+      结论: 迭代方向 = 发散方向, 其无损压缩 = 迭代映射的单射性 (R048) +
+      共轭对称性保持迭代 (conj_add/conj_preserves_iterate) — 共享基点的
+      同方向轴任意迭代间无损。
+
+    ★ 支撑 (Lean):
+      - conj_add / conj_preserves_iterate / iteration_axis_injective /
+        iteration_direction_lossless / any_two_iterations_lossless
+        [IterationLossless.lean]
+      - conj_fixes_lift / conj_reflects_J [DivergencePeriodSymmetry.lean]
+      - lift_add / rot90 / rotate_two_neg [ComplexAxis.lean]
+  formal_math: |
+    -- 共轭保加法 (迭代方向在共轭下存活):
+    theorem conj_add (z w : ComplexAxis) : conj (z + w) = conj z + conj w
+    -- 共轭保持 n 次迭代 (迭代轴 S-固定):
+    theorem conj_preserves_iterate (x n : ℝ) : conj (lift (x + n)) = lift (x + n)
+    -- 迭代方向映射单射:
+    theorem iteration_axis_injective (n : ℝ) :
+      Function.Injective (fun z : ComplexAxis => z + lift n)
+    -- 迭代方向可无损压缩 (R048):
+    theorem iteration_direction_lossless (n : ℝ) :
+      ∃ d : ComplexAxis → ComplexAxis, ∀ z, d (z + lift n) = z
+    -- 任意两迭代间无损:
+    theorem any_two_iterations_lossless (m n : ℝ) :
+      ∃ d : ComplexAxis → ComplexAxis, ∀ z, d (z + lift (n - m)) = z
+
+objects:
+- conj_add
+- conj_preserves_iterate
+- iteration_axis_injective
+- iteration_direction_lossless
+- any_two_iterations_lossless
+
+definitions_used:
+- R047 DivergencePeriodSymmetry (conj_fixes_lift/conj_reflects_J) / R048 LosslessCompression (injective_is_lossless) / C011 ComplexAxis (lift_add/rot90/rotate_two_neg)
+
+assumptions:
+- "迭代方向轴 = 实轴 lift (发散轴, R047); 共轭轴 = 周期轴 J"
+- "两轴共享基点 0 (R047 发散/周期对)"
+- "无损 = 单射 (R048)"
+
+conclusion: "用户断言成立 (2026-08-12): 迭代方向轴 (发散轴) 与其共轭轴 (周期轴),
+  经共轭映射关系 (conj_add/conj_preserves_iterate), 共享基点的同方向轴的
+  任意迭代之间都可无损压缩 — 迭代映射单射 (R048) + 共轭保持迭代方向。"
+
+known_special_cases:
+  - "单位步迭代: σ(x) = x + 1, n 次 = x + n (发散轴), c(z) = z + lift n 无损"
+  - "任意迭代差 (m,n): z ↦ z + lift (n-m) 无损 (解压 z ↦ z + lift (m-n))"
+  - "共轭往返: conj (lift (x+n)) = lift (x+n) (发散轴 S-固定)"
+
+counterexample_search:
+  status: done
+  search_space: "conj 加性/迭代保持/迭代差往返/单射 (R050_iteration_lossless.py: 4 组随机)"
+  smallest_checked_size: 1000
+  result: "4/4 PASS; 无反例 (3 浮点精度修正后)"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/IterationLossless.lean
+  theorem_name: conj_add, conj_preserves_iterate, iteration_axis_injective, iteration_direction_lossless, any_two_iterations_lossless
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "迭代方向 = 发散方向 (n 无界): 无损 ≠ 收敛, 是单射性 (R048) — 迭代映射可逆"
+  - "共轭保迭代需要 conj_add (加法同态) + conj_fixes_lift (轴固定) — 缺一不可"
+  - "旋转迭代 (rot90 周期 4) 与平移迭代 (lift 加法) 是两个方向: 本 claim 只覆盖平移 (同方向迭代); 旋转在 R049 覆盖"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "把迭代差无损压缩接入六集群神经层的发散轴输入 (迭代计数 → 相位编码, 无损查表); 与 RulerProphecy 的相位截断预言组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出构造; 机械验证 + Lean 形式化为本 session 执行。"
