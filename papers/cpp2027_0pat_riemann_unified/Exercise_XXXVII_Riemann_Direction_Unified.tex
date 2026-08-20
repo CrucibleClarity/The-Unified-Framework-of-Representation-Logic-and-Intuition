@@ -425,6 +425,65 @@ point $\chi = -1$ the value is computed directly), and the power-law
 identity $\chi^{1/2}\chi^{-1} = \chi^{-1/2}$. The equality
 $\overline{Z(t)} = Z(t)$ is machine-checked for every real $t$.
 
+\section{Splitting the zeta function: even/odd parts and the base point $i$}
+
+Conjugation symmetry projects onto the real and imaginary parts
+(machine-checked):
+
+\paragraph{Re/Im split.} In the critical strip,
+$\operatorname{Re}\zeta(s) = \operatorname{Re}\zeta(\overline{s})$
+(zeta\_re\_conj\_symm: the real part is even) and
+$\operatorname{Im}\zeta(s) = -\operatorname{Im}\zeta(\overline{s})$
+(zeta\_im\_conj\_antisymm: the imaginary part is odd). On the
+critical line this gives the even/odd structure
+$\operatorname{Re}\zeta(1/2+it)$ even and
+$\operatorname{Im}\zeta(1/2+it)$ odd in $t$. A zero is the common
+zero of both parts: $\zeta(z) = 0 \iff \operatorname{Re}\zeta(z) = 0
+\land \operatorname{Im}\zeta(z) = 0$ (zeta\_eq\_zero\_iff\_re\_im).
+
+\paragraph{p-adic split (base point $p$).} For any base point
+$p \neq 0$ the zeta function splits algebraically as
+$\zeta = O_p + E_p$ with $O_p = (1-p^{-s})\zeta$ and
+$E_p = p^{-s}\zeta$ (zeta\_eq\_odd\_add\_even); a zero is the common
+zero of both parts (zeta\_eq\_zero\_iff\_p\_split). For $p = 2$ this
+is the parity split into the non-multiples and the multiples of $2$.
+The extra zeros of the odd part, those with $\zeta(s) \neq 0$, lie on
+the imaginary axis: $1-2^{-s} = 0 \iff s\ln 2 \in 2\pi i\mathbb{Z}$
+(odd\_part\_extra\_zero\_on\_imag\_axis); they never enter the
+critical strip, so the intersections of the two parts are exactly the
+zeros of $\zeta$.
+
+\paragraph{The zero region.} The prime/Euler-series viewpoint closes
+the region: $\zeta(s) \neq 0$ for $\operatorname{Re}s \geq 1$
+(mathlib's nonvanishing theory of Dirichlet $L$-series), and the
+functional equation mirrors this to $\operatorname{Re}s \leq 0$
+(riemannZeta\_ne\_zero\_of\_re\_lt\_zero and
+riemannZeta\_ne\_zero\_of\_re\_eq\_zero), so every non-trivial zero
+lies in the critical strip $0 < \operatorname{Re}s < 1$
+(nontrivial\_zero\_in\_critical\_strip).
+
+\paragraph{The base point $i$ and the T-coordinate.} The observation
+frame of this exercise places the origin of the complex plane at
+$i$, the tick $1$ of the fake real axis being $i^i = e^{-\pi/2}$ and
+the half-tick $1/2$ being $i^{i/2} = e^{-\pi/4}$. The critical line
+is then the perpendicular bisector of $i$ and $1+i$:
+$\operatorname{Re}z = 1/2 \iff |z-i| = |z-(1+i)|$
+(critical\_line\_equidistant\_basepoint\_i). Choosing the inversion
+centre at the base point $i$, the map
+$T(z) = 1/(z-i) - 1$ (inversion plus translation $-1$ cancelling the
+centre of the image circle) sends the critical line to the unit
+circle:
+\begin{equation*}
+  \operatorname{Re}z = 1/2 \iff |T(z)| = 1
+\end{equation*}
+(recip\_basepoint\_i\_on\_unit\_circle). The inversion centre at a
+point of the imaginary axis leaves the image circle centred at $1$
+(the line $\operatorname{Re}z = 1/2$ is translation-invariant in the
+imaginary direction); the translation $-1$ then moves the centre to
+the origin. One base point, $i$, resolves both the circle image of
+the critical line and the cancellation of the translation/inversion
+pair.
+
 \section{Honest boundary and position}
 
 The content is classical mathematics: prime structure, split-complex
@@ -432,8 +491,8 @@ geometry, intersection tables, the compression of the imaginary part,
 the divergence--period split of the series, the functional equation,
 zero reflection, prime-factor zeros, trivial zeros, the critical-line
 observation, the iteration of $i$, and the completed zeta structure.
-All one hundred and one declarations (eighty-nine theorems and
-twelve lemmas) are machine-checked in Lean 4 + mathlib from known
+All one hundred and thirty declarations (one hundred and fifteen theorems and
+fifteen lemmas) are machine-checked in Lean 4 + mathlib from known
 mathematics alone, with zero errors and zero \texttt{sorry}; the
 functional equation and the completed zeta facts are cited from
 mathlib rather than proved anew.
@@ -456,9 +515,9 @@ Riemann hypothesis remains open.
 \section*{Artifact}
 
 The artifact contains \texttt{proof.lean} (Lean 4.32.2, mathlib
-v4.32.2): one hundred and one declarations (eighty-nine theorems and
-twelve lemmas), zero errors, zero \texttt{sorry}; and
-\texttt{observation.md}, a record of twenty numerical observations
+v4.32.2): one hundred and thirty declarations (one hundred and fifteen theorems and
+fifteen lemmas), zero errors, zero \texttt{sorry}; and
+\texttt{observation.md}, a record of thirty numerical observations
 (critical strip, zero locations, base-point shift, conjugation
 records, and exhaustive radius searches). Build:
 \texttt{lean proof.lean}.
