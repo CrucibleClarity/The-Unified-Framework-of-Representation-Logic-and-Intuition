@@ -28,8 +28,9 @@ the Zeta Series under Machine Check (Exercise XXXVII)}
 
 \begin{abstract}
 We unify thirteen exercises of the Riemann direction into a single
-machine-checked development of one hundred and five theorems, all
-formalized in Lean 4 + mathlib from known mathematics alone. The
+machine-checked development of one hundred and one declarations
+(eighty-nine theorems and twelve lemmas), all formalized in Lean 4 +
+mathlib from known mathematics alone. The
 development proceeds in six layers: prime structure (infinitely many
 primes, Fermat's little theorem, the unit groups of the prime residue
 rings); an observation frame built from split-complex numbers whose
@@ -370,6 +371,60 @@ entireness place the zero question inside the theory of entire
 functions --- the natural next observation tool, whose honest boundary
 is stated in the next section.
 
+\section{Conjugation symmetry and the real-valued function $Z$}
+
+The functional equation pairs $s$ with $1-s$. Conjugation pairs $s$
+with $\overline{s}$. Their interaction fixes the conjugation symmetry
+of the zeta function: $\overline{\zeta(s)} = \zeta(\overline{s})$
+for every $s \neq 1$. The proof is machine-checked in three regions,
+each by a different mechanism:
+
+\paragraph{$\mathrm{Re}\,s > 1$ (zeta\_conj\_of\_one\_lt\_re).} The
+Dirichlet series has real coefficients; conjugation commutes with the
+series termwise.
+
+\paragraph{$\mathrm{Re}\,s < 0$ (zeta\_conj\_of\_re\_lt\_zero).}
+Applying conjugation to both sides of the functional equation
+$\zeta(1-s) = 2(2\pi)^{-s}\Gamma(s)\cos(\pi s/2)\,\zeta(s)$, the
+conjugate of the multiplier equals the multiplier at $\overline{s}$
+(conjugation of the power, sine and Gamma factors), and the common
+factor cancels.
+
+\paragraph{$0 < \mathrm{Re}\,s < 1$ (zeta\_conj\_of\_critical\_strip).}
+In the critical strip neither the series nor the functional equation
+applies directly. The zeta function is expressed through the completed
+function: $\zeta(s) = (s\Lambda_0(s) - 1 - s/(1-s)) /
+(2\pi^{-s/2}\Gamma(s/2+1))$, where $\Lambda_0$ is the entire
+completed zeta function of mathlib, defined as a Mellin transform of a
+real-valued kernel. Conjugation commutes with integration (Bochner
+integral, unconditionally), the kernel is real-valued, and the
+conjugate of $t^{s-1}$ for real $t > 0$ is $t^{\overline{s}-1}$;
+every factor of the formula conjugates in place, and no analytic
+continuation argument is needed.
+
+\paragraph{The function $Z$ is real-valued (hardyZ\_real).} On the
+critical line $\mathrm{Re}\,s = 1/2$ write the functional-equation
+multiplier
+$\chi(s) = 2^s\pi^{s-1}\sin(\pi s/2)\Gamma(1-s)$, so that
+$\zeta(s) = \chi(s)\zeta(1-s)$. Two classical facts are
+machine-checked: the multiplier is an involution,
+$\chi(s)\chi(1-s) = 1$ (Euler's reflection formula for Gamma and the
+double-angle identity for sine, for non-integer $s$); and
+$\overline{\chi(s)} = \chi(\overline{s})$ (conjugation of the
+factors). On the critical line $\overline{s} = 1-s$, hence
+$\chi(1/2+it)$ has unit modulus:
+$\overline{\chi(1/2+it)} = \chi(1/2-it) = \chi(1/2+it)^{-1}$. The
+function
+\begin{equation*}
+  Z(t) = \chi(1/2+it)^{-1/2}\,\zeta(1/2+it)
+\end{equation*}
+is therefore real-valued: conjugation of $Z$ uses the conjugation
+symmetry of $\zeta$, the unit modulus of the multiplier, the
+conjugation law for the power $-1/2$ (main branch; at the branch
+point $\chi = -1$ the value is computed directly), and the power-law
+identity $\chi^{1/2}\chi^{-1} = \chi^{-1/2}$. The equality
+$\overline{Z(t)} = Z(t)$ is machine-checked for every real $t$.
+
 \section{Honest boundary and position}
 
 The content is classical mathematics: prime structure, split-complex
@@ -377,10 +432,11 @@ geometry, intersection tables, the compression of the imaginary part,
 the divergence--period split of the series, the functional equation,
 zero reflection, prime-factor zeros, trivial zeros, the critical-line
 observation, the iteration of $i$, and the completed zeta structure.
-All one hundred and ten theorems are machine-checked in Lean 4 +
-mathlib from known mathematics alone, with zero errors and zero
-\texttt{sorry}; the fifth section's functional equation and the
-completed zeta facts are cited from mathlib rather than proved anew.
+All one hundred and one declarations (eighty-nine theorems and
+twelve lemmas) are machine-checked in Lean 4 + mathlib from known
+mathematics alone, with zero errors and zero \texttt{sorry}; the
+functional equation and the completed zeta facts are cited from
+mathlib rather than proved anew.
 
 The honest boundary is stated precisely: the Riemann hypothesis ---
 every nontrivial zero of the zeta function lies on the critical line
@@ -389,22 +445,22 @@ here is the structure around it: the symmetry of zeros under the
 functional equation, the location of the Euler-factor zeros on the
 imaginary axis, the trigonometric origin of the trivial zeros, and the
 observation that the critical line is exactly the locus of the
-divergence factor $n^{-1/2}$. The phase-base-point projection of
-numerical observation (the Hardy $Z$ function, which projects the
-values of the zeta function on the critical line onto the real axis)
-is recorded in the artifact as numerical evidence, not as a proof:
-establishing that $Z$ has no non-real zeros requires the analytic
-theory of zero counting and of sign changes, which is beyond the
-machine-checked content of this exercise. The Riemann hypothesis
-remains open.
+divergence factor $n^{-1/2}$, and the machine-checked fact that the
+function $Z(t) = \chi(1/2+it)^{-1/2}\zeta(1/2+it)$ is real-valued.
+The Riemann hypothesis is equivalent to all zeros of $Z$ being real;
+that statement is not claimed. Proving that $Z$ has no non-real zeros
+requires the analytic theory of zero counting and of sign changes,
+which is beyond the machine-checked content of this exercise. The
+Riemann hypothesis remains open.
 
 \section*{Artifact}
 
 The artifact contains \texttt{proof.lean} (Lean 4.32.2, mathlib
-v4.32.2): one hundred and ten theorems, zero errors, zero
-\texttt{sorry}; and \texttt{observation.md}, a record of twelve
-numerical observations (critical strip, zero locations, base-point
-shift, phase projection, and exhaustive radius searches). Build:
+v4.32.2): one hundred and one declarations (eighty-nine theorems and
+twelve lemmas), zero errors, zero \texttt{sorry}; and
+\texttt{observation.md}, a record of twenty numerical observations
+(critical strip, zero locations, base-point shift, conjugation
+records, and exhaustive radius searches). Build:
 \texttt{lean proof.lean}.
 
 \end{document}
