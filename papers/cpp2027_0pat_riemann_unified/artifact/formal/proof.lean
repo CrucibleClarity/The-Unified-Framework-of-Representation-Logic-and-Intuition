@@ -29,6 +29,7 @@ import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
@@ -2464,6 +2465,182 @@ theorem zeta_eq_zero_iff_re_im (z : ℂ) :
     apply Complex.ext
     · exact h.1
     · exact h.2
+
+theorem riemannZeta_ne_zero_of_re_lt_zero (s : ℂ) (hs : s.re < 0)
+    (hs_int : ∀ n : ℕ, s ≠ -n) : riemannZeta s ≠ 0 := by
+  intro hz
+  have hs_ne_one : s ≠ 1 := by
+    intro h
+    rw [h] at hs
+    norm_num at hs
+  have hfe := riemannZeta_one_sub (s := s) hs_int hs_ne_one
+  have hzsub : riemannZeta (1 - s) = 0 := by
+    rw [hfe, hz]
+    simp
+  -- 1-s.re = 1 - s.re > 1 ⟹ ζ(1-s) ≠ 0
+  have hgeom : 1 ≤ (1 - s).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith [hs]
+  exact (riemannZeta_ne_zero_of_one_le_re (s := 1 - s) hgeom) hzsub
+
+/-- Re s = 0 无零点 (s ≠ 0): 函数方程在 1-s 处镜像. -/
+theorem riemannZeta_ne_zero_of_re_eq_zero (s : ℂ) (hs : s.re = 0) (hs0 : s ≠ 0) :
+    riemannZeta s ≠ 0 := by
+  intro hz
+  -- 函数方程在 1-s 处: ζ(s) = F(1-s)·ζ(1-s); F 因子全非零 ⟹ ζ(1-s) = 0
+  have hs_int : ∀ n : ℕ, 1 - s ≠ -n := by
+    intro n h
+    have hre : (1 - s).re = (-(n : ℂ)).re := by rw [h]
+    rw [Complex.sub_re, Complex.one_re, hs] at hre
+    have : ((-(n : ℂ)).re) ≤ 0 := by simp
+    linarith
+  have hsub_ne_one : 1 - s ≠ 1 := by
+    intro h
+    apply hs0
+    calc
+      s = 1 - (1 - s) := by ring
+      _ = 1 - 1 := by rw [h]
+      _ = 0 := by norm_num
+  have hfe := riemannZeta_one_sub (s := 1 - s) hs_int hsub_ne_one
+  -- hfe : ζ(s) = 2·(2π)^(-(1-s))·Γ(1-s)·cos(π(1-s)/2)·ζ(1-s)
+  -- 因子分解: 2 ≠ 0, (2π)^(-(1-s)) ≠ 0, Γ(1-s) ≠ 0, cos(π(1-s)/2) ≠ 0
+  have htwo : (2 : ℂ) ≠ 0 := by norm_num
+  have htwo_pi : (2 * ↑Real.pi : ℂ) ≠ 0 :=
+    mul_ne_zero htwo (by exact_mod_cast Real.pi_ne_zero)
+  have hcpow : (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ) ≠ 0 := by
+    exact (Complex.cpow_ne_zero_iff).mpr (Or.inl htwo_pi)
+  have hgamma : Complex.Gamma (1 - s) ≠ 0 := by
+    exact Complex.Gamma_ne_zero hs_int
+  -- cos(π(1-s)/2) ≠ 0: s.re = 0 且 s ≠ 0 ⟹ s ∉ 2ℤ ⟹ 1-s ∉ 2ℤ+1 ⟹ cos ≠ 0
+  have hs_not_int : ∀ k : ℤ, s ≠ 2 * (k : ℂ) := by
+    intro k h
+    have hre : s.re = (2 * (k : ℝ) : ℝ) := by
+      rw [h]
+      simp
+    have hk0 : (k : ℝ) = 0 := by
+      rw [hs] at hre
+      nlinarith
+    have hk0' : k = 0 := by exact_mod_cast hk0
+    apply hs0
+    rw [h, hk0']
+    norm_num
+  have hcos : Complex.cos (↑Real.pi * (1 - s) / 2) ≠ 0 := by
+    rw [Complex.cos_ne_zero_iff]
+    intro k hk
+    -- π(1-s)/2 = (2k+1)π/2 ⟹ 1-s = 2k+1 ⟹ s = -2k ∈ 2ℤ, 矛盾
+    have hpi : (↑Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    have h2 : (2 : ℂ) ≠ 0 := by norm_num
+    have hmul : ↑Real.pi * (1 - s) = (2 * (k : ℂ) + 1) * ↑Real.pi := by
+      calc
+        ↑Real.pi * (1 - s) = (↑Real.pi * (1 - s) / 2) * 2 := by field_simp [h2]
+        _ = ((2 * (k : ℂ) + 1) * ↑Real.pi / 2) * 2 := by rw [hk]
+        _ = (2 * (k : ℂ) + 1) * ↑Real.pi := by field_simp [h2]
+    have hk' : 1 - s = ↑(2 * k + 1) := by
+      have hc : 1 - s = 2 * (k : ℂ) + 1 := by
+        exact mul_right_cancel₀ hpi (by simpa [mul_comm] using hmul)
+      simpa [Int.cast_add, Int.cast_mul, Int.cast_ofNat, Int.cast_one] using hc
+    have hs2 : s = 2 * ((-k : ℤ) : ℂ) := by
+      calc
+        s = 1 - (1 - s) := by ring
+        _ = 1 - ↑(2 * k + 1) := by rw [hk']
+        _ = (2 : ℂ) * ↑(-k) := by
+          rw [Int.cast_add, Int.cast_mul, Int.cast_ofNat, Int.cast_one, Int.cast_neg]
+          ring
+    exact (hs_not_int (-k)) hs2
+  have hF : (2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ)
+      * Complex.Gamma (1 - s) * Complex.cos (↑Real.pi * (1 - s) / 2) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (mul_ne_zero htwo hcpow) hgamma) hcos
+  -- ζ(s) = F·ζ(1-s) = 0 且 F ≠ 0 ⟹ ζ(1-s) = 0 ⟹ 矛盾 (1 ≤ Re(1-s), 1-s ≠ 1)
+  have hzsub : riemannZeta (1 - s) = 0 := by
+    have hFz : (2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ)
+        * Complex.Gamma (1 - s) * Complex.cos (↑Real.pi * (1 - s) / 2) * riemannZeta (1 - s) = 0 := by
+      rw [← hfe]
+      simpa using hz
+    exact (mul_eq_zero.mp hFz).resolve_left hF
+  have hgeom : 1 ≤ (1 - s).re := by
+    rw [Complex.sub_re, Complex.one_re, hs]
+    norm_num
+  have hsub_ne_one' : 1 - s ≠ 1 := hsub_ne_one
+  exact (riemannZeta_ne_zero_of_one_le_re (s := 1 - s) hgeom) hzsub
+
+/-- 非平凡零点全在临界带: ζ(s) = 0 (排除平凡零点与极点, 排除负整数) ⟹ 0 < Re s < 1. -/
+theorem nontrivial_zero_in_critical_strip {s : ℂ} (hz : riemannZeta s = 0)
+    (h_triv : ¬∃ n : ℕ, s = -2 * (n + 1)) (hs1 : s ≠ 1)
+    (hs_int : ∀ n : ℕ, s ≠ -n) : 0 < s.re ∧ s.re < 1 := by
+  constructor
+  · -- 0 < s.re: 反证, s.re ≤ 0
+    by_contra h
+    have hle : s.re ≤ 0 := le_of_not_gt h
+    rcases lt_or_eq_of_le hle with hs_neg | hs_zero
+    · exact (riemannZeta_ne_zero_of_re_lt_zero s hs_neg hs_int) hz
+    · have hs0 : s ≠ 0 := by
+        intro h
+        rw [h, riemannZeta_zero] at hz
+        norm_num at hz
+      exact (riemannZeta_ne_zero_of_re_eq_zero s hs_zero hs0) hz
+  · -- s.re < 1: 反证, 1 ≤ s.re ⟹ ζ ≠ 0
+    by_contra h
+    have hge : 1 ≤ s.re := le_of_not_gt h
+    exact (riemannZeta_ne_zero_of_one_le_re (s := s) hge) hz
+
+theorem zeta_eq_odd_add_even (p : ℂ) (s : ℂ) :
+    riemannZeta s = (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s
+      + (p : ℂ) ^ (-s : ℂ) * riemannZeta s := by
+  ring
+
+/-- 零点 = 奇偶公共零点: ζ(s) = 0 ⟺ O_p(s) = 0 ∧ E_p(s) = 0 (任意基点 p ≠ 0).
+    奇侧偶侧同时为 0 (用户: "奇偶同时为 0") 的精确形式. -/
+theorem zeta_eq_zero_iff_p_split {p : ℂ} (hp : p ≠ 0) (s : ℂ) :
+    riemannZeta s = 0 ↔
+      (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 ∧
+        (p : ℂ) ^ (-s : ℂ) * riemannZeta s = 0 := by
+  constructor
+  · intro hz
+    constructor <;> simp [hz]
+  · intro h
+    have hpz : (p : ℂ) ^ (-s : ℂ) ≠ 0 := by
+      exact (Complex.cpow_ne_zero_iff).mpr (Or.inl hp)
+    -- 偶部分 E_p = p⁻ˢ·ζ = 0 且 p⁻ˢ ≠ 0 ⟹ ζ = 0 (ℂ 是域)
+    exact (mul_eq_zero.mp h.2).resolve_left hpz
+
+/-- 奇部分零点分解: O_p = 0 ⟺ ζ = 0 ∨ p⁻ˢ = 1 (ℂ 域乘法为零).
+    奇部分的零点 = ζ 零点 ∪ 素数因子零点. -/
+theorem p_split_mul_zero_iff {p : ℂ} (hp : p ≠ 0) (s : ℂ) :
+    (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 ↔
+      riemannZeta s = 0 ∨ (p : ℂ) ^ (-s : ℂ) = 1 := by
+  rw [mul_eq_zero, sub_eq_zero]
+  tauto
+
+/-- 奇部分独有零点全在虚轴 (p = 2 奇偶拆分):
+    若 O₂(s) = 0 且 ζ(s) ≠ 0, 则 2⁻ˢ = 1 ⟹ s·ln 2 ∈ 2πiℤ ⟹ Re s = 0.
+    即奇偶拆分的非公共零点不进入临界带 — 交点只能来自 ζ 本身. -/
+theorem odd_part_extra_zero_on_imag_axis (s : ℂ) :
+    (1 - (2 : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 → riemannZeta s ≠ 0 → s.re = 0 := by
+  intro h hz
+  have hcases := (p_split_mul_zero_iff (p := (2 : ℂ)) (by norm_num) s).mp h
+  rcases hcases with hz' | hone
+  · exact False.elim (hz hz')
+  · -- 2⁻ˢ = 1 ⟹ 1 - 2⁻ˢ = 0 ⟹ (prime_factor_zero 2) ∃k, s·log 2 = 2πik
+    have hsub : 1 - (2 : ℂ) ^ (-s : ℂ) = 0 := sub_eq_zero.mpr hone.symm
+    have hp2 : Nat.Prime 2 := Nat.prime_two
+    have hpf := (prime_factor_zero 2 hp2 s).mp hsub
+    rcases hpf with ⟨k, hk⟩
+    -- Re(s·log 2) = Re(k·2πi) = 0; log 2 是实数且非零 ⟹ s.re = 0
+    have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+      exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+    have hre0 : (s * Complex.log (2 : ℂ)).re = 0 := by
+      have hk' : s * Complex.log ((2 : ℂ)) = (k : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+        simpa using hk
+      rw [hk']
+      simp
+    have hre' : s.re * Real.log 2 = 0 := by
+      calc
+        s.re * Real.log 2 = (s * (Real.log 2 : ℂ)).re := by
+          rw [Complex.mul_re, Complex.ofReal_im, Complex.ofReal_re, mul_zero, sub_zero]
+        _ = 0 := by rw [← hlog, hre0]
+    have hl2 : Real.log 2 ≠ 0 := by
+      exact (Real.log_ne_zero).mpr (by norm_num)
+    exact (mul_eq_zero.mp hre').resolve_right hl2
 
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
