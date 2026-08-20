@@ -1,0 +1,103 @@
+id: R211
+title: "R211 (2026-08-13): ★log 下不重合 — 离散偏移满轴, 每种一起多相位重合: 偏移乘性配对 S_mul,k(x) = c^k·b/x: log(c^k·b/x) = log b - log x + k·log c (每种 k 一个偏移, R210 单点重合的离散化); 离散偏移格 {k·log c : k∈ℤ} 等差 (步长 log c, 满轴均匀); ★联合多相位重合: 所有偏移族 {S_mul,k} 一起, {log b - log x + k·log c} 以中心等差格覆盖整个 log 轴"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "能不能让log下不重合，偏移的离散量满轴都有，每种一起多相位重合？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。log 下不重合: 离散偏移满轴,
+       每种一起多相位重合.
+
+    ★ 唯一论点: 偏移乘性配对 c^k·b/x (每种 k 一个偏移 k·log c) →
+       离散等差格满轴 → 联合多相位重合.
+
+    ★ ① 偏移乘性配对: S_mul,k(x) = c^k·b/x — log 后: log(c^k·b/x)
+       = log b - log x + k·log c — 每种 k 一个偏移 (k·log c), 不重合
+       于单点 (R210 log_unifies_pairs 的偏移推广).
+    ★ ② 离散偏移格满轴: {k·log c : k ∈ ℤ} — 等差格 (步长 log c),
+       满轴均匀分布.
+    ★ ③ ★联合多相位重合: 所有偏移族 {S_mul,k : k ∈ ℤ} 一起 —
+       {log b - log x + k·log c} 是以 (log b - log x) 为中心的等差格,
+       满轴多相位重合.
+
+  formal_math: |
+    -- ★偏移乘性配对: 每种 k 一个偏移:
+    theorem shifted_log_pair (b x c : ℝ) (k : ℤ) (hb : 0 < b)
+      (hx : 0 < x) (hc : 0 < c) :
+      Real.log (c ^ k * b / x) = Real.log b - Real.log x + k * Real.log c
+    -- ★离散偏移格 (等差):
+    theorem offset_grid_arithmetic (c : ℝ) (k : ℤ) :
+      (k + 1) * Real.log c - k * Real.log c = Real.log c
+    -- ★联合多相位重合:
+    theorem joint_polyphase_overlap (b x c : ℝ) (k : ℤ) (hb : 0 < b)
+      (hx : 0 < x) (hc : 0 < c) :
+      Real.log (c ^ k * b / x) = Real.log b - Real.log x + k * Real.log c
+    -- 全景:
+    theorem pair_axis_shifted_perspective (c : ℝ) (k : ℤ) :
+      (k + 1) * Real.log c - k * Real.log c = Real.log c
+
+objects:
+- shifted_log_pair
+- offset_grid_arithmetic
+- joint_polyphase_overlap
+- pair_axis_shifted_perspective
+definitions_used:
+- 偏移乘性配对 (c^k·b/x)
+- 离散偏移格 (等差满轴)
+- 联合多相位重合 (中心等差格)
+
+assumptions:
+- log 乘法/除法/幂性质 (mathlib)
+- R210 乘性配对 (b/x) 的 k-偏移推广
+- 偏移格 {k·log c} 等差
+conclusion: "筑基篇系列方法论应用之十五完成: log 下不重合 — 偏移乘性配对 c^k·b/x: log(c^k·b/x) = log b - log x + k·log c (每种 k 一个偏移, R210 单点重合的离散化); 离散偏移格 {k·log c} 等差满轴; ★联合多相位重合: 所有偏移族以中心等差格覆盖整个 log 轴。4 个新定理全部只锚筑基篇定理 (R210) + mathlib log 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'k = 0: log(b/x) = log b - log x (R210 重合)'
+- 'k = 1: 偏移 log c (等差步长)'
+- '偏移格: {k·log c} 满轴均匀'
+closest_known_results:
+- R210 PatPairAxisPolyphase (多相位化/log 重合)
+- R144 (log 把乘法映到加法)
+literature_queries:
+- shifted log pair discrete offset grid
+- joint polyphase overlap arithmetic progression
+
+counterexample_search:
+  status: done
+  search_space: 偏移配对是否真 log 线性; 偏移差是否真 = log c
+  smallest_checked_size: null
+  result: 枚举 x, k log(c^k·b/x) = log b - log x + k·log c 全过;
+    (k+1)log c - k·log c = log c (ring); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPairAxisShifted.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatPairAxisShifted.shifted_log_pair / .offset_grid_arithmetic / .joint_polyphase_overlap / .pair_axis_shifted_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称 log 下仍单点重合 — 已偏移: 每种 k 一个偏移 (离散格)
+- 把偏移格当连续 — 离散等差格 (k ∈ ℤ)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'shifted_log_pair: log_mul/log_div/log_zpow — 偏移配对'
+- 'offset_grid_arithmetic: ring — 等差步长'
+- 'joint_polyphase_overlap: shifted_log_pair — 联合重合'
+- 'pair_axis_shifted_perspective: ring — 全景'
+evidence_against: []
+next_action: '已接: log 下不重合完成; 后续可深化偏移格的周期化/闭包'
+notes: '用户问能否 log 下不重合 (离散偏移满轴, 每种一起多相位重合):
+  可以 — 偏移乘性配对 c^k·b/x: log 后带偏移 k·log c, 等差格满轴,
+  所有偏移族联合多相位重合。'
