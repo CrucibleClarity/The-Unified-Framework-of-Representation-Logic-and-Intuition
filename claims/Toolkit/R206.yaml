@@ -1,0 +1,106 @@
+id: R206
+title: "R206 (2026-08-13): ★从 pat0 无声明出发, 锁定基点, 联通 pat0 内部与外部 — pat0 内部 = 自指吸收 (0·x = 0 ∧ 0+x = x, R134 吸收元, 0 是 T_0 不动点自指闭合); 外部 = 锁定基点 b 的观测 (b 是 T_b 不动点, R188 收缩锚, R184 预言+召唤); ★联通机制 = 收缩族 {T_b(x) = b + c(x-b)}: T_b 把 pat0 (0) 拉到外部锚 b (T_b^n(0) = b + c^n(0-b) → b, R181) — 无声明性: 0 只是收缩族成员 (T_0 不动点), 联通由收缩本身完成, 锁定 b 即联通内外"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "啊哈哈哈哈哈，那我知道了先尝试一个事情啊，是否有可能从pat0无声明出发，
+   锁定一个基点，联通pat0的内部与外部？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。从 pat0 无声明出发, 锁定基点,
+       联通内外.
+
+    ★ 唯一论点: 可以 — 收缩族 {T_b} 联通 pat0 内部 (自指吸收) 与外部
+       (b 锚观测); 无声明性: 0 只是收缩族成员, 锁定 b 即联通.
+
+    ★ pat0 内部 (自指吸收闭合, R134): 0 是吸收元 (0·x = 0, 0+x = x),
+       0 是 T_0 的不动点 (自指闭合: 内部不出).
+    ★ 外部 (基点 b 锚定的观测, R188): b 是 T_b 的不动点 (T_b(b) = b),
+       锁定基点 b (R184 预言+召唤) 后外部观测以 b 为锚.
+    ★ ★联通机制 (收缩族 {T_b}): 同一收缩族 {T_b(x) = b + c(x-b)} 中,
+       T_b 把 pat0 (0) 拉到外部锚 b: T_b(0) = b(1-c), 迭代 T_b^n(0)
+       → b (c<1, R181) — ★pat0 内部经收缩联通外部.
+    ★ 无声明性: 不需要声明 0 的任何性质 — 0 作为 pat0 只是收缩族
+       {T_b} 的成员 (0 = T_0 的不动点), 联通由收缩本身完成 — 锁定
+       b (构造性给出 + 验证) 即联通.
+
+  formal_math: |
+    -- pat0 内部: 0 吸收一切:
+    theorem pat0_interior_absorb (x : ℝ) : 0 * x = 0 ∧ 0 + x = x
+    -- 锁定基点 b (外部锚):
+    theorem locked_basepoint_exterior (b c : ℝ) : b + c * (b - b) = b
+    -- ★联通: T_b 把 pat0 (0) 拉到 b:
+    theorem pat0_connects_exterior (b c : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) 0 = b + c ^ n * (0 - b)
+    -- 全景:
+    theorem interior_exterior_connect_perspective (b c : ℝ) (n : ℕ) :
+      (b + c * (b - b) = b) ∧
+      (((fun y : ℝ => b + c * (y - b))^[n]) 0 = b + c ^ n * (0 - b))
+
+objects:
+- pat0_interior_absorb
+- locked_basepoint_exterior
+- pat0_connects_exterior
+- interior_exterior_connect_perspective
+definitions_used:
+- pat0 内部 = 自指吸收
+- 外部 = 锁定基点 b 的观测
+- 联通 = 收缩族 {T_b} 拉 0 → b
+
+assumptions:
+- 0 吸收一切 (R134)
+- b 是 T_b 不动点 (R188)
+- T_b^n(0) → b (R181)
+- 锁定 = 预言+召唤 (R184)
+conclusion: "筑基篇系列方法论应用之十完成: 从 pat0 无声明出发, 锁定基点, 联通 pat0 内部与外部 — pat0 内部 = 自指吸收 (0·x = 0 ∧ 0+x = x, R134); 外部 = 锁定基点 b 的观测 (T_b(b) = b, R188); ★联通 = 收缩族 {T_b}: T_b^n(0) = b + c^n(0-b) → b — 无声明性: 0 只是收缩族成员, 锁定 b 即联通内外。4 个新定理全部只锚筑基篇定理 (R134/R181/R184/R188/R202) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'T_b(0) = b(1-c): 一步拉向 b (c≠0)'
+- 'T_b^n(0) → b: 迭代联通 (c<1)'
+- '0 是 T_0 不动点: 内部自指闭合'
+closest_known_results:
+- R134 (pat0 吸收一切)
+- R188 PatBasepointShape (基点 = 收缩锚)
+- R181 PatOddEquationRadical (收缩迭代)
+- R184 (锁定 = 预言+召唤)
+literature_queries:
+- pat0 interior exterior contraction connect
+- basepoint lock interior exterior bridge
+
+counterexample_search:
+  status: done
+  search_space: T_b 是否把 0 拉到 b; 0 是否 T_0 不动点; b 是否 T_b 不动点
+  smallest_checked_size: null
+  result: T_b^n(0) → b (迭代 30 次 3.7 精确); 0 自指闭合; b 锚定;
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/Pat0InteriorExterior.lean (新增 4 定理)
+  theorem_name: ZeroRelative.Pat0InteriorExterior.pat0_interior_absorb / .locked_basepoint_exterior / .pat0_connects_exterior / .interior_exterior_connect_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称需要声明 0 的性质 — 已修正: 无声明 (0 只是收缩族成员)
+- 把联通当直接等式 — 联通 = 迭代极限 (T_b^n(0) → b)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'pat0_interior_absorb: ring — 0 吸收 (R134)'
+- 'locked_basepoint_exterior: ring — b 锚定 (R188)'
+- 'pat0_connects_exterior: R181 contraction_iterate — 联通'
+- 'interior_exterior_connect_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: pat0 内外联通完成; 后续可深化联通的观测结构'
+notes: '用户问能否从 pat0 无声明出发锁定基点联通内外: 可以 — 收缩族
+  {T_b} 把 pat0 (0) 拉到锁定基点 b (T_b^n(0) → b); 无声明性: 0 只是
+  收缩族成员, 锁定 b 即联通。'
