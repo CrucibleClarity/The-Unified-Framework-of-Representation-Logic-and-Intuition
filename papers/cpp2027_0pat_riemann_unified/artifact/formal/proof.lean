@@ -2822,6 +2822,45 @@ theorem on_line_iff_equidistant_base_one (w : ℂ) :
     have : (1 + w).re = 1 + w.re := by simp [Complex.add_re, Complex.ofReal_re]
     linarith
 
+theorem critical_line_equidistant_basepoint_i (z : ℂ) :
+    z.re = 1 / 2 ↔ ‖z - Complex.I‖ = ‖z - (1 + Complex.I)‖ := by
+  constructor
+  · intro hre
+    -- 平方相等 (normSq 展开 + hre)
+    have hsq : ‖z - Complex.I‖ ^ 2 = ‖z - (1 + Complex.I)‖ ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+      simp [Complex.normSq_apply]
+      rw [hre]
+      ring
+    -- 非负 ⟹ 平方等式到等式
+    have habs : |‖z - Complex.I‖| = |‖z - (1 + Complex.I)‖| :=
+      (sq_eq_sq_iff_abs_eq_abs ‖z - Complex.I‖ ‖z - (1 + Complex.I)‖).mp hsq
+    simpa [abs_of_nonneg (norm_nonneg _)] using habs
+  · intro h
+    -- 平方相等
+    have hsq : ‖z - Complex.I‖ ^ 2 = ‖z - (1 + Complex.I)‖ ^ 2 := by rw [h]
+    have hns : Complex.normSq (z - Complex.I) = Complex.normSq (z - (1 + Complex.I)) := by
+      simpa [Complex.normSq_eq_norm_sq] using hsq
+    -- 展开 re/im ⟹ (z.re-1)² = z.re² ⟹ z.re = 1/2
+    rw [Complex.normSq_apply, Complex.normSq_apply] at hns
+    simp at hns
+    nlinarith
+
+/-- T 坐标 (基点 i): 临界线 = 单位圆。T(z) = 1/(z-i) - 1
+    (recip 中心 = 复平面基点 i, 平移 -1 消圆心):
+    Re z = 1/2 ⟺ ‖1/(z-i) - 1‖ = 1。 -/
+theorem recip_basepoint_i_on_unit_circle (z : ℂ) (hz : z ≠ Complex.I) :
+    ‖1 / (z - Complex.I) - 1‖ = 1 ↔ z.re = 1 / 2 := by
+  -- 1/(z-i) - 1 = -(z-(1+i))/(z-i) (代数)
+  have hrewrite : 1 / (z - Complex.I) - 1 = -((z - (1 + Complex.I)) / (z - Complex.I)) := by
+    field_simp [sub_ne_zero.mpr hz]
+    ring
+  have hne : ‖z - Complex.I‖ ≠ 0 := norm_ne_zero_iff.mpr (sub_ne_zero.mpr hz)
+  -- |1/(z-i)-1| = |z-(1+i)|/|z-i| = 1 ⟺ |z-(1+i)| = |z-i| (等距)
+  rw [hrewrite, norm_neg, norm_div, div_eq_one_iff_eq hne]
+  rw [eq_comm]
+  exact (critical_line_equidistant_basepoint_i z).symm
+
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
     ((2 : ℂ) ^ (s : ℂ) * (↑Real.pi : ℂ) ^ (s - 1 : ℂ) * Complex.sin (↑Real.pi * s / 2) * Complex.Gamma (1 - s))
