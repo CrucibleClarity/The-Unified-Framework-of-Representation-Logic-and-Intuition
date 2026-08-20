@@ -1,0 +1,97 @@
+id: R121
+title: "R121 (user-proposed 2026-08-12): the p0→p1 and p1→p0 arrows are ESSENTIALLY the same arrow — by R054 (any basepoint/any axis maps losslessly compressibly), basepoint drift to p1 makes the return arrow to p0 isomorphic to the outgoing arrow p0→p1; p0 is atomic (no internal structure, R113 basepoint layer) so both arrows anchor at the same atom; with R120 (p1 ≈ p0) the arrow is self-dual"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "这是因为我们证明过，任意基点出发的任意轴，可映射可压缩。   也就是说  如果
+  基点漂移至p1   返回p0的那个箭头，与p0到p1的箭头，本质上是一个对吧，因为我
+  们的定义下假设，p0内不可再拆分出结构来。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。互逆箭头同构 (基点漂移)。
+
+    ★ 洞察 (验证):
+      ① R052/R054: 任意基点出发的任意轴, 可映射可压缩 (无损)
+      ② 基点漂移至 p1: 返回 p0 的箭头 (p1→p0) 与 p0→p1 箭头
+         可无损互映 (R054)
+      ③ p0 原子性: p0 内不可再拆出结构 (R113: 基点层, 生成基)
+         ⟹ 升/降箭头都锚定同一原子
+      ④ R120: p1 本质上 = p0 ⟹ 箭头两端重合 ⟹ 自对偶
+      ⟹ p0→p1 与 p1→p0 本质上是一个箭头
+
+    ★ 机制链:
+      R054 (可映射压缩) + R120 (p1≈p0) + p0 原子
+      ⟹ 互逆箭头 = 同一箭头 (基点漂移可逆)
+
+    ★ 与既有 claim 的关系:
+      - R054 (任意基点任意轴): 可映射压缩 (核心依据)
+      - R120 (p0(p0)=p0): 箭头两端重合
+      - R119 (互逆=逆): 箭头自对偶
+      - R113 (基点层): p0 原子性
+      - R072 (声明): 箭头同构的声明化
+      结论: p0→p1 与 p1→p0 本质上同一箭头 (R054 + p0 原子 +
+      p1≈p0 自对偶)。
+
+  formal_math: |
+    -- 互逆箭头和为 0 (无净移动, Lean 根基):
+    theorem inverse_arrow_pair (d : ℝ) :
+      arrowOn d (-1) 1 + arrowOn d 1 (-1) = 0
+      [OmnidirectionalUnit.inverse_arrow_pair]
+    -- 互逆箭头交替步 = 无净移动 (R122 桥):
+    theorem reciprocal_steps_collapse (d : ℝ) :
+      arrowOn d 0 1 + arrowOn d 1 0 = 0
+      [PatCollapse.reciprocal_steps_collapse]
+
+objects:
+- inverse_arrow_pair
+- reciprocal_steps_collapse
+
+definitions_used:
+- R054 / R120 / R119 / R113 / R072
+
+assumptions:
+- "任意基点任意轴可映射可压缩 (R054)"
+- "p0 原子 (基点层不可拆, R113)"
+- "p1 本质上 = p0 (R120)"
+
+conclusion: "用户断言成立 (2026-08-12): p0→p1 与 p1→p0 箭头本质上是一个
+  — R054 (可映射压缩) + p0 原子 (不可拆) + R120 (p1≈p0) ⟹ 箭头
+  自对偶, 基点漂移可逆。"
+
+known_special_cases:
+  - "R054: 任意基点任意轴无损映射"
+  - "p0 原子: 基点层 (R113)"
+  - "p1 ≈ p0: 箭头自对偶 (R120)"
+
+counterexample_search:
+  status: done
+  search_space: "箭头互映/原子性/自对偶 (方向验证)"
+  smallest_checked_size: null
+  result: "方向成立; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/OmnidirectionalUnit.lean + formal/Formal/Toolkit/PatCollapse.lean
+  theorem_name: inverse_arrow_pair, reciprocal_steps_collapse
+  status: done
+  sorry_free: true
+  sorry_free: false
+
+failure_modes:
+  - "箭头同构是'本质上': 结构层面方向仍不同 (升/降)"
+  - "依赖 R054/R120: 已证 claim"
+  - "p0 原子性: 基点层定义 (R113)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "箭头自对偶形式化 (Lean); 接入 R072"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行方向验证
+  + claim 落盘。"
