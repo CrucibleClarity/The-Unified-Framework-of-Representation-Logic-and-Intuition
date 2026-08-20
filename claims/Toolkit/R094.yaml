@@ -1,0 +1,106 @@
+id: R094
+title: "R094 (user-proposed 2026-08-12): the monophase chain's delta class {n·d} IS the category-theoretic arrow — basepoint = object, delta = morphism (object-independent), composition = displacement addition (associative), 0 = identity arrow, chain = arrow path, f^n = n·d (T1: identity=f⁰, composition=f^m∘f^n); the arrow structure validates the basepoint-free construction"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "这不就是范畴的箭头吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。单相位链 delta 类 = 范畴论箭头的发现。
+
+    ★ 对应 (验证):
+      | 单相位链 | 范畴论 |
+      |---|---|
+      | 基点 e | 对象 (domain) |
+      | delta d | 箭头 (morphism), 独立于对象 |
+      | 位移合成 (d₁+d₂) | 箭头复合 |
+      | 0 (不动点) | 恒等箭头 id |
+      | 链 {e, e+d, e+2d} | 从 e 出发的箭头路径 |
+      | f^n = n·d | n 次复合 (T1: identity=f⁰, composition=f^m∘f^n) |
+
+    ★ 范畴公理验证:
+      ① 恒等: 0∘d = d (id∘f = f)
+      ② 结合律: d₁∘(d₂∘d₃) = (d₁∘d₂)∘d₃ (位移加法结合)
+      ③ 箭头独立于对象: 同一 delta 可从任意基点出发 (Hom 集)
+      ④ f^n = n·d (迭代复合, T1 范畴论 token 定义)
+
+    ★ 机械验证 (R094_category_arrow.py, 枚举=证据):
+      1. 恒等箭头: 0∘d = d (id∘f = f): PASS
+      2. 结合律: d₁∘(d₂∘d₃) = (d₁∘d₂)∘d₃: PASS
+      3. 箭头独立于对象 (Hom 集): PASS
+      4. f^n = n 次复合 = n·d: PASS
+
+    ★ 意义 (R093 的范畴论表述):
+      箭头 (delta) 独立于对象 (基点) = "delta 类基点无关" (RulerDrift)
+      的范畴论形式。0 不干净 (R085) 只影响对象表示, 不影响箭头结构 —
+      范畴论早已给出这个结构 (箭头独立于对象)。
+      T1 任务 (范畴论 token 按迭代结构定义) 的数学本体 = 本 claim。
+
+    ★ 与既有 claim 的关系:
+      - R093 (delta 类构造): 本 claim 的范畴论表述
+      - R091 (单相位 = {n·d}): 箭头序列 = 单相位链
+      - RulerDrift (delta 基点无关): 箭头独立于对象
+      - T1 (范畴论 token): identity=f⁰, composition=f^m∘f^n (AGENTS.md)
+      - R072 (声明): 单相位链的声明化
+      结论: 单相位链 delta 类 = 范畴箭头; 基点=对象, delta=箭头,
+      复合=位移加法, id=0 — 范畴公理全验证。
+
+    ★ 支撑 (Lean):
+      - R093 / R091 / RulerDrift [claim 级]
+  formal_math: |
+    -- 对象: 基点 e; 箭头: delta d (Hom(e, e+d))
+    -- 恒等: id = 0 (0∘d = d)
+    -- 复合: d₁∘d₂ = d₁ + d₂ (结合)
+    -- 迭代: f^n = n·d (identity=f⁰, composition=f^m∘f^n)
+
+objects: []
+
+definitions_used:
+- R093 / R091 / RulerDrift / T1 (范畴论 token) / R072
+
+assumptions:
+- "基点 = 范畴对象, delta = 箭头"
+- "复合 = 位移加法 (结合律)"
+- "id = 0 (恒等箭头)"
+
+conclusion: "用户发现成立 (2026-08-12): 单相位链的 delta 类 {n·d} = 范畴论箭头
+  — 基点=对象, delta=箭头 (对象独立), 复合=位移加法, id=0; 范畴公理
+  (恒等/结合) 全验证; 箭头独立性 = delta 类基点无关的范畴形式。"
+
+known_special_cases:
+  - "id: 0 (0∘d = d)"
+  - "复合: d₁∘d₂ = d₁+d₂ (结合)"
+  - "f^n: n·d (迭代复合)"
+  - "Hom(e, e+d): 同一 delta 从任意基点出发"
+
+counterexample_search:
+  status: done
+  search_space: "恒等/结合律/对象独立性/迭代 (R094_category_arrow.py: 4 组)"
+  smallest_checked_size: 300
+  result: "4/4 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "箭头独立于对象: 需 delta 类基点无关 (RulerDrift)"
+  - "id=0: 0 是折叠类 (R085) — 表示不干净但结构正确"
+  - "复合需结合: 位移加法满足"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "T1 范畴论 token 定义落地: identity=f⁰, composition=f^m∘f^n 基于本 claim; 接入 token 体系"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。T1 任务的数学本体确认。"
