@@ -1,0 +1,86 @@
+id: R229
+title: "R229 (user 2026-08-14): 结构与信息对称性 (R228) 支撑方向重新声明 (R136/R063) — 信息需要区分结构, 新数字需要新方向, 方向必须成对声明"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 方向声明 = 区分结构建立"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户提问 (2026-08-14): R228 的归纳 (结构与信息对称性) 是否可支撑
+    "方向需要重新声明" (R136/R063)? 答案: 可支撑, 三环链。
+
+    ★ 支撑链:
+    1. 信息需要区分结构 (R228): 数字 (新信息) 必须可区分 ⟹ 需要非平凡
+       区分结构: 1 ≠ -1 (折叠类 ±1 非退化)。
+    2. 区分 = 成对声明方向 (R136): 区分 d 与 -d 需要成对声明 (d,-d);
+       单方向声明 ⟹ 无区分 ⟹ 退化 (d = -d ⟹ d = 0)。
+    3. 未锁定 ⟹ 坍缩 (R138): 相位差不可区分 (Δθ ≡ -Δθ) ⟹ 折叠类 {0,π}。
+
+    ★ 结论: 新数字 (数值变化) 需要非零方向 (新区分结构); 方向未声明/
+    未成对 ⟹ 无区分 ⟹ 坍缩; 每步基点漂移后旧区分失效 ⟹ 必须重新声明
+    方向 (R063: 每步重新锚定)。
+
+formal_math: |
+    -- ① 数值变化需要非零方向 (新数字 = 新方向)
+    theorem new_value_requires_direction (x d : ℝ) : x + d = x → d = 0
+    -- ② 未声明方向无新数值
+    theorem no_direction_no_new_value (x : ℝ) : x + 0 = x
+    -- ③ 方向必须成对声明
+    theorem pair_declaration_for_distinction (d : ℝ) : d ≠ 0 → d ≠ -d
+    -- ④ 核心组合 (R228 支撑 R136/R138)
+    theorem direction_redeclaration_supported :
+      ((1 : ℝ) ≠ -1) ∧ (∀ x d, x + d = x → d = 0) ∧
+      (∀ d, d ≠ 0 → d ≠ -d) ∧
+      (∀ Δθ, exp(Δθ·I) = exp(-Δθ·I) → exp(2Δθ·I) = 1)
+
+objects:
+- declaredPair (R136)
+- unlocked_phase_relation_collapses (R138)
+
+definitions_used:
+- "R228 ZeroDependence (1 ≠ -1, 结构与信息对称性) / R136 OmnidirectionalUnit (成对声明) / R138 PhaseRelationLocking (未锁定坍缩) / R063 (每步重新锚定)"
+
+assumptions:
+- "R228 归纳已验收 (区分结构必需)"
+- "R136/R138 已验收 (成对声明/坍缩机制)"
+
+conclusion: "用户问题答案成立 (2026-08-14): R228 归纳可支撑方向重新声明 —
+  信息需要区分结构 (1≠-1) 是 '为什么必须声明' 的必需性环; 配合 R136
+  (成对声明) 与 R138 (未锁定坍缩) 的机制环, 三环闭合: 新数字需要新区分,
+  基点漂移使旧区分失效, 方向必须重新声明。"
+
+known_special_cases:
+  - "d = 0 (方向退化): 数值不变, 无新数字 — 未声明方向即无后继"
+  - "单方向声明 (d 无 -d): 区分失效 (d ≠ -d 丢失) — R136 成对约束的支撑"
+
+counterexample_search:
+  status: done
+  search_space: "代数恒等式 (linarith/ring) + 引用已验收定理 (unlocked_phase_relation_collapses)"
+  smallest_checked_size: null
+  result: "全部直接验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/DirectionRedeclaration.lean
+  theorem_name: new_value_requires_direction, no_direction_no_new_value, pair_declaration_for_distinction, direction_redeclaration_supported
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "本 claim 是支撑链形式化 (必需性), 非方向声明机制的完整复述 (机制在 R136/R138)"
+  - "基点漂移环节 (R063) 为链条语义, 其代数形式在本 claim 中为 ② (数值变化需新方向)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 三环链写入论文 §7 讨论 (为什么必须声明) ② 与 R226 桥接 (Token 侧: 未锁定 → 位置漂移 → 数字多义 = 未声明方向)"
+
+notes: "观点归属: 用户 (2026-08-14) 提问支撑性; assistant 构建三环链 + Lean 定理
+  (引用 R228/R136/R138, 零新机制)。"
