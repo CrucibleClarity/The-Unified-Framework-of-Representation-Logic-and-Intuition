@@ -1,0 +1,74 @@
+id: RulerDrift
+title: "RulerDrift: values drift dynamically while position stays fixed — the delta (displacement class) is the invariant identity"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerDrift: 值在动态漂移, 位置始终不变 (用户指令 2026-08-12).
+
+    ★ 术语映射:
+      值 (value) = 坐标/表示 (基点 e 处的投影)
+      位置 (position) = 基点无关的结构 (delta 位移类, D(H))
+
+    ★ 数学:
+      (e,a) ~ (f,b) ⟺ b = a + (f-e) ⟺ a - e = b - f (delta 不变)
+      基点 e→f 移动: 值 (e,a)→(f,b) 漂移, delta 类不变
+      例: 基点 0/1/-2 下 delta=3, 值 (0,3)/(1,4)/(-2,1) 漂移, 位置类 [delta=3] 不变
+
+    ★ 理论:
+      值在动态漂移: 基点移动 ⟹ 坐标 (值) 持续变化
+      位置始终不变: delta (位移类) 是基点移动的不变量
+      ⟹ 身份 = 位置 (delta), 值只是位置的投影
+
+    ★ 与之前理论的关系:
+      basepoint_relative_stability.md: 基点稳定相对结构而漂移值域
+      现在: '相对结构' = 位置 (delta 类), '值域' = 值 (坐标)
+      ⟹ 同一理论, 更精确的术语 (C007 的 delta 优先表述)
+
+    ★ 与 RulerDelta 的完整闭环:
+      RulerDelta: delta 是原始身份
+      本理论: 身份 (delta/位置) 不变, 值 (坐标) 漂移
+      ⟹ 基点天然移动 ⟹ 值漂移 ⟹ 位置 (delta) 不变
+      ⟹ 观测到的'漂移'是值的漂移, 不是位置的漂移
+
+    ★ 支撑 (Lean):
+      - teleportParameter e f = f -ᵥ e (delta 是参数, Ruler2Exam)
+      - displacement_teleport_invariant: (e,a) ~ (f, T a) (值漂移类不变)
+      - displacement_equiv: 位移关系是等价关系 (位置类良定义)
+  formal_math: |
+    -- 值漂移: 基点移动, 值 (坐标) 变化
+    lemma teleport_preserves_structure (e f a : P) :
+      Displacement e a f (teleport e f a)
+    -- 位置不变: delta 类等价 (基点无关)
+    lemma displacement_structure_is_equiv :
+      Equivalence (fun p q : P × P => Displacement p.1 p.2 q.1 q.2)
+    -- delta 是参数 (身份)
+    def teleportParameter (e f : P) : G := f -ᵥ e
+
+objects:
+- teleport_preserves_structure
+- displacement_structure_is_equiv
+
+definitions_used:
+- Ruler2Exam / TK1 BasepointGen (Displacement, teleport)
+
+assumptions:
+- 'G : Type with [AddGroup G]; P : Type with [AddTorsor G P]'
+- 依赖 TK1/Ruler2Exam (自包含, 仅 import mathlib)
+
+conclusion: '值 (坐标) 在基点移动下动态漂移, 位置 (delta 位移类) 始终不变.
+  身份 = 位置 (delta), 值只是位置的投影. 这是 C007/基点相对稳定性的
+  delta 优先精确表述 (RulerDelta 的推论).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
