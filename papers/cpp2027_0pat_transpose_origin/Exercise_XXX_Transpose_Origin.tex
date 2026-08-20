@@ -1,0 +1,145 @@
+%% CPP 2027 Submission — 0pat Exercise XXX: Transposition and the Origin in the Orthogonal Euler Circle Frame
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Transposition and the Origin in the Orthogonal Euler Circle\\
+Frame (Exercise XXX)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We formalize the transposition (mirror) structure of the orthogonal
+Euler circle frame --- the radius-1 and radius-$i$ circles of the
+split-complex numbers (Exercise XXVII) --- and determine the origin of
+the frame. Seven theorems, machine-checked with zero \texttt{sorry}:
+the transposition $(a,b) \mapsto (b,a)$ is an involution; it maps $1 =
+(1,0)$ to $i = (0,1)$; it maps the radius-1 circle $a^2 - b^2 = 1$ to
+the radius-$i$ circle $a^2 - b^2 = -1$ in both directions; and it fixes
+the origin $(0,0)$. The natural-number lattice of each circle is a
+single point: the radius-1 circle contains exactly $(1,0)$ and the
+radius-$i$ circle exactly $(0,1)$ --- the two units are transposes of
+each other, and the earlier observation that lattice observation
+degenerates to $\{1, i\}$ is made precise. The origin of the frame is
+$(0,0)$: the fixed point of the transposition and the common center of
+the two conjugate hyperbolas. It is neither $1$ nor $i$.
+\end{abstract}
+
+\keywords{Lean, formalization, split-complex, transposition, origin, 0pat}
+
+\maketitle
+
+\section{The frame and the question}
+
+The orthogonal Euler circle frame (Exercise XXVII) consists of the
+radius-1 circle $a^2 - b^2 = 1$ and the radius-$i$ circle
+$a^2 - b^2 = -1$ in the split-complex plane $a + bj$, $j^2 = +1$. The
+frame was built to observe the prime axis through two orthogonal
+circles with different units ($1$ and $i$). This exercise formalizes the
+transposition structure of the frame and answers a positional question:
+in this frame, where is the origin?
+
+\section{The theorems}
+
+\paragraph{Transposition (transpose\_involutive, transpose\_maps\_one\_to\_i).}
+The map $(a,b) \mapsto (b,a)$ exchanges the coordinates. It is an
+involution (applying it twice returns the point), and it maps the unit
+of the radius-1 circle to the unit of the radius-$i$ circle:
+$1 = (1,0) \mapsto (0,1) = i$.
+
+\paragraph{The circles are transposes (transpose\_maps\_unit\_to\_imaginary,
+transpose\_maps\_imaginary\_to\_unit).} A point $(a,b)$ lies on the
+radius-1 circle exactly when its transpose $(b,a)$ lies on the
+radius-$i$ circle, in both directions:
+$a^2 - b^2 = 1 \leftrightarrow b^2 - a^2 = -1$. The two circles are
+mirror images under the transposition.
+
+\paragraph{Lattice uniqueness (lattice\_unique\_unit,
+lattice\_unique\_imaginary).} Under the constraint that both
+coordinates are natural numbers, each circle contains exactly one
+point: the radius-1 circle contains only $(1,0) = 1$, and the radius-$i$
+circle contains only $(0,1) = i$. The proofs are elementary: for
+$(a,b) \in \mathbb{N}^2$, $a^2 - b^2 = 1$ forces $b = 0$ (otherwise the
+difference is at least $3$) and then $a = 1$; symmetrically for
+$b^2 - a^2 = 1$. This makes precise the earlier observation that
+lattice observation of the frame degenerates to the two units
+$\{1, i\}$: each circle contributes exactly its own unit, and the two
+units are transposes of each other.
+
+\paragraph{The origin (transpose\_origin\_fixed).} The transposition
+fixes the origin: $(0,0) \mapsto (0,0)$. The origin is the common
+center of the two conjugate hyperbolas $a^2 - b^2 = \pm 1$ --- the
+point about which the two circles are symmetric under the transposition
+$(a,b) \leftrightarrow (b,a)$ combined with negation. It is neither $1$
+nor $i$: those are the units of the two circles, the unique lattice
+points, and the transposition pairs them; the origin is their fixed
+point.
+
+\section{Honest boundary and position}
+
+The content is elementary algebra (coordinate transposition, lattice
+equations in $\mathbb{N}$); the value is positional: the orthogonal
+Euler circle frame now has its transposition structure formalized and
+its origin determined. The origin of the frame is $(0,0)$ --- the split
+zero and the common center of the two circles. The result concerns the
+frame, not the Riemann zeta function: no claim is made about zeros, and
+the analysis of $\zeta$ remains the open span of the bridge.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 185 lines),
+importing only \texttt{Mathlib.Data.Real.Basic} and basic tactics. The
+split-complex structure (30 lines, as in Exercises XXVII--XXVIII) is
+self-contained. Seven theorems, compiled with Lean 4.32.2 / mathlib
+v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{transpose\_involutive} & $T(T z) = z$ & ext; simp \\
+\texttt{transpose\_maps\_one\_to\_i} & $T(1) = i$ & ext; simp \\
+\texttt{transpose\_origin\_fixed} & $T(0) = 0$ & ext; simp \\
+\texttt{transpose\_maps\_unit\_to\_imaginary} & $\|z\|^2 = 1 \Rightarrow \|Tz\|^2 = -1$ & nlinarith \\
+\texttt{transpose\_maps\_imaginary\_to\_unit} & $\|z\|^2 = -1 \Rightarrow \|Tz\|^2 = 1$ & nlinarith \\
+\texttt{lattice\_unique\_unit} & $a^2 - b^2 = 1 \Rightarrow (a,b) = (1,0)$ & case split; omega \\
+\texttt{lattice\_unique\_imaginary} & $b^2 - a^2 = 1 \Rightarrow (a,b) = (0,1)$ & case split; omega \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The orthogonal Euler circle frame is now fully determined: its
+transposition structure is formalized (involution, $1 \leftrightarrow
+i$, circles as mirrors), its lattice observation degenerates to the two
+transposed units $\{1, i\}$, and its origin is $(0,0)$ --- the common
+center of the two circles, fixed by the transposition, neither $1$ nor
+$i$. The frame is complete; the analysis of $\zeta$ remains the open
+span of the bridge.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
