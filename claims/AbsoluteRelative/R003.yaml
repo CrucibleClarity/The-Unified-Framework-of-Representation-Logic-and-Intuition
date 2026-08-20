@@ -1,0 +1,112 @@
+id: R003
+title: L3 Zero-Content Feasibility — L3⁰ 无 content 字段 (PUnit 预装存在诊断)
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: 'R002 的 PUnit 是错的: PUnit 不是"什么都没有", 而是预置 ∃x,∀xy,x=y
+
+    (存在且唯一)。这把想研究的 ?→first existence/distinction 提前压成
+
+    one unique thing already exists。Nonempty/private singleton/opaque 也都
+
+    不同程度预装存在。
+
+    关键区分 (用户): A. pre-distinction (已有某物无 distinction) vs
+
+    B. pre-existence (连首个内部存在都没有) — 选 B。
+
+    unobservable existing thing ≠ no internal thing yet。
+
+    最干净方案: L3 stage0 根本没有 content 字段。L3⁰ = no internal datum。
+
+    stage0 构造不了值应被视为正确行为, 不是需用 PUnit 绕过的工程障碍。
+
+    '
+  formal_math: 'L3State := { stage : Stage }   (★ 无 content 字段)
+
+    L3⁰ = no internal datum (无已认证内部存在)
+
+    StrictCertificate: stay (同 stage) | certifiedEmergence (stage0→stage1, 需 L3EmergenceClaim)
+
+    L3EmergenceClaim = False (占位) ⟹ ¬ Nonempty (StrictCertificate stage0 stage1)
+
+    l2Verify : Proposal → StrictCertificate s t → L3State → Option L3State
+
+    l3_state_ext: s₁.stage = s₂.stage ⟹ s₁ = s₂ (无隐藏内容分量)
+
+    '
+objects:
+- ZeroContent.L3State
+- L3Action
+- Proposal
+- L3EmergenceClaim
+- StrictCertificate
+- l2Verify
+definitions_used:
+- pre-existence (B)
+- zero-content
+- no internal datum
+- provenance audit
+- emergence certificate
+assumptions:
+- '{} 含义 = B: pre-existence — 连首个内部存在都没有 (用户: rule/object/relation 都还没有, 首个存在本身也要审计)'
+- PUnit/Nonempty/private singleton/opaque 都预装存在, 不能作为 L3 语义模型
+- L3⁰ 无任何已认证的 constructor/observation/relation/object
+- stage0 构造不了值 = 正确行为 (研究首个存在时, 无 content 可操作正是实验状态)
+- 若发现 PUnit.unit/opaque initial/Classical.choice nonempty 产生 base ⟹ Host 供给, 非 emergence
+  (provenance audit)
+conclusion: L3⁰ 无 content 字段可行 (L3State 只含 stage); stage0_cannot_upgrade 零公理 — 无 EmergenceClaim
+  证明则无 stage0→stage1 证书, L3⁰ 无法产生 datum; 七项验证 (无 content/无 unit representation/无 extractor/无证书拒绝/registry
+  无关/无 inhabitance axiom/runner 隔离) 全过
+known_special_cases:
+- L3State 完全由 stage 决定 (l3_state_ext) — 无隐藏内容分量
+- StrictCertificate stage0 stage1 类型为空 (L3EmergenceClaim=False) ⟹ L3⁰ 无法升级
+closest_known_results:
+- R002 Registration-Blind L3 (用 PUnit 被 R003 否决)
+literature_queries:
+- emergent existence foundational type theory
+- existence without distinction semantics
+counterexample_search:
+  status: done
+  search_space: 'PUnit/Nonempty/private singleton/opaque 作为 L3 语义模型的污染: 它们都预装存在, 被否决;
+    L3State 无 content 字段'
+  smallest_checked_size: null
+  result: L3State 零内容可行; stage0 无证书无法升级 (stage0_cannot_upgrade 零公理)
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/ZeroContent.lean
+  theorem_name: AbsoluteRelative.ZeroContent.l3_state_ext / .l3_no_unit_representation
+    / .l3_no_content_extractor / .l3_no_inhabitance_axiom / .stage0_cannot_upgrade
+    / .l3_stage0_no_emergence / .stage0_no_datum_production / .l3_stage0_registry_independent
+    / .runner_isolation (已证, 无 sorry; 核心定理 stage0_cannot_upgrade/l3_stage0_no_emergence/stage0_no_datum_production
+    零公理, l3_state_ext 因 Stage DecidableEq 引入 propext 为 Lean artifact)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- PUnit 作为 L3 语义内容预装存在且唯一 (已否决, 用 PUnit 等于承认 Host 供给)
+- Nonempty L3Content 预装 ∃x 且 Classical.choice 可抽 witness (已否决)
+- opaque initial hides provenance 不 eliminate provenance (已否决)
+- 若 L3State 有 content 字段, 则 stage0 不中性 (已用无 content 消除)
+evidence_for:
+- L3State 只含 stage (无 content 字段) — L3⁰ 无内部 datum
+- 'stage0_cannot_upgrade 零公理: StrictCertificate stage0 stage1 类型为空 ⟹ L3⁰ 无法升级/产生 datum'
+- 'l3_stage0_no_emergence: 无 EmergenceClaim 证明 ⟹ 无证书 ⟹ 无升级'
+- 'l3_no_inhabitance_axiom: 无 axiom h : Nonempty L3Content / Classical.choice 抽取'
+- 'l3_stage0_registry_independent: registry 增删不改变 L3⁰'
+- 'runner_isolation: PUnit 仅 runner 用, 不出现在 theorem statement/dependency'
+evidence_against: []
+next_action: 'R003 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 用户诊断: R002 的 PUnit 预装存在 (∃x,∀xy,x=y), 把 first-existence 压成已存在。关键区分
+  pre-distinction (A) vs pre-existence (B), 选 B。unobservable existing thing ≠ no internal
+  thing yet。最干净 = L3 stage0 无 content 字段。stage0 构造不了值 = 正确行为。防作弊: 发现 PUnit.unit/opaque
+  initial/Classical.choice 产生 base ⟹ Host 供给非 emergence。 [2026-08-09 AbsoluteRelative_Audit:
+  DEPRECATED — R001-R003 旧架构遗留, 不再进入 Absolute L3 trusted root; 审计问题见各文件 DEPRECATED
+  header; 新 trusted path = Formal/AbsoluteRelative/Trusted (R004 v2 核心)] [2026-08-09
+  作废: 无视之前所有评审, 三层沙盒全新设计]'
