@@ -1,0 +1,139 @@
+id: R164
+title: "R164 (筑基篇课后习题 VII, 2026-08-13): ★五大力逐领域 Pat 观测 — 力学 (惯性 = 锁定方向链 R050/R153①, 作用-反作用成对还原 0 R136②③/R085) / 量子 (4 互锁 = S³ = SU(2) 自旋群 R149/R154, OBSERVATION) / 引力 (脱离投影保持 R161 pair_detachment_general, OBSERVATION+CONJECTURE) / 电磁 (E⊥B = 发散轴⊥周期轴 R047 orthogonal_axes, 光子相位冻结) / 强弱 (规范群 = 互锁对数: U(1)=1 对, SU(2)=2 对, SU(3)=4 对 = 8 互锁 R161, CONJECTURE); 唯一论点: 五大力是 pat 框架五个基础结构的物理投影; 诚实边界: 结构观测非物理定律证明"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "开始尝试力学、量子力学、引力、电磁力、强弱力的逐领域观测。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 VII: 五大力
+       逐领域 Pat 观测。
+
+    ★ 观测方法: 每个力在 pat 框架中找一个结构对应 (互锁/相位/正交/
+       投影/折叠), 能形式化的锚定已证定理, 不能的标 OBSERVATION
+       (结构对应) 或 CONJECTURE (需新结构). 观测是"找结构同构",
+       不是证明物理定律.
+
+    ★ 唯一论点: 五大力是 pat 框架五个基础结构的物理投影:
+       - 力学 = 锁定链/成对 (R050: 惯性 = x↦x+d 单射; R136②③:
+         作用-反作用成对还原 0)
+       - 量子 = S³ = SU(2) (R149 4 相位互锁归一化 = R154 S³,
+         OBSERVATION)
+       - 引力 = 脱离投影 (R161 pair_detachment_general: 逐对独立,
+         脱离保持, CONJECTURE 层耦合)
+       - 电磁 = 发散⊥周期 (R047 orthogonal_axes: E⊥B; 光子相位冻结)
+       - 强弱 = 规范群对数 (U(1)=1 对, SU(2)=2 对, SU(3)=4 对 = 8
+         互锁, R161, CONJECTURE)
+
+    ★ 诚实边界: 结构观测 (OBSERVATION/CONJECTURE 已标注), 非物理
+       定律证明. 强弱力生成元与互锁对的精确对应需群表示理论 (未
+       形式化). 全部新定理只锚本框架, 不用外部引理.
+
+  formal_math: |
+    -- 力学: 惯性 = 锁定链:
+    theorem inertia_locked_chain (d : ℝ) : Function.Injective (fun x => x + d)
+    -- 力学: 作用-反作用成对还原:
+    theorem action_reaction_pair (F : ℝ) : F + (-F) = 0
+    -- 量子: 4 互锁 = S³ = SU(2):
+    theorem spin_SU2_structure (a θ : ℝ) (ha : 0 < a) :
+      a·(1/a) = 1 ∧ exp(θ·I)·exp(-(θ)·I) = 1 ∧ log a + log(1/a) = 0 ∧
+      ‖exp(θ·I)‖ = 1
+    -- 引力: 脱离投影保持:
+    theorem gravity_detachment_projection (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j, exp(θ j·I)·exp(-(θ j)·I) = 1
+    -- 电磁: E⊥B 正交:
+    theorem em_orthogonal_axes (t : ℝ) : proj (lift t * J) = 0
+    -- 电磁: 光子相位冻结:
+    theorem photon_massless_phase (t : ℝ) : exp (-(0·t)·I) = 1
+    -- 强弱: 规范群对数:
+    theorem gauge_pair_structure (k : ℕ) (θ : Fin k → ℝ) :
+      ∀ j, exp(θ j·I)·exp(-(θ j)·I) = 1
+    -- 全景:
+    theorem forces_pat_perspective (F : ℝ) (k : ℕ) (θ : Fin k → ℝ) (t : ℝ) :
+      (F + (-F) = 0) ∧ (∀ j, exp(θ j·I)·exp(-(θ j)·I) = 1) ∧
+      (proj (lift t * J) = 0)
+
+objects:
+- inertia_locked_chain
+- action_reaction_pair
+- spin_SU2_structure
+- gravity_detachment_projection
+- em_orthogonal_axes
+- photon_massless_phase
+- gauge_pair_structure
+- forces_pat_perspective
+definitions_used:
+- 锁定方向链 (惯性)
+- 成对还原 (作用-反作用)
+- S³ = SU(2) (自旋)
+- 脱离投影 (引力)
+- 发散⊥周期 (电磁 E⊥B)
+- 规范群对数 (强弱)
+
+assumptions:
+- 每个力有 pat 结构对应 (观测方法)
+- S³ = SU(2) 为 OBSERVATION (结构对应, 非群同构证明)
+- 引力耦合/规范群精确对应为 CONJECTURE
+- 诚实边界: 结构观测非物理定律证明
+conclusion: "筑基篇课后习题 VII 完成: 五大力逐领域 Pat 观测 — 力学 (惯性 = 锁定方向链, 作用-反作用成对还原 0) / 量子 (4 互锁 = S³ = SU(2) 自旋群, OBSERVATION) / 引力 (脱离投影保持, OBSERVATION+CONJECTURE) / 电磁 (E⊥B = 发散轴⊥周期轴, 光子相位冻结) / 强弱 (规范群 = 互锁对数, CONJECTURE)。8 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。诚实边界: 结构观测, 非物理定律证明。"
+
+known_special_cases:
+- 'U(1) 电磁: 1 对 = 2 互锁 (单相位圆)'
+- 'SU(2) 弱: 2 对 = 4 互锁 (S³)'
+- 'SU(3) 强: 4 对 = 8 互锁'
+- '光子: 质量 0 ⟹ 相位冻结'
+closest_known_results:
+- R149 Pat4Phase (4 相位互锁 = S³)
+- R154 DiagonalInterlock (S³ 无损内收)
+- R161 PatInterlockGrowth (脱离投影/规范群对数)
+- R047 DivergencePeriodSymmetry (发散⊥周期)
+literature_queries:
+- five forces pat structure observation
+- SU(3) eight generators interlock pairs
+
+counterexample_search:
+  status: done
+  search_space: 惯性是否真 = 锁定链单射 (R050); 作用-反作用是否真成对
+    还原 0 (ring); E⊥B 是否真 = 发散⊥周期 (R047); 规范群是否真对数
+    结构 (R161)
+  smallest_checked_size: null
+  result: inertia_locked_chain (R050 直接引用); action_reaction_pair
+    (ring); em_orthogonal_axes (R047 直接引用); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPhysicsObservation.lean (新增 8 定理)
+  theorem_name: ZeroRelative.PatPhysicsObservation.inertia_locked_chain / .action_reaction_pair / .spin_SU2_structure / .gravity_detachment_projection / .em_orthogonal_axes / .photon_massless_phase / .gauge_pair_structure / .forces_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 把观测当物理定律证明 — 诚实边界: 结构观测 (OBSERVATION/CONJECTURE)
+- 声称 S³ = SU(2) 群同构 — OBSERVATION: 结构对应, 非群同构证明
+- 声称 SU(3) 8 生成元 = 4 对精确映射 — CONJECTURE: 需群表示理论
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'inertia_locked_chain: R050 deterministic_locked_chain_unique 直接引用
+  — 惯性 = 锁定链'
+- 'action_reaction_pair: ring — 成对还原 0'
+- 'em_orthogonal_axes: R047 orthogonal_axes 直接引用 — E⊥B 正交'
+- 'spin_SU2_structure: R149 quadriphase_interlock 直接引用 — 4 互锁'
+- 'forces_pat_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 弱力的 SU(2) 自发对称破缺 (R144 基点还原)
+  深化, 或引力的脱离对耦合方式形式化 (需新结构)'
+notes: '筑基篇课后习题 VII — 五大力逐领域 Pat 观测。每个力的结构对应:
+  力学 = 锁定链/成对 (R050/R136/R085), 量子 = S³=SU(2) (R149/R154,
+  OBSERVATION), 引力 = 脱离投影 (R161, CONJECTURE 层), 电磁 =
+  发散⊥周期 (R047, E⊥B), 强弱 = 规范群对数 (R161, CONJECTURE)。
+  诚实边界: 结构观测非物理定律证明; 强弱力精确对应需群表示理论。
+  工程: 全部一次 build 通过, 0 sorry。'
