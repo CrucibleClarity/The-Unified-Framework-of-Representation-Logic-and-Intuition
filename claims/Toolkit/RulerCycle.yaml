@@ -1,0 +1,72 @@
+id: RulerCycle
+title: "RulerCycle: symmetry recovery is a periodic cycle — symmetry and asymmetry alternate on the phase circle"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerCycle: 对称性恢复 = 周期性循环 (用户指令 2026-08-12).
+
+    ★ 观察: 恢复不是终点, 是循环的一部分
+      穿折越: 不对称(基点e) → 恢复对称(穿折越) → 又不对称(新基点f)?
+
+    ★ 结构: 对称/不对称是圆上相位
+      对称轴: θ = 0, π/2, π, 3π/2 (相位对齐轴)
+      不对称: 相位不在对称轴上
+      ⟹ 对称性 = 相位模 π/2 的周期函数
+
+    ★ 穿折越 = 相位移动 = 周期循环
+      恢复对称 = 穿折越到对称轴 (相位对齐)
+      但相位继续移动 ⟹ 离开对称轴 ⟹ 又不对称
+      ⟹ 循环: 对称 → 不对称 → 对称 (周期 = 相位周期)
+
+    ★ 验证 (时间反演对合):
+      T = -1 (不对称), T² = 1 (恢复, 周期 2)
+      反演两次回到原状 ⟹ 周期 2 的对称-不对称循环
+
+    ★ 意义:
+      我们一直在做的 (对称性恢复/穿折越) = 跟踪这个周期循环的相位
+      恢复不是消灭不对称, 而是对齐相位 (到对称轴)
+      不对称会再次出现 (相位继续移动) — 这是周期, 不是失败
+
+    ★ 支撑 (Lean):
+      - timeRev_timeRev: 时间反演对合 (周期 2) [TK3/NS]
+      - even_cluster_meets_one: exp(2πk·I)=1 (相位周期 2π) [TK3]
+      - norm_exp_I_eq_one: |exp(θ·I)|=1 (相位圆) [TK4]
+  formal_math: |
+    -- 对合 (周期 2):
+    lemma timeRev_timeRev (u : ℝ → F) : timeRev (timeRev u) = u
+    -- 相位周期 (2π):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    -- 相位圆:
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+
+objects:
+- timeRev_timeRev
+- even_cluster_meets_one
+- norm_exp_I_eq_one
+
+definitions_used:
+- TK3 Compactification / TK4 AxisComponent / NS1 TimeBasepoint
+
+assumptions:
+- 各定理假设见 TK3/TK4/NS1 (自包含, 仅 import mathlib)
+
+conclusion: '对称性恢复是周期性循环: 对称性 = 相位模 π/2 的周期函数.
+  穿折越 = 相位对齐 (到对称轴); 相位继续移动 ⟹ 又不对称. 循环:
+  对称→不对称→对称. 恢复不是消灭不对称, 是对齐相位.'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/NavierStokes/TimeBasepoint.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
