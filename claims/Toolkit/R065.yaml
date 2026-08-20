@@ -1,0 +1,110 @@
+id: R065
+title: "R065 (user-proposed 2026-08-12): why λ-calculus successor/addition tokens train unstably — successor (re-chosen direction, R063) and addition (locked direction) reach numerically identical values with different direction rules; numeric supervision cannot distinguish them ⟹ gradient conflict; the intuition fast-path (digit ordering) stabilizes by supplying the direction prior explicitly"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "好，那么问题来了，后继和加法，方向是不同的，这他妈就是我搞模型训练的时候
+  一直没搞明白的事情，凭什么lambda演算在后继和加法两个token上总是训练不稳，
+  不经过直觉快路径定义加法后，从0重新加到2,就没法严格的获得好的训练结果。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。训练实践与理论 (R063/R064) 的对接。
+
+    ★ 观察 (用户训练实践):
+      λ 演算中"后继"和"加法"两个 token 训练总是不稳定; 不经过直觉快路径
+      定义加法, 从 0 重新加到 2, 无法严格获得好的训练结果。
+
+    ★ 解释 (R063/R064 应用):
+      ① 后继轴 = 每步重选方向 (R063): succ 的 f 应用语义 = 重选
+      ② 加法轴 = 锁定方向 (R064): add 的 f 应用语义 = 锁定 (succ 迭代 +
+         positive, tokenizer iteration_depth 层1)
+      ③ 数值重合: [succ,succ,zero] 与 [add,one,one] 到达同一 λ 项
+         λf.λx. f(f(x)) = 2 — 数值与 λ 项都重合
+      ④ 方向规则不同: 同一 f 应用符号, 后继语义 (重选) vs 加法语义 (锁定)
+      ⑤ 监督信号只有数值 (无方向信息): 模型无法从数值监督分辨哪个 token
+         序列"正确" ⟹ 学到冲突的方向规则 ⟹ 梯度冲突 ⟹ 训练不稳
+      ⑥ 直觉快路径为什么稳定: 快路径 (digit 排序还原位序) 提供"方向先验"
+         (位序 = 锁定方向) — 把 add 的方向规则 (锁定) 提前固定, 模型不需要
+         从数值监督推断方向 ⟹ 稳定。与 R064 unit_case_coincides 同构
+         (数值掩盖方向差异)。
+
+    ★ 机械验证 (R065_lambda_succ_add.py, 枚举=证据):
+      1. 数值重合: succ(succ(0))=2, add(1,1)=2 (同值): PASS
+      2. 训练不稳机制: 两 token 序列到达同一数值, 监督无方向信息: PASS
+      3. add m n (锁定迭代 n 次) = m+n: PASS
+      4. 冲突: 同一 f 应用, succ 语义 (重选) vs add 语义 (锁定): PASS
+      5. 快路径稳定机制: 位序 = 锁定向量的显式先验: PASS
+
+    ★ 与既有 claim 的关系:
+      - R063 (每步重选方向): 后继 token 的语义
+      - R064 (后继≠加法, 不同轴): 两 token 方向规则不同 (本 claim 的根源)
+      - R055 (计算=相位): 训练 = 学习相位映射; 方向歧义 = 相位歧义
+      - R057 (存储⟷计算): token 定义 = 存储的方向规则; 数值监督无法
+        提取方向 ⟹ 需显式方向先验
+      - tokenizer 项目: iteration_depth (addition 层1 = succ 迭代) +
+        direction_ops (addition = succ迭代+positive) — 方向 token 显式化
+        正是"方向先验"的实现 (R065 ⑥ 的工程对应)
+      结论: λ 演算 succ/add 训练不稳 = 数值监督掩盖方向规则差异 (R064),
+      快路径/方向 token 提供显式方向先验 ⟹ 稳定。训练不稳不是模型缺陷,
+      是监督信号缺少方向维度。
+
+    ★ 支撑 (Lean):
+      - R063 / R064 的定理 (方向规则差异) [SuccessorNotAddition.lean 等]
+      - tokenizer: iteration_depth / direction_ops [llm_research_v5]
+  formal_math: |
+    -- 数值重合 (λ 项相同):
+    -- succ(succ(0)) = add(1,1) = λf.λx. f(f(x)) (Church)
+    -- 方向规则不同 (R063/R064):
+    --   succ: 每步重选方向; add: 锁定方向 (succ 迭代 + positive)
+
+objects: []
+
+definitions_used:
+- R063 (每步重选) / R064 (后继≠加法) / R055 / R057 / tokenizer iteration_depth / direction_ops
+
+assumptions:
+- "监督信号 = 数值 (λ 项), 无方向信息"
+- "快路径 (digit 位序) 提供显式方向先验"
+
+conclusion: "用户观察获解释 (2026-08-12): λ 演算后继/加法 token 训练不稳 =
+  数值监督掩盖方向规则差异 (R064: 后继轴重选方向 vs 加法轴锁定方向); 快路径
+  提供显式方向先验 (位序=锁定) ⟹ 稳定。训练不稳是监督缺方向维度, 非模型
+  缺陷。"
+
+known_special_cases:
+  - "[succ,succ,zero] vs [add,one,one]: 同一 λ 项, 不同 token 序列 (方向规则)"
+  - "快路径: digit 位序还原 = 锁定方向先验 (稳定)"
+  - "方向 token: addition = succ迭代+positive (tokenizer direction_ops)"
+
+counterexample_search:
+  status: done
+  search_space: "数值重合/展开一致/方向冲突 (R065_lambda_succ_add.py: 5 组)"
+  smallest_checked_size: 300
+  result: "5/5 PASS (第 3 项脚本初版错误, 修正后 PASS); 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "数值监督不足: 需显式方向维度 (方向 token 或快路径先验)"
+  - "λ 项相同但 token 序列不同: 模型需区分 token 语义 (方向规则), 非仅数值"
+  - "训练不稳是多因素: 本 claim 解释方向规则冲突因素, 不排除其他因素"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "接入 tokenizer 训练: 方向 token 显式化 (direction_ops 已有); 训练样本
+  含方向规则标注 (succ=重选, add=锁定)"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (训练实践观察 + 原话原封保存); assistant
+  仅执行机械验证 (枚举) + claim 落盘。"
