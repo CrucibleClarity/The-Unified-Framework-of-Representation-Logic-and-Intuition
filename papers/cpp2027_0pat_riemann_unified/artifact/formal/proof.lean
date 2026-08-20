@@ -2861,6 +2861,7 @@ theorem recip_basepoint_i_on_unit_circle (z : ℂ) (hz : z ≠ Complex.I) :
   rw [eq_comm]
   exact (critical_line_equidistant_basepoint_i z).symm
 
+
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
     ((2 : ℂ) ^ (s : ℂ) * (↑Real.pi : ℂ) ^ (s - 1 : ℂ) * Complex.sin (↑Real.pi * s / 2) * Complex.Gamma (1 - s))
@@ -3444,5 +3445,75 @@ theorem zero_orbit_counting {z : ℂ} (hz : riemannZeta z = 0)
     · exact zero_orbit_distinct_of_offline hre him
     · exact ⟨horbit.1, horbit.2.1, horbit.2.2⟩
 end
+
+/-- 消边: 离线零点左右镜像双射 — 左半 (Re<1/2) 与右半 (Re>1/2) 的零点
+    通过 ρ ↦ 1-ρ̄ 一一对应 (共轭保持虚部, 反射镜像实部)。
+    零点总数守恒的代数骨架: 离线零点成对出现 (函数方程 + 共轭),
+    临界线把计数区域分成镜像两半 — 消边是 N(T) 矩形绕转 → 临界线段
+    的零点层面版本。 -/
+noncomputable def zero_left_right_bijection (T : ℝ) :
+    {ρ : ℂ | riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 / 2 ∧ 0 < ρ.im ∧ ρ.im < T}
+      ≃ {ρ : ℂ | riemannZeta ρ = 0 ∧ 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ ρ.im < T} := by
+  refine ⟨fun ρ => ⟨1 - (starRingEnd ℂ) (ρ : ℂ), ?_⟩,
+          fun ρ => ⟨1 - (starRingEnd ℂ) (ρ : ℂ), ?_⟩, ?_, ?_⟩
+  · -- toFun: 左半 ⟹ 右半 (4 点轨道 + 实部镜像)
+    rcases ρ with ⟨ρ, hz, hre0, hre1, him0, himT⟩
+    have hstrip : 0 < ρ.re ∧ ρ.re < 1 := ⟨hre0, lt_trans hre1 (by norm_num)⟩
+    have htriv : ∀ n : ℕ, ρ ≠ -↑n := by
+      intro n h
+      have hre' : ρ.re = (-(n : ℂ)).re := by rw [h]
+      have hneg : (-(n : ℂ)).re = -((n : ℂ).re) := Complex.neg_re (n : ℂ)
+      rw [hneg] at hre'
+      have hnre : ((n : ℂ).re) = (n : ℝ) := by simp
+      rw [hnre] at hre'
+      linarith
+    have hone : ρ ≠ 1 := by
+      intro h
+      have hre' : ρ.re = (1 : ℂ).re := by rw [h]
+      rw [Complex.one_re] at hre'
+      linarith
+    have horbit := zero_orbit_four hz hstrip htriv hone
+    refine ⟨horbit.2.2, ?_, ?_, ?_, ?_⟩
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [him0]
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [himT]
+  · -- invFun: 右半 ⟹ 左半 (对称)
+    rcases ρ with ⟨ρ, hz, hre0, hre1, him0, himT⟩
+    have hstrip : 0 < ρ.re ∧ ρ.re < 1 := ⟨lt_trans (by norm_num) hre0, hre1⟩
+    have htriv : ∀ n : ℕ, ρ ≠ -↑n := by
+      intro n h
+      have hre' : ρ.re = (-(n : ℂ)).re := by rw [h]
+      have hneg : (-(n : ℂ)).re = -((n : ℂ).re) := Complex.neg_re (n : ℂ)
+      rw [hneg] at hre'
+      have hnre : ((n : ℂ).re) = (n : ℝ) := by simp
+      rw [hnre] at hre'
+      linarith
+    have hone : ρ ≠ 1 := by
+      intro h
+      have hre' : ρ.re = (1 : ℂ).re := by rw [h]
+      rw [Complex.one_re] at hre'
+      linarith
+    have horbit := zero_orbit_four hz hstrip htriv hone
+    refine ⟨horbit.2.2, ?_, ?_, ?_, ?_⟩
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [him0]
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [himT]
+  · -- left_inv: ρ ↦ 1-ρ̄ 对合
+    intro ρ
+    ext <;> simp
+  · -- right_inv
+    intro ρ
+    ext <;> simp
+
 
 end RiemannUnifiedObservation
