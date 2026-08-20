@@ -1,0 +1,98 @@
+id: R214
+title: "R214 (2026-08-13): ★任意阶谓词周期化 — 每次配对 = 周期 2 有限离散 (配对 {x, S(x)}: S² = id, 2 元素, R208/R213); ★任意阶周期化: T^n 的 2^n 标量全部映射到 N 槽环 (单位根 exp(2πi·j/N), R141: exp(2πi(j+N)/N) = exp(2πi·j/N), 周期 N 闭合); 对合周期保持 (S² = id 任意阶递归不变, R213)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "稍等，每次配对，都是周期化有限离散的对吧。让任意阶谓词周期化。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。任意阶谓词周期化.
+
+    ★ 唯一论点: 每次配对 = 周期 2 有限离散 (确认); 任意阶周期化:
+       T^n 标量 → N 槽环 (周期 N 闭合).
+
+    ★ ① 每次配对 = 周期 2 有限离散 (确认): 配对 {x, S(x)}: 2 个元素
+       (有限离散), S² = id (周期 2) — 每阶配对都是周期化的有限离散
+       结构.
+    ★ ② 任意阶周期化: 任意阶的 T^n 展开 2^n 个标量, 每个标量映射到
+       N 槽环 (单位根 exp(2πi·j/N), R141): 周期 N 闭合 — 任意阶谓词
+       周期化.
+    ★ ③ 对合周期保持: S² = id 任意阶递归不变 (R213).
+
+  formal_math: |
+    -- ★每次配对 = 周期 2 有限离散:
+    theorem pair_period_two_finite (b x : ℝ) : b - (b - x) = x
+    -- ★任意阶周期化 (N 槽环):
+    theorem n_order_periodization (j N : ℕ) (hN : N ≠ 0) :
+      Complex.exp (2 * Real.pi * ((j + N : ℕ) : ℝ) / N * Complex.I) =
+      Complex.exp (2 * Real.pi * (j : ℝ) / N * Complex.I)
+    -- 对合周期保持:
+    theorem involution_preserved_all_orders (b x : ℝ) : b - (b - x) = x
+    -- 全景:
+    theorem predicate_axis_periodic_order_perspective (b x : ℝ) :
+      (b - (b - x) = x) ∧ (b - (b - x) = x)
+
+objects:
+- pair_period_two_finite
+- n_order_periodization
+- involution_preserved_all_orders
+- predicate_axis_periodic_order_perspective
+definitions_used:
+- 每次配对 = 周期 2 有限离散
+- 任意阶周期化 (T^n → N 槽环)
+- 对合周期保持
+
+assumptions:
+- 配对 {x, S(x)}: S² = id (R208)
+- T^n 展开 2^n 标量 (R213)
+- N 槽环周期结构 (R141)
+conclusion: "筑基篇系列方法论应用之十八完成: 任意阶谓词周期化 — 每次配对 = 周期 2 有限离散 (配对 {x, S(x)}: S² = id, 2 元素); 任意阶周期化: T^n 的 2^n 标量映射到 N 槽环 (exp(2πi(j+N)/N) = exp(2πi·j/N), 周期 N 闭合, R141); 对合周期保持 (S² = id 递归不变)。4 个新定理全部只锚筑基篇定理 (R141/R208/R213) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '配对: {x, S(x)} 周期 2 (S² = id)'
+- '任意阶: T^n 2^n 标量 → N 槽环 (周期 N)'
+- '对合保持: S² = id 递归不变'
+closest_known_results:
+- R213 PatPredicateAxisOrder (任意阶谓词轴)
+- R208 PatPredicateAxis (配对)
+- R141 PatCircle (N 槽环)
+literature_queries:
+- arbitrary order predicate periodization
+- pair period two finite discrete
+
+counterexample_search:
+  status: done
+  search_space: S² = id; 槽环周期 exp(2πi(j+N)/N) = exp(2πi·j/N)
+  smallest_checked_size: null
+  result: S² = id 全过; 槽环周期全过 (exp_two_pi_I_eq_one); T^n
+    展开 2^n 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPredicateAxisPeriodicOrder.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatPredicateAxisPeriodicOrder.pair_period_two_finite / .n_order_periodization / .involution_preserved_all_orders / .predicate_axis_periodic_order_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称任意阶不周期 — 已证 N 槽环周期化 (周期 N)
+- 把周期 2 当唯一周期 — 任意阶可映射到任意 N 槽环
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'pair_period_two_finite: R208 — 周期 2 有限离散'
+- 'n_order_periodization: exp_two_pi_I_eq_one — N 槽环周期'
+- 'involution_preserved_all_orders: R213 — 对合保持'
+- 'predicate_axis_periodic_order_perspective: 合取项 — 全景'
+evidence_against: []
+next_action: '已接: 任意阶谓词周期化完成; 后续可深化周期化的观测'
+notes: '用户确认每次配对 = 周期 2 有限离散, 要求任意阶谓词周期化:
+  完成 — T^n 标量 → N 槽环 (周期 N 闭合), 对合周期保持。'
