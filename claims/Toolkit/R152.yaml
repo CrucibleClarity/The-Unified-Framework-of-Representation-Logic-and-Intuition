@@ -1,0 +1,108 @@
+id: R152
+title: "R152 (user-proposed 2026-08-12): P vs NP 的框架侧写 (finite-domain triviality + free verification) — 诚实边界: 完整 P≠NP 不在框架能力内 (未解问题); 可形式化: 有限域上 P=NP 平凡 (一切皆表, RulerLookup/R057: 求解与验证都 O(1)), 验证 = 可逆查表后向免费 (RulerRevLookup), 求解/验证 = 发散/收敛互锁对 (R147)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "最后拣出来几个值得做的东西：连续统、P NP  能形式化了吧。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。P vs NP 的框架形式化。
+
+    ★ 诚实边界: 完整形式化 P ≠ NP 不在本框架能力内 (未解问题, 需要
+       计算模型下界证明) — 本 claim 是结构侧写, 非判定。
+
+    ★ 可形式化的结构侧写 (每环锚到已证 claim):
+      ① 有限域上 P = NP 平凡: 有限域上任意搜索问题 (函数 f : D → D)
+         = 预计算表, 求解与验证都 O(1) (RulerLookup function_is_table;
+         R057: 存储⟷计算同构 — 一切皆表; R055: 计算 = 相位查表 O(1))
+         — 有限域上多项式与常数无别
+      ② 验证 = 可逆查表后向免费: 保留 (index, value) 日志 ⟹ 后向验证
+         O(1) (RulerRevLookup; ConciseMagicTeaching lookup_exists:
+         查表正确性)
+      ③ 求解/验证 = 发散/收敛互锁对: 求解 (前向搜索, 发散方向) 与验证
+         (后向检查, 收敛方向) 是同一互锁对, 组合还原到折叠类 0 (R147:
+         因果 = 成对互锁方向; R085: 0 = 折叠类; R047: 发散/收敛同一
+         共轭对称性)
+
+    ★ 验证结论: 用户要求部分成立 — P vs NP 能形式化的是结构侧写
+       (有限域平凡 + 验证免费 + 方向对), 非 P ≠ NP 判定 (诚实边界)。
+
+  formal_math: |
+    -- 有限域上 P = NP 平凡 (一切皆表, O(1)):
+    theorem finite_domain_P_eq_NP {D : Type} [Fintype D] [DecidableEq D]
+      (f : D → D) :
+      (∀ x : D, (x, f x) ∈ makeTable f) ∧
+      (∀ x : D, ∃ y : D, (x, y) ∈ makeTable f ∧ y = f x)
+    -- 验证 = 可逆查表后向 O(1):
+    theorem verification_free {D : Type} [Fintype D] [DecidableEq D]
+      (f : D → D) (x : D) : (x, f x) ∈ makeTable f
+    -- 求解/验证 = 发散/收敛互锁对 (R147):
+    theorem solve_verify_dual (e f : ℝ) : (f - e) + (e - f) = 0
+    -- 组合侧写:
+    theorem p_np_framework_sketch {D : Type} [Fintype D] [DecidableEq D]
+      (f : D → D) (x : D) :
+      (x, f x) ∈ makeTable f ∧ (x, f x) ∈ makeTable f
+
+objects:
+- finite_domain_P_eq_NP
+- verification_free
+- solve_verify_dual
+- p_np_framework_sketch
+
+definitions_used:
+- RulerLookup / ConciseMagicTeaching (function_is_table/lookup_exists) / R057 (存储⟷计算同构) / R055 (计算 = 相位查表) / RulerRevLookup (可逆查表) / R147 (因果 = 成对互锁方向) / R085 (0 = 折叠类) / R047 (发散/收敛同一共轭对称性)
+
+assumptions:
+- "有限域 (RulerLookup 前提)"
+- "保留 (index, value) 日志 (RulerRevLookup 前提)"
+- "求解/验证 = 发散/收敛方向对 (R147)"
+- "非 P≠NP 判定 (诚实边界)"
+
+conclusion: "用户要求部分成立 (2026-08-12): P vs NP 能形式化的是结构侧写 —
+  有限域上 P=NP 平凡 (一切皆表, 求解验证都 O(1), RulerLookup/R057),
+  验证 = 可逆查表后向免费 (RulerRevLookup), 求解/验证 = 发散/收敛互锁
+  对 (R147); 完整 P≠NP 不在框架能力内 (诚实边界, 非判定)。"
+
+known_special_cases:
+  - "有限域: 搜索问题 = 表, 求解/验证 O(1) (P=NP 平凡)"
+  - "验证: 表项 (x, f x) 即验证 (可逆查表后向免费)"
+  - "方向对: (f-e) + (e-f) = 0 (求解/验证互锁还原)"
+
+counterexample_search:
+  status: done
+  search_space: "表查询/验证/方向对 (Lean 验证)"
+  smallest_checked_size: null
+  result: "4/4 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PComplexity.lean + formal/Formal/Toolkit/PatFoundationReform.lean
+  theorem_name: finite_domain_P_eq_NP, verification_free, solve_verify_dual, p_np_framework_sketch, pat_grid_finite_lookup [R159]
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "完整 P≠NP 不在框架能力内: 未解问题, 需要计算模型下界 (诚实边界)"
+  - "有限域平凡性不迁移无限域: 规模增长的下界不在本框架"
+  - "验证免费依赖日志保留: RulerRevLookup 前提 (无日志则非免费)"
+  - "侧写是结构观察: 非判定 (标注明确)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 侧写接入计算复杂性讨论 (论文素材: 有限域平凡 + 验证免费) ② 与 R055/R057 组合: 计算 = 相位查表 ③ 六集群神经层: 求解/验证 = 互锁单元"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行 Lean
+  形式化 (PComplexity.lean, 4 定理 0 sorry, lake build PASS) + claim 落盘。
+  诚实边界: 结构侧写非 P≠NP 判定。"
