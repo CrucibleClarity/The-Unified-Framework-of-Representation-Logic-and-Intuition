@@ -1,0 +1,167 @@
+%% CPP 2027 Submission — 0pat Exercise XXVII: Split-Complex Numbers (Imaginary-Radius Orthogonal Euler Circles)
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Split-Complex Numbers as Imaginary-Radius Orthogonal Euler
+Circles (Exercise XXVII)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We report the formal implementation of an observation frame suggested by
+the pat exercise series: two orthogonal Euler circles, one of radius $1$
+and one of radius $i$ --- an imaginary-radius circle, which cannot exist
+in the complex plane (radii are nonnegative reals, $|z| = i$ has no
+solution). The host structure is the split-complex numbers
+$a + bj$, $j^2 = +1$, with pseudo-norm $\|a + bj\|^2 = a^2 - b^2$
+(Minkowski metric): the radius-$1$ circle is the hyperbola
+$a^2 - b^2 = 1$, and the radius-$i$ circle is the conjugate hyperbola
+$a^2 - b^2 = -1$, nonempty (its unit $j$ lies on it). Seven theorems are
+machine-checked in Lean 4 / mathlib (with a self-built 30-line
+split-complex structure, standard mathematics): $j^2 = 1$,
+pseudo-norm multiplicativity $\|zw\|^2 = \|z\|^2\|w\|^2$, nonemptiness
+of both circles, the orthogonality condition $1^2 + i^2 = 0$, disjointness
+of the conjugate hyperbolas, and the observation contrast: every odd
+prime is a split pseudo-norm $p = ((p+1)/2)^2 - ((p-1)/2)^2$, whereas in
+the complex plane only primes $p \equiv 1, 2 \pmod 4$ are norms (Fermat).
+Zero errors, zero \texttt{sorry}.
+\end{abstract}
+
+\keywords{Lean, formalization, split-complex numbers, hyperbola, imaginary radius, 0pat}
+
+\maketitle
+
+\section{The observation frame}
+
+The exercise series has been observing the prime axis through circles:
+the circle $\mathbb{Z}/p\mathbb{Z}$ (Exercise XXIV), the orthogonal
+coordinate frame of two circles (Exercise XXV), and the critical circle
+of the Riemann direction. The question posed here is whether the two
+orthogonal Euler circles may carry \emph{different units} --- one of
+radius $1$ (natural unit) and one of radius $i$ (imaginary unit) ---
+without forcing the Cartesian constraint of the complex plane, where the
+real and imaginary axes share the same unit.
+
+The answer is that such a frame cannot live in the complex plane: a
+circle $\{z : |z - c| = r\}$ requires $r \ge 0$, and $|z| = i$ has no
+solution. The host structure is the \emph{split-complex} numbers, the
+two-dimensional real algebra $a + bj$ with $j^2 = +1$ (contrast
+$\mathbb{C}$, where $J^2 = -1$). Its pseudo-norm is the Minkowski
+metric $\|a + bj\|^2 = a^2 - b^2$. In this structure, the radius-$1$
+circle is the hyperbola $a^2 - b^2 = 1$, and the radius-$i$ circle is
+the conjugate hyperbola $a^2 - b^2 = -1$, which is nonempty --- its unit
+$j$ lies on it. The orthogonality of the two radii is exact in the
+split metric: $r_1^2 + r_2^2 = 1^2 + i^2 = 1 + (-1) = 0$, the condition
+for orthogonal concentric circles.
+
+\section{The theorems}
+
+Seven theorems, all machine-checked with zero \texttt{sorry}. The
+split-complex structure is defined in 30 lines (a pair of reals with
+multiplication $(a,b)(c,d) = (ac + bd, ad + bc)$); the theorems are
+standard mathematics.
+
+\paragraph{The defining algebra (j\_sq).} $j^2 = 1$. This is the
+single structural difference from the complex numbers ($J^2 = -1$) and
+the origin of every subsequent property.
+
+\paragraph{Pseudo-norm multiplicativity (normSq\_mul).}
+$\|zw\|^2 = \|z\|^2\|w\|^2$. The split pseudo-norm behaves like the
+complex norm under multiplication; the proof is a direct expansion.
+
+\paragraph{Nonemptiness of both circles.} $\|j\|^2 = -1$ (the
+radius-$i$ circle contains its unit $j$) and $\|1\|^2 = 1$ (the
+radius-$1$ circle contains $1$). The imaginary-radius circle exists and
+is inhabited --- the property that fails in $\mathbb{C}$.
+
+\paragraph{Orthogonality (orthogonal\_radii).} $1 + (-1) = 0$: in the
+split metric, the radii $1$ and $i$ satisfy $r_1^2 + r_2^2 = 0$, the
+concentric-circle orthogonality condition. The two Euler circles are
+orthogonal in exactly the sense the frame requires.
+
+\paragraph{Disjointness (circles\_disjoint).} No point lies on both
+circles: $a^2 - b^2 = 1$ and $a^2 - b^2 = -1$ cannot hold together. The
+conjugate hyperbolas are disjoint --- the frame has two separate loci,
+which is what makes them a coordinate pair rather than one circle.
+
+\paragraph{Observation contrast (odd\_prime\_is\_split\_norm).}
+Every odd prime $p$ is a split pseudo-norm:
+$p = ((p+1)/2)^2 - ((p-1)/2)^2$. In the complex plane, only primes
+$p \equiv 1, 2 \pmod 4$ are norms (Fermat's two-square theorem, Exercise
+XXIV). The split frame therefore observes primes without discrimination
+--- every odd prime is representable --- whereas the complex frame
+distinguishes half of them. The contrast is the frame's first
+observational result: the choice of unit ($1$ vs $i$) determines the
+discriminating power of the observation.
+
+\section{Honest boundary and position}
+
+As in every exercise: the content is classical mathematics (the
+split-complex numbers are a standard structure; all theorems are
+known), the proofs are machine-checked, and no claim is made beyond the
+statements. The value is positional: the frame requested by the series
+(radius-$1$ and radius-$i$ orthogonal Euler circles) is now implemented
+and its basic observational property (no prime discrimination) is
+established. The frame is available for further observation --- for
+example, of structures that the complex plane cannot host.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 135 lines),
+importing only \texttt{Mathlib.Data.Real.Basic},
+\texttt{Mathlib.Data.Nat.Prime.Basic}, \texttt{Mathlib.Tactic.Ring}, and
+\texttt{Mathlib.Tactic.Linarith}. The split-complex structure
+(\texttt{SplitComplex}, 30 lines) is a self-contained standard
+definition; no pat framework concepts are used. Compiled with Lean
+4.32.2 / mathlib v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{j\_sq} & $j^2 = 1$ & ext; simp \\
+\texttt{normSq\_mul} & $\|zw\|^2 = \|z\|^2\|w\|^2$ & simp; ring \\
+\texttt{imaginary\_radius\_circle} & $\|j\|^2 = -1$ & simp \\
+\texttt{real\_radius\_circle} & $\|1\|^2 = 1$ & simp \\
+\texttt{orthogonal\_radii} & $1 + (-1) = 0$ & norm\_num \\
+\texttt{circles\_disjoint} & $\neg\exists z,\ \|z\|^2 = 1 \wedge \|z\|^2 = -1$ & linarith \\
+\texttt{odd\_prime\_is\_split\_norm} & $p = ((p{+}1)/2)^2 - ((p{-}1)/2)^2$ & div\_add\_mod; omega \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The imaginary-radius orthogonal Euler frame is implemented: split-complex
+numbers host the radius-$i$ circle, the orthogonality condition
+$1^2 + i^2 = 0$ holds exactly, and the frame's first observation is that
+it does not discriminate primes (every odd prime is a pseudo-norm),
+in contrast to the complex frame. The frame now exists, machine-checked,
+ready for further observation.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
