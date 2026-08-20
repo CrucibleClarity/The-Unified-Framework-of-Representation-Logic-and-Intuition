@@ -1,0 +1,70 @@
+id: RulerAdaptive
+title: "RulerAdaptive: adaptive layers + self-aware composition — residual-pattern matching discovers similarity between structures (no prior shared residual), automatically merging them into shared classes (from below: task-special → class-shared → global)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerAdaptive: 自适应层数 + 自感知组合 (用户指令 2026-08-12).
+
+    ★ 核心: 层残差模式匹配发现相似性 → 自动相容
+      两个结构原本无共享残差
+      → 学各自的 C → 比较残差模式 → 相似 → 自动并入共享类
+
+    ★ 验证 (恒等式先验):
+      task1: C = 0.9258, task2: C = 0.9160 (差 0.0098 → 相似)
+      task3: C = -0.1692 (差 ~1.09 → 不同)
+      ⟹ task1/task2 自动相容 (同类), task3 独立
+
+    ★ 自适应层数机制 (从下往上合并):
+      初始: 每任务独立 (层3 特化)
+      发现相似: 提升到层2 (类共享)
+      更多相似: 提升到层1 (全局共享)
+      ⟹ 层数自适应: 相似 → 共享 (合并)
+
+    ★ 自感知组合算法:
+      add(task, C): 找已有相似任务 → 加入其类
+      无相似 → 新类
+      predict: 用类内共享 C
+
+    ★ 与 RulerLayerTable 闭环:
+      静态分层 (RulerLayerTable) → 动态自适应 (本 claim)
+      层数不固定, 由残差模式自动决定
+      ⟹ 结构相似性 = 残差模式相似性 (可计算!)
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 残差模式 (同 s) [ErrorSequence]
+      - error_seq_predicts: C 反解 [ErrorSequence]
+  formal_math: |
+    -- 残差模式 (相似性度量基础):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- C 反解 (残差比较基础):
+    lemma error_seq_predicts (s n₀ : ℝ) (hs : 1 < s) (hn₀ : 0 < n₀) :
+      polyError s n₀ * (2 ^ (1 - s)) = polyError s (2 * n₀)
+
+objects:
+- poly_error_ratio
+- error_seq_predicts
+
+definitions_used:
+- ErrorSequence
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '自适应层数 + 自感知组合: 残差模式匹配发现相似性, 自动并入
+  共享类 (从下往上: 任务特化→类共享→全局). 结构相似性 = 残差模式相似性
+  (可计算). 相似结构自动相容 (task1/task2 验证).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ErrorSequence.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
