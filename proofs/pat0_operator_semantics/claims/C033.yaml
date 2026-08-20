@@ -1,0 +1,66 @@
+id: C033
+title: "Dual projection operator — wave-particle duality = the Re/Im dual projections of one complex amplitude"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    波粒二象性就是单纯的双投影算符导致的 — 同一个复结构的两根正交投影轴。
+    每个自由度 = 复振幅 z (复平面)。双投影算符:
+    - 粒子投影 P(z) = Re z (位置/局域投影 — 实轴)
+    - 波投影   W(z) = Im z (相位/频率投影 — 虚轴)
+    J(z) = i·z (辛旋转): J 把双投影互换 (傅里叶变换 = 旋转 90° 的结构)。
+    定理:
+    T1: 唯一分解 z = P(z) + i·W(z) — 单个复振幅同时携带粒子投影与波投影
+    T2: J 互换双投影: Re(Jz) = -Im z, Im(Jz) = Re z — 位置↔动量由 J 联系
+    T3: 双投影正交 (J 旋转 90° = 正交变换) — 粒子轴 ⊥ 波轴
+    T4: 四相位 {±1, ±i} = 双投影的纯态: 1 = 纯粒子, i = 纯波,
+        -1 = 反粒子, -i = 反波 — 波粒二象性的离散化
+  formal_math: |
+    P(z) := z.re, W(z) := z.im, J(z) := i·z.
+    T1: z = P(z) + i·W(z) (unique decomposition).
+    T2: Re(Jz) = -Im z, Im(Jz) = Re z.
+    T3: ⟨P-axis, W-axis⟩ = 0 (orthogonal projections).
+    T4: the four phases are the pure states: 1 = pure particle (Re=1, Im=0),
+        i = pure wave (Re=0, Im=1), -1 = anti-particle, -i = anti-wave.
+
+objects: ["z : ℂ (complex amplitude)", "P = Re (particle projection)", "W = Im (wave projection)", "J(z) = i·z (Fourier rotation)"]
+definitions_used: ["Complex", "orthogonal projections", "Fourier transform as 90° rotation"]
+
+assumptions:
+  - "z : ℂ"
+conclusion: "Wave-particle duality is the dual projection of one complex amplitude onto two orthogonal axes; J (the Fourier rotation) swaps the two projections; the four phases are the discrete pure states."
+
+known_special_cases:
+  - "T4: {±1, ±i} as the discrete pure states of the dual projection"
+closest_known_results:
+  - "Classical: z = Re z + i·Im z; rotation by 90° swaps real/imaginary parts (KNOWN)"
+  - "C030 (symplectic J), R149 (four-phase interlock)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the operator-semantics reading of wave-particle duality."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/DualProjection.lean"
+  theorem_name: "ZeroRelative.dual_projection_decomposition / J_swaps_projections / dual_projection_orthogonal / dual_projection_quad_discrete"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "dual projection is a classical (not quantum) structure: no measurement/postulate is involved"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/DualProjection.lean, no sorry"
+evidence_against: []
+
+next_action: "C035 (matrix/tensor dot/cross products under the operator semantics)."
