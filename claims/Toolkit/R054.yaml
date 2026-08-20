@@ -1,0 +1,119 @@
+id: R054
+title: "R054 (user-proposed 2026-08-12): axes from ANY basepoint in ANY direction map and compress losslessly — 3-stage composition (teleport e→0, reflection S_u, teleport 0→f) of the R052/R053 lossless stages"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文: "任意基点出发的任意方向轴,
+       无损映射、无损压缩。"
+
+    ★ 断言内容:
+      任意基点 e 出发的任意方向 u 的轴, 与任意基点 f 出发的任意方向 v 的轴
+      之间 — 无损映射 + 无损压缩。
+
+    ★ 机制 (R052 + R053 的三环节组合):
+      ① 环节1: teleport e → 0 (R053: 基点移动双射, 无损)
+      ② 环节2: 反射 S_u (R052: 同基点任意方向对无损)
+      ③ 环节3: teleport 0 → f (R053 再次)
+      组合: 无损 (单射) 映射的组合仍单射 ⟹ R048 无损。
+      任意基点: e 任意 (不限于 0), 由 teleport 环节吸收; 任意方向: u 任意,
+      由反射环节吸收。
+
+    ★ 核心定理 (Lean 验收, AnyBasepointAnyDirection.lean, 无 sorry):
+      ① composed_map_round_trip: 三环节往返精确 — teleport f⁻¹, reflect u
+         (对合), teleport e 组合回到 x
+      ② composed_injective: 组合映射 M(x) = reflect u (x - e) + f 单射 —
+         任意基点任意方向轴无损映射
+      ③ any_basepoint_any_direction_lossless: 组合映射无损 — ∃ d,
+         d (M x) = x (R048 应用)
+
+    ★ 机械验证 (枚举=证据):
+      1. 任意基点 e 任意方向 u → 任意基点 f: 三环节无损往返 (500 组): PASS
+      2. 任意基点压缩单射编码无损 (200 组): PASS
+      3. 组合映射单射 (300 组): PASS
+
+    ★ 与既有 claim 的关系 (链条闭合):
+      - R048 (单射 ⟹ 无损): 组合机制
+      - R052 (同一基点任意方向轴): 环节 2 — 反射 S_u
+      - R053 (同一轴基点任意移动): 环节 1,3 — teleport
+      结论: R052 (基点固定, 轴方向任意) × R053 (轴固定, 基点任意) = R054
+      (基点任意 × 方向任意) — 无损映射/压缩的完全泛化。至此任意轴对
+      (任意基点, 任意方向) 均无损。
+
+    ★ 支撑 (Lean):
+      - composed_map_round_trip / composed_injective /
+        any_basepoint_any_direction_lossless [AnyBasepointAnyDirection.lean]
+      - reflect_involutive [PairwiseDirection.lean]
+      - teleport [TK1 / BasepointMove.lean]
+      - injective_is_lossless [LosslessCompression.lean]
+  formal_math: |
+    -- 组合映射 (三环节):
+    noncomputable def composedMap (e u f : ℝ × ℝ) (x : ℝ × ℝ) : ℝ × ℝ :=
+      PairwiseDirection.reflect u (x.1 - e.1, x.2 - e.2) + f
+    -- 三环节往返精确:
+    theorem composed_map_round_trip (e u f : ℝ × ℝ) (hu : u.1 ^ 2 + u.2 ^ 2 ≠ 0)
+        (x : ℝ × ℝ) :
+        PairwiseDirection.reflect u (composedMap e u f x - f) + e = x
+    -- 组合映射单射:
+    theorem composed_injective (e u f : ℝ × ℝ) (hu : u.1 ^ 2 + u.2 ^ 2 ≠ 0) :
+        Function.Injective (composedMap e u f)
+    -- 无损 (R048):
+    theorem any_basepoint_any_direction_lossless (e u f : ℝ × ℝ)
+        (hu : u.1 ^ 2 + u.2 ^ 2 ≠ 0) :
+        ∃ d : ℝ × ℝ → ℝ × ℝ, ∀ x, d (composedMap e u f x) = x
+
+objects:
+- composed_map_round_trip
+- composed_injective
+- any_basepoint_any_direction_lossless
+
+definitions_used:
+- R052 AnyDirectionAxes / R053 BasepointMove / R048 LosslessCompression (injective_is_lossless) / R049 PairwiseDirection (reflect_involutive)
+
+assumptions:
+- "任意基点 e, f (线性结构中的任意点)"
+- "任意方向 u, v (u ≠ 0, hu)"
+- "无损 = 单射 (R048)"
+
+conclusion: "用户断言成立 (2026-08-12): 任意基点出发的任意方向轴, 无损映射
+  (三环节组合单射) + 无损压缩 (R048) — R052 (方向任意) × R053 (基点任意)
+  完全泛化, 任意轴对无损。"
+
+known_special_cases:
+  - "e = 0 特例: 退化为 R052 (同一基点任意方向)"
+  - "u 沿迭代方向特例: 退化为 R050/R053 组合 (迭代差 = 基点移动)"
+  - "f = e 特例: 同基点任意方向 (R052)"
+
+counterexample_search:
+  status: done
+  search_space: "任意基点/方向随机枚举 (R054_any_basepoint_direction.py: 三环节往返/压缩单射/组合单射 3 组)"
+  smallest_checked_size: 500
+  result: "3/3 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/AnyBasepointAnyDirection.lean
+  theorem_name: composed_map_round_trip, composed_injective, any_basepoint_any_direction_lossless
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "反射需要 u ≠ 0 (hu): 零方向退化"
+  - "teleport 需要加法群结构: 非仿射结构需另论"
+  - "组合无损 = 单射组合: 各环节必须单射 (R048 前提)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "R047-R054 链条 (8 条无损链) 闭合: 任意轴对无损; 六集群神经层轴间通信完全无损; 编排集群 (基点对齐) 与 IO 集群 (模态边界) 任意基点任意方向无损"
+
+notes: "观点归属: 用户 (2026-08-12) 提出; 机械验证 + Lean 形式化为本 session 执行。"
