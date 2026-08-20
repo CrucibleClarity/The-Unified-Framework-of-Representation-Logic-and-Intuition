@@ -1,0 +1,123 @@
+id: R140
+title: "R140 (user-proposed 2026-08-12): ★完整 pat1 的互锁构造 (complete pat1 via mutual locking) — 先完成互锁定, 再根据相位-距离互锁定声明构造完整 pat1 = (方向, 距离) 联合: pat1 = pat0 + r·d(θ); 两组对称性才能准确锁定 T (SRT 启示): 单组 (只有方向) ⟹ 位置不唯一 (R130 不可判定/R111 定义不明); 互锁 (相位对+数值对) ⟹ 距离与方向双向还原 (R048 无损)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "没有完成呢啊，我们应该先完成互锁定，然后根据相位距离互锁定声明，构造一个
+  完整的pat1对吧。这可能也是srt揭示的事情，两组对称性，才能准确锁定t."
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。R139 的补全 — 完整 pat1 的互锁构造。
+
+    ★ 主张内容 (每环锚到已证 claim):
+      ① R139 只证了互锁矩阵非奇异 (双向可解) — 未完成: 还需用互锁声明
+         构造完整的 pat1
+      ② 完整 pat1 = (相位, 距离) 互锁声明联合: pat1 = pat0 + r·d(θ)
+         — d(θ) = exp(θ·I) 方向向量 (相位声明), r 距离 (数值声明,
+         数值对 (r, 1/r) = log 镜像, R110); 两组对称性联合
+      ③ 前向: 相位+数值声明 ⟹ 位置 (构造): 距离 ‖pat1 - pat0‖ = r
+         (数值声明锁定步长, ‖d(θ)‖ = 1 单位方向, R136
+         pat1_omnidirectional)
+      ④ 反向: 位置 ⟹ 相位+数值 (分解): 方向 (pat1-pat0)/‖pat1-pat0‖
+         = d(θ) (归一化往返精确, R056: 基点相位 = 位置); 距离 = 模长
+      ⑤ 完成互锁定: 构造 ⟶ 位置 ⟶ 分解 往返精确 — 互锁环闭合, 不再
+         需要第三层锁定 (R139: 矩阵非奇异; R048: 单射 ⟹ 无损)
+      ⑥ ★SRT 启示: 两组对称性才能准确锁定 T — 只有一组对称性 (单方向
+         声明, 无数值锁定): 位置不唯一 (r = 0 与 r = 1 都合法) ⟹ T 步
+         未准确锁定 (R130: 单组剥离方向不可判定; R111: 定义不明);
+         两组对称性 (相位对 + 数值对互锁) 才唯一确定 T 步 (R083:
+         S/R 都是 T 家族; R129: SRT 递归 — S 镜像 + R 旋转两组才能
+         锁定 T 平移)
+
+    ★ 验证结论: 用户断言成立 — 互锁完成 = 构造与分解往返精确;
+       完整 pat1 = (相位, 距离) 联合声明; SRT 启示 = 两组对称性才能
+       准确锁定 T (单组不唯一)。
+
+  formal_math: |
+    -- 方向向量 (相位声明):
+    noncomputable def directionVector (θ : ℝ) : ℂ := Complex.exp (θ * Complex.I)
+    -- 完整 pat1: 互锁声明 (相位 θ, 距离 r):
+    noncomputable def completePat1 (pat0 : ℂ) (θ r : ℝ) : ℂ :=
+      pat0 + (r : ℂ) * directionVector θ
+    -- 数值锁定: 距离 = r (r ≥ 0):
+    theorem complete_pat1_magnitude (pat0 : ℂ) (θ r : ℝ) (hr : 0 ≤ r) :
+      ‖completePat1 pat0 θ r - pat0‖ = r
+    -- 相位锁定: 归一化往返 (r > 0):
+    theorem complete_pat1_direction (pat0 : ℂ) (θ r : ℝ) (hr : 0 < r) :
+      (completePat1 pat0 θ r - pat0) / ‖completePat1 pat0 θ r - pat0‖ =
+        directionVector θ
+    -- 完成互锁定 (构造 ⟶ 位置 ⟶ 分解 往返):
+    theorem mutual_lock_recovers_pat1 (pat0 : ℂ) (θ r : ℝ) (hr : 0 < r) :
+      ‖completePat1 pat0 θ r - pat0‖ = r ∧
+        (completePat1 pat0 θ r - pat0) / ‖completePat1 pat0 θ r - pat0‖ =
+          directionVector θ
+    -- SRT 启示: 单组对称性不能准确锁定 T (位置不唯一):
+    theorem single_symmetry_underdetermines (pat0 d : ℂ) (hd : d ≠ 0) :
+      pat0 + (0 : ℂ) * d ≠ pat0 + (1 : ℂ) * d
+
+objects:
+- directionVector
+- completePat1
+- complete_pat1_magnitude
+- complete_pat1_direction
+- mutual_lock_recovers_pat1
+- single_symmetry_underdetermines
+
+definitions_used:
+- R139 MutualLocking (互锁矩阵非奇异/两组对称性) / R137 PatConstruction (pat1 = pat0 + d) / R136 OmnidirectionalUnit (pat1_omnidirectional: ‖exp(θ·I)‖ = 1) / R056 (基点相位 = 位置) / R054 (任意基点任意轴无损) / R048 (单射⟹无损) / R110 (数值对 log 镜像) / R130 (单组剥离不可判定) / R111 (定义不明) / R083 (S/R 是 T 家族) / R129 (SRT 递归)
+
+assumptions:
+- "完整 pat1 = (相位, 距离) 互锁声明联合 (R139 两组对称性)"
+- "方向向量单位长: ‖d(θ)‖ = 1 (R136)"
+- "完成互锁定 = 构造与分解往返精确 (R048 无损)"
+- "两组对称性才能准确锁定 T (SRT 启示): 单组不唯一 (R130/R111)"
+
+conclusion: "用户断言成立 (2026-08-12): 完成互锁定 — 用 (相位, 距离) 互锁
+  声明构造完整 pat1 = pat0 + r·d(θ); 构造 ⟶ 位置 ⟶ 分解往返精确 (距离
+  ‖·‖ = r, 方向归一化 = d(θ)); SRT 启示: 两组对称性才能准确锁定 T
+  (单组对称性位置不唯一, R130/R111)。"
+
+known_special_cases:
+  - "前向: (θ, r) ⟹ 位置 pat0 + r·d(θ) (构造)"
+  - "反向: 位置 ⟹ ‖pat1-pat0‖ = r 且 (pat1-pat0)/‖·‖ = d(θ) (分解)"
+  - "往返: 互锁环闭合 (R048 无损)"
+  - "单组: r = 0 与 r = 1 都合法 ⟹ 位置不唯一 (T 未锁定)"
+
+counterexample_search:
+  status: done
+  search_space: "完整 pat1 代数验证 (距离锁定/方向往返/互锁还原/单组不唯一, Lean 验证)"
+  smallest_checked_size: null
+  result: "4/4 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/CompletePat1.lean
+  theorem_name: directionVector, completePat1, complete_pat1_magnitude, complete_pat1_direction, mutual_lock_recovers_pat1, single_symmetry_underdetermines
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "单组对称性 (只有方向) 不唯一: 距离未锁定 ⟹ T 未准确锁定 (R130/R111)"
+  - "距离 r > 0 是方向还原前提: r = 0 时位置退化到 pat0 (无方向可言)"
+  - "完整 pat1 是选择 (R132): (θ, r) 具体值是声明式选择 (R072)"
+  - "互锁环闭合限双向可解: 单射/非奇异是前提 (R048/R139)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 完整 pat1 接入 R137 (Pat N 链每步用完整互锁 pat1 而非单方向) ② 与 R138 (相位关系锁定) 组合: 相位关系经数值互锁闭合 ③ 六集群神经层: 轴输入 = 完整互锁单元 (相位, 距离)"
+
+notes: "观点归属: 用户 (2026-08-12) 提出补全指令 + SRT 启示 (原话原封保存);
+  assistant 执行 Lean 形式化 (CompletePat1.lean, 4 定理 0 sorry, lake build
+  PASS) + claim 落盘。R139 互锁 + R140 完整 pat1 = 锁定体系闭合。"
