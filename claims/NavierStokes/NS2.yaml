@@ -1,0 +1,63 @@
+id: NS2
+title: "Euler reversibility vs Navier-Stokes irreversibility under time reversal: time-derivative flips, viscous term does not"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: navier_stokes
+
+statement:
+  informal: |
+    时间反演 (时间基点反射, 穿折越) 下 Navier-Stokes 各项行为:
+
+      u'(t,x) := u(-t,x),  p'(t,x) := p(-t,x)
+
+    ★ 定理 (Euler 可逆 / NS 不可逆 二分法):
+      (1) 时间导数项变号:  ∂t [u(-t,·)](x) = - (∂t u)(-t,x)   (NS1 的 deriv_timeRev)
+      (2) 黏性项不变号:    νΔ[u(-t,·)] = ν(Δu)(-t,·)          (拉普拉斯是空间算子)
+
+    ⟹ 无黏 Euler (ν=0): 反演两次 (对合) 恢复原方程 — 可逆.
+      有黏 NS (ν>0):     黏性项不随反演变号, 反演后方程不同 — 不可逆.
+      黏性是时间反演不对称的来源.
+
+    数学定位: 已知流体力学事实 (经典), 形式化价值 = 穿折越语义下"时间基点
+    反射"的 term-level 变换律. 对应 C-PH8/C-PH12. KNOWN (经典流体力学).
+  formal_math: |
+    def velRev (u : ℝ → E → F) : ℝ → E → F := fun t x => u (-t) x
+    def pressRev (p : ℝ → E → F) : ℝ → E → F := fun t x => p (-t) x
+
+    lemma velRev_velRev : velRev (velRev u) = u
+    lemma pressRev_pressRev : pressRev (pressRev p) = p
+    theorem timeDeriv_flips_under_reversal :
+      deriv (fun s => (velRev u) s x) t = - deriv (fun s => u s x) (-t)
+    theorem viscous_invariance_of_reversal :
+      ν • laplacianWithin (velRev u t) = ν • laplacianWithin (u (-t))
+    theorem euler_reversible_viscous_irreversible :
+      (time derivative flips) ∧ (viscous term invariant)
+
+objects:
+- velRev
+- pressRev
+
+definitions_used:
+- laplacianWithin (Mathlib.Analysis.InnerProductSpace.Laplacian)
+- deriv_comp_neg (mathlib)
+- time reversal as basepoint reflection
+
+assumptions:
+- E : Type with [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+- F : Type with [NormedAddCommGroup F] [NormedSpace ℝ F]
+- term-level 变换律, 不含 PDE 解的存在性/正则性
+
+conclusion: '时间导数项在时间反演下变号, 黏性项不变号. 这是 Euler (ν=0, 可逆)
+  与 Navier-Stokes (ν>0, 不可逆) 时间反演二分法的代数核心.'
+
+verification:
+  lean_file: formal/Formal/NavierStokes/EulerVsNS.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
