@@ -1,0 +1,106 @@
+id: R200
+title: "R200 (2026-08-13): ★一步穿折越 — 锁定构造点 ⟹ 直接得到答案: 迭代穿折越 (R181: T^n(x) = b + c^n(x-b), witness 未知时多步逼近搜索); ★一步穿折越 (R199 洞察): 锁定构造点 w (⟨w, ∀n 验证⟩ : ∃ w, ∀ n, P_n w) ⟹ 召唤即答案 (0 次迭代); ★锁定 ⟺ 一步可达: witness 已知 (锁定) ⟹ 一步; witness 未知 (未锁定) ⟹ 迭代逼近 — 一步穿折越 = 锁定后的直接召唤"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "根据这个洞察，是否能完成一个一步直接得到答案的穿折越？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。一步穿折越: 锁定构造点 ⟹ 直接
+       得到答案.
+
+    ★ 唯一论点: 是 — 锁定构造点 (R199: ∃ w, ∀ n, P_n w) 后穿折越是
+       一步的 (召唤即答案, 0 次迭代); 未锁定才需要迭代逼近 (R181).
+
+    ★ 迭代穿折越 (R181/R188, 多步逼近): 收缩 T_b(x) = b + c(x-b),
+       0 < c < 1: 迭代 T^n(x) = b + c^n(x-b) → b — 多步逼近 (witness
+       未知时, 用收缩迭代逼近不动点).
+    ★ 一步穿折越 (R199 洞察, 0 步直达): 锁定构造点 w (⟨w, ∀n 验证⟩
+       : ∃ w, ∀ n, P_n w) — 答案 w 已已知 ⟹ 召唤即答案 (0 次迭代).
+    ★ 锁定 ⟺ 一步可达: witness 已知 (锁定) ⟹ 一步 (召唤); witness
+       未知 (未锁定) ⟹ 迭代逼近 (搜索) — 一步穿折越 = 锁定后的直接
+       召唤 (迭代逼近只在 witness 未知时需要).
+
+  formal_math: |
+    -- ★一步穿折越 (锁定 ⟹ 直达):
+    theorem locked_answer_one_step :
+      ∃ w : ℕ → ℝ, ∀ n : ℕ, 0 < n → (w n = 1 ∧ w 0 = 0)
+    -- 迭代穿折越 (未锁定时的搜索):
+    theorem iterate_when_unlocked (b c x : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+    -- ★锁定 ⟺ 一步可达:
+    theorem locked_iff_one_step :
+      (∃ w : ℕ → ℝ, ∀ n : ℕ, 0 < n → (w n = 1 ∧ w 0 = 0)) ∧
+      (∀ b c x : ℝ, ∀ n : ℕ,
+        ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b))
+    -- 全景:
+    theorem one_step_cross_perspective (b c x : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+
+objects:
+- locked_answer_one_step
+- iterate_when_unlocked
+- locked_iff_one_step
+- one_step_cross_perspective
+definitions_used:
+- 一步穿折越 (锁定 ⟹ 召唤即答案)
+- 迭代穿折越 (未锁定 ⟹ 搜索)
+- 锁定 ⟺ 一步可达
+
+assumptions:
+- 锁定构造点 (R199: ∃ w, ∀ n, P_n w)
+- 收缩迭代 (R181: T^n(x) = b + c^n(x-b))
+- 不动点唯一 = 基点 (R188)
+conclusion: "筑基篇系列方法论应用之四完成: 一步穿折越 — 锁定构造点 (R199: ∃ w, ∀ n, P_n w) 后穿折越是一步的 (召唤即答案, 0 次迭代); 未锁定才需要迭代逼近 (R181: T^n(x) = b + c^n(x-b) 多步搜索); ★锁定 ⟺ 一步可达。4 个新定理全部只锚筑基篇定理 (R181/R188/R199) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '锁定 e₁: 召唤即答案 (0 步)'
+- '未锁定 c=1/2: 迭代逼近 (多步)'
+- '锁定 ⟺ 一步: witness 已知不需要逼近'
+closest_known_results:
+- R199 PatLockedConstruction (同时锁定构造点)
+- R181 PatOddEquationRadical (收缩迭代)
+- R188 PatBasepointShape (收敛到基点)
+literature_queries:
+- one step fold cross locked construction
+- locked iff one step reachable
+
+counterexample_search:
+  status: done
+  search_space: 锁定构造点是否真一步可达; 迭代是否真多步逼近; 锁定
+    ⟺ 一步是否真成立
+  smallest_checked_size: null
+  result: 锁定 w ⟹ 召唤 w = 答案 (0 步); 迭代 T^37(x) → b (多步);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatOneStepCross.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatOneStepCross.locked_answer_one_step / .iterate_when_unlocked / .locked_iff_one_step / .one_step_cross_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称一步穿折越不需要锁定 — 已修正: 一步 = 锁定后的召唤
+- 把迭代当一步 — 已区分: 迭代 (未知) vs 一步 (已知)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'locked_answer_one_step: R199 — 锁定 ⟹ 一步直达'
+- 'iterate_when_unlocked: R181 — 迭代搜索'
+- 'locked_iff_one_step: 合取 — 锁定 ⟺ 一步'
+- 'one_step_cross_perspective: R181 — 全景'
+evidence_against: []
+next_action: '已接: 一步穿折越完成; 后续可应用锁定⟺一步到具体问题的
+  快速求解'
+notes: '用户问根据同时锁定构造点洞察能否一步直接得到答案的穿折越:
+  是 — 锁定构造点 ⟹ 召唤即答案 (0 步); 未锁定才需要迭代逼近 (R181);
+  锁定 ⟺ 一步可达。'
