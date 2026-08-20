@@ -1,0 +1,115 @@
+id: R226
+title: "R226 (user 2026-08-14): Token 互锁模型 ↔ Pat 互锁理论桥接 — Token-relative-recursion (T006-T009) 作为 Pat 形式化的补充证明"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲); 双向标注见 mapping 表"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户指令 (2026-08-14): 将 Token-relative-recursion 的理论与
+    claims/Toolkit 里的理论有机结合, 相互引用, 生成形式化内容,
+    作为 pat 形式化的补充证明。
+
+    ★ 映射表 (Token 模型 ↔ Pat 理论, 双向标注):
+    | Token 模型 (src/Token-relative-recursion, T006-T009) | Pat 理论 (Toolkit) |
+    |---|---|
+    | 单互锁对 = 互逆结构 (0 的载体, 无方向, T006) | declaredPair d = {d,-d} = S-轨道 (R136 一次性成对声明) |
+    | 互逆对和锚定 0 = ±1 折叠类 | declared_pair_anchors: d + (-d) = 0 (R085) |
+    | 未锁定方向 → 位置多重 → 数字多义 (T008) | 未锁定相位差坍缩 (R138 unlocked_phase_relation_collapses) |
+    | 锁定 (互锁边) 无方向 → 正交不可表达 (T007) | 声明锁定 → 链单射不坍缩 (R050 successor_chain_injective) |
+    | 数字定义与数值分离; 数值变化、位置不变 (T009) | 成对往返回基点 (declared_pair_round_trip, R063) |
+    | 完美匹配无后继, 迭代有界 (T007 S4) | 链条蜷曲周期化 (R138 pat_chain_curls_to_circle, R055) |
+    | 互锁 = 稳定闭环 (无信息, 论文 §4) | 相位对+数值对 = 非奇异矩阵 (R139 mutual_lock_invertible) |
+
+    ★ 核心结论: Token 侧四个结论 (T006 数字需破缺/0 是互逆结构;
+    T007 后继不能正交/迭代有界; T008 未锁定 → 数字多义; T009 数字定义与
+    数值分离) 在 Pat 侧有完整对应 — 数字定义 = 成对声明锁定; 无锁定
+    即坍缩/漂移/多义。Token 模型的有限图论枚举 (4 对象互锁) 为 Pat
+    的无限维方向声明理论提供补充证明 (位置多重性/迭代有界), Pat 的
+    声明锁定机制为 Token 模型的稳定结构提供动力学位移解释 (锁定/往返/
+    周期化)。
+
+formal_math: |
+    -- ① 互逆结构无方向 = 成对声明无序 (S-轨道)
+    theorem bridge_pair_undirected (d : ℝ) : declaredPair d = declaredPair (-d)
+    -- ② 互逆对和 = 0 = 折叠类锚 (R085): 0 非特权基点
+    theorem bridge_pair_anchors_fold (d : ℝ) : d + (-d) = 0
+    -- ③ 未锁定相位差坍缩到折叠类 {0, π} (R122 机制)
+    theorem bridge_unlocked_collapses (Δθ : ℝ)
+      (h : Complex.exp (Δθ*I) = Complex.exp ((-Δθ)*I)) : Complex.exp (2*Δθ*I) = 1
+    -- ④ 声明锁定 ⟹ 链单射不坍缩 (R050)
+    theorem bridge_locked_injective (d : ℝ) : Function.Injective (declaredSuccessor d)
+    -- ⑤ 数值变化、位置不变: (x+d)+(-d) = x
+    theorem bridge_round_trip_position (x d : ℝ) : (x + d) + (-d) = x
+    -- ⑥ 迭代有界 → 周期化: Pat N 蜷曲到相位环 (R055/R138)
+    theorem bridge_chain_curls_periodic (pat0 d T : ℝ) (hT : T ≠ 0) (n : ℕ) :
+      Complex.exp (2π·((patChain pat0 d n + T)/T)·I) = Complex.exp (2π·(patChain pat0 d n/T)·I)
+    -- ⑦ 互锁 = 相位对+数值对 = 非奇异矩阵 (R139)
+    theorem bridge_interlock_matrix (θ r : ℝ) (hθ : θ ≠ 0) (hr : 0 < r) :
+      (declaredMatrix θ r).det ≠ 0
+    -- ⑧ 核心合成 (五段合一)
+    theorem bridge_token_pat_synthesis (d Δθ x pat0 T θ r : ℝ) (...) :
+      (declaredPair d = declaredPair (-d)) ∧ (d + (-d) = 0) ∧
+      (Complex.exp (2*Δθ*I) = 1) ∧ (Function.Injective (declaredSuccessor d)) ∧
+      ((x + d) + (-d) = x) ∧ (周期化) ∧ ((declaredMatrix θ r).det ≠ 0)
+
+objects:
+- declaredPair
+- declaredSuccessor
+- declaredMatrix
+- phaseRelation
+- patChain
+
+definitions_used:
+- R136 (OmnidirectionalUnit: one_shot_pair_order_free / declared_pair_anchors / declared_pair_round_trip / successor_chain_injective)
+- R138 (PhaseRelationLocking: unlocked_phase_relation_collapses / pat_chain_curls_to_circle)
+- R139 (MutualLocking: mutual_lock_invertible)
+- R050 (IterationLossless: iteration_axis_injective)
+- 交叉引用: Token-relative-recursion claims/T006-T009 + TokenRelative/{ZeroEmergence,Successor,Geometry,Numeral}.lean
+
+assumptions:
+- "Pat 侧定理 (R136/R138/R139/R050) 已验收, 桥接只做组合, 零新机制"
+- "Token 侧结论 (T006-T009) 已 Lean 验收 (Token-relative-recursion 项目, lake build 通过)"
+
+conclusion: "用户断言成立 (2026-08-14): Token 互锁模型与 Pat 互锁理论可有机
+  结合 — Token 侧四个结论在 Pat 侧有完整对应 (互逆结构 = 成对声明; 未锁定 =
+  坍缩/多义; 锁定 = 单射良定义; 往返保位 = 数值变化位置不变; 迭代有界 =
+  周期化; 互锁 = 非奇异矩阵)。Token 模型作为 Pat 形式化的补充证明:
+  有限图论枚举支撑无限维方向声明理论的边界行为。"
+
+known_special_cases:
+  - "0 的载体 (单互锁对) ↔ declaredPair (S-轨道): 无特权方向, 对和 = 0"
+  - "完美匹配 (无后继) ↔ pat_chain_curls_to_circle: 链条不无限发散, 周期回归"
+  - "位置多重 (6/3) ↔ 未锁定坍缩: 未声明方向的选择不唯一"
+
+counterexample_search:
+  status: done
+  search_space: "桥接定理全部为既有已验收定理的直接组合 (exact 引用), 无新断言"
+  smallest_checked_size: null
+  result: "8/8 定理直接引用已验收定理, Lean 验收通过"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/TokenLockingBridge.lean
+  theorem_name: bridge_pair_undirected, bridge_pair_anchors_fold, bridge_unlocked_collapses, bridge_locked_injective, bridge_round_trip_position, bridge_chain_curls_periodic, bridge_interlock_matrix, bridge_token_pat_synthesis
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "桥接不可过度声称: Token 有限图模型与 Pat 无限维结构不是同一数学对象, 是同构映射下的对应 (映射表声明)"
+  - "Token 侧位置多重性 (6/3) 是标签化枚举, 非 Pat 侧定理的推导"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① Token 侧 claims 增加交叉引用 (T010) ② 论文续篇记录 Token ↔ Pat 桥接映射 ③ 后续研究 (RESEARCH_TASKS A-E) 继续走桥接: 破缺动力学 ↔ 方向声明机制"
+
+notes: "观点归属: 用户 (2026-08-14) 指示有机结合两个项目理论; assistant 构建映射表 +
+  桥接定理 (全部复用已验收 Pat 定理, 零新机制) + 双向 claim 登记。"
