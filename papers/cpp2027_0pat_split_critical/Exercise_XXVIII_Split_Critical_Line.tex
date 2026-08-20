@@ -1,0 +1,136 @@
+%% CPP 2027 Submission — 0pat Exercise XXVIII: Observing the Critical Line in Split-Complex Coordinates
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Observing the Critical Line in Split-Complex Coordinates\\
+(Exercise XXVIII)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We observe the critical line of the Riemann direction through the
+split-complex frame (Exercise XXVII): the imaginary-radius orthogonal
+Euler circles. The observation yields three machine-checked results.
+First, the pseudo-norm of a critical-line point is
+$\|1/2 + tj\|^2 = 1/4 - t^2$: the real-part condition
+$\mathrm{Re}(s) = 1/2$ becomes, in split coordinates, an imaginary-part
+threshold $|t| = 1/2$ --- the two axes exchange roles. Second, the
+threshold is structural: points with $|t| < 1/2$ are timelike (inside
+the radius-1 circle) and points with $|t| > 1/2$ are spacelike (inside
+the radius-$i$ circle); since the known zeros have $|t| \ge 14.13 >
+1/2$, every known critical-line zero is spacelike in the split frame.
+Third, the reciprocal map sends the critical line to the hyperbola
+$(a-1)^2 - b^2 = 1$ --- the split dual of the critical circle
+$(a-1)^2 + b^2 = 1$ already proved in the complex frame (C019--C022):
+the same map, two hosts, circle $\leftrightarrow$ hyperbola. Six
+theorems, zero errors, zero \texttt{sorry}, mathlib v4.32.2.
+\end{abstract}
+
+\keywords{Lean, formalization, split-complex, critical line, dual structure, 0pat}
+
+\maketitle
+
+\section{The observation}
+
+The split-complex frame (Exercise XXVII) hosts the imaginary-radius
+orthogonal Euler circles: $a + bj$, $j^2 = +1$, pseudo-norm
+$\|a + bj\|^2 = a^2 - b^2$. The radius-1 circle is the hyperbola
+$a^2 - b^2 = 1$; the radius-$i$ circle is the conjugate hyperbola
+$a^2 - b^2 = -1$. We now observe the critical line of the Riemann
+direction --- the line $\mathrm{Re}(s) = 1/2$ --- through this frame:
+its points are $\frac12 + tj$, $t \in \mathbb{R}$.
+
+The observation is three theorems.
+
+\paragraph{The pseudo-norm of the critical line.}
+$\|\frac12 + tj\|^2 = \frac14 - t^2$. The real-part condition
+$\mathrm{Re}(s) = 1/2$, which defines the critical line in the complex
+frame, becomes in the split frame an imaginary-part threshold:
+$|t| = 1/2$. The two axes exchange roles --- the split metric swaps the
+meaning of the coordinates.
+
+\paragraph{The threshold.} Points with $t^2 < 1/4$ are timelike
+($\|z\|^2 > 0$, inside the radius-1 circle); points with $t > 1/2$ are
+spacelike ($\|z\|^2 < 0$, inside the radius-$i$ circle). Since the known
+zeros of $\zeta$ on the critical line have imaginary parts
+$|t| \ge 14.13 > 1/2$, every known critical-line zero is spacelike in
+the split frame --- the radius-$i$ region is where the zeros live. The
+threshold $\frac12$ is not chosen; it is the value of the frame.
+
+\paragraph{The dual of the critical circle.} The reciprocal map
+$z \mapsto z^{-1}$ (the split inverse, valid when $\|z\|^2 \ne 0$) sends
+the critical line to the hyperbola $(a-1)^2 - b^2 = 1$. In the complex
+frame, the same reciprocal map sends the critical line to the circle
+$(a-1)^2 + b^2 = 1$ --- the critical circle, proved in the Riemann chain
+(C019--C022). The split observation is the exact dual: the same map,
+two hosts, circle $\leftrightarrow$ hyperbola. The center $(1, 0)$ and
+the radius $1$ are unchanged; only the metric changes.
+
+\section{Honest boundary and position}
+
+The content is classical mathematics (split-complex algebra, elementary
+computations); the value is observational: the critical-line geometry of
+the Riemann direction has a dual structure in the split frame, and the
+dual places the zeros (if on the critical line) in the spacelike region
+with a structural threshold $\frac12$. No claim is made about the zeros
+themselves: the observation concerns the geometry of the line, not the
+analysis of $\zeta$. The frame observes; the analysis remains open.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 127 lines),
+importing only \texttt{Mathlib.Data.Real.Basic} and basic tactics. The
+split-complex structure (30 lines, as in Exercise XXVII) is
+self-contained. Six theorems, compiled with Lean 4.32.2 / mathlib
+v4.32.2, zero errors, zero \texttt{sorry}.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{inv\_mul\_self} & $z^{-1} z = 1$ ($\|z\|^2 \ne 0$) & field\_simp; ring \\
+\texttt{critical\_line\_pseudonorm} & $\|\frac12 + tj\|^2 = \frac14 - t^2$ & simp; ring \\
+\texttt{threshold\_timelike} & $t^2 < 1/4 \Rightarrow \|z\|^2 > 0$ & nlinarith \\
+\texttt{threshold\_spacelike} & $t > 1/2 \Rightarrow \|z\|^2 < 0$ & nlinarith \\
+\texttt{zero\_observation\_spacelike} & $|t| > 1/2 \Rightarrow \|z\|^2 < 0$ & sign split; nlinarith \\
+\texttt{recip\_critical\_line\_hyperbola} & $\mathrm{recip}(\frac12 + tj)$ on $(a-1)^2 - b^2 = 1$ & field\_simp; ring \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The critical line, observed through the imaginary-radius Euler circles,
+reveals its dual: the circle of the complex frame becomes the hyperbola
+of the split frame under the same reciprocal map, and the threshold
+$\frac12$ appears as a structural value of the metric. The zeros of
+$\zeta$ (if on the critical line) live in the spacelike region, inside
+the radius-$i$ circle. The observation is complete; the analysis that
+would place the zeros there remains the open span of the bridge.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
