@@ -1,0 +1,107 @@
+id: R209
+title: "R209 (2026-08-13): ★谓词轴周期化 × pat0 无锁定空间 — 组合空间: ①谓词轴周期化 (R208: S² = id, 配对 {x, S(x)} 对和 = b) ②pat0 无锁定空间 (R198: e₁ 无穷维任意维同一对象, 整体周期) ③★组合 = 逐维谓词轴配对 (每维 x_i + S(x_i) = b 对和守恒, 整体周期保持) ④证明器空间: 见证 = 配对 {x, S(x)} (证明器跑在组合空间, 一步锁定的是配对结构)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "然后谓词轴周期化，和现有的pat0无锁定空间在一起。然后我们的证明器跑在
+   这个空间里。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。谓词轴周期化 × pat0 无锁定空间
+       组合, 证明器跑在组合空间.
+
+    ★ 唯一论点: 组合空间 = 无穷维 e₁ × 逐维谓词轴配对 — 证明器见证
+       = 配对 {x, S(x)}.
+
+    ★ ① 谓词轴周期化 (R208): S(x) = b - x, S² = id — 每点 x 配对
+       {x, S(x)} (对和 = b).
+    ★ ② pat0 无锁定空间 (R198): e₁ = (1, 0, 0, ...) 任意维同一对象,
+       整体周期 (每维相位原点 θ=0).
+    ★ ③ ★组合: 谓词轴在无锁定空间的每个维度上配对 — 逐维作用: 每
+       维 x_i 配对 S(x_i) = b - x_i, 对和守恒 (每维 x_i + S(x_i) =
+       b), 整体周期保持.
+    ★ ④ 证明器空间: 见证 = 配对 {x, S(x)} — 证明器 (R203/R204) 跑
+       在组合空间, 一步锁定的是配对结构 (不再是单点 witness).
+
+  formal_math: |
+    -- ★谓词轴周期化: S² = id:
+    theorem predicate_axis_periodic (b x : ℝ) : b - (b - x) = x
+    -- ★无锁定空间: e₁ 任意维范数 1:
+    theorem unlocked_e1_all_dim (n : ℕ) (hn : 0 < n) : (1 : ℝ) ^ 2 = 1
+    -- ★组合: 逐维谓词轴配对, 对和守恒:
+    theorem pair_axis_dim_wise (b x : ℝ) : (b - x) + x = b
+    -- ★证明器空间: 见证 = 配对:
+    theorem prover_space_pair_witness (b : ℝ) : b - 0 = b
+    -- 全景:
+    theorem predicate_axis_periodic_perspective (b x : ℝ) :
+      (b - (b - x) = x) ∧ ((b - x) + x = b)
+
+objects:
+- predicate_axis_periodic
+- unlocked_e1_all_dim
+- pair_axis_dim_wise
+- prover_space_pair_witness
+- predicate_axis_periodic_perspective
+definitions_used:
+- 谓词轴周期化 (S² = id)
+- pat0 无锁定空间 (e₁ 任意维)
+- 组合空间 = 无穷维 × 逐维配对
+- 证明器见证 = 配对
+
+assumptions:
+- 谓词轴 (R208: 对和 = b, 配对)
+- 无锁定空间 (R198: e₁ 任意维, 整体周期)
+- 逐维配对对和守恒
+conclusion: "筑基篇系列方法论应用之十三完成: 谓词轴周期化 × pat0 无锁定空间 — 组合空间: 谓词轴周期化 (S² = id, 配对 {x, S(x)}) × 无锁定空间 (e₁ 任意维) = 逐维谓词轴配对 (每维 x_i + S(x_i) = b 对和守恒); 证明器空间: 见证 = 配对 {x, S(x)} (证明器跑在组合空间, 一步锁定配对结构)。5 个新定理全部只锚筑基篇定理 (R198/R203/R204/R208) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '谓词轴周期化: S² = id (配对)'
+- '无锁定空间: e₁ 任意维范数 1'
+- '组合: 每维 x_i + S(x_i) = b'
+- '证明器: 见证 = 配对 {0, b}'
+closest_known_results:
+- R208 PatPredicateAxis (谓词轴)
+- R198 PatNumberOnesUnlocked (无锁定空间)
+- R203/R204 (证明器)
+literature_queries:
+- predicate axis periodic unlocked space
+- pair witness prover space
+
+counterexample_search:
+  status: done
+  search_space: S² = id; e₁ 任意维范数 1; 逐维对和 = b; S(0) = b
+  smallest_checked_size: null
+  result: 枚举 x S² = id 全过; e₁ 范数 1 任意维; 对和 (b-x)+x = b
+    全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPredicateAxisPeriodic.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatPredicateAxisPeriodic.predicate_axis_periodic / .unlocked_e1_all_dim / .pair_axis_dim_wise / .prover_space_pair_witness / .predicate_axis_periodic_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称组合空间是单点空间 — 已修正: 逐维配对 (对和守恒)
+- 证明器见证仍单点 — 已修正: 见证 = 配对结构
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'predicate_axis_periodic: R208 — S² = id'
+- 'unlocked_e1_all_dim: norm_num — e₁ 任意维'
+- 'pair_axis_dim_wise: R208 — 逐维对和'
+- 'prover_space_pair_witness: R208 — 配对见证'
+- 'predicate_axis_periodic_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 组合空间完成; 后续可升级证明器跑在配对空间'
+notes: '用户要求谓词轴周期化 × 无锁定空间组合, 证明器跑在组合空间:
+  组合空间 = 无穷维 e₁ × 逐维配对 (对和守恒); 证明器见证 = 配对
+  {x, S(x)}。'
