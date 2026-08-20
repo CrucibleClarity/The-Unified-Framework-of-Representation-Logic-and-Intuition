@@ -1,0 +1,78 @@
+id: NS3
+title: "Time reversal as O(n) reflection (det=-1), SO(n) rotation as sphere basepoint teleport; parity is the projected-away structure"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: navier_stokes
+
+statement:
+  informal: |
+    n 维时空 (时间 + 空间) 中, 时间反演是反射矩阵 T = diag(-1, 1, ..., 1):
+
+    ★ T 正交: Tᵀ·T = I ⟹ T ∈ O(n) (保持单位球 S^{n-1}).
+    ★ det(T) = -1 ⟹ T ∉ SO(n) (反定向, 不是旋转).
+    ★ 正交阵 det = ±1 (rotation_det_eq_pm_one): SO(n) (det=+1) 是含恒等的
+      连通分量; 反射 (det=-1) 在另一分量.
+    ★ 奇偶性缺口: 不存在正交阵既是 det=-1 又在 det=1 集合 ⟹ 穿折越 (基点沿
+      单位球的连续路径, SO(n) 旋转) 不能恢复反射的奇偶性.
+
+    ★ 新基点位置 (穿折越到旋转轨道):
+      - timeRev_mulVec_coord: T·e 的 i 分量 = sign(i) * e(i) — 时间轴坐标取负,
+        空间坐标不变 (新基点的具体位置).
+      - basepoint_on_identity_orbit: 恒等旋转保基点 (穿折越长度 0).
+      - basepoint_parity_gap: 若基点时间分量非零 (e tIdx ≠ 0), 则 T·e ≠ e —
+        时间反演后的镜像是真正反射, 不在 SO(n) 旋转轨道上 (奇偶性缺口在
+        基点层面).
+
+    物理解读 (C-PH1/C-PH8/C-PH11/C-PH12): 时间方向是对称性方向; 时间反演的
+    奇偶性 (det=-1) 是被黏性项投影掉的"定向" (C-PH1: 丢失结构不可还原).
+    恢复被破缺的时间反演对称性 = 沿高维单位球 S^{n-1} 连续旋转 (基点穿折越
+    轨迹) — SO(n) 是连通的, 旋转路径保持在同一定向; 奇偶性 (det=-1) 不能
+    被旋转恢复 (投影结构丢失不可还原), 但对称性方向可还原 (定向+1 部分).
+
+    新基点位置: 穿折越把基点从时间轴 e 移到单位球 S^{n-1} 上的新基点 f,
+    由 SO(n) 旋转连接 (det=+1); f 位于 SO(n)·e 轨道上 (旋转轨道), 不在
+    反射轨道上.
+
+    数学定位: 已知 (正交群/旋转群标准), 形式化价值 = 穿折越在单位球上的
+    基点几何. KNOWN (线性代数).
+  formal_math: |
+    def timeRevSign (tIdx : n) : n → ℝ := fun i => if i = tIdx then -1 else 1
+    def timeRevMatrix (tIdx : n) : Matrix n n ℝ := diagonal (timeRevSign tIdx)
+
+    theorem timeRev_orthogonal (tIdx : n) :
+      (timeRevMatrix tIdx)ᵀ * timeRevMatrix tIdx = 1
+    theorem timeRev_det_neg (tIdx : n) : (timeRevMatrix tIdx).det = -1
+    lemma rotation_det_eq_pm_one {R : Matrix n n ℝ} (hR : Rᵀ * R = 1) :
+      R.det = 1 ∨ R.det = -1
+    theorem parity_not_rotational (tIdx : n) :
+      ¬ ∃ (R : Matrix n n ℝ), Rᵀ * R = 1 ∧ R.det = -1 ∧ R.det = 1
+
+objects:
+- timeRevMatrix
+- timeRevSign
+
+definitions_used:
+- Matrix.diagonal
+- Matrix.det
+- sq_eq_one_iff
+- O(n) / SO(n) (det = ±1 判定)
+
+assumptions:
+- n : Type with [Fintype n] [DecidableEq n] (时空维度索引)
+- 矩阵代数层, 不含 PDE 对称群完整陈述
+
+conclusion: '时间反演 T ∈ O(n), det(T) = -1 ∉ SO(n). 旋转 (SO(n), 基点沿单位
+  球连续穿折越) 不能恢复反射奇偶性 — 奇偶性是投影掉的结构 (C-PH1), 但对称性
+  方向 (定向 +1 部分) 可沿单位球旋转恢复.'
+
+verification:
+  lean_file: formal/Formal/NavierStokes/SOBasepoint.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
