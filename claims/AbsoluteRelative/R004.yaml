@@ -1,0 +1,109 @@
+id: R004
+title: First-Write Host Injection Audit — 允许≠内部化 (Permission–existence gap + Existence
+  leakage)
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "首次写入的核心 no-go: \"允许首个存在\" ≠ \"首个存在已经内部化\"\n(与 Self-recognition ⟹ Self-reification\
+    \ 同构的结构障碍)。\nR004 不硬凑三层全解决, 只证明两个干净结果 + 第三层标 OPEN:\nA. Permission–existence gap:\
+    \ 任何连 Empty 都允许的 admission rule 不可能\n   仅凭 admission 产生 inhabitant。\nB. Existence\
+    \ leakage: 能保证 existence 的 rule 已编码 non-emptiness constraint。\n第三层 (Host inhabitance\
+    \ ≠ internally certified occurrence): 真正的内部\noccurrence = (candidate, 内部派生证书),\
+    \ 证书须来自 L3 derivability 非 Host\ninhabitance; 当前无内部派生系统 ⟹ InternalOccurrence 不可构造,\
+    \ 缺失箭头\n保持 OPEN (正确状态, 非工程 bug)。\n关键: 不要用 opaque/PUnit/Nonempty 冒充内部 occurrence;\
+    \ 不用 True:=trivial\n当证据; FirstWrite 不必产生 Host-level value (先产生 judgment/certificate)。\n"
+  formal_math: "Judgment₀ (空 inductive, Host 反模型): ¬ Nonempty Judgment₀\npermission_existence_gap\
+    \ (Can : Type→Prop) (hEmpty : Can Empty) :\n  ¬ (∀ X : Type, Can X → Nonempty\
+    \ X)\nexistence_leakage (Can) (h : ∀ X, Can X → Nonempty X) : ¬ Can Empty\nHasInternalOccurrence\
+    \ (Occurrence : Type u) (Derivable : Occurrence → Prop) :=\n  ∃ o : Occurrence,\
+    \ Derivable o     (参数化, 非具体 derivation system)\nno_derivation_no_internal {Occurrence}\
+    \ {Derivable} (hnone : ∀o, ¬Derivable o) :\n  ¬ HasInternalOccurrence Occurrence\
+    \ Derivable\nhost_witness_insufficient : Nonempty Occurrence → ¬ HasInternalOccurrence\
+    \ (若 Derivable 空)\nhost_witness_not_internal_test (反模型): Nonempty HostCarrier\
+    \ ∧ ¬ HasInternalOccurrence HostCarrier emptyDerivable\n"
+objects:
+- Judgment₀
+- HasInternalOccurrence
+- HostCarrier
+definitions_used:
+- permission-existence gap
+- existence leakage
+- host injection
+- internally certified occurrence
+- provenance-preserving reification
+- OPEN
+- 参数化 derivability
+assumptions:
+- opaque ≠ 不可观察 (只是不 δ-reduce, 且必须有 inhabitant); representation hidden ≠ absent
+- equality 对所有类型可形成 ⟹ 'opaque 无 eliminator 所以无 observer' 不成立
+- Nonempty Occurrence 不保存 provenance — Host witness 与 internal emergence 无法区分
+- 真正的内部 occurrence 需 (candidate + 内部派生证书), 证书来自 L3 derivability 非 Host inhabitance
+- 不要为 CanAdmit→InternalOccurrence 的缺失箭头补 constructor/token — 缺失是正确状态
+- 首次写入先产生 judgment/certificate, 不必产生 Host-level value
+- 本文件不用 True:=trivial 当证据; 不用 opaque/PUnit/Classical.choice/unsafe
+conclusion: '两个零公理 no-go: permission_existence_gap (Can(Empty) ⟹ ¬∀X, Can X→Nonempty
+  X) 与 existence_leakage (∀X, Can X→Nonempty X ⟹ ¬Can Empty); 第三层参数化: no_derivation_no_internal
+  (无内部 derivation ⟹ 无 internally certified occurrence, 无论 Occurrence 是否有 Host inhabitant)
+  与 host_witness_insufficient (Host witness 不够) 零公理; 反模型 host_witness_not_internal_test
+  (Nonempty ∧ ¬HasInternalOccurrence); provenance 仍 OPEN (Derivable witness =? genuine
+  L3 provenance 未解决); 零 import 零公理'
+known_special_cases:
+- 'Can = 恒真 rule: Can(Empty) 成立 ⟹ ¬∀X, Can X→Nonempty X (空类型无法 inhabit)'
+- 'Can = 仅非空 rule: ∀X, Can X→Nonempty X 成立 ⟹ ¬Can(Empty) (rule 排除空)'
+closest_known_results:
+- R003 Zero-Content L3 (PUnit 否决); R056 Self-recognition ≠ Self-reification (同构障碍)
+literature_queries:
+- permission does not imply inhabitance type theory
+- provenance-preserving reification formal methods
+counterexample_search:
+  status: done
+  search_space: 'Empty 反例: 恒真 admission rule 对 Empty 成立但无法 inhabit ⟹ permission-existence
+    gap'
+  smallest_checked_size: null
+  result: permission_existence_gap 与 existence_leakage 零公理; Empty 是决定性反例
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/Trusted.lean (零 import) + TrustedTests.lean
+    (反模型, 独立模块)
+  theorem_name: AbsoluteRelative.Trusted.no_judgment_before_first_write / .permission_existence_gap
+    / .existence_leakage / .gap_iff_leakage / .no_derivation_no_internal / .host_witness_insufficient
+    (已证, 无 sorry, 全零公理, 零 import); TrustedTests.host_witness_not_internal_test (反模型,
+    独立测试模块)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- opaque Occurrence + World 有工程妥协 (opaque≠不可观察, equality 可区分) — 已否决
+- HasInternalOccurrence := Nonempty Occurrence 不保存 provenance — 已否决, 改参数化 Derivable
+- 空 inductive InternalDeriv 把'内部派生永远不存在'规定进模型 (v2 已改参数化 Derivable)
+- CanAdmit.mk 是重新命名的 True — 已泛化为任意 Can
+- True:=trivial 不能当验证证据 — 本文件禁用
+- 给 CanAdmit→InternalOccurrence 补 constructor/token = Host 注入 — 禁止 (provenance 保持
+  OPEN)
+evidence_for:
+- 'permission_existence_gap 零公理: Can(Empty) ⟹ ¬∀X, Can X→Nonempty X (Empty 反例)'
+- 'existence_leakage 零公理: 能保证 existence 的 rule 已编码 non-emptiness (information 非零)'
+- 'no_derivation_no_internal 零公理: 无内部 derivation ⟹ 无 internally certified occurrence
+  (非定义驱动)'
+- 'host_witness_insufficient 零公理: Host witness 不够 (Derivable 空时)'
+- 'host_witness_not_internal_test 零公理: 反模型 Nonempty ∧ ¬HasInternalOccurrence'
+- 'no_judgment_before_first_write: 空 judgment 语言 (Host 反模型), 有反事实力量'
+- 零 import (只用 Lean 核心 Empty/Nonempty/类型构造)
+evidence_against: []
+next_action: 'R004 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 用户诊断 (v2): 空 InternalDeriv 把''内部派生永远不存在''规定进模型 — 改参数化 Derivable
+  : Occurrence → Prop。干净: CanAdmit 泛化 + Permission⟹?Existence + Host inhabitance⟹?internal
+  derivability; 未证明: genuine L3 derivation (derivation system 未形成); 禁止: opaque witness/private
+  constructor/PUnit/choice/InternalDeriv.mk/admitted。层级: CanAdmit⟹?Host existence⟹?internal
+  derivability, 最后一步故意未定义 (正确暴露 genesis 障碍)。provenance OPEN: Derivable witness =?
+  genuine L3 provenance, 需 deep-embedded Syntax/Rules/Derivation。 [2026-08-09 AbsoluteRelative_Audit:
+  本 claim 核心 (Trusted.lean) 审计确认可进入 trusted mathematical core; AR-AUD-011 (permission_existence_dichotomy
+  非构造性) 已删除, AR-AUD-012 (HostCarrier 进公开 namespace) 已移入独立 TrustedTests 模块; R001-R003
+  已标记 OBSOLETE 并从 trusted root 断开 (Formal.lean 只 import Trusted) [2026-08-09 作废: 无视之前所有评审,
+  三层沙盒全新设计]'
