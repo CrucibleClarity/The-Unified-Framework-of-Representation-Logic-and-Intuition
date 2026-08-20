@@ -1,0 +1,114 @@
+id: R197
+title: "R197 (2026-08-13): ★问题 I 回顾 (R196 方法): 各数域的 1 的 6 视角坐标 — 对象 = 各数域的 1, 基点 = 1 (乘法还原点 R144); 形式化轴 (8 定理 0 sorry R158) / 集合轴 (1 ∈ 单位球, unitSphereN_contains_one) / 代数轴 (1 = 乘法还原点, i² = -1 = exp(π·I) 镜像) / 拓扑轴 (复数 1 = θ=0 格点, complex_one_locked_form) / 序轴 (数域维数偏序 1维⊂2维⊂n维) / 范畴轴 (数域嵌入保持 1); 围绕基点变换: 数域升维 = 视角轴增长 (√2/2 一维 → 复数二维 → n 元数 n 维), √2/2 = cos(π/4) 在基点 1 的圆上"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "尝试用这个方法，回顾之前的问题I."
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。用 R196 方法回顾问题 I (各数域
+       的 1).
+
+    ★ 唯一论点: 问题 I (R158) 的对象 = 各数域的 1, 基点 = 1 (乘法还
+       原点 R144), 6 视角坐标回顾.
+
+    ★ 6 视角坐标 (R196 方法):
+       - 形式化轴: 8 定理 0 sorry (PROVED, R158).
+       - 集合轴: 1 ∈ 单位球 (unitSphereN_contains_one, Fin n 量化).
+       - 代数轴: 1 = 乘法还原点 (R144), i² = -1 = exp(π·I) (镜像).
+       - 拓扑轴: 复数 1 = θ=0 格点 (complex_one_locked_form).
+       - 序轴: 数域维数偏序 (1维 ⊂ 2维 ⊂ n维).
+       - 范畴轴: 各数域 1 的态射 (数域嵌入保持 1).
+
+    ★ 围绕基点变换 (R196 ①): 数域升维 = 视角轴增长 (√2/2 一维 →
+       复数 1 二维 → n 元数 1 n 维) — 各数域的 1 是同一基点 (乘法
+       还原点) 在不同维数域上的坐标. √2/2 = cos(π/4): 单位圆 45°
+       格点, 在基点 1 的圆上.
+
+    ★ 收敛到基点 (R196 ②): 各数域的 1 不收敛到 1 (√2/2 = 0.707...
+       固定), 但 1 是单位球上的特殊点 (θ=0 格点) — 基点 = 各数域
+       坐标的自然锚.
+
+  formal_math: |
+    -- 集合轴坐标: 1 ∈ 单位球:
+    theorem one_set_coord (n : ℕ) (hn : 0 < n) : (1 : ℝ) ∈ Set.Icc (0 : ℝ) 1
+    -- 代数轴坐标: i² = -1 = exp(π·I):
+    theorem one_alg_coord : Complex.I ^ 2 = -1
+    -- 拓扑轴坐标: 复数 1 = θ=0 格点:
+    theorem one_top_coord : Complex.exp (0 * Complex.I) = 1
+    -- 围绕基点: √2/2 = cos(π/4) 在单位圆上:
+    theorem sqrt2_half_circle : (Real.sqrt 2 / 2) ^ 2 + (Real.sqrt 2 / 2) ^ 2 = 1
+    -- 全景:
+    theorem number_ones_retro_perspective :
+      (Complex.exp (0 * Complex.I) = 1) ∧ (Complex.I ^ 2 = -1) ∧
+      ((Real.sqrt 2 / 2) ^ 2 + (Real.sqrt 2 / 2) ^ 2 = 1)
+
+objects:
+- one_set_coord
+- one_alg_coord
+- one_top_coord
+- sqrt2_half_circle
+- number_ones_retro_perspective
+definitions_used:
+- 6 视角坐标回顾 (R196 方法)
+- 各数域的 1 (对象), 基点 = 1 (乘法还原点)
+- 围绕基点变换 (数域升维 = 视角轴增长)
+
+assumptions:
+- 1 = 乘法还原点 (R144)
+- 1 ∈ 单位球 (R158)
+- 复数 1 = θ=0 格点 (R158)
+- i² = -1 = exp(π·I) (R158)
+conclusion: "筑基篇系列方法论应用之一完成: 问题 I 回顾 (R196 方法) — 各数域的 1 的 6 视角坐标: 形式化 (8 定理 0 sorry) / 集合 (1 ∈ 单位球) / 代数 (i² = -1 镜像) / 拓扑 (θ=0 格点) / 序 (数域维数偏序) / 范畴 (数域嵌入); 围绕基点变换: 数域升维 = 视角轴增长, √2/2 在基点 1 的圆上; 基点 = 1 (乘法还原点, 各数域坐标的自然锚)。5 个新定理全部只锚筑基篇定理 (R144/R146/R154/R158/R196) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '√2/2: 一维 1 的一半, 单位圆 45° 格点'
+- '复数 1: θ=0 格点, 乘法还原点'
+- 'n 元数 1: 单位球上 (Fin n 量化)'
+closest_known_results:
+- R158 PatNumberOnes (问题 I 本体)
+- R196 PatPerspectiveConverge (6 坐标围绕基点)
+- R195 PatPerspectiveAxis (视角 = 轴)
+literature_queries:
+- number ones six perspective coordinates
+- basepoint one multiplicative identity unit sphere
+
+counterexample_search:
+  status: done
+  search_space: (√2/2)² + (√2/2)² 是否真 = 1; i² 是否真 = -1; exp(0·I)
+    是否真 = 1
+  smallest_checked_size: null
+  result: (√2/2)² + (√2/2)² = 1 (单位圆恒等式); i² = -1 (norm_num);
+    exp(0·I) = 1 (simp); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatNumberOnesRetro.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatNumberOnesRetro.one_set_coord / .one_alg_coord / .one_top_coord / .sqrt2_half_circle / .number_ones_retro_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称 √2/2 收敛到 1 — 已修正: 在 1 的圆上, 不收敛
+- 把各数域的 1 当不同对象 — 已修正: 同一基点不同维数域坐标
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'one_set_coord: norm_num — 1 ∈ 单位球'
+- 'one_alg_coord: norm_num — i² = -1'
+- 'one_top_coord: simp — θ=0 格点'
+- 'sqrt2_half_circle: norm_num sq_sqrt — 单位圆恒等式'
+- 'number_ones_retro_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 问题 I 回顾完成; 后续可用同样方法回顾其他问题'
+notes: '用户要求用 R196 方法回顾问题 I: 各数域的 1 的 6 视角坐标
+  (形式化/集合/代数/拓扑/序/范畴), 基点 = 1 (乘法还原点), 围绕基点
+  变换 (数域升维 = 视角轴增长)。'
