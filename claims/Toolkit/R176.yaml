@@ -1,0 +1,138 @@
+id: R176
+title: "R176 (筑基篇课后习题 XVII, 2026-08-13): ★考拉兹猜想的 pat 重新观测 — 考拉兹 = 奇偶性折叠驱动的轨道: 考拉兹单步 f(n) = n/2 (偶) / 3n+1 (奇) = 模 2 折叠决策 (R171/R141 2 槽环: 0 槽 → 消一个 2 因子 n/2 折叠类还原 R085; 1 槽 → 3n+1); ★奇数步必落偶数槽 (Odd n → Even (3n+1): 3·奇+1 = 偶, 轨道无连续奇数); 偶数步还原 2·(n/2) = n (消 2 因子可逆); 奇数两步合并 = (3n+1)/2; 循环 1 → 4 → 2 → 1 = 奇偶偶 奇偶性折叠模式; ★猜想 = 所有轨道最终落入奇偶偶 循环 (CONJECTURE, 未证)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "考拉兹猜想"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 XVII: 考拉兹
+       猜想的 pat 重新观测.
+
+    ★ 唯一论点: 考拉兹 = 奇偶性折叠 (模 2 折叠, R171/R141 2 槽环)
+       驱动的轨道.
+
+    ★ 结构对应 (mechanics-pat-observation skill):
+       - 考拉兹单步 f(n) = n/2 (偶) / 3n+1 (奇) = 奇偶性折叠决策:
+         偶数 (0 槽) → 取消一个 2 因子 (n/2, 折叠类还原 R085;
+         除以 2 幂 = 沿素数 2 折叠类下降, R097); 奇数 (1 槽) →
+         3n+1.
+       - ★奇数步必落偶数槽: Odd n → Even (3n+1) — 3·奇 = 奇,
+         奇+1 = 偶 — 轨道奇偶性序列中奇数后面永远是偶数 (无连续
+         奇数) — 奇偶性折叠 (R171 坍缩) 的轨道约束.
+       - 偶数步还原: Even n → 2·(n/2) = n — 消 2 因子可逆 (折叠
+         类下降可逆, R085).
+       - 奇数两步合并: collatzStep (collatzStep n) = (3n+1)/2 —
+         奇数步输出是偶数 → 下一步必除 2 — 奇数的有效推进 =
+         (3n+1)/2, 中间偶数步只消因子 2.
+       - 循环 1 → 4 → 2 → 1: 1 奇 → 4 偶 → 2 偶 → 1 — 奇偶性模式
+         奇偶偶 循环 (周期 3 的奇偶性折叠模式).
+
+    ★ ★考拉兹猜想 pat 转译: 任意正整数 n 的轨道最终落入奇偶性折叠
+       模式 奇偶偶 (1 → 4 → 2 → 1 循环): 奇数步必落偶数槽, 偶数步
+       消 2 因子 — 轨道 = 奇偶性折叠驱动的收缩过程. 诚实边界:
+       未证 (CONJECTURE; 已验证到极大范围无反例 = 枚举证据, 非
+       证明).
+
+  formal_math: |
+    -- 考拉兹单步 (偶 → n/2, 奇 → 3n+1):
+    def collatzStep (n : ℕ) : ℕ := if Even n then n / 2 else 3 * n + 1
+    -- 偶数步 = 折叠类还原:
+    theorem collatz_even_step {n : ℕ} (hn : Even n) : collatzStep n = n / 2
+    -- 奇数步 = 3n+1:
+    theorem collatz_odd_step {n : ℕ} (hn : Odd n) : collatzStep n = 3 * n + 1
+    -- ★奇数步输出必为偶数:
+    theorem collatz_odd_step_even {n : ℕ} (hn : Odd n) : Even (3 * n + 1)
+    -- 偶数步还原 (消 2 因子可逆):
+    theorem even_half_restore {n : ℕ} (hn : Even n) : 2 * (n / 2) = n
+    -- 奇数两步合并 = (3n+1)/2:
+    theorem collatz_odd_merged_step {n : ℕ} (hn : Odd n) :
+      collatzStep (collatzStep n) = (3 * n + 1) / 2
+    -- 循环 1 → 4 → 2 → 1 (奇偶偶 模式):
+    theorem collatz_cycle_142 :
+      collatzStep 1 = 4 ∧ collatzStep 4 = 2 ∧ collatzStep 2 = 1
+    -- 全景:
+    theorem collatz_pat_perspective (n : ℕ) (hn : Odd n) :
+      (Even (3 * n + 1)) ∧ (2 * ((3 * n + 1) / 2) = 3 * n + 1) ∧
+      (collatzStep 1 = 4 ∧ collatzStep 4 = 2 ∧ collatzStep 2 = 1)
+
+objects:
+- collatzStep
+- collatz_even_step
+- collatz_odd_step
+- collatz_odd_step_even
+- even_half_restore
+- collatz_odd_merged_step
+- collatz_cycle_142
+- collatz_pat_perspective
+definitions_used:
+- 考拉兹单步 = 奇偶性折叠决策
+- 奇数步必落偶数槽
+- 偶数步还原 (消 2 因子)
+- 循环 1 → 4 → 2 → 1 = 奇偶偶 模式
+
+assumptions:
+- 奇偶性 = 模 2 折叠 (R171/R141 2 槽环)
+- 偶数 = 折叠类 0 槽, 奇数 = 1 槽 (R171)
+- 除以 2 幂 = 沿素数 2 折叠类下降 (R085/R097)
+- ★收敛性未证 (CONJECTURE; 枚举证据非证明)
+conclusion: "筑基篇课后习题 XVII 完成: 考拉兹猜想的 pat 重新观测 — 考拉兹 = 奇偶性折叠驱动的轨道: 偶数 (0 槽) → 消 2 因子 n/2 (折叠类还原), 奇数 (1 槽) → 3n+1 必落偶数槽 (★无连续奇数); 偶数步还原可逆; 奇数两步合并 (3n+1)/2; 循环 1 → 4 → 2 → 1 = 奇偶偶 奇偶性折叠模式; ★猜想 = 所有轨道最终落入奇偶偶 循环 (CONJECTURE, 未证)。8 个新定理全部只锚筑基篇定理 (R085/R097/R141/R171)。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '1 → 4 → 2 → 1: 循环 (奇偶偶 模式)'
+- '2 → 1: 唯一偶素数直接到 1 (消 2 因子)'
+- '奇 n: 3n+1 是偶数 (无连续奇数)'
+closest_known_results:
+- R171 PatParityPrime (奇偶性折叠, 2 槽环)
+- R085 FoldCenters (折叠类)
+- R097 (素数幂链单相位, 除以 2 幂)
+- R141 PatCircle (单位根 2 槽环)
+literature_queries:
+- collatz conjecture parity folding
+- collatz orbit odd step even output
+- collatz 3n+1 parity pattern
+
+counterexample_search:
+  status: done
+  search_space: 奇数步输出是否真偶数 (3·奇+1 奇偶性); 循环是否真
+    1→4→2→1; 奇数两步是否真合并 (3n+1)/2; n=1..99 轨道是否真到 1
+    (枚举证据, 非证明)
+  smallest_checked_size: null
+  result: 枚举 n=1..199 验证奇数步偶输出/偶数还原/合并步/循环全过;
+    n=1..99 轨道全到 1 (枚举证据); Lean 证明全部通过 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatCollatz.lean (新增 8 定理 + 1 定义)
+  theorem_name: ZeroRelative.PatCollatz.collatzStep / .collatz_even_step / .collatz_odd_step / .collatz_odd_step_even / .even_half_restore / .collatz_odd_merged_step / .collatz_cycle_142 / .collatz_pat_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明考拉兹猜想 — 诚实边界: 收敛性 CONJECTURE 未证
+- 把枚举验证当证明 — 枚举 = 证据/反例搜索, 非普遍陈述的证明
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'collatz_odd_step_even: ring — 3·奇+1 = 偶 (轨道无连续奇数)'
+- 'collatz_even_step/odd_step: if 分支 — 折叠决策'
+- 'even_half_restore: 2·(n/2) = n — 消 2 因子可逆'
+- 'collatz_odd_merged_step: 奇步输出偶 → 两步合并 (3n+1)/2'
+- 'collatz_cycle_142: norm_num — 奇偶偶 循环'
+- 'collatz_pat_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 考拉兹轨道奇偶模式与 2 因子消去的
+  结构观察深化, 或其他经典猜想的 pat 重新观测'
+notes: '筑基篇课后习题 XVII — 考拉兹猜想的 pat 重新观测: 考拉兹 =
+  奇偶性折叠驱动的轨道 (偶数消 2 因子, 奇数必落偶数槽, 奇数两步
+  合并 (3n+1)/2, 循环 1→4→2→1 = 奇偶偶 模式)。★猜想 = 所有轨道
+  落入奇偶偶 循环 (CONJECTURE, 未证)。工程: 一次 build 通过,
+  0 sorry。'
