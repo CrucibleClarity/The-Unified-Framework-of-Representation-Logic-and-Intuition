@@ -1,0 +1,62 @@
+id: TK4
+title: "Toolkit/AxisComponent: three single-axis component types (iteration count, angle, symmetry preservation) — finite types, parameterized"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    自包含工具包 (只 import mathlib): 无穷分量归约为三类有限变换 (用户指令
+    2026-08-12: 对称性不变, 只变迭代次数/夹角).
+
+    ★ 类型1 迭代次数 (均匀张缩):
+      - mul_eq_sum_iterate: n·a = a+a+...+a (n次, Finset.sum_const)
+      - pow_eq_prod_iterate: a^n = a·a·...·a (n次)
+      - log_pow_mul: log(a^n) = n·log(a) (迭代次数显影)
+    ★ 类型2 夹角 (投影):
+      - cos_sq_add_sin_sq: cos²θ+sin²θ = 1 (投影分量张成单位圆)
+      - 无理数 = 整数沿斜轴的投影 (√2 = 2·cos45°, 夹角是参数)
+    ★ 类型3 对称保持 (旋转/反射):
+      - norm_exp_I_eq_one: |exp(θ·I)| = 1 (不变量)
+      - invariant_independent_of_angle: 不变量与夹角无关 (对称性不变只变夹角)
+    ★ three_types_parameterized: 三类参数化汇总 (n, θ, 不变量)
+
+    数学定位: 经典 (半环迭代/三角恒等式/单位圆), 形式化价值 = 有限变换类型
+    归约: 无穷分量不是新类型, 是这三类的参数变化. KNOWN (基础数学).
+  formal_math: |
+    lemma mul_eq_sum_iterate {R} [Semiring R] (a : R) (n : ℕ) :
+      (n : R) * a = Finset.sum (Finset.range n) (fun _ => a)
+    lemma pow_eq_prod_iterate {R} [CommMonoid R] (a : R) (n : ℕ) :
+      a ^ n = Finset.prod (Finset.range n) (fun _ => a)
+    lemma log_pow_mul (a : ℝ) (n : ℕ) : Real.log (a ^ n) = (n : ℝ) * Real.log a
+    lemma cos_sq_add_sin_sq (θ : ℝ) : Real.cos θ ^ 2 + Real.sin θ ^ 2 = 1
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+
+objects:
+- mul_eq_sum_iterate
+- pow_eq_prod_iterate
+- log_pow_mul
+- cos_sq_add_sin_sq
+- norm_exp_I_eq_one
+
+definitions_used:
+- Finset.sum / Finset.prod (BigOperators.Ring.Finset)
+- Real.log (SpecialFunctions.Log.Basic)
+- Complex.exp / norm_exp_ofReal_mul_I
+
+assumptions:
+- 自包含: 仅 import mathlib
+
+conclusion: '三类单轴分量 (迭代/夹角/对称保持) 是有限变换类型, 参数化而非
+  穷举: 无穷分量 = 这三类的参数变化 (n, θ, 不变量).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/AxisComponent.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
