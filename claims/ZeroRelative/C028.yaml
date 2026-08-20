@@ -1,0 +1,82 @@
+id: C028
+title: "One-way translation difference & u²=χ — 单方向延拓差分 (χ(s+2) 递推) + 无分支相位恒等式 (u=ζ/|ζ|, u²=χ): 累积延拓的整数计数基元"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲); 观测 AL"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    交换对称延拓 (用户方向): 每个对称点都是以延拓点为对称点的延拓点,
+    无固定中心 — χ 的平移递推 (T4):
+    - χ(s+2) = -4π²/(s(s+1))·χ(s), 相位版 arg χ(s+2) - arg χ(s) = π - arg(s(s+1));
+    - 两步: χ(s+4) = 16π⁴/(s(s+1)(s+2)(s+3))·χ(s), 相位差分 = -arg(∏(s+2k)(s+2k+1))
+      (π+π 抵消, 偶数步纯显式)。
+    三角函数累积 (用户方向): u(t) = ζ(1/2+it)/|ζ(1/2+it)| = e^{i·arg ζ}
+    良定义连续 (无分支), 且 (T5):
+    - ζ(s) = χ(s)·conj ζ(s) (s = 1/2+it, 函数方程 + mathlib riemannZeta_conj 全域共轭);
+    - u(t)² = χ(1/2+it) — u 是 χ 的连续平方根。
+    沿 t 累积延拓: 每跨零点 u → -u (符号翻转 = arg 跳 π = 一个零点),
+    翻转次数 = N₀(T), 整数计数由累积自动给出 (相位校准)。
+  formal_math: |
+    ℂ 上 (s = 1/2+it, u = ζ(s)/|ζ(s)|):
+    (1) χ(s+2) = -4π²/(s(s+1))·χ(s)   (s ≠ 0, -1)
+    (2) arg χ(s+2) - arg χ(s) = π - arg(s(s+1))  (Real.Angle)
+    (3) χ(s+4) = 16π⁴/(s(s+1)(s+2)(s+3))·χ(s)   (s ≠ 0,-1,-2,-3)
+    (4) arg χ(s+4) - arg χ(s) = -arg(s(s+1)(s+2)(s+3))  (Real.Angle)
+    (5) ζ(s) = 2(2π)^{s-1}Γ(1-s)sin(πs/2)·conj ζ(s)
+    (6) u² = 2(2π)^{s-1}Γ(1-s)sin(πs/2)  (ζ ≠ 0 处)
+
+objects:
+  - "riemannZeta (mathlib 官方 ζ)"
+  - "χ(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2) (函数方程乘子)"
+  - "u(t) = ζ(1/2+it)/|ζ(1/2+it)| (单位圆值, 无分支)"
+  - "Real.Angle = ℝ/2πℤ"
+objects_note: "riemannZeta_conj 来自 mathlib ZetaAsymp (全域共轭, 官方定理)"
+definitions_used: ["riemannZeta_conj (mathlib 全域共轭)", "Complex.Gamma_add_one (Γ 递推)", "Complex.sin_add_pi (sin 周期)", "Complex.cpow_add (幂拆分)", "Complex.Gamma_conj / sin_conj / cos_conj / conj_cpow (共轭穿透)"]
+
+assumptions:
+  - "T4: s ≠ 0, -1 (一步); s ≠ 0,-1,-2,-3 (两步)"
+  - "T5: ζ(1/2+it) ≠ 0 (u 的定义域; 零点处用翻转处理)"
+conclusion: "χ 的平移递推 (单方向延拓差分) 全显式; u² = χ 给出无分支相位恒等式 — 累积延拓的整数计数基元 (翻转次数 = N₀)"
+
+known_special_cases: null
+closest_known_results:
+  - "Γ 递推公式 (KNOWN), sin 周期 (KNOWN)"
+  - "观测 AI/AJ (Γ 相位对称约化), 观测 AK (T3 对称延拓 2argζ=argχ)"
+  - "观测 AH (arg ζ 净绕转数值 ≈ 0.013 圈)"
+literature_queries:
+  - "phase unwrapping Riemann zeta zeros"
+
+counterexample_search:
+  status: done
+  search_space: "6 定理全部 Lean 验收; 数值: 观测 AH 的净绕转 = 累积延拓的数值实例"
+  smallest_checked_size: null
+  result: "6 定理 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "src/pat-excercises/exercises/37_riemann_unified/proof.lean"
+  theorem_name: |
+    chi_translation_two / chi_arg_translation_two / chi_translation_four /
+    chi_arg_translation_four / zeta_eq_chi_mul_conj_on_line / zeta_unit_sq_eq_chi
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 递推/共轭全是经典事实"
+  - "T5 是 ζ ≠ 0 处的点态恒等式; 零点翻转的连续性 (分段连续 + 翻转计数) 未形式化"
+  - "RH 未证: 累积延拓给出 N₀(T) 的构造 (翻转计数), 但 ∀T 的零化仍需解析"
+
+evidence_for:
+  - "Lean: 6 定理全证 (无 sorry), proof.lean 编译通过 (175 声明 0 error 0 sorry)"
+evidence_against: []
+
+next_action: "(1) u 的分段连续 + 翻转计数形式化 (零点处符号翻转); (2) Backlund 拼装; (3) S(T) 控制"
+
+notes: "用户两个方向落地: 交换延拓 (无固定中心差分) + 三角函数累积 (u²=χ, 整数计数由翻转自动给出)。隔离开发后合并。"
