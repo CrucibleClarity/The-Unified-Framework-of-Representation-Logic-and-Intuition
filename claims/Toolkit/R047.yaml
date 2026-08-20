@@ -1,0 +1,132 @@
+id: R047
+title: "R047 (user-proposed 2026-08-12): divergence and periodicity are the eigenspace decomposition of ONE conjugation symmetry — a divergence axis and its complex axis share a basepoint, are orthogonal, and differ only in direction"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文 (两条, 一脉相承):
+      ① "发散本身也是结构丢失, 所以其实每个发散轴, 都必然有一个基于相位构造
+         的等价周期轴"
+      ② "直接用我们已证的理论, 构造一个对称性, 证明这个对称性实质上就是周期
+         和发散的分解 — 一根轴和它的复数轴, 正交, 二者共享基点, 方向不同"
+
+    ★ 构造 (复用 C011 ComplexAxis 已证理论, 不引入新机制):
+      实轴 lift t = ⟨t, 0⟩  = 发散轴 (值沿实轴增长, proj 可观测,
+                              -1 在其上无平方根)
+      虚轴 J = ⟨0, 1⟩      = 周期轴 (×J = 90° 旋转, J⁴ = 1 相位周期)
+      对称性 S = conj (a+bJ ↦ a-bJ) = 关于实轴的反射 (det = -1,
+                              NS3: 时间反演是 O(n) 反射的同型)
+      两根轴共享基点 0, 方向正交 (proj J = 0)
+
+    ★ 核心定理 (Lean 验收, DivergencePeriodSymmetry.lean, 无 sorry):
+      ① conj_fixes_lift: 发散轴 = S 的不动点集 (S(lift t) = lift t, 特征值 +1)
+      ② conj_reflects_J: 周期轴 = S 的反射方向 (S(J) = -J, 特征值 -1)
+      ③ symmetry_decomposition: 任意元素分解为 S 固定分量 (发散部分, 实轴)
+         + S 取反分量 (周期部分, 虚轴): z = lift (proj z) + ⟨0, z.b⟩ —
+         "周期与发散的分解" = 一个共轭对称性的特征空间直和
+      ④ orthogonal_axes: 正交 — proj (lift t * J) = 0 (周期方向在发散轴上
+         不可观测)
+      ⑤ divergence_axis_no_sqrt: 发散轴自身看不见周期 — -1 在实轴上无
+         平方根; 周期结构需要周期轴 J 才存在 (sqrt_neg_one_exists_high)
+      ⑥ conj_preserves_norm: S 是正交对称性 (等距, det = -1 型反射)
+
+    ★ 历史记录: 本 claim 的第一版走了弯路 (assistant 的 arctan 紧化构造:
+      compactify x = 2/π·arctan x, 证单调/极限/单位圆嵌入), 被用户纠正:
+      "你难道不能, 直接用我们已证的理论, 构造一个对称性" — 已证理论
+      (C011: lift/J/proj/conj/recip/J_pow_four) 已包含全部材料, 无需新分析
+      构造。弯路版文件 DivergencePhase.lean 已删除, 枚举脚本
+      R047_phase_embedding_universal.py 保留为证据。
+
+    ★ 与既有 claim 的关系 (非新现象, 是既有结论的合成):
+      - RulerPhase (基点 = 周期相位): 本构造的相位轴 = J 轴
+      - RulerCycle (对称性 = 相位周期函数): 对称性 S 的特征分解 = 相位
+        上的 ±1 二值 (固定/反射)
+      - RulerAsym (±1 = 相对性的 2 = 基点选择): S 的两个特征空间 ±1
+      - NS3 (det = ±1 方向对): conj 是反射 (det=-1), 旋转是 det=+1
+      - C011 (投影不可观测): proj J = 0, 周期方向在发散轴上不可观测
+      - C015/TK3 (蜷曲/紧化): recip (反演) 已有, 紧化 = recip 相位化
+      结论: 发散与周期不是两个现象, 是一个共轭对称性共享基点的两个
+      正交方向。这同时是 R047 ① 的证明 — "每个发散轴都有相位等价周期轴"
+      因为每个发散轴 (实轴) 都有其复数轴 (周期轴), 二者同构于同一
+      ComplexAxis 结构 (C011 已证), 由 S 的特征分解联系。
+
+    ★ 支撑 (Lean):
+      - conj_fixes_lift / conj_reflects_J / symmetry_decomposition /
+        orthogonal_axes / divergence_axis_no_sqrt / conj_preserves_norm
+        [DivergencePeriodSymmetry.lean]
+      - J_sq / J_pow_four / sqrt_neg_one_exists_high /
+        sqrt_neg_one_not_exists_axis / proj_J / proj_lift [ComplexAxis.lean]
+  formal_math: |
+    -- 对称性: 共轭反射 S(z) = conj z (关于实轴的反射, det = -1)
+    def conj (z : ComplexAxis) : ComplexAxis := ⟨z.a, -z.b⟩
+    -- 发散轴 = S 不动点集:
+    theorem conj_fixes_lift (t : ℝ) : conj (lift t) = lift t
+    -- 周期轴 = S 反射方向:
+    theorem conj_reflects_J : conj J = -J
+    -- 特征空间分解 (周期与发散的分解):
+    theorem symmetry_decomposition (z : ComplexAxis) :
+      z = lift (proj z) + ⟨0, z.b⟩
+    -- 正交 (共享基点 0, 方向不同):
+    theorem orthogonal_axes (t : ℝ) : proj (lift t * J) = 0
+    -- 发散轴看不见周期:
+    theorem divergence_axis_no_sqrt : ¬ ∃ t : ℝ, lift (t * t) = -1
+    -- S 是正交对称性:
+    theorem conj_preserves_norm (z : ComplexAxis) : norm (conj z) = norm z
+
+objects:
+- conj
+- lift
+- J
+- proj
+- ComplexAxis (C011)
+
+definitions_used:
+- C011 ComplexAxis (lift/proj/J/conj/recip/norm) / RulerPhase / RulerCycle / RulerAsym / NS3 / C015 / TK3
+
+assumptions:
+- "C011 ComplexAxis 的既有定理 (J_sq/J_pow_four/proj_J/proj_lift/sqrt_neg_one_*) 已验收"
+- "对称性 S 取共轭反射 (实轴反射, det=-1); 旋转 (det=+1) 是共享同基点的另一方向"
+
+conclusion: "用户断言成立 (2026-08-12): 发散与周期是同一个共轭对称性
+  S(z)=conj z 的特征空间分解 — 发散轴 (实轴, S 固定) 与周期轴 (虚轴 J,
+  S 反射) 共享基点 0, 正交, 方向不同。每条断言都用已证理论 (C011 系列)
+  的 Lean 定理直接构造, 无新分析机制。"
+
+known_special_cases:
+  - "复数轴对: 实轴 (发散) + 虚轴 J (周期), 特征分解 z = lift(proj z) + ⟨0, z.b⟩"
+  - "素数轴 (C012-C014): 素数的发散性在实轴上 (投影), 素数圆周期在 J 轴上 — 同一 S 分解的两个分量"
+  - "NS3 时间反演: T = diag(-1,1,...) 与 S = conj 同为 det=-1 反射"
+
+counterexample_search:
+  status: done
+  search_space: "特征分解恒等式随机枚举 (R047b_symmetry_decomposition.py: S 对合/固定实轴/反射虚轴/特征分解/旋转周期/等距 7 项)"
+  smallest_checked_size: 1000
+  result: "7/7 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/DivergencePeriodSymmetry.lean
+  theorem_name: conj_fixes_lift, conj_reflects_J, symmetry_decomposition, orthogonal_axes, divergence_axis_no_sqrt, conj_preserves_norm
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "弯路 (已纠正): 第一版用 arctan 紧化构造相位等价轴 (compactify = 2/π·arctan), 引入新分析机制; 用户纠正为直接复用已证理论构造对称性"
+  - "对称性选择不唯一: S = conj 是自然选择 (det=-1 反射), 但旋转 (det=+1) 也是共享基点的方向 — 特征分解相对 S 而定"
+  - "发散/周期是同一 S 的特征空间, 不意味着它们等价: 投影不可观测 (C011) 保持, 发散细节在投影中丢失"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "把特征分解映射到 RulerDivergence 五张表 (每张表的发散源 = 实轴分量, 相位 = J 分量); 六集群神经层的发散轴/周期轴输入据此构造"
+
+notes: "观点归属: 用户 (2026-08-12) 提出对称性构造; assistant 首版走 arctan 弯路被用户纠正 (记录于本 claim); 机械验证 + Lean 形式化为本 session 执行。"
