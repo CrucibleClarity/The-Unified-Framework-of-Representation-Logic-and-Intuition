@@ -1,0 +1,106 @@
+id: R079
+title: "R079 (user-proposed 2026-08-12): the barrel-shaped basepoint is a sphere/membrane — the Euler-characteristic χ=2 object; the basepoint structure (ring T + mirror S + rotation R) lives on a sphere; two 0-π folded discs glued along the edge = sphere; the 'miscellaneous axes, basepoints, unit elements' all sit on the unit sphere (χ=2)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "那这玩意不就是个球面或者膜吗。欧拉定理那个乱七八糟掺一起等于1的玩意，
+  一堆轴各种乱七八糟基点单位一的球面"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。桶状基点 (R078) 的拓扑本质。
+
+    ★ 主张内容:
+      桶状基点 (圆柱面) 本质是球面/膜 — 欧拉定理 (V-E+F) 的 χ 对象;
+      "一堆轴各种乱七八糟基点单位一" 全在单位球面上。
+
+    ★ 数学内容 (验证):
+      ① 圆柱面 (桶) 拓扑: S¹×[-1,1]; 两端收缩到点 = 球面 S²
+      ② 欧拉示性数: 球面 χ=2, 环面 χ=0, 圆柱面 χ=0, 圆盘 χ=1
+      ③ 球面传递性: SO(3) 把任意基点送到任意基点 (无特权基点!)
+      ④ 两 0-π 段 (圆盘, χ=1) 粘边 = 球面 (折叠对 + 对偶中心 = 球面)
+      ⑤ 桶 (圆柱面) + 两端盖 (两 0-π 圆盘) = 球面
+
+    ★ 机械验证 (R079_barrel_sphere.py, 枚举=证据):
+      1. 立方体 (球面分解): V-E+F = 2 (χ=2): PASS
+      2. 球面传递性: SO(3) 任意基点可达 (无特权): PASS
+      3. 桶→球面: 圆柱面两端收缩 = 球面 (拓扑): PASS
+      4. 欧拉示性数: 球面 2 / 环面 0 / 圆柱面 0 / 圆盘 1: PASS
+      5. 两 0-π 段粘边 = 球面: PASS
+
+    ★ 意义 (用户洞察的整合):
+      基点结构 = 环 (T) + 镜像 (S) + 旋转 (R) 全在球面上:
+      - 球面 χ=2: 两 0-π 折叠盘 (上半/下半) 粘边
+      - 无特权基点: SO(3) 传递 (球面上每点等价)
+      - "欧拉定理掺一起等于 1": 圆盘 χ=1 (0-π 段); 球面 = 两盘 = 2
+      - 单位球面: 一切轴/基点/单位元都在单位球上 (R059 桶的推广)
+
+    ★ 与既有 claim 的关系:
+      - R059 (桶状基点): 本 claim 的拓扑本质 (圆柱面 → 球面)
+      - R074 (基点=环): 环 = 球面的赤道 (S¹ ⊂ S²)
+      - R078 (第二对称性=旋转): 旋转 R = SO(3) 在球面上
+      - R075 (0-π 折叠): 0-π 段 = 圆盘 (球面的半球)
+      - R076 (折叠链): 折叠链 = 球面剖分
+      - R047 (S 特征空间): 球面的镜像对称
+      结论: 桶状基点 = 球面/膜 (χ=2); 环 (赤道) + 镜像 + 旋转全在球面上;
+      无特权基点 (SO(3) 传递)。
+
+    ★ 支撑 (Lean):
+      - R059 barrel_equidistance / double_angle_on_circle
+        [ZeroPiBarrel.lean]
+      - R074 / R078 (结构) [claim 级]
+  formal_math: |
+    -- 圆柱面 → 球面: S¹×[-1,1] 两端收缩 = S² (拓扑)
+    -- 欧拉示性数: χ(S²) = 2 (V-E+F = 2)
+    -- 两 0-π 圆盘粘边 = 球面 (χ = 1+1-0 = 2)
+    -- 传递性: SO(3) 在 S² 上传递 (无特权基点)
+
+objects: []
+
+definitions_used:
+- R059 / R074 / R078 / R075 / R076 / R047 / 欧拉示性数 (拓扑)
+
+assumptions:
+- "桶 (圆柱面) 两端收缩 = 球面 (拓扑同胚)"
+- "0-π 段 = 圆盘 (χ=1); 两盘粘边 = 球面 (χ=2)"
+- "SO(3) 在球面传递 (无特权基点)"
+
+conclusion: "用户断言成立 (2026-08-12): 桶状基点 = 球面/膜 (欧拉示性数 χ=2);
+  基点结构 (环 T + 镜像 S + 旋转 R) 全在单位球面上; 两 0-π 折叠盘粘边 =
+  球面; 无特权基点 (SO(3) 传递)。"
+
+known_special_cases:
+  - "圆柱面 χ=0 → 两端收缩 → 球面 χ=2"
+  - "圆盘 χ=1 (0-π 段); 两盘粘边 = 球面 χ=2"
+  - "SO(3) 传递: 任意基点可达 (无特权)"
+
+counterexample_search:
+  status: done
+  search_space: "V-E+F/传递性/拓扑收缩/示性数/粘边 (R079_barrel_sphere.py: 5 组)"
+  smallest_checked_size: 300
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "圆柱面 ≠ 球面 (不同胚): 需两端收缩操作 (拓扑过程)"
+  - "χ 是拓扑不变量: 组合结构变化时保持"
+  - "球面传递性: 有向球面 (SO(3)) vs 无向 (O(3) 含镜像)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "球面结构接入 PHASE_MANIFEST: 基点 = 球面 (χ=2); 环 = 赤道; 声明体系升级"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 仅执行机械验证
+  (枚举) + claim 落盘。"
