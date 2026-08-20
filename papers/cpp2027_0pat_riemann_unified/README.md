@@ -10,8 +10,8 @@ Compile: `tectonic Exercise_XXXVII_Riemann_Direction_Unified.tex`
 ## Content
 
 Unified machine-checked development of the Riemann direction
-(13 exercises XXIV–XXXVI merged + new theorems), 128 declarations
-(113 theorems + 15 lemmas), 0 errors, 0 sorry:
+(13 exercises XXIV–XXXVI merged + new theorems), 130 declarations
+(115 theorems + 15 lemmas), 0 errors, 0 sorry:
 
 - prime structure: infinitely many primes, Fermat's little theorem,
   unit groups of prime residue rings
@@ -46,21 +46,25 @@ Unified machine-checked development of the Riemann direction
   (the circle view comes only from the 1/z inversion)
 - base point 1 (center of the critical-line circle): on-line ⟺
   equidistance ‖w‖ = ‖1+w‖ (vertical bisector; circle = unit circle)
+- base point i (origin of the observation frame): the critical line is
+  the perpendicular bisector of i and 1+i; T(z) = 1/(z−i) − 1 sends it
+  to the unit circle (one base point resolves circle image + translation/
+  inversion cancellation)
 - zero region: ζ has no zeros on Re ≥ 1 (mathlib) nor on Re ≤ 0
   (functional-equation mirror) — nontrivial zeros lie in 0 < Re < 1
 - orbit counting: zeros form conjugate orbits of 2 points (on the
   critical line) or 4 points (off it); RH ⟺ all orbits degenerate
 
 Honest boundary: the Riemann hypothesis is not claimed; the artifact
-records twenty-six observation records (critical strip, zero locations,
+records thirty observation records (critical strip, zero locations,
 base-point shift, phase projection, conjugation counts) and a
 machine-checked conjugation/orbit development (117 declarations,
 0 errors, 0 sorry).
 
 ## Artifact
 
-- artifact/formal/proof.lean — the 128-declaration proof
-- artifact/observation.md — 26 observation records
+- artifact/formal/proof.lean — the 130-declaration proof
+- artifact/observation.md — 30 observation records
 - artifact/README.md — build + theorem inventory + provenance
 
 ## Double-blind note
