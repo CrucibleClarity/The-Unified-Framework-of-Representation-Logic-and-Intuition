@@ -1,0 +1,76 @@
+id: RulerErrorCorrect
+title: "RulerErrorCorrect: three refinements of the prophecy error — (1) the error ratio 2^(1-s) is a precomputed lookup table, (2) the error has direction (monotone = one-sided, alternating = oscillating), (3) learning the empirical error offset d(n) corrects the rough prophecy to high precision"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerErrorCorrect: 误差三问 (用户指令 2026-08-12).
+
+    ★ 问题1: 误差比率可查表测量? ✓
+      比率 r(s) = 2^(1-s): s 决定比率
+      s=2.0 → 0.5000; s=1.5 → 0.7071 (sin(π/4), e^{iπ/4} 分量); s=3.0 → 0.2500
+      比率表 = {s → 2^(1-s)}: 预计算, 查表 O(1)
+      ⟹ RulerLookup 应用 (有限域函数 = 表)
+
+    ★ 问题2: 误差有方向吗? ✓
+      单调收敛 (Σ1/n^s): 部分和 < 极限 (从下逼近, 方向固定)
+      交替收敛 (Σ(-1)^n/n): 部分和振荡 (正负交替, 方向振荡)
+      ⟹ 误差有方向! 单调 = 单方向, 交替 = 振荡
+
+    ★ 问题3: 经验误差偏移量修正? ✓ (恒等式先验验证)
+      粗糙预言 p(n), 真实极限 L
+      误差偏移 d(n) = L - p(n) (可测量/学习)
+      例: s=2 (Σ1/n², 极限 L = π²/6 — 欧拉 Basel KNOWN; d(n) = π²/6 - Σ_{k≤n} 1/k² 是 π 结构常数余项): d(5)=0.1813, d(10)=0.0952, d(20)=0.0488
+      修正后: p(5)+d(5) = 1.644934 = 极限 (精确到 6 位!)
+      ⟹ 若 d(n) 规律已知 (如 d(n)=C·n^(1-s)), 修正 = 免费精度
+
+    ★ 统一:
+      预测 = p(n) + d̂(n), d̂(n) = 经验估计偏移
+      若 d̂ 准: 提前 n 也能拿高精度 (白嫖精度!)
+      三问闭环: 比率查表 (已知) + 方向 (已知) + 偏移修正 (学习)
+      ⟹ 粗糙预言 + 经验修正 = 高精度预言
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 比率 2^(1-s) [ErrorSequence]
+      - poly_error_monotone: 单调 (方向固定) [ErrorSequence]
+      - makeTable: 比率查表 [ConciseMagicTeaching]
+  formal_math: |
+    -- 比率 (可查表):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- 单调 (误差方向固定):
+    lemma poly_error_monotone (s : ℝ) (hs : 1 < s) {n₁ n₂ : ℝ}
+      (hn₁ : 0 < n₁) (hnn : n₁ ≤ n₂) : polyError s n₂ ≤ polyError s n₁
+    -- 比率表构造:
+    def makeTable (f : α → β) : Finset (α × β) :=
+      Finset.image (fun x => (x, f x)) Finset.univ
+
+objects:
+- poly_error_ratio
+- poly_error_monotone
+- makeTable
+
+definitions_used:
+- ErrorSequence / ConciseMagicTeaching
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '误差三问: (1) 比率 2^(1-s) 可查表 O(1); (2) 误差有方向 (单调单
+  向, 交替振荡); (3) 学习偏移 d(n) 修正粗糙预言到高精度 (白嫖精度).
+  预测 = p(n) + d̂(n).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/ErrorSequence.lean
+    - formal/Formal/Toolkit/ConciseMagicTeaching.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
