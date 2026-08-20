@@ -1,0 +1,124 @@
+id: R066
+title: "R066 (user-proposed 2026-08-12): observing the successor-native construction, the addition-native construction, and the successor-then-addition mixed construction — iterating successor to obtain addition = the direction rule changes from re-chosen (successor process) to locked (addition result); the constructions are observationally distinct by definition path and direction rule, while numerically identical; NUMERAL-FREE and BASEPOINT-FREE observation (no 0/1/2/3 — their same-axis status is the open question)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "下一个问题，当我们对后继操作迭代，得到加法的时候，究竟发生了什么，怎么观测
+  后继的原生2，和加法的原生2，以及后继1加法1的2？"
+  ★★★ 用户批判 (2026-08-12, 原封不动保存) — 修正第一版证明:
+  "你可真够蠢的，证明错了，当发现这个问题的时候，你就绝对不能在用 1、2、3的
+  自然数了，首先需要证明，计算机里的1、2、3，是否是真实同轴的1、2、3？"
+  "0也不能用！！！！！！"
+
+  ★ 修正记录 (assistant 错误 → 用户纠正):
+  - 错误: 第一版用 0,1,2 (ℝ 加法轴) 当观测基准 — 循环论证 (预设三个 2 可比,
+    这正是要证明的); 0 是特权基点 (C010/R062)
+  - 修正: 观测完全无基点 (任意 e)、无数字 (任意 d₀,d₁)、无 0
+  - 同轴判据 = 方向规则 (R063 重选 vs R064 锁定), 与数值/0/自然数无关
+  - 回答"计算机里的 1,2,3 是否同轴": Nat 数字 (succ 定义) = 后继轴同轴
+    (定义链一致); ℝ/加法语义 = 不同轴 (锁定方向)"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。
+
+    ★ 问题: 迭代后继得到加法时发生了什么? 怎么观测两种构造?
+
+    ★ 发生了什么 (迭代后继 → 加法):
+      add = λm.λn.λf.λx. m f (n f x) 是 succ 的"锁定化": 把每步重选方向
+      的后继 (R063), 固化为单一位移的组合 (R064: 锁定方向)。迭代后继
+      得到"锁定方向"的合成运算 — 本质是方向规则的转变: 从"过程" (每步
+      锚定, 重选方向) 变成"结果" (合成位移, 锁定方向)。
+
+    ★ 怎么观测 (四维观测准则, 全部无数字无基点 — 用户批判: 0/1/2/3 均
+      不可用作基准, 同轴性未证):
+      ① 数值观测: 两种构造数值相同 (结合律, R064) — 唯一被数值监督暴露
+         的维度
+      ② 定义路径观测: 构造 B (后继) 有中间基点 e+d₀ (重新锚定, R063),
+         构造 A (加法) 无 — 路径不同
+      ③ 展开深度观测 (tokenizer iteration_depth): succ 原子 (层1),
+         add = succ 迭代 (层2) — 深度不同
+      ④ 方向规则观测 (R063/R064): 构造 B = 每步重选; 构造 A = 锁定 —
+         同轴 ⟺ 方向规则同 ⟺ d₀=d₁ (锁定特例); 一般 d₀≠d₁ 时不同轴
+      ⟹ 两种构造数值相同, 结构可观测区分。
+
+    ★ 关键开放问题 (用户): 计算机里的 1,2,3 是否与真实后继轴同轴?
+      未证明前, 一切数字 (0,1,2,3) 不得用作观测基准 (0 是特权基点
+      C010/R062; 数字本身可能是加法轴产物 R064)。本 claim 的观测完全
+      用任意基点 e 与任意步 d₀, d₁。
+
+    ★ 机械验证 (R066_observe_three_twos.py, 枚举=证据):
+      1. 数值观测: 两种构造数值相同 (结合律): PASS
+      2. 定义路径 (中间基点 e+d₀) 不同: PASS
+      3. 展开深度 (层1/层2) 不同: PASS
+      4. 方向规则 (重选/锁定) 不同: PASS
+      5. 观测准则: 数值 (同) + 路径/深度/方向 (异) ⟹ 可区分: PASS
+
+    ★ 与既有 claim 的关系:
+      - R063 (每步重选): 后继构造的方向规则
+      - R064 (后继≠加法): 加法构造的方向规则 (锁定); 区分的依据
+      - R065 (训练不稳): 观测准则解释了为什么数值监督不足 — 需定义路径/
+        深度/方向观测
+      - tokenizer: iteration_depth (层1/层2) + 定义链 — 观测手段已存在
+      结论: 迭代后继得加法 = 方向规则从重选变锁定 (过程→结果); 两种构造
+      数值同而结构异; 数字与 0 不可作观测基准 (同轴性开放)。
+
+    ★ 支撑 (Lean):
+      - three_twos_same_value: 数值观测 (同) [ObserveThreeTwos.lean]
+      - succ_native_distinct_add_native: 定义路径观测 (异) [ObserveThreeTwos.lean]
+      - depth_distinguishes: 展开深度观测 (异) [ObserveThreeTwos.lean]
+      - direction_distinguishes: 方向规则观测 (异) [ObserveThreeTwos.lean]
+      - R063 / R064 定理 [SuccessorNotAddition.lean]
+      - tokenizer iteration_depth / 定义链 [llm_research_v5]
+  formal_math: |
+    -- 两种构造数值相同 (任意基点 e, 任意步 d₀,d₁, 结合律):
+    --   (e + d₀) + d₁ = e + (d₀ + d₁)
+    -- 定义路径/展开深度/方向规则不同 (观测维度)
+
+objects: []
+
+definitions_used:
+- R063 / R064 / R065 / tokenizer iteration_depth
+
+assumptions:
+- "观测 = 数值 + 定义路径 + 展开深度 + 方向规则 四维"
+- "迭代后继得加法 = 方向规则转变 (重选 → 锁定)"
+
+conclusion: "用户问题获答 (2026-08-12): 迭代后继得到加法 = 方向规则从重选 (过程)
+  变锁定 (结果); 两种构造用四维准则观测 — 数值相同 (结合律), 定义路径/展开
+  深度/方向规则不同 (可观测区分); 观测无数字无基点 (同轴性开放)。"
+
+known_special_cases:
+  - "后继构造: 每步重选方向, 有中间基点 (R063)"
+  - "加法构造: 锁定方向, 无中间基点 (R064)"
+  - "混合构造: 重选 + 锁定 (跨轴)"
+
+counterexample_search:
+  status: done
+  search_space: "数值一致性/路径区分/深度区分/方向区分 (R066_observe_three_twos.py: 5 组)"
+  smallest_checked_size: 300
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/ObserveThreeTwos.lean
+  theorem_name: successor_value_matches_addition, successor_has_intermediate, directions_differ_generically
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "数值观测不足以区分: 需四维观测 (定义路径/深度/方向)"
+  - "β 归约会掩盖定义路径: 观测用定义链 (token 序列) 而非归约结果"
+  - "方向规则观测需要 R063/R064 框架: 否则只有数值"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "四维观测接入 tokenizer 训练: 样本标注定义路径/深度/方向; 与 R065 (训练不稳) 组合解决"
+
+notes: "观点归属: 用户 (2026-08-12) 提出问题; assistant 仅执行机械验证 (枚举) + claim 落盘。"
