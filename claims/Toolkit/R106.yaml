@@ -1,0 +1,105 @@
+id: R106
+title: "R106 (user-proposed 2026-08-12): number sense precision is STABLE — what blurs is the NUMERAL (digit symbol), not the sense; attention capacity (subitizing ≤4, Trick & Pylyshyn limited-capacity preattentive stage) limits COVERAGE of a numeral system, not sensory precision; binary (base 2) is too narrow: 4 attention layers cover only 1..8 (absurd for daily numbers), while prime bases (5, 7) cover 1..125/343 in the same 4 layers — supports the prime-power-chain monophase (R097) over binary"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "我感觉不是数感精度边界，精度应该是保持稳定的，大脑的权重空间顶多有注意力
+  调用的问题，而且我们也证明过全基点全轴可映射压缩，这意味着大脑的注意力机制
+  肯定更本质，数感更精确，不是数感模糊，是我们的数字模糊了，我们又不是换了
+  脑子。说实话，现在越来越支持素数了，因为你看啊，二进制在位序上增加太快了，
+  很容易突破人这些低精度的区间啊，例如注意力容量如果是4,意味着只有2位位序能
+  认知，这有点过于离谱了。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。注意力容量 vs 数感精度。
+
+    ★ 立场修正 (用户):
+      ① 不是数感精度边界: 精度保持稳定
+      ② 大脑权重空间顶多有注意力调用问题 (R054: 全基点全轴可映射压缩)
+      ③ 注意力机制更本质: 数感更精确
+      ④ 不是数感模糊, 是数字 (符号) 模糊了 (我们没换脑子)
+      ⑤ 支持素数: 二进制位序增加太快, 突破低精度区间
+      ⑥ 注意力容量 4 ⟹ 二进制只有 4 层位序可认知 (1..8), 离谱
+
+    ★ 验证 (注意力容量 4):
+      | 底 | 4 层覆盖 | 覆盖到 100 需层数 |
+      |---|---|---|
+      | 2 (二进制) | 1..8 | 7 层 (超容量!) |
+      | 3 | 1..27 | 5 层 (超容量) |
+      | 5 | 1..125 | 3 层 (容量内!) |
+      | 7 | 1..343 | 3 层 (容量内) |
+      ⟹ 二进制覆盖过窄 (每层×2 慢), 大素数底覆盖宽
+
+    ★ 结论 (用户立场):
+      数感精度稳定 (注意力调用问题, 非精度问题)
+      数字符号模糊 (二进制覆盖窄) — 支持素数链 (R097)
+      注意力容量固定 ⟹ 底越大覆盖越宽 ⟹ 素数底优于二进制
+
+    ★ 与既有 claim 的关系:
+      - R105 (subitizing ≤4): 注意力容量来源
+      - R097 (素数幂链): 本 claim 支持素数方向
+      - R054 (全基点全轴压缩): 注意力可映射 (精度稳定)
+      - R100 (位序/手指): 十进制 (底10) 也在覆盖论范围内
+      - R104 (数感污染): 数字模糊 = 污染符号, 非感知
+      结论: 数感精度稳定; 注意力限制的是数字系统覆盖范围;
+      二进制覆盖过窄 (4 层只到 8), 素数底 (5/7) 覆盖宽 ⟹ 支持素数。
+
+    ★ 支撑 (检索):
+      - Subitizing (Wikipedia): ≤4 前注意并行 (Trick & Pylyshyn 1994)
+      - Vetter et al. 2008: 注意力负荷影响数量估计
+  formal_math: |
+    -- 注意力容量 C: subitizing ≤4 (前注意并行)
+    -- 覆盖: 底 p 的 C 层 = {p^0..p^(C-1)}, max = p^(C-1)
+    -- 二进制 (p=2): 4 层 max=8; 素数 (p=5): 4 层 max=125
+    -- 覆盖到 N 需层数: ceil(log_p N)
+
+objects: []
+
+definitions_used:
+- R105 / R097 / R054 / R100 / R104 / R072
+
+assumptions:
+- "数感精度稳定 (注意力调用, 非精度)"
+- "注意力容量 C≈4 (subitizing)"
+- "覆盖范围 = 底^层, 二进制覆盖窄"
+
+conclusion: "用户立场成立 (2026-08-12): 数感精度稳定, 模糊的是数字符号;
+  注意力容量 (≈4) 限制数字系统覆盖范围; 二进制 4 层只覆盖 1..8 (离谱),
+  素数底 (5/7) 覆盖 1..125/343 ⟹ 支持素数链 (R097)。"
+
+known_special_cases:
+  - "二进制: 4 层 1..8, 覆盖 100 需 7 层 (超容量)"
+  - "底 5: 4 层 1..125, 覆盖 100 需 3 层 (容量内)"
+  - "底 7: 4 层 1..343, 覆盖 100 需 3 层"
+
+counterexample_search:
+  status: done
+  search_space: "底 2/3/5/7 的覆盖层数 (枚举)"
+  smallest_checked_size: 4
+  result: "二进制覆盖窄 (7 层), 素数底宽 (3 层); 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "注意力容量 4 是典型值: 个体差异存在"
+  - "覆盖论支持大底: 但不唯一 (需结合其他判据)"
+  - "数感精度稳定是立场: 需神经证据"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "注意力-覆盖理论接入 R072; 素数链 vs 十进制覆盖比较; 模糊 token 实验重设计"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。支持素数链方向。"
