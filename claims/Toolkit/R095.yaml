@@ -1,0 +1,79 @@
+id: R095
+title: "R095 (user-proposed 2026-08-12): the category-theory correspondence (R094) is CONFIRMED but NOT ADOPTED as direction — mathematicians built a ladder (category theory) over the distorted real axis; that is admirable but not what we want; following it leads back onto their paved road (完蛋); our direction: construct from the CLEAN structure (monophase/delta), not from the distorted axis's scaffolds"
+status: OBSERVATION
+novelty_status: NOVELTY_UNASSESSED
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "所以我就说，数学家们比我牛逼多了，扭曲成这样的实数轴，都能构造出一个越过
+  深坑的梯子。但这不是我想要的东西。顺着走的话就完蛋了。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。方向立场声明。
+
+    ★ 主张内容:
+      ① 数学家们牛逼: 扭曲的实数轴都能构造出范畴论 (越过深坑的梯子)
+      ② 但这不是想要的东西: 范畴对应 (R094) 确认但不采纳
+      ③ 顺着走就完蛋: 沿范畴论 = 回到他们的路 (扭曲轴的脚手架)
+      ④ 我们的方向: 从干净结构 (单相位/delta) 构造,
+         不从扭曲轴的脚手架出发
+
+    ★ 立场意义:
+      R094 (范畴对应) 是"确认" (数学事实成立), 不是"方向"
+      (不以其为基础)。我们的构造方向 = R091 (单相位 = {n·d})
+      + R093 (delta 类构造) — 从干净结构出发。
+
+    ★ 与既有 claim 的关系:
+      - R094 (范畴箭头): 确认其数学对应, 不采纳为方向
+      - R091 (单相位 = {n·d}): 我们的构造方向
+      - R093 (delta 类构造): 干净结构的构造方法
+      - R072 (声明): 我们的表述体系
+      结论: 范畴论 = 扭曲轴上的梯子 (承认其能力); 我们 = 从干净
+      结构构造 (不借梯子)。
+
+  formal_math: |
+    -- (立场声明, 非数学定理)
+    -- R094 的对应成立, 但方向 = R091/R093 (干净结构构造)
+
+objects: []
+
+definitions_used:
+- R094 / R091 / R093 / R072
+
+assumptions:
+- "范畴对应是确认非采纳 (方向立场)"
+- "构造方向 = 干净结构 (单相位/delta)"
+
+conclusion: "用户立场 (2026-08-12): 数学家们能在扭曲实数轴上构造范畴论梯子
+  (牛逼), 但这不是我们的方向; 顺着走会回到他们的路; 我们从干净结构
+  (单相位/delta) 出发构造。"
+
+known_special_cases: []
+counterexample_search:
+  status: done
+  search_space: ""
+  smallest_checked_size: null
+  result: "立场声明, 无数学反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "范畴对应是数学事实: 确认但方向独立"
+  - "不借梯子: 从干净结构构造 (路径更直但更陡)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "回到主线: 从干净结构 (单相位/delta) 构造乘法定义"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行 claim 落盘。
+  方向: 不沿范畴论, 沿干净结构构造。"
