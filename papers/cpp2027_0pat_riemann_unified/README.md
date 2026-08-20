@@ -10,8 +10,8 @@ Compile: `tectonic Exercise_XXXVII_Riemann_Direction_Unified.tex`
 ## Content
 
 Unified machine-checked development of the Riemann direction
-(13 exercises XXIV–XXXVI merged + new theorems), 98 declarations
-(88 theorems + 10 lemmas), 0 errors, 0 sorry:
+(13 exercises XXIV–XXXVI merged + new theorems), 101 declarations
+(89 theorems + 12 lemmas), 0 errors, 0 sorry:
 
 - prime structure: infinitely many primes, Fermat's little theorem,
   unit groups of prime residue rings
@@ -42,7 +42,7 @@ base-point shift, phase projection, exhaustive radius searches).
 
 ## Artifact
 
-- artifact/formal/proof.lean — the 98-declaration proof
+- artifact/formal/proof.lean — the 101-declaration proof
 - artifact/observation.md — 12 numerical observation records
 - artifact/README.md — build + theorem inventory + provenance
 
