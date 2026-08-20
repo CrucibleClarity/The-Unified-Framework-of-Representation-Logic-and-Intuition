@@ -1,0 +1,97 @@
+id: S003
+title: "Index Injection Audit — back-reaction 可区分 ⟹ 预先存在 index distinction (no-go)"
+status: CONJECTURE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+
+statement:
+  informal: |
+    S002 审计反例后 (用户评审): S002 的索引类型 (L3Config : Bool → Type) 没有
+    消除 fired 信息, 只是从 value 层搬到 type-index 层 (runtime tag → type-level
+    tag)。审计证书: Σ b, L3Config b ≃ Bool — 整个 S002 L3 state 恰好 1 bit
+    (untouched/touched)。⟹ S002 是 "Host 预置一比特 typestate 然后翻转它",
+    不是 "无信息 L4 边界留下结构 residual"。
+
+    S003 Index Injection Audit (用户指令) 把 Bool 泛化:
+      I : Type, i, j : I, C : I → Type, 候选 intervention f : C i → C j。
+    问: 要证明 intervention 一定产生可观察变化, 究竟必须额外拥有多少关于
+    i, j 的信息?
+
+    核心 no-go:
+      ① index_distinction_required: 若 observer 能区分 residual (O i x ≠ O j y),
+         则 i ≠ j — 可区分 ⟹ 预先存在 index distinction。
+      ② subsingleton_no_distinction: 若 index 空间 subsingleton (∀ i j, i = j),
+         则任何 index-based observer 恒等 — 不可能仅凭 index 获得非平凡
+         residual distinction。
+      ③ typestate_change_requires_preexisting_distinction: typestate 想保证
+         发生变化, 必须先在 index space 中预编码变化。
+
+    结论: "back-reaction 可区分" 本身要求预先存在一个 distinction。
+    真正 OPEN: 能否在不先给 index-space distinction 的情况下, 从一次边界
+    侵入中得到任何可区分 residual? 本 audit 证明: 不可能。
+  formal_math: |
+    index_distinction_required {I} {C : I → Type} (O : (i:I) → C i → Bool)
+      (rconst : ∀ i x y, O i x = O i y) {i j} (x : C i) (y : C j) :
+      O i x ≠ O j y → i ≠ j
+    index_observer_requires_distinction {I} (O : I → Bool) {i j} : O i ≠ O j → i ≠ j
+    subsingleton_no_distinction {I} {C} (hsub : ∀ i j, i = j)
+      (O) (rconst) (i j) (x : C i) (y : C j) : O i x = O j y
+    subsingleton_index_observer_constant {I} (hsub) (O) (i j) : O i = O j
+    typestate_change_requires_preexisting_distinction: (可观察变化) → i ≠ j
+    no_distinction_no_observable_change: (subsingleton) → 观察恒等
+    index_injection_audit_conclusion: ① ∧ ②
+
+objects: ["I (index space)", "C : I → Type (fiber family)", "O (observer)", "subsingleton"]
+definitions_used: ["index distinction", "back-reaction", "typestate", "pre-encoded change", "subsingleton index"]
+
+assumptions:
+  - "index space I + fiber family C : I → Type 泛化 S002 的 (Bool, L3Config)"
+  - "observer O 在 fiber 内常值 (rconst: residual 只依赖 index, 不依赖 fiber 内容)"
+  - "subsingleton: ∀ i j, i = j (index 无区分)"
+  - "零 import (只用 Lean 核心)"
+conclusion: "Index Injection Audit no-go: 从一次边界侵入中要获得可区分 residual, 必须预先在 index space 中存在 distinction (i ≠ j 或 observer 区分 index)。subsingleton index (无 distinction) ⟹ 无任何可区分 residual。⟹ S002 的 back-reaction 不是 boundary invasion 的涌现, 而是预编码 index 变化的机械回放。'back-reaction 可区分' 本身要求预先存在一个 distinction。S002 (Type-Indexed Back-Reaction Control Model) 是工程上更严格的 fired, 不是概念上更纯的 fired — 类型索引能静态保证 one-shot state transition, 但这种保证来自预先存在的 index distinction, 不能作为 first distinction emergence 的证据。"
+
+known_special_cases:
+  - "I = Bool (S002 特例): 两个 index 已预编码 distinction ⟹ back-reaction 可区分"
+  - "I = subsingleton (如 Unit): 无 index distinction ⟹ 无 residual distinction"
+closest_known_results:
+  - "S002 Type-Indexed Back-Reaction Control Model (审计反例, 本 claim 是其 no-go); S001 三层沙盒 (已退役)"
+literature_queries:
+  - "indexed type typestate distinction pre-encoded"
+  - "subsingleton no distinction observer"
+
+counterexample_search:
+  status: done
+  search_space: "subsingleton index (I=Unit) vs 非 subsingleton (I=Bool): 观察者能否区分"
+  smallest_checked_size: null
+  result: "subsingleton ⟹ 观察恒等 (零公理); 可区分 ⟹ i≠j (零公理) — no-go 成立"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/AbsoluteRelative/IndexInjectionAudit.lean (零 import) + BoundaryGenesis.lean (审计证书 totalConfigEquivBool)"
+  theorem_name: "AbsoluteRelative.IndexInjectionAudit.index_distinction_required / .subsingleton_no_distinction / .subsingleton_index_observer_constant / .typestate_change_requires_preexisting_distinction / .no_distinction_no_observable_change / .index_injection_audit_conclusion + AbsoluteRelative.BoundaryGenesis.totalConfigEquivBool / .l3_state_is_bool (已证, 无 sorry, 全零公理)"
+  status: in_progress
+  sorry_free: true
+
+failure_modes:
+  - "声称 S002 已消除 fired — 只是搬到 type-index 层 (审计证书 Σ L3Config ≃ Bool 证明 1 bit)"
+  - "声称 back-reaction 是 boundary invasion 的涌现 — 是预编码 index 变化的机械回放"
+  - "声称 subsingleton index 下仍有 residual distinction — 已证不可能"
+  - "用 : True := trivial 当证据 — no-go 定理有反事实力量"
+  - "声称 first distinction emergence — S003 证明需要预先 distinction, 不提供 emergence"
+
+evidence_for:
+  - "index_distinction_required 零公理: O i x ≠ O j y ⟹ i ≠ j (可区分 ⟹ index 不同)"
+  - "subsingleton_no_distinction 零公理: ∀ i j, i = j ⟹ O i x = O j y (无 index 区分 ⟹ 无 residual 区分)"
+  - "subsingleton_index_observer_constant 零公理: index observer 恒等"
+  - "totalConfigEquivBool 零公理: Σ b, L3Config b ≃ Bool — S002 是 1 bit typestate"
+evidence_against: []
+
+next_action: "S003 完成: Index Injection Audit no-go — back-reaction 可区分 ⟹ 预先存在 index distinction; subsingleton index ⟹ 无 residual distinction。真正 OPEN (用户指令): 能否在不先给 index-space distinction 的情况下, 从一次边界侵入中得到任何可区分 residual? S003 证明: 不可能 (可区分 ⟹ 已预编码 index 变化)。下一步 (用户判断): ① 寻找不需要 index distinction 的建模 (完全摆脱 index/observer 预编码) — 但 S003 已证 '可区分' 即需要 distinction, 这本身指向更深问题: 第一次 distinction 从哪里来? ② 或构造 trace injectivity (L4₁≠L4₂ ⟹ τ₁≠τ₂) 使 τ 编码 L4 内容 (但需先解决 index 预编码问题) ③ 或 lean4checker 验证 + Agda 第二实现。"
+
+notes: "2026-08-09 用户评审 (S002 后): ① S002 没消除 fired, 只是从 value 层搬到 type-index 层 — Bool→false/true 已把结论写进模型 (两个可区别状态/语义命名/两个 fiber/定向/≠/one-shot 全部免费获得); intervene : L3Config false→L3Config true 不是发现'侵入⇒不可逆变化'而是规定'合法 intervene 必须从 false fiber 去 true fiber' (与 fired:=true 信息量无本质差别, runtime tag→type-level tag)。② 审计: Σ b, L3Config b ≃ Bool 应该 Lean 证明 — S002 完整 state 恰好 1 bit (untouched/touched), 是 'Host 预置一比特 typestate 然后翻转', 不是 '无信息边界留下结构 residual'。③ back_reaction_structural 是 representation-driven: 结构性强制≠结构自然涌现, 结构 (Bool/false/true) 是 Host 给的; 准确表述是'在预采用 two-state typestate spec 下, 合法 intervention 必须改变 typestate', 不能表述成'boundary invasion 自身必然产生 back-reaction'。④ forget_discards_residual 基本是 codomain 写死 (任何返回 false typestate 的函数结果被观察为 false), 不是信息不可逆性 theorem。⑤ no_l4_parser 可保留但意义有限: L4 没进入语言所以当然无 parser, 但模型同时预置了 L3 two-state observation (residual) — '无 L4 observation + 预置 L3 two-state observation' 可作实验仪器模型, 不能研究'第一次 distinction 如何出现'。⑥ 下一步 S003 Index Injection Audit: 泛化 I:Type, i,j:I, f:C(i)→C(j), 问要证明 intervention 产生可观察变化必须额外拥有多少关于 i,j 的信息 — 至少需要 i≠j 或 observer O(i)≠O(j); 'back-reaction 可区分'本身要求预先存在 distinction; subsingleton index (∀ij, i=j) 则不可能仅凭 index 获得非平凡 residual distinction; typestate 想保证变化必须先预编码变化。⑦ S002 最终定位: Type-Indexed Back-Reaction Control Model, 不删 (好审计反例), 核心结论 = 类型索引能静态保证 one-shot state transition, 但保证来自预先存在的 index distinction, 不能作为 first distinction emergence 证据; 加上 Σ L3Config ≃ Bool 作为审计证书。"
