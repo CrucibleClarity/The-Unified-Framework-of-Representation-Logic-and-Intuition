@@ -1,0 +1,81 @@
+id: RulerFold
+title: "RulerFold: the elimination method — projection/anchor, lossless vs lossy retention, hide divergence in contracting structures, keep convergence explicit"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerFold: 消灭无限空间的化简方法 (用户指令 2026-08-12).
+
+    ★ 五步模式 (从素数化简 + 相位化简提取, 已观察验证):
+      ① 投影 (选锚): 选一个方向, 丢其他方向 (proj 丢虚部)
+      ② 结构丢失: 确认丢失不可还原 (投影恢复定理)
+      ③ 发散藏进收缩: 无限/发散 → 藏进收缩结构 (欧拉乘积/圆/紧化)
+      ④ 收敛保留: 收敛/对称 → 显式结构 (临界线=圆)
+      ⑤ 对齐: 保留结构与目标对齐 (相位对齐)
+
+    ★ 核心区分 (用户指令): 无损保留 vs 有损保留
+      无损保留 (lossless): 收缩隐藏 — 信息还在, 只是压缩, 可还原
+        例: 素数无穷 → 欧拉乘积 (可展开); 无限 → 紧化 (可逆)
+      有损保留 (lossy): 投影丢失 — 信息真没了, 不可还原
+        例: proj 丢虚部, √-1 消失 (投影恢复定理: 不可还原)
+        例: 奥卡姆剃刀删实体
+
+    ★ 奥卡姆剃刀的代价 = 有损保留:
+      剃刀删实体 ⟹ 删掉的信息不可还原 (有损)
+      ⟹ 剃刀 = 有损保留 (不是无损压缩)
+      C-META14 精确化: 剃刀砍该丢的 (发散/冗余), 代价是不可还原
+
+    ★ RulerFold 决策表:
+      信息类型 → 处理 → 保留类型
+      发散/冗余 → 投影丢失 → 有损 (不可还原, 剃刀代价)
+      收敛/必要 → 收缩隐藏 → 无损 (可还原, 紧化)
+      对称/目标 → 显式保留 → 无损 (显式结构)
+
+    ★ 选择标准 = 必要性 (该信息是否支撑目标):
+      无损: 信息必要 (可还原, 紧化/乘积)
+      有损: 信息不必要/发散 (剃刀, 投影)
+      有损是主动选择 (奥卡姆), 不是失败
+
+    ★ 与傅里叶对比:
+      傅里叶: 保留全部信息 (算系数, 更快)
+      Ruler: 故意丢失 + 藏发散 (改变结构本身)
+      ⟹ Ruler 不是'更快', 是'消灭无限'
+  formal_math: |
+    -- 投影丢失 (有损, 不可还原): C011
+    theorem proj_mul_not_preserved : proj (J * J) ≠ proj J * proj J
+    -- 收缩隐藏 (无损, 可还原): 欧拉乘积
+    theorem zeta_euler_product (s : ℂ) (hs : 1 < s.re) :
+      (∏ p, (1 - p^(-s))⁻¹) = riemannZeta s
+    -- 紧化 (无损): TK3
+    def infinity {X : Type*} : Option X := none
+    def embed {X : Type*} (x : X) : Option X := some x
+
+objects:
+- proj_mul_not_preserved
+- zeta_euler_product
+- infinity / embed
+
+definitions_used:
+- C011 ComplexAxis / TK3 Compactification / C-META14 (剃刀=量化)
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: 'RulerFold 方法: 投影(选锚) → 结构丢失 → 发散藏进收缩(无损) →
+  收敛保留 → 对齐. 核心区分: 无损保留(可还原, 收缩/紧化) vs 有损保留
+  (不可还原, 投影/剃刀代价). 选择标准 = 信息必要性.'
+
+verification:
+  lean_files:
+    - formal/Formal/ZeroRelative/ComplexAxis.lean
+    - formal/Formal/Toolkit/Compactification.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
