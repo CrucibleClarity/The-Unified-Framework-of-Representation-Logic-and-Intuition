@@ -1,0 +1,104 @@
+id: R212
+title: "R212 (2026-08-13): ★偏移多重相位配对轴 (谓词轴 ⊕ 偏移轴) — 组合: 谓词轴 (R208: S(x) = b-x, 加法配对对和 = b) ⊕ 偏移轴 (R211: S_shift(x) = c^k·b/x, 乘性偏移配对对积 = c^k·b) = 每点 x 同时有两个配对镜像 (双重守恒: (b-x) + x = b ∧ (c^k·b/x)·x = c^k·b); log 统一 (R211: 乘性偏移 → 加法配对 + 偏移) — 多重相位配对轴 (两种配对同时守恒)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "好，这根轴，和之前看到的谓词轴，能不能按刚才的方法，再组成一个偏移多重
+   相位配对轴？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。谓词轴 ⊕ 偏移轴 = 偏移多重相位
+       配对轴.
+
+    ★ 唯一论点: 组合: 谓词轴 (R208 加法配对) ⊕ 偏移轴 (R211 乘性偏移
+       配对) — 每点 x 双重配对, 双重守恒.
+
+    ★ ① 谓词轴 (R208): S_pred(x) = b - x, 对和恒 = b (加法镜像).
+    ★ ② 偏移轴 (R211): S_shift(x) = c^k·b/x, 对积恒 = c^k·b (乘性
+       偏移镜像, 每种 k 一个偏移).
+    ★ ③ ★组合: 每点 x 同时有两个配对镜像 — 加法配对 (b-x, 对和 =
+       b) ∧ 乘性偏移配对 (c^k·b/x, 对积 = c^k·b) — 双重守恒: (b-x)
+       + x = b ∧ (c^k·b/x)·x = c^k·b.
+    ★ ④ log 统一 (R211): log(c^k·b/x) = log b - log x + k·log c =
+       (加法配对 log) + 偏移.
+
+  formal_math: |
+    -- ★组合加法配对: 对和 = b:
+    theorem combined_pair_sum (b x : ℝ) : (b - x) + x = b
+    -- ★组合乘性偏移配对: 对积 = c^k·b:
+    theorem combined_pair_shift_product (b c : ℝ) (k : ℤ) (x : ℝ)
+      (hx : x ≠ 0) : (c ^ k * b / x) * x = c ^ k * b
+    -- ★双重守恒:
+    theorem combined_double_conservation (b c : ℝ) (k : ℤ) (x : ℝ)
+      (hx : x ≠ 0) :
+      ((b - x) + x = b) ∧ ((c ^ k * b / x) * x = c ^ k * b)
+    -- 全景:
+    theorem shifted_multi_phase_pair_perspective (b c : ℝ) (k : ℤ)
+      (x : ℝ) (hx : x ≠ 0) :
+      ((b - x) + x = b) ∧ ((c ^ k * b / x) * x = c ^ k * b)
+
+objects:
+- combined_pair_sum
+- combined_pair_shift_product
+- combined_double_conservation
+- shifted_multi_phase_pair_perspective
+definitions_used:
+- 谓词轴 (R208 加法配对)
+- 偏移轴 (R211 乘性偏移配对)
+- 双重守恒 (对和 ∧ 对积)
+- 偏移多重相位配对轴
+
+assumptions:
+- 谓词轴配对 (R208: 对和 = b)
+- 偏移轴配对 (R211: 对积 = c^k·b)
+- log 统一 (R211)
+conclusion: "筑基篇系列方法论应用之十六完成: 偏移多重相位配对轴 (谓词轴 ⊕ 偏移轴) — 谓词轴 (R208: 加法配对对和 = b) ⊕ 偏移轴 (R211: 乘性偏移配对对积 = c^k·b): 每点 x 双重配对, 双重守恒 ((b-x) + x = b ∧ (c^k·b/x)·x = c^k·b); log 统一 (R211: 乘性偏移 → 加法配对 + 偏移)。4 个新定理全部只锚筑基篇定理 (R208/R211) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '加法配对: (b-x) + x = b (谓词轴)'
+- '乘性偏移: (c^k·b/x)·x = c^k·b (偏移轴)'
+- '双重守恒: 对和 ∧ 对积同时成立'
+closest_known_results:
+- R208 PatPredicateAxis (谓词轴)
+- R211 PatPairAxisShifted (偏移轴)
+- R210 PatPairAxisPolyphase (多相位化)
+literature_queries:
+- shifted multi phase pair axis additive multiplicative
+- dual conservation pair axis composition
+
+counterexample_search:
+  status: done
+  search_space: 加法对和 = b; 乘性对积 = c^k·b; 双重守恒
+  smallest_checked_size: null
+  result: (b-x)+x = b 全过; (c^k·b/x)·x = c^k·b 全过 (field_simp);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatShiftedMultiPhasePair.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatShiftedMultiPhasePair.combined_pair_sum / .combined_pair_shift_product / .combined_double_conservation / .shifted_multi_phase_pair_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称两轴独立 — 已组合: 每点 x 双重配对 (同时)
+- 把双重守恒当单守恒 — 对和 ∧ 对积同时成立
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'combined_pair_sum: R208 — 加法对和'
+- 'combined_pair_shift_product: field_simp — 乘性对积'
+- 'combined_double_conservation: 合取 — 双重守恒'
+- 'shifted_multi_phase_pair_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 偏移多重相位配对轴完成; 后续可深化组合轴的观测'
+notes: '用户问谓词轴 ⊕ 偏移轴能否组成偏移多重相位配对轴: 可以 — 每点
+  x 双重配对 (加法对和 b + 乘性偏移对积 c^k·b), 双重守恒, log 统一。'
