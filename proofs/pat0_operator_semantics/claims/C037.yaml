@@ -1,0 +1,74 @@
+id: C037
+title: "Q2_0 four grid points = symbol quantization of the pat four-phase complex plane"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: true
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    ★ 核心桥接 (2026-08-18): 为什么 Q2_0 量化是 4 个数, pat 是 3 个数?
+    Q2_0 把 pat 原生复平面以正负号的形式量化, 变成四个数。
+    - pat 数值格点 3 个数 {-1, 0, 1} = 复平面四相位 {1, -1, i, -i} 投影到
+      实轴 (实轴投影极值 ±1; ±i 的实投影 = 0) — 丢虚部符号
+    - Q2_0 的 4 个数 {-1, 0, 1, 2} = 四相位按双符号轴 (实符号 × 虚符号)
+      量化: 2bit = 2 个符号位, 完整保留虚部符号 → 4 = 4
+    符号编码 φ:
+      φ(1)  = +1   (实正 → 乘法基点)
+      φ(-1) = -1   (实负 → 反射基点)
+      φ(i)  = +2   (虚正 → 基点迭代: 1+1 = 2·1)
+      φ(-i) = 0    (虚负 → 折叠中心: 负虚折叠进原点)
+    结构性质:
+    - 四相位和 = 0 (投影对消: 1 + (-1) + i + (-i) = 0)
+    - Q2_0 格点不是乘法闭的: 2·2 = 4 ∉ {-1,0,1,2} — φ 不是代数同态,
+      而是符号编码 (保持正负号方向, 不保持乘法)
+    - pat 3 数 = Q2_0 4 数投影到实符号轴 (丢迭代位)
+  formal_math: |
+    q2_phi : ℂ → ℝ with q2_phi 1 = 1, q2_phi (-1) = -1, q2_phi i = 2, q2_phi (-i) = 0.
+    four_phase_sum: 1 + i + (-1) + (-i) = 0 (projection cancellation).
+    four_phase_mul: i·i = -1 (J² = -I).
+    not_mul_closed: 2·2 = 4 ∉ {-1, 0, 1, 2} (φ is a symbol encoding, not a homomorphism).
+    sign_axes: the four grid points pair up on two sign axes (direction × iteration).
+
+objects: ["φ : ℂ → ℝ (sign quantization)", "four phases {1, -1, i, -i}", "Q2_0 grid {-1, 0, 1, 2}", "pat three-grid {-1, 0, 1}"]
+definitions_used: ["Complex", "if-then-else encoding", "sign axes"]
+
+assumptions:
+  - "Q2_0 quantization semantics: 2 bit per element, grid {-1, 0, 1, 2}"
+conclusion: "The Q2_0 four-point grid is the four phases {1, -1, i, -i} quantized by sign (2 bits = real sign × imaginary sign); the pat three-point grid is the real-axis projection (imaginary sign dropped); φ is a symbol encoding, not an algebraic homomorphism."
+
+known_special_cases:
+  - "q2_phi i = 2: positive imaginary = basepoint iteration (1+1 = 2·1)"
+  - "q2_phi (-i) = 0: negative imaginary folds into the origin"
+closest_known_results:
+  - "GGUF Q2_0 quantization format (dequantization formula (q-1)·d)"
+  - "C028 (Q2_0 grid = basepoint cluster), C029 (projection extremes ±1), C030 (projection cancellation)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Direct mapping; the non-homomorphism is verified by 2·2 = 4 ∉ grid."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Q2GridSymbolQuantization.lean"
+  theorem_name: "ZeroRelative.q2_phi_on_phases / q2_sign_axes / q2_iter_axes / pat_three_is_real_projection / q2_four_vs_pat_three / four_phase_mul / four_phase_sum"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "φ is not a homomorphism: it preserves sign directions but not multiplication"
+  - "the grid {-1,0,1,2} is not multiplicatively closed (2·2 = 4)"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/Q2GridSymbolQuantization.lean, no sorry"
+  - "empirical: Bonsai-27B Q2_0 weights quantize with grid {-1,0,1,2} (2 bit per element)"
+
+evidence_against: []
+
+next_action: "C038 (state-matrix complex structure: the 50% square redundancy of storing a complex state as a real matrix)."
