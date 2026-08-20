@@ -1,0 +1,102 @@
+id: R227
+title: "R227 (user 2026-08-14): 发散与周期的几何独立证明 (零依赖) — 不使用任何单相位数定理, 从实数几何基础证明 R047 核心; 课后习题 XVI (R173) 专门研究该观测归纳"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 本 claim 为 R047 的独立几何补充, 不依赖单相位数表述"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户指令 (2026-08-14): 观测归纳 (素数/超越数/i/n元数/复平面 → 发散与
+    周期同一对称性) 已有课后习题 XVI 专门研究 (R173, 孪生素数间隔 2 = 震荡
+    周期轴); 记录该关联, 并**不使用单相位数的任何定理** (R072/R091/
+    RulerPhase/ComplexAxis 全不依赖), 仅用实数几何基础, 从零证明 R047 核心:
+    发散轴与周期轴是同一反射对称性 S 的特征空间分解。
+
+    ★ 几何构造 (纯 ℝ² 基础):
+      反射 S(x,y) = (x,-y)   (关于实轴的镜像, 对合 S² = id)
+      旋转 J(x,y) = (-y,x)   (90°, 周期 J⁴ = id)
+      实轴 (x,0) = S 不动点集 (特征值 +1) = 发散轴 (平移不回返)
+      虚轴 (0,y) = S 取反方向 (特征值 -1) = 周期轴 (旋转四次回返)
+      任意向量 v = fixedPart v + flippedPart v (特征分解)
+
+    ★ 核心结论: 不依赖单相位数理论的几何事实 — 发散 (实轴平移不回返)
+    与周期 (虚轴旋转回返) 是同一反射对称性 S 的两个特征空间的语义;
+    观测对象 (素数发散/超越数漂移/i 周期/复平面双轴) 均落入该分解。
+
+formal_math: |
+    -- 反射 S: 对合, 实轴固定, 虚轴取反
+    def S (v : ℝ × ℝ) : ℝ × ℝ := (v.1, -v.2)
+    theorem reflection_involutive (v) : S (S v) = v
+    theorem real_axis_fixed (x) : S (x, 0) = (x, 0)
+    theorem imag_axis_reflected (y) : S (0, y) = -(0, y)
+    -- 旋转 J: 周期 4
+    def J (v : ℝ × ℝ) : ℝ × ℝ := (-v.2, v.1)
+    theorem rotation_period_four (v) : J (J (J (J v))) = v
+    -- 特征分解
+    theorem eigen_decomposition (v) : v = (v.1, 0) + (0, v.2)
+    -- 发散: 实轴平移不回返
+    theorem real_axis_diverges (t x) (ht : t ≠ 0) :
+      ∀ n : ℕ, n ≠ 0 → (x + n*t, 0) ≠ (x, 0)
+    -- 周期: 虚轴旋转四次回返
+    theorem imag_axis_periodic (y) : J (J (J (J (0, y)))) = (0, y)
+    -- 核心合成
+    theorem divergence_period_same_symmetry : (六段合取)
+
+objects:
+- S
+- J
+- realAxis
+- imagAxis
+- fixedPart
+- flippedPart
+
+definitions_used:
+- "无 (零依赖: 仅 Mathlib.Data.Real.Basic + Tactic.Ring)"
+- "关联: R047 (原始证明, DivergencePeriodSymmetry.lean, 依赖 ComplexAxis) / R173 (课后习题 XVI, 孪生素数间隔 = 震荡周期轴) / exercise_i_16 论文"
+
+assumptions:
+- "ℝ² 几何基础 (实数对 + 加法 + 乘法)"
+- "发散/周期的语义: 平移不回返 = 发散, 旋转回返 = 周期"
+
+conclusion: "用户断言成立 (2026-08-14): R047 的几何核心 (发散轴与周期轴 =
+  同一反射对称性 S 的特征空间分解) 可不依赖任何单相位数定理, 仅用实数几何
+  基础独立证明 — 反射 S 对合 (S²=id) + 实轴固定/虚轴取反 + 特征分解 +
+  实轴平移不回返 (发散) + 虚轴旋转四次回返 (周期)。课后习题 XVI (R173) 为
+  该观测归纳的专门研究, 本 claim 为其零依赖几何补充。"
+
+known_special_cases:
+  - "发散轴 (实轴, S 固定, 特征值 +1): 平移不回返"
+  - "周期轴 (虚轴, S 取反, 特征值 -1): 旋转四次回返"
+  - "任意向量: 特征分解 v = 发散部分 + 周期部分 (R047 直和)"
+
+counterexample_search:
+  status: done
+  search_space: "几何恒等式 (S²=id / J⁴=id / 特征分解 / 平移不回返) — 代数直接验证"
+  smallest_checked_size: null
+  result: "全部由 simp/ring 直接验证; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/DivergencePeriodGeometric.lean
+  theorem_name: reflection_involutive, rotation_period_four, real_axis_fixed, imag_axis_reflected, eigen_decomposition, fixed_is_S_fixed, flipped_is_S_flipped, real_axis_diverges, imag_axis_periodic, divergence_period_same_symmetry
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "本证明是 R047 的几何核心 (特征分解), 非 R047 全部 (如投影不可观测 proj J = 0 需要 ComplexAxis 结构)"
+  - "发散/周期语义依赖 t ≠ 0 (退化情形 t = 0 无发散无周期)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 课后习题 XVI (R173) 论文可引用本几何证明作为零依赖支撑 ② 观测归纳链 (素数/超越数/i/n元数/复平面 → R047) 记录入研究笔记"
+
+notes: "观点归属: 用户 (2026-08-14) 提出课后习题关联 + 零依赖几何证明指令;
+  assistant 构建几何构造与 Lean 定理 (零 Pat 依赖, 纯 ℝ² 基础)。"
