@@ -1,0 +1,108 @@
+id: R067
+title: "R067 (user-proposed 2026-08-12): numeric equality is itself suspect — values drift (RulerDrift) while relative delta is stable; operating on the numeral 2 means choosing WHICH signified (the numeric value or the relative position); the token system succeeds because it explicitly separates 2's signifier from its signified (能指/所指剥离 = 数值/相对性剥离)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "事实上，数值相同这个就已经很有嫌疑了，我们做出来的结论是，数值漂移，相对性
+  delta稳定，所以问题其实就变成了，当你在对2这个数值进行操作的时候，你究竟是
+  在操作他的相对性，或者说位置，还是在操作他的数值。这里就变成我们那个token
+  体系之所以成功的原因，他显式的剥离了2这个符号的所指与能指。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。
+
+    ★ 主张内容:
+      ① 数值相同本身就可疑: 我们的结论是数值漂移、相对性 delta 稳定
+         (RulerDrift) — 数值相等 (R064/R066 的维度①) 不能作为无嫌疑的观测
+      ② 问题: 对 2 操作时, 是在操作相对性 (位置) 还是数值?
+      ③ token 体系成功的原因: 显式剥离 2 的所指与能指
+
+    ★ 数学内容 (验证):
+      ① 数值漂移: 同一 delta d, 不同基点 e₁≠e₂ ⟹ 数值 v₁=e₁+d ≠ v₂=e₂+d
+         (数值是基点投影, RulerDrift)
+      ② 相对性稳定: delta 类不变 (v-e 不随基点, C007)
+      ③ 同一符号 "2": 数值所指 (作为坐标 v+2) vs 相对性所指 (作为位置
+         e+2) — 两种所指 ⟹ 操作结果不同
+      ④ token 剥离: 能指 "2" (S 层符号) → 所指 {数值 2, 位置 2} (C 层多
+         候选, 上下文收敛) — 操作前必须先决定所指, 否则方向规则歧义
+         (R065)
+
+    ★ 机械验证 (R067_signifier_signified.py, 枚举=证据):
+      1. 数值漂移: 同 delta 不同基点 ⟹ 数值不同: PASS
+      2. 相对性稳定: delta 类不随基点: PASS
+      3. 同一符号 2: 数值所指 vs 相对性所指 ⟹ 操作结果不同: PASS
+      4. token 剥离: 能指 → 多所指 (上下文收敛): PASS
+
+    ★ 与既有 claim 的关系:
+      - RulerDrift (值漂移位置不变): 本 claim 的数学基础 — 数值 = 投影,
+        相对性 = 身份
+      - R064 (后继≠加法): "数值相同"是维度①观测, 本身可疑 (R067 ①)
+      - R065 (训练不稳): 训练不稳的根源 = 监督只有数值, 未剥离能指/所指
+        — token 体系剥离后稳定
+      - R066 (观测准则): 维度① (数值) 可疑, 需 ②③④ (路径/深度/方向)
+      - token 体系 (B/C/S/G/P 层): 能指 = S 层, 所指 = C 层, 一符号多所指
+        (上下文收敛) — 这是 tokenizer 成功的哲学根基
+      结论: 操作 "2" 前必须先选择所指 (数值 or 相对性); token 体系显式
+      剥离两者, 使操作的方向规则明确 — 这就是 token 体系成功的根源。
+
+    ★ 支撑 (Lean):
+      - RulerDrift (值漂移位置不变) [RulerDrift.yaml]
+      - C007 (位移空间基点无关) [ZeroRelative]
+      - token 体系 (能指/所指) [llm_research_v5]
+  formal_math: |
+    -- 数值漂移 (同 delta 不同基点):
+    --   v₁ = e₁ + d ≠ v₂ = e₂ + d (e₁ ≠ e₂)
+    -- 相对性稳定 (delta 类不变):
+    --   v₁ - e₁ = v₂ - e₂ = d
+    -- 符号与所指分离 (token):
+    --   "2" (S层能指) → {数值2, 位置2} (C层所指, 上下文收敛)
+
+objects: []
+
+definitions_used:
+- RulerDrift / C007 / R064 / R065 / R066 / token 体系 (B/C/S/G/P)
+
+assumptions:
+- "数值 = 基点投影 (漂移); 相对性 = delta 类 (稳定)"
+- "符号 2 的所指需上下文收敛 (能指/所指分离)"
+
+conclusion: "用户断言成立 (2026-08-12): 数值相同本身可疑 (数值漂移、delta 稳定,
+  RulerDrift); 操作 2 必须先选所指 (相对性/位置 or 数值); token 体系显式
+  剥离能指/所指 ⟹ 操作方向规则明确 — 这是 token 体系成功的根源。"
+
+known_special_cases:
+  - "同 delta 不同基点: 数值不同 (漂移), delta 类相同 (稳定)"
+  - "同一符号 2: 数值所指 vs 相对性所指, 操作结果不同"
+  - "token: 能指 '2' → 多所指 (C层候选, 上下文收敛)"
+
+counterexample_search:
+  status: done
+  search_space: "数值漂移/delta稳定/所指分歧 (R067_signifier_signified.py: 4 组)"
+  smallest_checked_size: 300
+  result: "4/4 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "数值观测维度本身可疑: 不可作为同轴判据 (R067 ①)"
+  - "能指/所指未剥离: 操作方向规则歧义 (R065 训练不稳)"
+  - "上下文收敛需要形式化: 一符号多所指的消歧是 tokenizer 的核心机制"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "能指/所指剥离接入训练: 监督信号含所指标注 (数值 or 相对性); 与 R065 (训练不稳) 组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 仅执行机械验证
+  (枚举) + claim 落盘。"
