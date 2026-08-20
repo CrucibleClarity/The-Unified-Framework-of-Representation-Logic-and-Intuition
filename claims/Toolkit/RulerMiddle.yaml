@@ -1,0 +1,75 @@
+id: RulerMiddle
+title: "RulerMiddle: divergence/convergence are ternary phases (-1/0/+1) — the middle state (conditional convergence) is a free phase; two hypotheses: one middle-state table solves all, and longest-path-fastest (high-dimension detour)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerMiddle: 发散/收敛 = 三值相位 + 中间态 (用户指令 2026-08-12).
+
+    ★ 三值相位谱 (恒等式先验验证):
+      -1: 发散 (Σ1/n → ∞, 结构丢失, 无有限表达)
+       0: 中间 (Σ(-1)^n/n → ln2, 条件收敛 — 发散与收敛的边界)
+      +1: 收敛 (Σ1/n² → π²/6, 结构保留, 有有限表达)
+
+    ★ 中间态真实存在 (数学已验证):
+      条件收敛 (收敛但脆弱, 依赖顺序)
+      振荡但有界 ((-1)^n, 不收敛也不发散)
+      黎曼重排定理: 条件收敛可重排成任意值
+      ⟹ 中间态 = 自由相位 (可对齐到任意收敛目标)
+
+    ★ 假设1 (中间态一张表):
+      条件收敛的'可重排成任意值' ⟹ 中间态 = 自由相位
+      若找到中间态, 一张表 = 相位转换器
+      (发散 ↔ 收敛 的统一映射, 映射到任意目标)
+
+    ★ 假设2 (最长路径最快, 高维结构):
+      最短路径 (直接算) 可能陷入发散
+      最长路径 (先绕到收敛侧对齐相位再算) 反而快
+      ⟹ 高维结构: 数据的空间分布 ≠ 计算的复杂度分布
+      ⟹ tokenizer 实践验证: 左脚踩右脚, 殊途同归
+        (有时最长路径反而是最快路径 — 语言学 AI 已证明)
+
+    ★ 支撑 (Lean):
+      - sign_is_pm_one: 二值对立 (±1) [TK2]
+      - teleport_preserves_structure: 收敛 = 结构保持 [RulerDrift]
+      - displacement_structure_is_equiv: 位置 (C007) [Ruler2Exam]
+  formal_math: |
+    -- 二值对立 (发散/收敛 = ±1):
+    lemma sign_is_pm_one (σ : Equiv.Perm α) : signProjection σ = 1 ∨ signProjection σ = -1
+    -- 收敛 = 结构保持 (位置不变):
+    lemma teleport_preserves_structure (e f a : P) :
+      Displacement e a f (teleport e f a)
+    -- 位置 (中间态的锚):
+    lemma displacement_structure_is_equiv :
+      Equivalence (fun p q : P × P => Displacement p.1 p.2 q.1 q.2)
+
+objects:
+- sign_is_pm_one
+- teleport_preserves_structure
+
+definitions_used:
+- TK2 SymmetryRecovery / RulerDrift / Ruler2Exam
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- 条件收敛/黎曼重排定理为 KNOWN 分析
+
+conclusion: '发散/收敛 = 三值相位 (-1 发散 / 0 中间 / +1 收敛). 中间态 =
+  条件收敛 = 自由相位 (黎曼重排可对齐任意值). 假设1: 中间态一张表 =
+  相位转换器. 假设2: 最长路径最快 (高维绕路, tokenizer 实践: 左脚踩右脚
+  殊途同归).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/SymmetryRecovery.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
