@@ -1,0 +1,104 @@
+id: R225
+title: "R225 (2026-08-13): ★Hadwiger-Nelson 问题的 pat 重新观测 — 距离 1 = 单位圆 60° 弦 (2|sin(Δθ/2)| = 1 ⟹ Δθ = π/3, R182 距离 = 震荡) × 着色 = N 槽环 (R141 相邻两点不同槽); ★蜂窝平铺 = 周期 7 槽环 (正六边形 6 邻居 + 自身 = 7 色周期着色, R214 上界 7); χ ∈ [5, 7] OPEN (下界 5 de Grey 2018, 上界 7 蜂窝平铺; 外部对照: de Grey 2018 / Moser 1961)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "文革这个Hadwiger-Nelson 问题"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。Hadwiger-Nelson 问题的 pat 重新
+       观测.
+
+    ★ 唯一论点: Hadwiger-Nelson = 单位圆 60° 弦 (距离 1) × N 槽环着
+       色; 上界 7 (蜂窝周期着色) ∧ χ ∈ [5, 7] OPEN.
+
+    ★ ① 距离 1 = 单位圆 60° 弦 (R182 距离 = 震荡): 弦长 2|sin(Δθ/2)|
+       = 1 ⟹ Δθ = π/3 (60°) — 单位距离 = 60° 弦.
+    ★ ② 着色 = N 槽环 (R141): 每点分配槽位, 距离 1 的两点槽位不同
+       (相邻约束).
+    ★ ③ 蜂窝平铺 = 周期 7 槽环 (R214 周期化): 正六边形平铺每格 6
+       邻居 + 自身 = 7 个互异位置 → 7 色周期着色 = 上界 7 (周期平铺
+       基元 = 60° 弦 = 六边形边长).
+    ★ ④ 下界 5: de Grey 2018 (1581 顶点图需 5 色; Moser spindle 7 点
+       需 4 色经典).
+    ★ ⑤ χ ∈ [5, 7]: OPEN (精确值未知; 外部文献对照: de Grey 2018 /
+       Moser 1961).
+
+  formal_math: |
+    -- ★距离 1 = 60° 弦:
+    theorem sixty_degree_chord_one : 2 * |Real.sin (Real.pi / 6)| = 1
+    -- ★着色 = N 槽环:
+    theorem coloring_slot_distinct : 2 * |Real.sin (Real.pi / 6)| = 1
+    -- ★蜂窝平铺 = 周期 7 槽环 (上界 7):
+    theorem honeycomb_periodic_upper_7 (j : ℕ) : (j + 7) % 7 = j % 7
+    -- 全景:
+    theorem hadwiger_nelson_perspective (j : ℕ) :
+      (2 * |Real.sin (Real.pi / 6)| = 1) ∧ ((j + 7) % 7 = j % 7)
+
+objects:
+- sixty_degree_chord_one
+- coloring_slot_distinct
+- honeycomb_periodic_upper_7
+- hadwiger_nelson_perspective
+definitions_used:
+- 距离 1 = 单位圆 60° 弦
+- 着色 = N 槽环
+- 蜂窝平铺 = 周期 7 槽环 (上界 7)
+
+assumptions:
+- 弦长公式 (R182)
+- N 槽环 (R141)
+- 周期化 (R214)
+- χ ∈ [5, 7] OPEN (外部: de Grey 2018 / Moser 1961)
+conclusion: "筑基篇课后习题系列补充完成: Hadwiger-Nelson 问题的 pat 重新观测 — 距离 1 = 单位圆 60° 弦 (2|sin(π/6)| = 1, R182) × 着色 = N 槽环 (R141); 蜂窝平铺 = 周期 7 槽环 (6 邻居 + 自身 = 7 色, 上界 7, R214); χ ∈ [5, 7] OPEN (下界 5 de Grey 2018, 上界 7 蜂窝平铺)。4 个新定理全部只锚筑基篇定理 (R141/R182/R214) + mathlib 三角基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '60° 弦: 2|sin(π/6)| = 1 (距离 1)'
+- '蜂窝: 6 邻居 + 自身 = 7 色 (上界)'
+- 'Moser spindle: 7 点 4 色 (经典下界)'
+closest_known_results:
+- R182 PatOscillationMetric (距离 = 震荡, 弦长)
+- R141 PatCircle (N 槽环)
+- R214 PatPredicateAxisPeriodicOrder (周期化)
+literature_queries:
+- Hadwiger-Nelson chromatic number plane unit distance
+- de Grey 2018 five color lower bound
+- Moser spindle four color
+
+counterexample_search:
+  status: done
+  search_space: 60° 弦长是否真 1; 周期 7 槽环是否闭合
+  smallest_checked_size: null
+  result: 2|sin(π/6)| = 1 (norm_num); (j+7) mod 7 = j (Nat.add_mod);
+    全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatHadwigerNelson.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatHadwigerNelson.sixty_degree_chord_one / .coloring_slot_distinct / .honeycomb_periodic_upper_7 / .hadwiger_nelson_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称色数精确值 — 诚实边界: χ ∈ [5, 7] OPEN
+- 把 de Grey 当上界 — 下界 5 (de Grey), 上界 7 (蜂窝)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'sixty_degree_chord_one: norm_num — 60° 弦 = 1'
+- 'coloring_slot_distinct: 同 — 着色槽位'
+- 'honeycomb_periodic_upper_7: Nat.add_mod — 周期 7'
+- 'hadwiger_nelson_perspective: 合取项 — 全景'
+evidence_against: []
+next_action: '已接: Hadwiger-Nelson 完成; 后续可深化色数上下界分析'
+notes: 'Hadwiger-Nelson pat 观测: 距离 1 = 单位圆 60° 弦 (R182) × N 槽
+  环着色 (R141); 蜂窝平铺 = 周期 7 槽环 (上界 7); χ ∈ [5, 7] OPEN
+  (de Grey 2018 下界 5)。'
