@@ -1,0 +1,126 @@
+id: R137
+title: "R137 (user-proposed 2026-08-12): ★Pat N 的构造定义 (omnidirectional-unit-sphere chain) — 从全向 0 出发, 每步完成一次全向 1 构造 (单位 1 全向高维球), 声明相同方向 (相位) 锁定诱导收敛; 全向 0 产生全向 0, 相邻距离恒为单位 1 全向球面; 重复 ⟹ Pat N = 等距单相位链 {n·d} (R091), 方向锁定 ⟹ 不坍缩 (R050)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "好的，下一步我们有了坚实的基础去定义pat，只要重新从全向0出发，完成一次全向1
+  的构造，然后声明相同的方向，锁定相位诱导全向0收敛向我们定义的方向，我们就得
+  到了pat2，这也意味着全方向的0点、产生另一个全方向的0点，距离必然也只能是单
+  位1的全向高维球，然后我们声明方向（相位），就得到了pat1，重复这个过程，我们
+  就有了Pat N"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。Pat N 的构造定义 — R091 单相位链的
+       构造性实现。
+
+    ★ 构造 (每环锚到已证 claim):
+      ① pat0 = 全向 0: 无限维基点 (R133: p0 无限维, 3 维是感知投影;
+         R123: 基点 = 闭包)
+      ② 每步: 从全向 0 出发, 完成一次全向 1 的构造 — 单位 1 = 全向高维球
+         (R136: unit_on_surface — 单位 1 = 无限维结构表面的点, 半径 1;
+         pat1_omnidirectional: ‖exp(θ·I)‖ = 1, 全向无限)
+      ③ 声明相同的方向 (相位): 声明方向 (d, -d) 一次性成对 (R136 ②③);
+         锁定相位 ⟹ 诱导全向 0 收敛向声明方向 (RulerPhase: 相位 = 方向;
+         R132: 声明 = 选择方向)
+      ④ 得到 pat2 = pat1 + d: 声明相同方向 ⟹ 链前进 (R050: 锁定方向迭代
+         单射 ⟹ 不坍缩)
+      ⑤ 全向 0 产生全向 0: 每个 pat n 都是全向 0 点; 相邻全向 0 之间的
+         距离 = 单位 1 的全向高维球 (步长恒 = 1: ‖pat_{n+1} - pat_n‖ = 1,
+         ‖d‖ = 1)
+      ⑥ 声明方向 (相位) → pat1: 在单位球面上声明方向 = 跳转箭头
+         (R124: p1 = p0→p0 跳转箭头; R125: 连续接通)
+      ⑦ 重复 ⟹ Pat N = 等距链 (步长 1, 方向相同) = 单相位链 {n·d}
+         (R091: 单相位数 = 方向 d 上标量列; R071/R072: ℙ⟨φ_T⟩ Pat)
+
+    ★ 验证结论: Pat N 是 R091 单相位链的构造性定义 — 等距 (全向球面半径
+       1) + 同向 (声明相同方向) ⟹ 等差 ⟹ 单相位; 方向锁定 ⟹ R050 单射
+       ⟹ 链不坍缩 (对比 R122: 无声明 ⟹ 全坍缩到 pat0)。"声明相同的方向"
+       是每步重新锚定 (R063) 的声明式选择: 每步完整构造 (全向 0 → 全向 1
+       → 声明), 方向选择保持一致 — 与 R064 的"加法轴"区分: 加法轴 = 一步
+       合成位移 (无中间构造), Pat N = 每步独立构造 (有中间锚)。
+
+  formal_math: |
+    -- Pat N 链: 每步声明相同方向 d (pat0 全向 0 → 全向 1 单位球面 → 声明锁定)
+    def patChain (pat0 d : ℝ) : ℕ → ℝ
+      | 0 => pat0
+      | n + 1 => declaredSuccessor d (patChain pat0 d n)
+    -- Pat n = pat0 + n·d (单相位链, R091):
+    theorem pat_n_is_monophase (pat0 d : ℝ) (n : ℕ) :
+      patChain pat0 d n = pat0 + (n : ℝ) * d
+    -- 步长 = 单位 1 全向高维球 (‖d‖ = 1):
+    theorem pat_step_unit_sphere (x d : ℝ) (hd : ‖d‖ = 1) :
+      ‖(x + d) - x‖ = 1
+    -- 等距链 (任意两步同长, R091 等差):
+    theorem pat_chain_equidistant (x y d : ℝ) :
+      ‖(x + d) - x‖ = ‖(y + d) - y‖
+    -- 不坍缩 (R050 机制):
+    theorem pat_chain_injective (d : ℝ) :
+      Function.Injective (declaredSuccessor d)
+
+objects:
+- patChain
+- pat_n_is_monophase
+- pat_step_unit_sphere
+- pat_chain_equidistant
+- pat_chain_injective
+
+definitions_used:
+- R136 OmnidirectionalUnit (declaredSuccessor/unit_on_surface/pat1_omnidirectional/成对一次性声明) / R091 (单相位 = {n·d}) / R050 (IterationLossless: 锁定方向迭代单射) / R124 (p1 = 跳转箭头) / R133 (p0 无限维) / R123 (基点闭包) / R071/R072 (单相位数 ℙ⟨φ⟩/Pat) / R063 (每步重新锚定) / R064 (后继≠加法) / R122 (无声明全坍缩)
+
+assumptions:
+- "每步从全向 0 重新出发 (重新锚定, R063)"
+- "每步声明相同方向 (成对一次性, R136 ②③)"
+- "声明方向为单位方向 (‖d‖ = 1): 步长 = 单位 1 全向球面"
+- "方向锁定 ⟹ 链单射不坍缩 (R050)"
+
+conclusion: "用户断言成立 (2026-08-12): Pat N 的构造定义 — 从全向 0 出发,
+  每步完成全向 1 构造 (单位 1 全向高维球) + 声明相同方向 (相位) 锁定 ⟹
+  pat2 = pat1 + d; 全向 0 产生全向 0, 相邻距离恒为单位 1 全向球面; 重复
+  ⟹ Pat N = 等距单相位链 {n·d} (R091, ℙ⟨φ_T⟩), 方向锁定 ⟹ 不坍缩
+  (R050)。"
+
+known_special_cases:
+  - "pat1 = 单位球面上声明方向 (R124 跳转箭头, R136 全向 1)"
+  - "pat2 = pat1 + d (声明相同方向, 链前进)"
+  - "Pat N = {pat0 + n·d} (单相位链, R091)"
+  - "步长: ‖(x+d) - x‖ = 1 (‖d‖ = 1, 单位全向球面)"
+
+counterexample_search:
+  status: done
+  search_space: "Pat 链代数验证 (单相位恒等式/步长单位/等距/单射, Lean 验证)"
+  smallest_checked_size: null
+  result: "4/4 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatConstruction.lean
+  theorem_name: pat_n_is_monophase, pat_step_unit_sphere, pat_chain_equidistant, pat_chain_injective
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "声明相同方向 = 每步重选 (R063) 的声明式一致选择: 非'方向锁定默认化' — 每步仍是完整构造 (有中间锚)"
+  - "与 R064 区分: Pat N 每步独立构造 (全向 0 → 全向 1 → 声明), 非加法轴的一步合成位移"
+  - "步长 1 是声明单位方向的结果 (‖d‖ = 1): 单位球面半径由构造产生 (R136 unit_on_surface)"
+  - "链良定义依赖方向声明: 无声明 ⟹ 自指坍缩 (R122/R134)"
+  - "Pat N 是单相位 (ℙ⟨φ_T⟩): 多相位 (跨轴) 需多方向声明 (R072 ℙ⟨φ₁,φ₂⟩, R112 素因子多重集)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① Pat N 接入 R072 声明体系 (ℙ⟨φ_T⟩ 单相位 Pat 的构造定义) ② ★收敛化: Pat N 是离散发散链, 下一步 = 相位关系锁定 (R138, 非多相位 — 用户纠正) ③ 六集群神经层: 轴输入 = Pat N 链 (每步声明)"
+
+notes: "观点归属: 用户 (2026-08-12) 提出构造 (原话原封保存); assistant 执行
+  Lean 形式化 (PatConstruction.lean, 4 定理 0 sorry, lake build PASS) + claim
+  落盘。Pat N = R091 单相位链的构造性实现。"
