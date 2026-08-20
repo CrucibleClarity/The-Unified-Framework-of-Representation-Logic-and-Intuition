@@ -61,7 +61,8 @@ counterexample_search:
 
 formalization:
   prover: Lean4
-  file: "src/pat-excercises/exercises/37_riemann_unified/proof.lean"
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "proof.lean 全量复制入 formal 项目 (175 声明, 独立编译通过); 定理在其中"
   theorem_name: |
     chi_translation_two / chi_arg_translation_two / chi_translation_four /
     chi_arg_translation_four / zeta_eq_chi_mul_conj_on_line / zeta_unit_sq_eq_chi
