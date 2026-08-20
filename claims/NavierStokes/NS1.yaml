@@ -1,0 +1,64 @@
+id: NS1
+title: "Time basepoint teleport: time translation commutes with the time derivative, time reversal anti-commutes"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: navier_stokes
+
+statement:
+  informal: |
+    时间轴上的基点穿折越 (Worn-Zhe-Yue)。时间平移 T_τ(t) = t + τ 与时间反演
+    R(t) = -t 是时间方向的基点族变换。
+
+    ★ 定理 1 (时间平移与微分交换):
+      d/dt [ u(t + τ) ] = (d/dt u)(t + τ).
+      基点平移不改变导数结构 (时间平移是时间线的 heap 自同构:
+      T_{0→τ} ∘ T_{0→σ} = T_{0→σ+τ}, T_{0→0} = id, T_τ 可逆).
+
+    ★ 定理 2 (时间反演使导数变号):
+      d/dt [ u(-t) ] = - (d/dt u)(-t).
+      这是 Navier-Stokes 时间导数项在基点反演下变号的来源 (穿折越到反演
+      时间表示).
+
+    数学定位: 纯微积分事实 (链式法则); 对应 C-PH8 (时间 = 对称性方向) +
+    C-PH12 (NS 时间项须按基点移动穿折越) 的形式化核心. KNOWN (经典微积分),
+    形式化价值 = 建立穿折越语义的 Lean 基础.
+  formal_math: |
+    def timeShift (τ : ℝ) (u : ℝ → F) : ℝ → F := fun t => u (t + τ)
+    def timeRev (u : ℝ → F) : ℝ → F := fun t => u (-t)
+
+    lemma timeShift_comp_timeShift (τ σ : ℝ) (u : ℝ → F) :
+      timeShift τ (timeShift σ u) = timeShift (σ + τ) u
+    lemma timeShift_inv (τ : ℝ) (u : ℝ → F) :
+      timeShift τ (timeShift (-τ) u) = u
+    lemma deriv_timeShift (τ t : ℝ) (u : ℝ → F) :
+      deriv (timeShift τ u) t = deriv u (t + τ)
+    lemma deriv_timeRev (t : ℝ) (u : ℝ → F) :
+      deriv (timeRev u) t = - deriv u (-t)
+
+objects:
+- timeShift
+- timeRev
+
+definitions_used:
+- deriv
+- basepoint teleport (T_{e→f} 的时间线版本)
+- time translation / time reversal
+
+assumptions:
+- F : Type with [NormedAddCommGroup F] [NormedSpace ℝ F]
+- 纯微积分, 无 PDE 存在性假设
+
+conclusion: '时间平移与微分交换 (deriv_timeShift), 时间反演使时间导数变号
+  (deriv_timeRev). 两者给出 Euler/NS 时间反演二分法的代数基础 (NS2).'
+
+verification:
+  lean_file: formal/Formal/NavierStokes/TimeBasepoint.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
