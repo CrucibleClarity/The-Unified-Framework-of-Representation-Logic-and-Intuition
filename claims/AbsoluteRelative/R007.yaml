@@ -1,0 +1,104 @@
+id: R007
+title: 'Wrapper Elimination — Derivation(R)≃R: 完整等价 + observer factorization + trusted
+  elimination (封死 R006)'
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: "R006 定位为清场结果后, R007 把它完全封死 (用户指令: \"下一个审计先把 R006\n完全封死\", 只证明三件事就停止):\n\
+    \nE1. 完整 equivalence:  Derivation(R) ≃ R\n    derivationEquivRule : Derivation\
+    \ Rule ≃ Rule\n    toFun := ruleOf, invFun := Derivation.leaf, left_inv/right_inv\
+    \ 全部构造性。\n    ⟹ Derivation 只是 Rule 的 zero-information wrapper。\nE2. Observer factorization:\
+    \ 任意 F : Derivation(R) → X 唯一对应 Fbar : R → X,\n    反方向亦然 — wrapper 没有额外 observable\
+    \ capacity。\n    (点式版本, 不用 funext, 保持零公理。)\nE3. Trusted elimination: 把 Derivation\
+    \ 从下一阶段 trusted vocabulary 删除。\n    后续 theorem 不得因为 leaf / ruleOf 长得像两个方向, 就利用这个差异\
+    \ —\n    那只是同一份 datum 的 constructor/destructor。\n\n结论: R005/R006 完成任务 — 它们不是发现了两个\
+    \ co-emergent roles, 而是\n证明了这里其实只有一份 datum。真正第一次 emergence 应定义为:\n\"第一次出现两个无法通过\
+    \ equivalence/factorization 消去的 role\"。\n"
+  formal_math: "derivationEquivRule {Rule} : Derivation Rule ≃ Rule\n  toFun := ruleOf;\
+    \ invFun := Derivation.leaf\n  left_inv: ∀d, Derivation.leaf (ruleOf d) = d\n\
+    \  right_inv: ∀r, ruleOf (Derivation.leaf r) = r\nderivation_is_rule: Nonempty\
+    \ (Derivation Rule ≃ Rule)\nobserverFactor {Rule X} (F) : Rule → X := fun r =>\
+    \ F (Derivation.leaf r)\nobserverUnfactor {Rule X} (Fbar) : Derivation Rule →\
+    \ X := fun d => Fbar (ruleOf d)\nobserver_factor_roundtrip: ∀d, observerUnfactor\
+    \ (observerFactor F) d = F d\nobserver_unfactor_roundtrip: ∀r, observerFactor\
+    \ (observerUnfactor Fbar) r = Fbar r\nno_extra_observable_capacity: ∀d, F d =\
+    \ F (Derivation.leaf (ruleOf d))\ntrusted_elimination: Nonempty (Derivation Rule\
+    \ ≃ Rule) ∧\n  (∀X F d, F d = F (Derivation.leaf (ruleOf d)))\nwrapper_elimination_conclusion\
+    \ = trusted_elimination\n"
+objects:
+- Derivation (复用 R005)
+- ruleOf
+- Derivation.leaf
+- Equiv
+- observerFactor
+- observerUnfactor
+definitions_used:
+- complete equivalence
+- observer factorization
+- observable capacity
+- trusted elimination
+- presentation artifact
+- zero-information wrapper
+assumptions:
+- Derivation 当前只有 leaf constructor (无 premises/conclusion/occurrence/proof tree/composition)
+- E2 用点式 roundtrip 而非函数级 Equiv, 避免 funext (Quot.sound)
+- 'E3 是 trusted vocabulary 纪律: 后续 theorem 不得利用 leaf/ruleOf 方向差异生成结构'
+- 真正 emergence = 第一次出现两个无法被 equivalence/factorization 消去的 role
+conclusion: 'R007 封死 R006: Derivation(R)≃R (完整等价, 强于 Nonempty 等价) + observer factorization
+  显示 wrapper 零额外 observable capacity + trusted elimination 移除 Derivation 于下一阶段 trusted
+  vocabulary。R005/R006 消掉一个假 distinction (Rule/Derivation-wrapper): 与 B≃(Unit→B) 擦掉
+  nullary genesis presentation 同型 — presentation-equivalent 的两个 role 不允许利用语法差异生成结构。真正第一次
+  emergence 留给 ''两个无法通过 equivalence/factorization 消去的 role'''
+known_special_cases:
+- 'Rule = Empty: Derivation Empty ≃ Empty (等价保留空性)'
+- 'X 任意: observer factorization 对任意输出类型 X 成立'
+closest_known_results:
+- R006 Priority Audit (清场结果, 本 claim 封死它); R005 Derivation Provenance; B ≃ (Unit →
+  B) nullary genesis presentation 擦掉 (同型结果)
+literature_queries:
+- wrapper type zero information equivalence
+- presentation equivalence structure collapse formal system
+counterexample_search:
+  status: done
+  search_space: leaf (constructor) vs ruleOf (destructor) 是否真互为逆; observer 是否真零额外能力
+    — E1 左逆右逆 + E2 双向 roundtrip 全构造性
+  smallest_checked_size: null
+  result: derivationEquivRule / observer_factor_roundtrip / observer_unfactor_roundtrip
+    全零公理 — wrapper 无额外 observable capacity 构造性成立
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/WrapperElimination.lean (import Mathlib.Logic.Equiv.Basic
+    + DerivationProvenance)
+  theorem_name: AbsoluteRelative.WrapperElimination.derivationEquivRule / .derivation_is_rule
+    / .observerFactor / .observerUnfactor / .observer_factor_roundtrip / .observer_unfactor_roundtrip
+    / .no_extra_observable_capacity / .trusted_elimination / .wrapper_elimination_conclusion
+    (已证, 无 sorry, 全零公理, 无 funext/Quot.sound/choice)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- 用函数级 (Derivation Rule → X) ≃ (Rule → X) 需 funext (Quot.sound) — 已降为点式 roundtrip
+  保零公理
+- 把 Derivation 当独立 primitive 继续研究 — 已证明只是 Rule 的 wrapper
+- 利用 leaf/ruleOf 方向差异生成结构 — E3 trusted elimination 禁止
+- 宣称发现两个 co-emergent roles — 只证明了一份 datum
+evidence_for:
+- 'derivationEquivRule 零公理: left_inv (构造性) ∧ right_inv (rfl) — 完整等价'
+- 'observer_factor_roundtrip / observer_unfactor_roundtrip 零公理: 双向点式 roundtrip — wrapper
+  零额外 observable capacity'
+- 'no_extra_observable_capacity 零公理: ∀d, F d = F (leaf (ruleOf d)) — 观察值只依赖 rule witness'
+- 'trusted_elimination 零公理: E1 ∧ E2 合起来 ⟹ Derivation 可被消除'
+evidence_against: []
+next_action: 'R007 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 用户评审 (R006 后): R006 是清场结果不是 co-emergence 证据; R005/R006 从 emergence
+  主线退役 (Derivation(R)≃R = 一份 datum)。R007 Wrapper Elimination 证明三件事就停止: E1 完整等价 / E2
+  observer factorization / E3 trusted elimination。工程纪律: E2 用点式 roundtrip 而非函数级 Equiv
+  — 函数级需 funext (Quot.sound) 污染零公理; 点式 ∀d 形式既表达 ''观察值只依赖 rule witness'' 又保持构造性。与 B≃(Unit→B)
+  同型: 如果两个 role 最终只是 presentation-equivalent, 不允许利用它们的语法差异继续生成结构。 [2026-08-09 作废:
+  无视之前所有评审, 三层沙盒全新设计]'
