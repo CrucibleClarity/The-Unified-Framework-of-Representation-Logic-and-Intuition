@@ -1,0 +1,157 @@
+%% CPP 2027 Submission — 0pat Exercise XXVI: Zero Reflection Symmetry (First Analytic Material of the Bridge)
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Zero Reflection Symmetry: The First Analytic Material of the
+Riemann Bridge (Exercise XXVI)}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We report the first analytic theorem of the Riemann-direction chain: the
+zero reflection symmetry of the Riemann zeta function, proved from the
+classical functional equation in Lean 4 / mathlib with zero
+\texttt{sorry}. The verification map of the Riemann hypothesis has two
+completed banks --- the Euler-product bank on $\mathrm{Re}(s) \ge 1$
+(zero-free region) and the geometric bank (critical line $\leftrightarrow$
+critical circle) --- and one open span: the analytic control of zeros in
+the critical strip $0 < \mathrm{Re}(s) < 1$. The functional equation
+$\zeta(1-s) = 2(2\pi)^{-s}\Gamma(s)\cos(\pi s/2)\zeta(s)$, present in
+mathlib as \texttt{riemannZeta\_one\_sub}, is the only known analytic
+material that connects the two banks. This exercise formalizes its first
+corollary: every nontrivial zero reflects to a zero
+($\zeta(s) = 0 \Rightarrow \zeta(1-s) = 0$), the reflection stays in the
+strip, and an off-line zero ($\mathrm{Re}(s) \ne 1/2$) therefore occurs
+in pairs. Three theorems, zero errors, mathlib v4.32.2.
+\end{abstract}
+
+\keywords{Lean, formalization, Riemann zeta function, functional equation, zero symmetry, 0pat}
+
+\maketitle
+
+\section{The position of this exercise}
+
+The Riemann-direction chain is a verification map with two completed
+banks and one open span. The left bank is analytic: the Euler product
+converges on $\mathrm{Re}(s) > 1$ and $\zeta$ has no zeros on
+$\mathrm{Re}(s) \ge 1$ (Exercise C025). The right bank is geometric:
+the critical line is the critical circle under inversion, and the
+hypothetical zero positions and the critical circle are the same object
+(Exercises C019--C022). The open span is the critical strip
+$0 < \mathrm{Re}(s) < 1$: no theorem of the chain controls the positions
+of the zeros of $\zeta$ there.
+
+The only known analytic material that spans the two banks is the
+functional equation. Mathlib states it in classical form
+(\texttt{riemannZeta\_one\_sub}): for $s \ne -n$ ($n \in \mathbb{N}$)
+and $s \ne 1$,
+
+\[
+\zeta(1-s) = 2(2\pi)^{-s}\,\Gamma(s)\,\cos(\pi s / 2)\,\zeta(s).
+\]
+
+This exercise takes the first corollary of this equation: zero
+reflection symmetry. It is the first theorem of the chain that genuinely
+uses analysis --- the functional equation --- rather than algebra or
+geometry.
+
+\section{The theorems}
+
+Three theorems, all machine-checked with zero \texttt{sorry}.
+
+\paragraph{Reflection (zeta\_zero\_reflection).} If $\zeta(s) = 0$ and
+$s$ is not a trivial zero position ($s \ne -n$ for all $n$) and not the
+pole ($s \ne 1$), then $\zeta(1-s) = 0$. The proof is one rewriting
+step: substitute the functional equation and multiply the zero by the
+coefficient. The coefficient need not be nonzero --- zero times any
+coefficient is zero --- so no analytic nonvanishing is required.
+
+\paragraph{The reflection stays in the strip (zeta\_zero\_strip\_reflection).}
+If $0 < \mathrm{Re}(s) < 1$, then $0 < \mathrm{Re}(1-s) < 1$ as well.
+Together with reflection: a zero in the strip reflects to a zero in the
+strip. Zeros of $\zeta$ are therefore symmetric about the critical line
+$\mathrm{Re}(s) = 1/2$ within the strip.
+
+\paragraph{Off-line zeros come in pairs (zeta\_zero\_offline\_pair).}
+If $\mathrm{Re}(s) \ne 1/2$ (the zero is off the critical line), then
+$1-s \ne s$, and the reflection is a \emph{different} zero of the strip.
+The proof uses the real-part computation: $1-s = s$ would force
+$\mathrm{Re}(s) = 1/2$. This is the first structural constraint on
+off-line zeros that the chain obtains: if an off-line zero exists, it is
+accompanied by a second, distinct off-line zero. The Riemann hypothesis
+asserts that no such pair exists; this theorem asserts only that pairs
+are the only possible form of violation.
+
+\section{Honest boundary and position in the map}
+
+As in every exercise of the series: the content is classical mathematics
+(``novelty\_status: KNOWN'' --- the reflection symmetry is a standard
+corollary of the functional equation, known since Riemann), the proof is
+machine-checked, and no claim is made of proving the Riemann hypothesis.
+The value of the exercise is positional: it is the first analytic node of
+the map's open span, it connects the two completed banks through the
+functional equation, and it converts the question ``is there an off-line
+zero?'' into the more structured question ``is there an off-line zero
+pair?''. The bridge now has its first material; the span remains open.
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 62 lines),
+importing only \texttt{Mathlib.NumberTheory.LSeries.RiemannZeta}.
+Compiled with Lean 4.32.2 / mathlib v4.32.2, zero errors, zero
+\texttt{sorry}. The functional equation
+\texttt{riemannZeta\_one\_sub} is mathlib's classical statement;
+\texttt{Complex.sub\_re} and \texttt{linarith} handle the strip
+inequalities.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & Proof core \\
+\midrule
+\texttt{zeta\_zero\_reflection} & $\zeta(s)=0 \Rightarrow \zeta(1-s)=0$
+  & \texttt{rw [riemannZeta\_one\_sub, hz]; ring} \\
+\texttt{zeta\_zero\_strip\_reflection} & strip-preserving reflection
+  & \texttt{Complex.sub\_re; linarith} \\
+\texttt{zeta\_zero\_offline\_pair} & $\mathrm{Re}(s) \ne 1/2 \Rightarrow 1-s \ne s$ and a zero
+  & real-part computation + reflection \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+
+The first analytic material of the Riemann bridge is in place: zero
+reflection symmetry, proved from the functional equation, machine-checked
+in Lean. The map now reads: left bank (Euler product, zero-free region),
+first span material (reflection symmetry, off-line pairs), right bank
+(critical line $\leftrightarrow$ critical circle). The span remains open
+--- the reflection symmetry permits off-line pairs and the Riemann
+hypothesis denies them --- but the question it poses is now exactly
+structured: can the analysis show that no off-line zero pair exists?
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
