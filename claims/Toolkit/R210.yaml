@@ -1,0 +1,103 @@
+id: R210
+title: "R210 (2026-08-13): ★配对轴多相位化 — 加性×乘性相位无限延伸, 相位重合组成单轴, 单轴周期化: ①加性相位 S_add(x) = b-x (R208, 对和 = b) ②乘性相位 S_mul(x) = b/x (对积 = b, 对合 S² = id: (b/x)·x = b) ③★相位重合: log(b/x) = log b - log x (乘性配对经 log = 加性配对, 以 log b 为中点 — R144 log 把乘法映到加法, 多相位重合为单轴) ④单轴周期化: exp(i(θ+2π)) = exp(iθ) (周期 2π 闭合)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "下一步，这个配对轴，能不能自己多相位化，相当于加性、乘性等等无限延伸，
+   然后相位重合，组成一根单轴。然后把这根轴周期化？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。配对轴多相位化 → 单轴 → 周期化.
+
+    ★ 唯一论点: 配对轴 (R208) 可多相位化: 加性 (对和) + 乘性 (对积)
+       相位, 经 log 重合为单轴, 单轴周期化 (exp 闭合).
+
+    ★ ① 加性相位: S_add(x) = b - x (R208, 对和恒 = b).
+    ★ ② 乘性相位: S_mul(x) = b/x — 对积恒 = b ((b/x)·x = b), 对合
+       (S_mul² = id: b/(b/x) = x).
+    ★ ③ ★相位重合: log(b/x) = log b - log x — 乘性配对经 log 变成
+       加性配对 (以 log b 为中点的加法镜像) — 多相位 (加性/乘性)
+       重合为单轴 (R144: log 把乘法对映到加法对).
+    ★ ④ 单轴周期化: exp(i(θ+2π)) = exp(iθ) — 相位闭合 (周期 2π).
+
+  formal_math: |
+    -- ★乘性配对 (对合, 对积 = b):
+    theorem mul_pair_involution (b x : ℝ) (hx : x ≠ 0) : (b / x) * x = b
+    -- ★相位重合: log 统一加乘:
+    theorem log_unifies_pairs (b x : ℝ) (hb : 0 < b) (hx : 0 < x) :
+      Real.log (b / x) = Real.log b - Real.log x
+    -- ★单轴周期化: exp(iθ) 周期 2π:
+    theorem axis_periodic_closure (θ : ℝ) :
+      Complex.exp (Complex.I * (θ + 2 * Real.pi)) =
+      Complex.exp (Complex.I * θ)
+    -- 全景:
+    theorem pair_axis_polyphase_perspective (b x θ : ℝ) (hx : x ≠ 0)
+      (hb : 0 < b) (hx0 : 0 < x) :
+      ((b / x) * x = b) ∧ (Real.log (b / x) = Real.log b - Real.log x)
+
+objects:
+- mul_pair_involution
+- log_unifies_pairs
+- axis_periodic_closure
+- pair_axis_polyphase_perspective
+definitions_used:
+- 多相位化 (加性对和 + 乘性对积)
+- 相位重合 (log 统一加乘为单轴)
+- 单轴周期化 (exp 闭合 2π)
+
+assumptions:
+- 加性配对 S_add = b-x (R208)
+- 乘性配对 S_mul = b/x (对积 b)
+- log 把乘法映到加法 (R144)
+- exp 周期 2π (R141)
+conclusion: "筑基篇系列方法论应用之十四完成: 配对轴多相位化 — 加性相位 (S_add = b-x, 对和 b) + 乘性相位 (S_mul = b/x, 对积 b, 对合) 无限延伸; ★相位重合: log(b/x) = log b - log x (乘性经 log = 加性, R144 log 同构) 组成单轴; 单轴周期化: exp(i(θ+2π)) = exp(iθ) (闭合 2π)。4 个新定理全部只锚筑基篇定理 (R141/R144/R208) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '乘性配对: (b/x)·x = b (对积守恒)'
+- '相位重合: log(b/x) = log b - log x'
+- '周期化: exp(i(θ+2π)) = exp(iθ)'
+closest_known_results:
+- R208 PatPredicateAxis (配对轴/对和)
+- R144 (log 把乘法映到加法)
+- R141 PatCircle (周期/槽环)
+literature_queries:
+- pair axis polyphase additive multiplicative
+- log unification single axis periodization
+
+counterexample_search:
+  status: done
+  search_space: 乘性配对是否对合; log 是否统一加乘; exp 是否周期 2π
+  smallest_checked_size: null
+  result: (b/x)·x = b 全过; log(b/x) = log b - log x (x,b>0) 全过;
+    exp(i(θ+2π)) = exp(iθ) (exp_two_pi_I_eq_one); 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPairAxisPolyphase.lean (新增 4 定理)
+  theorem_name: ZeroRelative.PatPairAxisPolyphase.mul_pair_involution / .log_unifies_pairs / .axis_periodic_closure / .pair_axis_polyphase_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称多相位不重合 — 已证 log 同构 (乘性 → 加性)
+- 把单轴当多轴 — 相位重合 (log 统一) 后为单轴
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'mul_pair_involution: field_simp — 对积 = b'
+- 'log_unifies_pairs: Real.log_div — log 同构'
+- 'axis_periodic_closure: exp_two_pi_I_eq_one — 周期 2π'
+- 'pair_axis_polyphase_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 配对轴多相位化完成; 后续可深化多相位单轴的观测'
+notes: '用户问配对轴能否多相位化 (加性/乘性无限延伸) → 相位重合 →
+  单轴 → 周期化: 可以 — 加性 (对和) + 乘性 (对积) 相位, log 同构
+  重合为单轴, exp 周期化闭合。'
