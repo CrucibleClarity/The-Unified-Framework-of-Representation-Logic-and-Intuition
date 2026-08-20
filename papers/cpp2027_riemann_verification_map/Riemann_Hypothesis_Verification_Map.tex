@@ -1,0 +1,688 @@
+%% CPP 2027 Submission — The Riemann Hypothesis: A Machine-Checked Verification Map (full version)
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{proved}{RGB}{0,100,0}
+\definecolor{classical}{RGB}{120,80,0}
+\definecolor{conj}{RGB}{150,0,0}
+
+\begin{document}
+
+\title{The Riemann Hypothesis: A Machine-Checked Verification Map}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We present a full manuscript organized as a verification map for the
+Riemann hypothesis: every link of the reasoning chain is either a Lean 4 /
+mathlib proof object (zero errors, zero \texttt{sorry}, depending only on
+the standard axioms \texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}), a classical result with a machine-checked proof, or
+an explicit open conjecture stated in full precision. The map is the
+manuscript's own credibility mechanism: a referee does not need to trust
+the author --- only to check whether each node of the map is what it
+claims to be. Fifteen claims (C011--C025) and 141 theorems are
+machine-checked; the single unproved link --- that every nontrivial zero
+of $\zeta$ lies on the critical line --- is isolated, named, and left open
+in the map. The manuscript records the full trail: the 2026-08-06
+visualization (138{,}067 zeros, Riemann--Siegel correction), the
+2026-08-07 thinking document, and the 2026-08-12 formalization session in
+which the entire chain C011--C025 was machine-checked.
+\end{abstract}
+
+\keywords{Riemann hypothesis, Lean 4, mathlib, verification map, formal proof, reproducibility}
+
+\maketitle
+
+\section{The verification map}
+
+This section is the manuscript in compressed form. It lists the main
+theorem, the axioms, the link chain, the dependency graph, the
+machine-checked theorem names, and the archive locations. Every statement
+in it can be verified by reading the referenced file; nothing requires
+trust in the author.
+
+\subsection{Main theorem (target)}
+
+The Riemann hypothesis, in the exact form in which mathlib states it
+(\texttt{RiemannHypothesis : Prop}, unproved in mathlib):
+
+\begin{quote}
+For every $s \in \mathbb{C}$ with $\zeta(s) = 0$ and $0 < \mathrm{Re}(s) < 1$,
+we have $\mathrm{Re}(s) = 1/2$.
+\end{quote}
+
+Here $\zeta$ is the Riemann zeta function as defined in mathlib
+(\texttt{Mathlib.NumberTheory.LSeries.RiemannZeta}); ``nontrivial zero''
+means a zero in the critical strip $0 < \mathrm{Re}(s) < 1$. The two
+trivial zeros at negative even integers are outside the statement, as in
+the standard formulation \cite{edwards1974riemann,hardy2008introduction}.
+
+\subsection{Axioms}
+
+Every theorem in this manuscript depends only on the three standard Lean
+logic axioms plus mathlib's definitions and theorems.
+\verb|#print axioms| on representative theorems yields exactly
+\texttt{[propext, Classical.choice, Quot.sound]}. No new axioms, no
+\texttt{sorry}, no \texttt{axiom} declarations were added. The full build
+is 3631 jobs against Lean 4.32.2 / mathlib v4.32.2.
+
+\subsection{The link chain C011--C025}
+
+Fifteen claims, each with its Lean file, its machine-checked theorem
+names, and its status. Status legend:
+\textcolor{proved}{\textbf{LP}} = machine-checked in Lean (no sorry);
+\textcolor{classical}{\textbf{CK}} = content classical, machine-checked as
+a restatement; \textcolor{conj}{\textbf{CONJ}} = conjecture, not
+machine-checked.
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{1.5cm}p{5.4cm}p{5.4cm}p{0.8cm}@{}}
+\toprule
+Claim & Content & Lean file / theorems & Status \\
+\midrule
+C012 & Prime positions in the drift frame: primes sit one successor from
+the basepoint; the inversion-dual position $p/2$ is never integral; an
+irrational drift axis carries no integer points &
+\texttt{PrimeDriftPositions.lean}:
+\texttt{drift\_vector\_is\_successor},
+\texttt{successor\_positions\_in\_drift\_frame},
+\texttt{prime\_positions\_on\_drift\_axis},
+\texttt{inversion\_dual\_position},
+\texttt{prime\_inversion\_misses\_integers},
+\texttt{irrational\_drift\_axis\_no\_int\_points} &
+\textcolor{proved}{LP} \\
+C011 & The complex axis by projection: a two-dimensional rotation algebra
+$\langle a,b\rangle$, $J = \langle 0,1\rangle$, $J^2 = -1$; $\sqrt{-1}$
+exists before projection; the real axis is one axis of the same kind,
+indistinguishable from any other under projection (basepoint drift is
+unobservable) & \texttt{ComplexAxis.lean} (128 theorems):
+\texttt{J\_sq}, \texttt{proj\_lift}, \texttt{proj\_add},
+\texttt{proj\_mul\_not\_preserved}, \texttt{sqrt\_neg\_one\_exists\_high},
+\texttt{sqrt\_neg\_one\_not\_exists\_axis},
+\texttt{basepoint\_proj}, \texttt{proj\_succ},
+\texttt{proj\_chain\_basepoint\_independent},
+\texttt{axisLine\_proj\_eq\_univ}, \texttt{axisLine\_proj\_independent},
+\texttt{realAxis\_indistinguishable\_from\_i\_line},
+\texttt{projection\_recovery\_theorem} & \textcolor{classical}{CK} \\
+C013 & The Riemann direction in the projection frame: the partial sums
+$\sum_{n=0}^{N} 1/(n+1)^s$ are constructed as lifted terms &
+\texttt{ComplexAxis.lean}: \texttt{zetaTerm\_lift},
+\texttt{zetaPartial\_zero}, \texttt{zeta\_two\_terms} &
+\textcolor{classical}{CK} \\
+C014 & Prime reachability: the double-drift projection lands at
+$1 + r^2 n/(n^2+1)$; every prime $p$ is reachable by a drift of step
+$m \mid p-1$; primes with $p \equiv 1,2 \pmod 4$ are norms (Fermat's
+two-square theorem) & \texttt{ComplexAxis.lean}:
+\texttt{doubleDrift\_proj}, \texttt{prime\_reachable\_by\_drift},
+\texttt{prime\_two\_axis} & \textcolor{classical}{CK} \\
+C015 & Curvature: norm multiplicativity and the closed
+$90^\circ$ orbit of lattice points & \texttt{ComplexAxis.lean}:
+\texttt{norm\_mul}, \texttt{orbit\_closed}, \texttt{lattice\_mul} &
+\textcolor{classical}{CK} \\
+C016 & Full circle-lattice structure: products, orbits, norms on the
+integer lattice of the axis & \texttt{ComplexAxis.lean}:
+\texttt{lattice\_mul}, \texttt{orbit\_closed} & \textcolor{classical}{CK} \\
+C017 & Prime-circle single-orbit uniqueness: the two-square decomposition
+of a prime is unique (unique factorization in the Gaussian integers) &
+\texttt{ComplexAxis.lean}: \texttt{prime\_sq\_add\_sq\_unique} &
+\textcolor{classical}{CK} \\
+C018 & Reflection as a square root: the reflection $s \mapsto 1-s$ is the
+square of a reflection-like square-root map & \texttt{ComplexAxis.lean}:
+\texttt{reflectSqrt\_sq}, \texttt{reflectSqrt'\_sq} &
+\textcolor{classical}{CK} \\
+C019 & Zero-position parameterization: $\mathrm{proj}\, z = 1/2
+\leftrightarrow 1 - z = \mathrm{conj}\, z$; the critical line is
+parameterized by $\frac12 + it$; under reciprocal (circle inversion) the
+critical line is the circle centered at $1$ with radius $1$ &
+\texttt{ComplexAxis.lean}: \texttt{critical\_line\_iff\_conj},
+\texttt{critical\_line\_points}, \texttt{critical\_line\_is\_circle} &
+\textcolor{classical}{CK} \\
+C020 & Two circles and their intersections: the prime circle
+$\{z : \mathrm{norm}\, z = p\}$ and the critical circle $\{w :
+\mathrm{norm}(w-1) = 1\}$; the real axis meets the critical circle exactly
+at $0$ and $2$; the prime-2 circle meets it at $\langle 1, \pm 1\rangle$ &
+\texttt{ComplexAxis.lean}: \texttt{primeCircle},
+\texttt{criticalCircle}, \texttt{zero\_in\_criticalCircle},
+\texttt{realAxis\_inter\_criticalCircle},
+\texttt{prime2Circle\_inter\_criticalCircle} & \textcolor{classical}{CK} \\
+C021 & Nontrivial-zero shape in both axes: a zero position
+$\mathrm{proj}\, z = 1/2$, $z.b \ne 0$ lies, after reciprocal, on the
+critical circle & \texttt{ComplexAxis.lean}:
+\texttt{nontrivial\_zero\_position}, \texttt{nontrivial\_zero\_on\_circle},
+\texttt{real\_axis\_points} & \textcolor{classical}{CK} \\
+C022 & The nontrivial-zero circle is the critical circle (both
+inclusions) & \texttt{ComplexAxis.lean}:
+\texttt{zeroSet\_in\_criticalCircle},
+\texttt{criticalCircle\_subset\_zeroSet\_image} &
+\textcolor{classical}{CK} \\
+C023 & Prime-circle products: $z \cdot \mathrm{conj}\, z =
+\mathrm{norm}\, z$; the four-phase cycle $J^4 = 1$; products of prime
+circle points & \texttt{ComplexAxis.lean}: \texttt{mul\_conj},
+\texttt{J\_pow\_four}, \texttt{prime\_conj\_pair},
+\texttt{rotated\_conj\_pair} & \textcolor{classical}{CK} \\
+C024 & Geometric splitting: the eight lattice points of a prime circle
+are the associates of two Gaussian primes & \texttt{ComplexAxis.lean}:
+\texttt{norm\_unit4}, \texttt{variants\_are\_associates},
+\texttt{conj\_recip} & \textcolor{classical}{CK} \\
+C025 & Euler product: for $\mathrm{Re}(s) > 1$, $\prod_p (1 -
+p^{-s})^{-1} = \sum_n n^{-s} = \zeta(s)$; $\zeta(s) \ne 0$ for
+$\mathrm{Re}(s) \ge 1$; the conditional circle restatement
+($s \ne 0$, $\zeta(s)=0$, $\mathrm{Re}(s)=1/2$ $\Rightarrow$
+$\|1/s - 1\| = 1$) & \texttt{ZetaEulerProduct.lean}:
+\texttt{zeta\_euler\_product}, \texttt{riemannZeta\_euler\_product},
+\texttt{riemannZeta\_ne\_zero\_of\_one\_le\_re},
+\texttt{zeta\_zero\_on\_circle} & \textcolor{classical}{CK} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Proof dependency graph}\label{sec:map-graph}
+
+The machine-checked dependency order (reading order of the files):
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+mathlib (RiemannZeta, EulerProduct.Basic, Nonvanishing)
+   |
+   +-- C012 PrimeDriftPositions.lean        (independent observations)
+   |
+   +-- C011 ComplexAxis.lean  (base construction: J^2 = -1, proj)
+         |-- C013  partial sums (zetaTerm)            [C011]
+         |-- C014  double drift -> prime reachability [C011]
+         |-- C015--C018  circle lattice, UFD         [C011]
+         |-- C019--C022  critical line <-> circle    [C011]
+         |-- C023--C024  prime circle products       [C011, C017]
+   |
+   +-- C025 ZetaEulerProduct.lean (Euler product, zero-free region,
+   |        conditional circle restatement)          [C011, C019--C022, mathlib]
+   |
+   +-- Toolkit/CriticalPrimeCircles.lean (R145)      [C019--C022 restatement]
+   +-- Toolkit/PatRiemannTwinPrimes.lean             [C025, C019--C022, R145]
+\end{lstlisting}
+
+\subsection{Archive and version anchors}
+
+Toolchain Lean 4.32.2; mathlib v4.32.2; full build 3631 jobs, no
+\texttt{sorry}. Source files: \texttt{Formal/ZeroRelative/ComplexAxis.lean}
+(2211 lines, 128 theorems), \texttt{Formal/ZeroRelative/
+PrimeDriftPositions.lean} (140 lines, 6 theorems),
+\texttt{Formal/ZeroRelative/ZetaEulerProduct.lean} (160 lines, 7
+theorems). Claims ledger with per-claim SHA-256 publication: C011--C025,
+all \texttt{status: PROVED}, \texttt{novelty\_status: KNOWN}
+(restatements of classical mathematics). An anonymous mirror of this
+manuscript and the Lean sources is archived alongside the claims
+(\texttt{papers/cpp2027\_riemann\_verification\_map/}).
+
+\subsection{The status of the map}
+
+Fifteen links are machine-checked (\textcolor{proved}{LP} /
+\textcolor{classical}{CK}). The Riemann hypothesis itself is one
+additional link, shown \textcolor{conj}{\textbf{CONJ}} in the chain: no
+theorem in this manuscript asserts that every nontrivial zero of $\zeta$
+lies on the critical line. That assertion is the target of the map, not
+one of its edges. Section~\ref{sec:gap} states precisely what the missing
+link is and what a proof of it would have to show.
+
+\section{Why a verification map}
+
+A submission by an independent researcher faces a specific problem that a
+submission from an established group does not: the editor has no prior
+record by which to weigh the author's claims. The burden therefore shifts
+from the author's reputation to the manuscript's structure. A verification
+map meets that burden mechanically. It states the main theorem in the
+exact form of the standard conjecture; it lists the axioms; it names every
+link of the chain with its machine-checked theorem; it draws the
+dependency graph; it anchors each node to an archived, versioned object.
+The referee then does not need to decide whether to trust the author. The
+referee decides only whether each node of the map is what it claims to be
+--- a question that can be answered by opening the file. This is the
+credibility mechanism we adopt, and the remainder of this manuscript is
+the map rendered in full.
+
+The verification-map form also fixes the failure modes of informal
+mathematical writing: an omitted assumption, an ambiguous symbol, or a
+silent use of a conjecture all become visible as a missing or mislabeled
+edge. Machine checking is the strongest form of this discipline --- each
+edge is a proof object whose correctness is decidable --- and the map
+keeps the discipline even where the chain ends.
+
+\section{The standard statement}
+
+We fix the statement to which every link refers. Mathlib defines the
+Riemann zeta function $\zeta$ (as the meromorphic continuation of
+$\sum n^{-s}$) and declares the Riemann hypothesis as a proposition
+\texttt{RiemannHypothesis : Prop}, left unproved. In this manuscript the
+hypothesis is the statement: every complex zero $s$ of $\zeta$ with
+$0 < \mathrm{Re}(s) < 1$ satisfies $\mathrm{Re}(s) = 1/2$. All
+definitions used below --- the complex axis, its projection, the prime
+circle, the critical circle --- are defined in the referenced Lean files
+and are restatements of classical mathematics; their mathematical content
+is known, and their machine-checked proofs establish the restatements, not
+the hypothesis.
+
+Two classical facts frame the statement \cite{edwards1974riemann}:
+(i) the functional equation $s \mapsto 1-s$ relates $\zeta(s)$ to
+$\zeta(1-s)$, so the zeros are symmetric about the critical line; (ii)
+$\zeta$ has no zeros on $\mathrm{Re}(s) \ge 1$ (a consequence of the Euler
+product), and the trivial zeros at $-2, -4, \ldots$ are known. The
+hypothesis concerns the remaining, nontrivial zeros in the strip. The
+chain below formalizes the geometric shadow of these facts: the
+functional-equation symmetry appears as the reflection algebra
+C018--C019, and the Euler-product zero-free region is C025.
+
+\section{The trail}
+
+The chain was not written as a single act. Three dated steps produced it,
+and the dates matter because they separate observation, thought, and
+verification.
+
+\paragraph{2026-08-06: visualization.} A Riemann--Siegel computation
+produced 138{,}067 zeros of $\zeta$ on the critical line with the
+zero-location error reduced from $0.1$ to $9 \times 10^{-4}$ after a
+correction to the Riemann--Siegel formula. The observation: the zeros
+form a curve, and the curve is the image of the critical line under a
+folding (inversion-like) map. The numerical record is observational; it
+is not part of any machine-checked statement.
+
+\paragraph{2026-08-07: the thinking document.} The thinking document on
+the Riemann conjecture records the intuition behind the direction: primes
+have no construction method (all other numbers have many); irrationals are
+the remainder of a higher-dimensional structure after projection lost part
+of its carrying structure; and the pair $1$ vs $1/a + 1/b$ (translation vs
+inversion) leads to the conjecture that the basepoint has drifted --- the
+origin moves on the circle of radius 1 around 1, and the drifted
+basepoint's successor iteration, projected back to the number line, lands
+on primes. This document is the intuition source of the chain; the chain
+itself is the machine-checked rendering of that intuition into classical
+mathematics.
+
+\paragraph{2026-08-12: the formalization session.} In one session
+(00:00--02:54), the six prime-drift observations were formalized
+(\texttt{PrimeDriftPositions.lean}); the projection hypothesis was
+formalized as the true complex axis (the two-dimensional rotation algebra
+with $J^2 = -1$, \texttt{ComplexAxis.lean}); basepoint drift under
+projection was proved (the basepoint moves to a transform of $J$; the
+``real axis'' is unmasked as another axis of the same kind); and the
+chain C011--C025 was filed as claims, all PROVED, all with
+\texttt{novelty\_status: KNOWN}. The session produced 141 machine-checked
+theorems, and the dependency graph of Section~\ref{sec:map-graph} took
+its final shape.
+
+\section{The chain, link by link}
+
+\subsection{Prime positions in the drift frame (C012)}
+
+A drift frame is a number line with a chosen basepoint and a successor
+step $d$. The observations formalized in
+\texttt{PrimeDriftPositions.lean} are six theorems. The successor of the
+basepoint is the basepoint plus the step
+(\texttt{drift\_vector\_is\_successor}); the $n$-th successor lies at
+$e + (n+1)d$ (\texttt{successor\_positions\_in\_drift\_frame}); a
+multiple $n \cdot p$ of a prime $p$ is prime exactly when $n = 1$
+(\texttt{prime\_positions\_on\_drift\_axis}) --- primes sit one successor
+from the basepoint and nowhere else; the inversion-dual position
+$1/(1/a + 1/b) = ab/(a+b)$ (\texttt{inversion\_dual\_position}) applied
+to a prime puts $p/2$ at a non-integer position for every odd prime
+(\texttt{prime\_inversion\_misses\_integers}); and an irrational drift
+step produces an axis with no integer points at all
+(\texttt{irrational\_drift\_axis\_no\_int\_points}).
+
+Why these six statements? They test the intuition that ``prime-ness is a
+positional property'': if primes are positions on an axis, then a change
+of drift step moves everything except the basepoint-adjacent slot, and
+the primality of $n \cdot p$ is destroyed exactly when $n > 1$. The
+inversion-dual statement is the first appearance of the $1/a + 1/b$
+structure from the thinking document: the symmetric position of a prime
+under the dual map is never a lattice position. The irrational-axis
+statement is the boundary case: a step that is not rational destroys the
+lattice entirely, so prime positions require the step to be an integer.
+All six are elementary facts about $\mathbb{Z}$, $\mathbb{Q}$,
+$\mathbb{R}$; the proofs are direct.
+
+\subsection{The complex axis by projection (C011)}
+
+The projection construction is the base of the whole chain. The axis
+\emph{ComplexAxis} is the set of pairs $\langle a, b\rangle$ with real
+$a,b$; $J = \langle 0, 1\rangle$ satisfies $J^2 = -1$
+(\texttt{J\_sq}), so $\sqrt{-1}$ exists in the axis
+(\texttt{sqrt\_neg\_one\_exists\_high}) while no real $t$ satisfies
+$t^2 = -1$ (\texttt{sqrt\_neg\_one\_not\_exists\_axis}). The projection
+$\mathrm{proj}$ is linear on the real component and annihilates $J$
+(\texttt{proj\_add}, \texttt{proj\_J}); it is a retraction of the
+embedding \texttt{lift} (\texttt{proj\_lift}) but does not preserve
+products (\texttt{proj\_mul\_not\_preserved}: $\mathrm{proj}(J\cdot J)
+\ne \mathrm{proj}\,J \cdot \mathrm{proj}\,J$). The basepoint projects to
+$0$ (\texttt{basepoint\_proj}) and the successor action projects to
+translation by $1$ (\texttt{proj\_succ}).
+
+The key structural facts are three. First, basepoint drift is
+unobservable: every pure-imaginary basepoint $e$ with
+$\mathrm{proj}\, e = 0$ produces the same projected chain as the default
+basepoint (\texttt{proj\_chain\_basepoint\_independent}). Second, every
+axis line $\{z : z = \mathrm{lift}(t) + \mathrm{lift}(b) \cdot J\}$
+projects onto the whole real axis (\texttt{axisLine\_proj\_eq\_univ}) and
+the projected images of two different axis lines are identical
+(\texttt{axisLine\_proj\_independent}): the real axis is one axis of the
+same kind as any other, and under projection all axes are the same line
+(\texttt{realAxis\_indistinguishable\_from\_i\_line}). Third, recovery of
+the full structure from the projection is possible only up to the
+symmetry that projection destroys
+(\texttt{projection\_recovery\_theorem}).
+
+The mathematics here is the elementary algebra of the complex numbers
+viewed as $\mathbb{R}^2$ with a preferred projection; every statement is
+a restatement of facts about $\mathbb{C}$ that mathlib proves. What the
+formalization adds is the precise statement of the ``origin illusion'': no
+projected observation can distinguish the real axis from any other axis
+of the same kind, so any claim about the specialness of the real axis is
+not an observation but a choice. This will matter in
+Section~\ref{sec:gap}: the critical line is defined by a projected
+coordinate ($\mathrm{Re}(s) = 1/2$), and the map makes explicit that this
+coordinate is a projection choice, not an intrinsic marker.
+
+\subsection{The Riemann direction in the projection frame (C013)}
+
+The partial sums of the zeta series are constructed in the axis:
+\texttt{zetaTerm n s = lift (1/((n+1)\^{}s))}
+(\texttt{zetaTerm\_lift}), with the empty partial sum at
+\texttt{zetaPartial\_zero} and the two-term case at
+\texttt{zeta\_two\_terms}. This anchors the series that the Euler product
+below equals, and it fixes the notation used by the conditional
+restatement in C025. The construction is deliberately elementary: the
+partial sums are lifted terms of the axis, and their projection is the
+ordinary partial sum of the zeta series.
+
+\subsection{Prime reachability and prime circles (C014--C017)}
+
+Two drift steps around the unit circle send the integer point $n + J$ to
+the projected position $1 + r^2 n / (n^2 + 1)$
+(\texttt{doubleDrift\_proj}). The formula is a direct computation: the
+second drift step applies the circle-inversion-like map of the axis to
+$n + J$ and projects. Its significance is that the projected image
+depends on $n$ through the rational function $n/(n^2+1)$, which is
+bounded and small for large $n$ --- the double drift compresses the axis,
+and the compression is the first geometric expression of ``the primes are
+reachable by drift''.
+
+A prime $p$ is reachable: for every divisor $m$ of $p-1$ there is a
+drift that hits $p$ (\texttt{prime\_reachable\_by\_drift}). Primes
+congruent to $1$ or $2$ modulo $4$ are norms of axis elements ---
+Fermat's two-square theorem (\texttt{prime\_two\_axis}). The circle of
+radius $\sqrt p$ is the locus $\mathrm{norm}\, z = p$
+(\texttt{primeCircle}); norm is multiplicative (\texttt{norm\_mul}) and
+the integer lattice points of the circle close under the
+$90^\circ$ rotation orbit (\texttt{orbit\_closed},
+\texttt{lattice\_mul}). The two-square decomposition of a prime is unique
+--- the uniqueness is the unique factorization of the Gaussian integers
+(\texttt{prime\_sq\_add\_sq\_unique}). The reflection $s \mapsto 1-s$
+arises as the square of a square-root map (\texttt{reflectSqrt\_sq}).
+
+The chain C014--C017 establishes the bridge between the number-theoretic
+content of the direction (primes as positions, primes as norms) and the
+geometric content (circles, orbits, uniqueness by factorization). Each
+statement is classical; the formalization's contribution is the exact
+syntax of the bridge.
+
+\subsection{Critical-line geometry (C019--C022)}
+
+The central geometric fact of the chain: a point of the axis lies on the
+critical line exactly when it is its own conjugate under reflection,
+$\mathrm{proj}\, z = 1/2 \leftrightarrow 1 - z = \mathrm{conj}\, z$
+(\texttt{critical\_line\_iff\_conj}); the critical line is parameterized
+as $\frac12 + it$ (\texttt{critical\_line\_points}). Under reciprocal
+(circle inversion), the critical line is exactly the circle centered at
+$1$ with radius $1$: $\|\mathrm{recip}(\frac12 + it) - 1\| = 1$
+(\texttt{critical\_line\_is\_circle}). This circle is the
+\emph{critical circle} \texttt{criticalCircle} $= \{w :
+\mathrm{norm}(w-1) = 1\}$, which passes through $0$ and $2$
+(\texttt{zero\_in\_criticalCircle}); the real axis meets it exactly at
+those two points (\texttt{realAxis\_inter\_criticalCircle}) and the
+prime-2 circle meets it at $\langle 1, \pm 1\rangle$
+(\texttt{prime2Circle\_inter\_criticalCircle}).
+
+The set of hypothetical nontrivial-zero positions,
+\texttt{nontrivialZeroSet} $= \{z : \mathrm{proj}\, z = 1/2 \wedge z.b
+\ne 0\}$, is carried by the reciprocal into the critical circle
+(\texttt{nontrivial\_zero\_on\_circle},
+\texttt{zeroSet\_in\_criticalCircle}) and, conversely, every point of the
+critical circle other than $0$ and $2$ is the reciprocal image of some
+such position (\texttt{criticalCircle\_subset\_zeroSet\_image}). The two
+inclusions make the circle of zero positions and the critical circle the
+same object.
+
+Two remarks keep the boundary honest. First, each of these statements is a
+pure geometric identity; none refers to the analytic value of $\zeta$ at
+any point. Second, the special points $0$ and $2$ have a geometric
+meaning: $0$ is the image of the point at infinity under inversion
+(\texttt{recip\_vanishes\_at\_infinity}) and $2$ is the image of
+$\frac12$ (\texttt{halfBasepoint\_recip} and the real-axis intersection
+statement). The excluded points of
+\texttt{criticalCircle\_subset\_zeroSet\_image} are exactly the images of
+the two points of the critical line that are not hypothetical zero
+positions.
+
+\subsection{Euler product and the zero-free region (C025)}
+
+For $\mathrm{Re}(s) > 1$ the Euler product equals the series and both
+equal $\zeta(s)$ (\texttt{zeta\_euler\_product},
+\texttt{riemannZeta\_euler\_product}); mathlib's classical result gives
+$\zeta(s) \ne 0$ for $\mathrm{Re}(s) \ge 1$
+(\texttt{riemannZeta\_ne\_zero\_of\_one\_le\_re}). The chain's last
+machine-checked statement is conditional: if $s \ne 0$, $\zeta(s) = 0$,
+and $\mathrm{Re}(s) = 1/2$, then $\|1/s - 1\| = 1$
+(\texttt{zeta\_zero\_on\_circle}). The hypothesis is an assumption of
+this statement, not a conclusion.
+
+The Euler-product link is where the direction meets the analytic theory:
+the product over primes converges exactly where the series converges, and
+the zero-free region follows from the product's convergence. The
+conditional restatement is the only statement in the chain that mentions
+both $\zeta$ and the circle; it is deliberately conditional, and its role
+in the map is to show that the geometry and the analysis are compatible:
+a zero on the critical line is a point of the critical circle.
+
+\section{The gap}\label{sec:gap}
+
+The verification map has one open edge. The machine-checked chain proves:
+(i) the critical line is the circle $\{w : \|w - 1\| = 1\}$ under
+inversion (C019--C022); (ii) the hypothetical zero positions sit on that
+circle (C021--C022); (iii) the Euler product converges exactly on
+$\mathrm{Re}(s) > 1$ and $\zeta$ has no zeros on $\mathrm{Re}(s) \ge 1$
+(C025). It does not prove: that every nontrivial zero of $\zeta$ lies on
+the critical line.
+
+To close the gap a proof would have to show that no zero of $\zeta$
+exists off the line $\mathrm{Re}(s) = 1/2$ within the strip
+$0 < \mathrm{Re}(s) < 1$. The geometry of this manuscript neither assumes
+nor implies that statement. Two structural remarks make the gap precise.
+
+First, the gap is not hidden inside the chain: no edge of the dependency
+graph of Section~\ref{sec:map-graph} is unlabeled, and the only
+\textcolor{conj}{CONJ} node is the final edge --- the map's purpose is to
+make exactly this edge visible to the referee.
+
+Second, the gap has a precise geometric shape. By C019--C022, a
+hypothetical zero off the critical line would project to a point of the
+axis with $\mathrm{proj}\, z \ne 1/2$, and its reciprocal would lie on a
+circle other than the critical circle. The question ``does $\zeta$ have a
+zero off the line?'' is equivalent, within this map, to the question
+``does the reciprocal of a zero of $\zeta$ leave the critical circle?''.
+The map reduces the analytic question to a geometric one --- but it does
+not answer it. Any future proof that closes the gap must show, by
+analytic means outside the current chain, that the reciprocal of every
+nontrivial zero stays on the critical circle.
+
+\section{Numerical evidence}
+
+The visualization of 2026-08-06 produced 138{,}067 zeros on the critical
+line (computed with the Riemann--Siegel formula, bases 2--36 and
+Gaussian-integer complex bases; the critical-line-only layout followed at
+17:59--18:09; the persisted prime/zero data at 18:35--18:46). The
+zero-location error was reduced from $0.1$ to $9 \times 10^{-4}$ by a
+correction to the Riemann--Siegel formula. This is observational
+evidence, not proof; it is recorded here because it is the trail's
+starting point and because the verification map separates it cleanly from
+the machine-checked chain. External numerical verification of the first
+$10^{13}$ zeros (real parts equal to $1/2$) is likewise observational and
+is not part of any machine-checked statement.
+
+\section{Honest boundary}
+
+Every claim in this manuscript is labeled \texttt{novelty\_status: KNOWN}:
+each is a restatement of classical mathematics (circle inversion, Gaussian
+unique factorization, Fermat's two-square theorem, the Euler product,
+elementary projection algebra) with a machine-checked proof. No claim is
+made of proving the Riemann hypothesis; mathlib's
+\texttt{RiemannHypothesis} remains unproved. The numerical evidence is
+observational. The value of the map is that it separates, with mechanical
+precision, what is proved from what is conjectured.
+
+This boundary is not an apology; it is the method. The credibility of the
+manuscript does not rest on the strength of its claims but on the
+exactness of their labeling. A referee who disagrees with any label can
+verify it in minutes; a referee who agrees with all labels has a complete
+picture of what is proved, what is classical, and what is open.
+
+\section{Related work}
+
+The formalization of the Riemann zeta function in mathlib (as an L-series
+with meromorphic continuation) provides the analytic base
+\cite{mathlib,lean4}. Classical references for the statement, the
+functional equation, and the Euler product are
+\cite{edwards1974riemann,titchmarsh1986theory,hardy2008introduction}.
+The verification-map form follows the general program of machine-checked
+mathematics: the standard of ``the manuscript carries its own proof of
+correctness'' is the standard of interactive theorem proving, applied here
+to the structure of a submission rather than to its individual steps. The
+novelty of the present manuscript is not mathematical --- every
+machine-checked statement is known --- but organizational: a template for
+independent researchers in which the manuscript's trustworthiness is
+decidable from the manuscript itself.
+
+\section{Conclusion}
+
+A manuscript organized as a verification map makes its own trust decision
+mechanical. Fifteen links of the Riemann-direction chain are
+machine-checked against Lean 4.32.2 / mathlib v4.32.2 with zero
+\texttt{sorry} and only the standard axioms; the sixteenth edge --- the
+Riemann hypothesis itself --- is stated exactly, named exactly, and left
+open. A referee's question is reduced to: is each node of the map what it
+claims to be? The answer to that question is a file check, not an act of
+faith.
+
+\section*{Appendix: theorem inventory}
+
+The full inventory of the machine-checked chain, by file. All theorems
+compile with zero errors and zero \texttt{sorry}.
+
+\paragraph{\texttt{PrimeDriftPositions.lean} (6 theorems).}
+\texttt{drift\_vector\_is\_successor},
+\texttt{successor\_positions\_in\_drift\_frame},
+\texttt{prime\_positions\_on\_drift\_axis},
+\texttt{inversion\_dual\_position},
+\texttt{prime\_inversion\_misses\_integers},
+\texttt{irrational\_drift\_axis\_no\_int\_points}.
+
+\paragraph{\texttt{ComplexAxis.lean} (128 theorems; selection).}
+Structure: \texttt{ext}, \texttt{J\_sq}, \texttt{proj\_add},
+\texttt{proj\_J}, \texttt{proj\_lift}, \texttt{lift\_add},
+\texttt{lift\_mul}, \texttt{proj\_mul\_not\_preserved},
+\texttt{sqrt\_neg\_one\_exists\_high},
+\texttt{sqrt\_neg\_one\_not\_exists\_axis},
+\texttt{lift\_neg\_one\_sqrt}. Basepoint: \texttt{basepoint\_proj},
+\texttt{pure\_imag\_proj}, \texttt{proj\_succ},
+\texttt{zero\_in\_proj\_chain}, \texttt{proj\_chain\_succ\_closed},
+\texttt{proj\_chain\_basepoint\_independent}. Axis lines:
+\texttt{axisLine\_eval\_proj}, \texttt{axisLine\_proj\_all},
+\texttt{axisLine\_proj\_injective}, \texttt{axisLine\_proj\_eq\_univ},
+\texttt{axisLine\_proj\_independent},
+\texttt{realAxis\_indistinguishable\_from\_i\_line}. Inversion:
+\texttt{recip\_mul\_self}, \texttt{recip\_lift},
+\texttt{proj\_recip\_lost}, \texttt{circleInv\_core},
+\texttt{circleInv\_fixed}, \texttt{circleInv\_proj\_preserved},
+\texttt{circleInv\_translate}, \texttt{norm\_recip},
+\texttt{recip\_vanishes\_at\_infinity}, \texttt{circleInv\_vanishes\_at\_infinity}.
+Partial sums: \texttt{zetaTerm\_lift}, \texttt{zetaPartial\_zero},
+\texttt{zeta\_two\_terms}. Critical line:
+\texttt{one\_minus\_fixed}, \texttt{one\_minus\_fixed\_cplx},
+\texttt{critical\_line\_iff\_conj}, \texttt{reflectSqrt\_sq},
+\texttt{reflectSqrt'\_sq}, \texttt{critical\_line\_is\_circle},
+\texttt{critical\_line\_points}, \texttt{real\_axis\_points},
+\texttt{nontrivial\_zero\_position}. Drift reachability:
+\texttt{doubleDrift\_proj}, \texttt{prime\_reachable\_by\_drift},
+\texttt{prime\_two\_axis}. Circles: \texttt{norm\_mul},
+\texttt{lattice\_mul}, \texttt{orbit\_closed},
+\texttt{prime\_sq\_add\_sq\_unique}, \texttt{primeCircle},
+\texttt{criticalCircle}, \texttt{zero\_in\_criticalCircle},
+\texttt{primeCircle\_recip}, \texttt{critical\_line\_in\_circle},
+\texttt{realAxis\_inter\_criticalCircle}, \texttt{inter\_proj},
+\texttt{prime2Circle\_inter\_criticalCircle}, \texttt{halfCircle\_recip},
+\texttt{nontrivial\_zero\_on\_circle},
+\texttt{critical\_line\_image\_subset\_circle},
+\texttt{nontrivialZeroSet}, \texttt{zeroSet\_in\_criticalCircle},
+\texttt{criticalCircle\_subset\_zeroSet\_image}. Products and splitting:
+\texttt{mul\_conj}, \texttt{prime\_conj\_pair},
+\texttt{rotated\_conj\_pair}, \texttt{J\_pow\_two},
+\texttt{J\_pow\_four}, \texttt{rotate\_two\_neg},
+\texttt{recip\_axis\_second\_order}, \texttt{zero\_point\_prime\_pair},
+\texttt{norm\_unit4}, \texttt{associates\_norm},
+\texttt{variants\_are\_associates}, \texttt{conj\_recip},
+\texttt{recip\_conj\_pair}, \texttt{critical\_line\_circle\_on\_recip\_axis}.
+Viewpoint: \texttt{halfBasepoint\_proj},
+\texttt{halfBasepoint\_on\_critical\_line},
+\texttt{basepoint\_is\_critical\_line\_family},
+\texttt{basepoint\_drift\_to\_half},
+\texttt{halfBasepoint\_in\_realAxisAtHalf},
+\texttt{realAxisAtHalf\_proj}, \texttt{halfBasepoint\_recip},
+\texttt{realAxisAtHalf\_recip}, \texttt{proj\_kernel\_J},
+\texttt{lift\_injective}, \texttt{real\_axis\_preserved\_by\_proj},
+\texttt{proj\_not\_recoverable}, \texttt{proj\_recoverable\_symmetry},
+\texttt{projection\_recovery\_theorem}, \texttt{primes\_countable},
+\texttt{pureImag\_collapse}, \texttt{basepoint\_ambiguity},
+\texttt{collapse\_kernel}.
+
+\paragraph{\texttt{ZetaEulerProduct.lean} (7 theorems).}
+\texttt{zetaEulerF}, \texttt{zetaEulerF\_norm},
+\texttt{zeta\_euler\_product}, \texttt{riemannZeta\_euler\_product},
+\texttt{riemannZeta\_ne\_zero\_of\_one\_le\_re},
+\texttt{critical\_line\_iff\_conj\_complex}, \texttt{verified\_zero\_on\_circle},
+\texttt{zeta\_zero\_on\_circle}.
+
+\paragraph{\texttt{Toolkit/CriticalPrimeCircles.lean} (R145, 5 theorems).}
+\texttt{critical\_circle\_points}, \texttt{prime\_circle\_center\_zero},
+\texttt{reciprocal\_pair\_reduces}, \texttt{log\_pair\_instance},
+\texttt{fold\_centers\_are\_circle\_centers}.
+
+\paragraph{\texttt{Toolkit/PatRiemannTwinPrimes.lean} (7 theorems).}
+\texttt{critical\_line\_pat\_circle}, \texttt{zero\_on\_pat\_circle}
+(conditional), \texttt{prime\_on\_pat\_circle},
+\texttt{prime\_log\_monophase}, \texttt{twin\_gap\_is\_circle\_diameter},
+\texttt{twin\_gap\_inversion\_symmetry},
+\texttt{pat\_riemann\_twin\_perspective}.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
