@@ -1,0 +1,102 @@
+id: R093
+title: "R093 (user-proposed 2026-08-12): the accurate construction of the monophase number from the 0 point — the 0 point may not be clean (R085: ±1 fold class), but the monophase chain structure (equal gaps / constant phase / delta class) is BASEPOINT-INDEPENDENT (RulerDrift: delta class invariant); the accurate construction uses the delta class {n·d}, not the absolute coordinate — 0's uncleanness pollutes the representation, not the structure"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "不不不，还是要回到单相位数这个任务上来，要知道我们现在找到的这个0点不一定
+  干净，只要不干净，我们用相位做出来的就是不干净的扭曲轴啊。所以得想办法找到
+  准确的，从0点构造单相位数的方法。"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。从 0 构造单相位数的准确方法。
+
+    ★ 问题: 找到的 0 点不一定干净 (R085: ±1 折叠类); 只要不干净,
+      用相位做出来的就是不干净的扭曲轴。
+
+    ★ 解决 (验证):
+      ① 单相位链结构 (等差/相位恒定/delta 类) 独立于基点 e:
+         从任意基点 (含 0 与脏基点) 出发, 链结构相同
+      ② 从 0 与从脏基点 e: delta 类相同 (chain0[k]-0 = chaine[k]-e = k·d)
+      ③ 链相位 = phase(d) 独立于基点
+      ④ 准确构造法: 单相位数 = delta 类 {n·d} (基点无关, RulerDrift)
+      ⑤ 0 不干净只影响表示, 不影响结构
+
+    ★ 准确构造方法 (从 0 构造单相位数):
+      用 delta 类 (位移类), 不用绝对坐标:
+      单相位数 = {n·d} (delta 类, 基点无关)
+      0 是折叠类 (表示), delta 是干净结构
+
+    ★ 机械验证 (R093_monophase_construction.py, 枚举=证据):
+      1. 0 是折叠类 (S 不动点, ±1 混合): PASS
+      2. 单相位链结构 (等差/相位/delta类) 独立于基点 e: PASS
+      3. 从 0 与从脏基点 e: delta 类相同: PASS
+      4. 准确构造法: delta 类 {n·d}: PASS
+      5. 链相位 = phase(d) 独立于基点: PASS
+
+    ★ 与既有 claim 的关系:
+      - R085 (0 = ±1 折叠类): 0 不干净的来源
+      - RulerDrift (数值漂移位置不变): delta 类基点无关 (机制)
+      - R091 (单相位 = {n·d}): 构造目标
+      - C007 (位移空间基点无关): delta 类独立性
+      - R072 (声明): 单相位数的准确声明
+      结论: 0 不干净不阻碍单相位数构造 — 用 delta 类 {n·d} (基点无关),
+      0 只影响表示不影响结构。
+
+    ★ 支撑 (Lean):
+      - R085 / RulerDrift / R091 / C007 [claim 级]
+  formal_math: |
+    -- 单相位链: {e + n·d} (任意基点 e)
+    -- delta 类: chain[k] - e = k·d (独立于 e)
+    -- 准确构造: 单相位数 = delta 类 {n·d} (基点无关)
+    -- 0 不干净 ⟹ 表示含折叠; delta 干净 ⟹ 结构准确
+
+objects: []
+
+definitions_used:
+- R085 / RulerDrift / R091 / C007 / R072
+
+assumptions:
+- "0 是折叠类 (R085, 不干净)"
+- "单相位链结构基点无关 (RulerDrift)"
+- "准确构造用 delta 类 (不用绝对坐标)"
+
+conclusion: "用户问题解决 (2026-08-12): 从 0 构造单相位数的准确方法 = 用 delta
+  类 {n·d} (基点无关); 0 不干净只污染表示, 不污染结构 — 链的等差/相位/
+  delta 全部独立于基点 (RulerDrift)。"
+
+known_special_cases:
+  - "从 0 出发: {0, d, 2d, ...} (表示含折叠)"
+  - "从脏基点 e 出发: {e, e+d, ...} (delta 类相同)"
+  - "链相位: phase(d) (基点无关)"
+
+counterexample_search:
+  status: done
+  search_space: "链结构基点无关性/0与脏基点比较/相位独立性 (R093_monophase_construction.py: 5 组)"
+  smallest_checked_size: 500
+  result: "5/5 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: ""
+  theorem_name: ""
+  status: not_started
+  sorry_free: false
+
+failure_modes:
+  - "0 的表示含折叠: 用绝对坐标会扭曲 (须用 delta)"
+  - "delta 类干净: 需 RulerDrift/C007 保证"
+  - "准确构造 = delta 类: 非绝对坐标"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "准确构造法形式化 (delta 类 {n·d} 的 Lean); 接入乘法定义"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 (原话原封保存); assistant 执行机械验证
+  + claim 落盘。"
