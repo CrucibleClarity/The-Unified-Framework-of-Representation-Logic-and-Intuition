@@ -1,0 +1,182 @@
+%% CPP 2027 Submission — 0pat: The Prime Axis as a Circle (Fermat's Little Theorem)
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{The Prime Axis as a Circle:\\ Fermat's Little Theorem via the
+Multiplicative Group of $\mathbb{Z}/p\mathbb{Z}$ --- a Pure-Known-Mathematics
+Re-formalization}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We report the second completed exercise of a re-formalization program
+(``0pat''): a pat framework insight (``the prime axis, periodized, is a
+circle; under the Euler-circle view the prime axis itself is a circle'') is
+re-stated in pure known mathematics and formally proved in Lean 4 / mathlib
+with \emph{no} pat framework concepts and \emph{no} complex plane. The
+re-statement is the algebra of the multiplicative circle group
+$(\mathbb{Z}/p\mathbb{Z})^\times$: the circle's size ($p-1$ elements),
+the circle's algebra (Fermat's little theorem, both the coprime form
+$a^{p-1} \equiv 1$ and the complete form $a^p \equiv a \pmod p$), and the
+global structure (infinitely many primes). The proof is four theorems built
+entirely on mathlib: an explicit bijection
+$\{x \ne 0\} \simeq \mathrm{Fin}(p-1)$, Lagrange's theorem via
+\texttt{orderOf\_dvd\_card} and \texttt{pow\_orderOf\_eq\_one}, the
+congruence-lifting \texttt{Nat.ModEq.pow}, and
+\texttt{Nat.exists\_infinite\_primes}. All four compile with zero errors
+and zero \texttt{sorry} against mathlib v4.32.2.
+\end{abstract}
+
+\keywords{Lean, formalization, Fermat's little theorem, modular arithmetic, circle group, 0pat, reproducibility}
+
+\maketitle
+
+\section{Introduction}
+
+\emph{Program.} This paper is the second completed exercise of a
+re-formalization program (``0pat''): take the exercises of the pat
+framework --- a body of Lean-formalized observations about basepoint-
+relative operator semantics --- and re-prove their mathematical content
+using \emph{pure known mathematics}: only mathlib's existing definitions
+and theorems, no pat framework concepts (basepoints, phase locking,
+interlock pairs, projection superpositions).
+
+\emph{Method.} Each exercise is located on a genealogy map (rows: pat
+concepts R1--R25; columns: mathematical genealogies). The map's entries
+are the paths: a pat concept at coordinate $(R_i, C_j)$ has a
+standard-mathematics correspondent at that coordinate. The
+re-formalization walks the path: re-state the pat claim at its coordinate
+in standard mathematics, formalize the equivalence, and prove.
+
+\emph{This exercise.} The pat insight under study arose in the Riemann-
+direction work: the number line, periodized modulo $p$, curls into the
+circle $\mathbb{Z}/p\mathbb{Z}$; in this ``Euler-circle'' view the prime
+axis itself is a circle, and its structure should be observable by the
+same method used for the Riemann direction --- without needing the complex
+plane. The insight sits at $(R23, C3)$ on the genealogy map (prime circle
+$\times$ analytic number theory). Its standard-mathematics correspondent
+is the algebra of the multiplicative circle group
+$(\mathbb{Z}/p\mathbb{Z})^\times$: Fermat's little theorem and the
+infinitude of primes. We re-state and prove it.
+
+\section{Re-statement (0pat)}
+
+\paragraph{Pat claim.} The prime axis, periodized, is a circle; on the
+circle, the prime structure is the multiplicative circle group: every
+nonzero residue is invertible (the circle is a group of size $p-1$), and
+the circle's algebra is $x^p = x$ (Fermat's little theorem). The prime
+axis is not exhausted by any finite modulus: there are infinitely many
+primes.
+
+\paragraph{0pat re-statement.} Let $p$ be prime.
+\begin{enumerate}
+\item \emph{Circle size:} $|(\mathbb{Z}/p\mathbb{Z})^\times| = p - 1$
+  (the field $\mathbb{Z}/p\mathbb{Z}$ is a domain, so every nonzero
+  element is a unit).
+\item \emph{Circle algebra (coprime form):} if $\gcd(a,p) = 1$, then
+  $a^{p-1} \equiv 1 \pmod p$ --- the exponent of the circle group divides
+  the group's order (Lagrange).
+\item \emph{Circle algebra (complete form):} for \emph{every} $a$,
+  $a^p \equiv a \pmod p$ --- including $p \mid a$, where both sides
+  vanish modulo $p$.
+\item \emph{Global structure:} for every $n$, there is a prime $p \ge n$
+  (the prime axis is infinite).
+\end{enumerate}
+
+\section{Formalization}
+
+The proof is a single Lean file (\texttt{proof.lean}, 212 lines), importing
+\texttt{Mathlib.Data.ZMod.Basic}, \texttt{Mathlib.GroupTheory.OrderOfElement},
+and \texttt{Mathlib.Data.Nat.Prime.Basic}. Four theorems:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Theorem & Statement & mathlib anchor \\
+\midrule
+\texttt{card\_units\_zmod\_prime} & $|(\mathbb{Z}/p\mathbb{Z})^\times| = p-1$
+  & explicit bijection $\{x\ne0\} \simeq \mathrm{Fin}(p-1)$ \\
+\texttt{fermat\_little} & $\gcd(a,p)=1 \Rightarrow a^{p-1} \equiv 1 \pmod p$
+  & \texttt{orderOf\_dvd\_card}, \texttt{pow\_orderOf\_eq\_one} \\
+\texttt{fermat\_little\_complete} & $\forall a,\ a^p \equiv a \pmod p$
+  & \texttt{Nat.ModEq.pow}, \texttt{mod\_eq\_zero\_of\_dvd} \\
+\texttt{infinitely\_many\_primes} & $\forall n,\ \exists p \ge n$, prime $p$
+  & \texttt{Nat.exists\_infinite\_primes} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Circle size by explicit bijection.} Instead of appealing to
+mathlib's unit-coprime equivalence, the proof constructs the bijection
+$\{x : \mathbb{Z}/p\mathbb{Z} \mid x \ne 0\} \simeq \mathrm{Fin}(p-1)$
+directly: $x \mapsto x.\mathrm{val} - 1$ (residues $1 \ldots p-1$ to
+indices $0 \ldots p-2$), inverse $k \mapsto (k+1)$. Both directions are
+checked; the range proof uses that a nonzero residue has value $0 <
+x.\mathrm{val} < p$, so $x.\mathrm{val} - 1 < p - 1$. This makes the
+``circle of size $p-1$'' statement self-contained.
+
+\paragraph{Fermat via Lagrange.} A coprime $a$ maps to the unit group via
+\texttt{unitOfCoprime}; the order of that unit divides the group order by
+Lagrange (\texttt{orderOf\_dvd\_card}), and
+\texttt{pow\_orderOf\_eq\_one} gives $u^{k} = 1$ for $k =
+\mathrm{order}(u) \mid p-1$. The congruence is recovered by casting back
+from $(\mathbb{Z}/p\mathbb{Z})^\times$ to $\mathbb{Z}/p\mathbb{Z}$ and
+from $\mathbb{Z}/p\mathbb{Z}$ to $\mathbb{N}$ via
+\texttt{natCast\_eq\_natCast\_iff}.
+
+\paragraph{Complete form by congruence lifting.} The non-coprime case
+($p \mid a$) is handled by the observation that $a \equiv 0 \pmod p$
+(\texttt{Nat.mod\_eq\_zero\_of\_dvd}), lifted to powers by
+\texttt{Nat.ModEq.pow}: $a^p \equiv 0^p = 0 \pmod p$. Both sides
+congruent to $0$ gives $a^p \equiv a$. This is the cleanest expression of
+``on the circle, $p \mid a$ means the point is the zero of the ring''.
+
+\paragraph{Verification.} Compiled with Lean 4.32.2 (mathlib v4.32.2),
+zero errors, zero \texttt{sorry}, zero axioms beyond mathlib's. Build
+command in the artifact.
+
+\section{Relation to the pat exercise}
+
+The original insight (pat exercise XXIV) was formulated inside the pat
+framework. This re-formalization shows that the mathematical content
+survives the removal of the framework --- and of the complex plane: the
+``prime axis as a circle'' is exactly the modular circle
+$\mathbb{Z}/p\mathbb{Z}$ and its multiplicative group, entirely
+first-order algebra over a finite field. The pat vocabulary is preserved
+in the exercise record (README) as provenance, not in the proof.
+
+\section{Conclusion}
+
+The second 0pat exercise is complete: the prime axis as a circle ---
+Fermat's little theorem, the size of the multiplicative circle group, and
+the infinitude of primes --- proved with pure known mathematics in four
+theorems, zero errors. The observation requires no complex analysis: the
+circle structure of the primes modulo $p$ is the algebra of
+$(\mathbb{Z}/p\mathbb{Z})^\times$. The method (genealogy-map
+path-walking) is validated on a second, algebraically different exercise.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
