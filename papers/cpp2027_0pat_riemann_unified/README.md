@@ -10,8 +10,8 @@ Compile: `tectonic Exercise_XXXVII_Riemann_Direction_Unified.tex`
 ## Content
 
 Unified machine-checked development of the Riemann direction
-(13 exercises XXIV–XXXVI merged + new theorems), 112 declarations
-(97 theorems + 15 lemmas), 0 errors, 0 sorry:
+(13 exercises XXIV–XXXVI merged + new theorems), 117 declarations
+(102 theorems + 15 lemmas), 0 errors, 0 sorry:
 
 - prime structure: infinitely many primes, Fermat's little theorem,
   unit groups of prime residue rings
@@ -35,15 +35,22 @@ Unified machine-checked development of the Riemann direction
   prime ticks = undecomposable iterations
 - completed zeta structure: Λ(1−s) = Λ(s), Λ₀ entire
   (mathlib completedRiemannZeta_one_sub, differentiable_completedZeta₀)
+- conjugation symmetry: conj(ζ(s)) = ζ(conj s) on the critical strip
+  (Re/Im split: even real part, odd imaginary part; zero = common zero
+  of both parts)
+- orbit counting: zeros form conjugate orbits of 2 points (on the
+  critical line) or 4 points (off it); RH ⟺ all orbits degenerate
 
 Honest boundary: the Riemann hypothesis is not claimed; the artifact
-records twelve numerical observations (critical strip, zero locations,
-base-point shift, phase projection, exhaustive radius searches).
+records twenty-two observation records (critical strip, zero locations,
+base-point shift, phase projection, conjugation counts) and a
+machine-checked conjugation/orbit development (117 declarations,
+0 errors, 0 sorry).
 
 ## Artifact
 
-- artifact/formal/proof.lean — the 112-declaration proof
-- artifact/observation.md — 12 numerical observation records
+- artifact/formal/proof.lean — the 117-declaration proof
+- artifact/observation.md — 22 observation records
 - artifact/README.md — build + theorem inventory + provenance
 
 ## Double-blind note
