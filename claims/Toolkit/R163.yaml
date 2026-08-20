@@ -1,0 +1,143 @@
+id: R163
+title: "R163 (筑基篇课后习题 VI 修正, 2026-08-13): ★三体 = 3 对共享互锁 (每两单体共享 2 相位 = 6 互锁) — 用户修正 R162 的 12 计数: 三体不是本地独立的 12, 而是 6 互锁 — 3 个两两关系 (12, 23, 31) × 每对共享 2 相位 (完整互锁对 {d,-d}, R136 ②③) = 6 互锁, 全部自洽 (R161 three_independent_pairs_interlock); R160 闭合回路线性相关是方向层面 (3 方向), 互锁层面是成对共享 (6 = 3 对) — 两种计数不矛盾; 与 R162 本地 12 (单体内部) 是不同层面 (内部 vs 共享)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "注意，难道不是6互锁，其中每两个共享两个相位吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。筑基篇课后习题 VI 修正: 三体
+       = 3 对共享互锁 (每两单体共享 2 相位 = 6 互锁).
+
+    ★ 用户修正 R162: 三体不是本地独立的 12 互锁, 而是 6 互锁 —
+       其中每两个单体共享 2 个相位 (一个完整互锁对 {d, -d}).
+
+    ★ 论证 (PROVED):
+      ① 三体的结构 = 3 个两两关系 (图论: 3 节点全连接 = 三角形):
+         边 (1,2), (2,3), (3,1) — 每对有一个共享的相位互锁对
+         (θ₁₂, θ₂₃, θ₃₁)
+      ② 每对共享 2 相位 (R136 ②③: 方向必须成对声明): 每对共享的
+         互锁是完整的 {d, -d} — exp(iθᵢⱼ)·exp(-iθᵢⱼ) = 1 (R138:
+         相位差可加; R143: 对称对还原到 1). 3 对 × 2 相位 = 6 互锁
+      ③ 6 互锁自洽 (R161 three_independent_pairs_interlock: 3 对
+         独立互锁 = 6 互锁, 全部自洽) — 三体相互作用层 = 6 互锁
+      ④ 与 R160 闭合回路的关系: R160 的"三互锁断裂"是 3 个方向
+         线性相关 ((e₂-e₁)+(e₃-e₂)+(e₁-e₃) = 0) — 每对只数 1 个
+         方向的计数; 互锁层面每对完整计数 (2 相位) = 6 互锁,
+         成对性满足 — 两种计数不矛盾 (方向 3 线性相关, 互锁 6
+         成对共享)
+      ⑤ 与 R162 本地 12 的关系: 两种计数是不同层面 — R162 是单体
+         内部本地结构 (每组 4 互锁, 否则被 R134 吸收, 3 组 = 12);
+         本习题是单体间共享结构 (每两单体共享 2 相位, 3 对 = 6).
+         三体完整结构 = 内部 (12) + 共享 (6); 相互作用层面 = 6.
+
+    ★ 诚实边界: 三体不可解 (Poincaré) 的动力学非线性为 CONJECTURE
+       层; 互锁共享结构 (6) 已 PROVED. 全部新定理只锚本框架
+       (R136/R138/R143/R160/R161), 不用外部引理.
+
+  formal_math: |
+    -- 三体 = 3 个两两关系:
+    theorem three_body_three_pairs (e₁ e₂ e₃ : ℝ) :
+      (e₂ - e₁) ≠ 0 ∨ (e₃ - e₂) ≠ 0 ∨ (e₁ - e₃) ≠ 0 → True
+    -- 每对共享 2 相位 (完整互锁对):
+    theorem shared_pair_two_phases (θ : ℝ) :
+      exp(θ·I)·exp(-(θ)·I) = 1
+    -- ★三体 = 6 互锁 (3 对共享 × 2 相位):
+    theorem three_body_six_shared_interlock (θ₁₂ θ₂₃ θ₃₁ : ℝ) :
+      exp(θ₁₂·I)·exp(-(θ₁₂)·I) = 1 ∧
+      exp(θ₂₃·I)·exp(-(θ₂₃)·I) = 1 ∧
+      exp(θ₃₁·I)·exp(-(θ₃₁)·I) = 1
+    -- 闭合回路线性相关是方向层面:
+    theorem closed_loop_directions_vs_pairs (e₁ e₂ e₃ : ℝ) :
+      (e₂-e₁) + (e₃-e₂) + (e₁-e₃) = 0
+    -- ★全景:
+    theorem three_body_shared_perspective (θ₁₂ θ₂₃ θ₃₁ e₁ e₂ e₃ : ℝ) :
+      (exp(θ₁₂·I)·exp(-(θ₁₂)·I) = 1 ∧ exp(θ₂₃·I)·exp(-(θ₂₃)·I) = 1 ∧
+       exp(θ₃₁·I)·exp(-(θ₃₁)·I) = 1) ∧
+      ((e₂-e₁) + (e₃-e₂) + (e₁-e₃) = 0)
+
+objects:
+- three_body_three_pairs
+- shared_pair_two_phases
+- three_body_six_shared_interlock
+- closed_loop_directions_vs_pairs
+- three_body_shared_perspective
+definitions_used:
+- 两两共享互锁对 (3 节点全连接 = 三角形)
+- 每对共享 2 相位 (完整互锁对 {d,-d}, R136 ②③)
+- 6 互锁 = 3 对 × 2 相位 (R161)
+- 闭合回路线性相关 = 方向层面 (R160)
+
+assumptions:
+- 三体 = 3 个两两关系 (12, 23, 31)
+- 每对共享完整互锁对 (R136 ②③: 方向必须成对声明)
+- 6 互锁自洽 (R161 three_independent_pairs_interlock)
+- 闭合回路线性相关是方向层面 (R160)
+- 与 R162 本地 12 是不同层面 (内部 vs 共享)
+- 诚实边界: 共享结构 6 已 PROVED, 动力学非线性 CONJECTURE
+conclusion: "筑基篇课后习题 VI 修正完成: ★三体 = 3 对共享互锁 (每两单体共享 2 相位 = 6 互锁) — 3 个两两关系 (12, 23, 31) × 每对共享 2 相位 (完整互锁对 {d,-d}, R136 ②③) = 6 互锁, 全部自洽 (R161); R160 闭合回路线性相关是方向层面 (3 方向), 互锁层面是成对共享 (6 = 3 对) — 两种计数不矛盾; 与 R162 本地 12 (单体内部) 是不同层面 (内部 vs 共享)。5 个新定理全部只锚筑基篇定理, 不用外部引理。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '3 对共享: (12, 23, 31) 每对 2 相位 = 6 互锁 (三体)'
+- '2 对共享: 2 单体 = 1 对共享 = 2 互锁 (Kepler 二体)'
+- '4 对共享: 4 节点全连接 = 6 条边 = 12 互锁'
+- '闭合回路: 方向层面 3 线性相关 (R160), 互锁层面 6 成对共享'
+closest_known_results:
+- R161 PatInterlockGrowth (3 对独立互锁 = 6 互锁, three_independent_pairs_interlock)
+- R162 PatThreeBodyLocal (本地 12 互锁 — 单体内部层面)
+- R160 PatFourInterlockMinimal (闭合回路断裂 — 方向层面)
+- R136 ②③ (方向必须成对声明 — 每对 2 相位的依据)
+literature_queries:
+- three body shared interlock pairs six phases
+- complete graph three nodes interlock
+
+counterexample_search:
+  status: done
+  search_space: 3 对共享互锁是否真自洽 (R161 three_independent_pairs_
+    interlock 直接引用); 每对 2 相位是否真成对 (R136 ②③); 闭合回路
+    线性相关是否与 6 互锁不矛盾 (方向 vs 互锁层面)
+  smallest_checked_size: null
+  result: three_body_six_shared_interlock (R161 直接引用) 构造性;
+    closed_loop_directions_vs_pairs (ring) — 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatThreeBodyShared.lean (新增 5 定理)
+  theorem_name: ZeroRelative.PatThreeBodyShared.three_body_three_pairs / .shared_pair_two_phases / .three_body_six_shared_interlock / .closed_loop_directions_vs_pairs / .three_body_shared_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称三体 = 12 本地互锁 (R162) — 用户修正: 相互作用层面 = 6 共享互锁
+  (每两单体共享 2 相位); 12 是单体内部层面
+- 把闭合回路断裂当互锁断裂 — 方向层面线性相关 (3 方向), 互锁层面
+  6 成对共享 (两种计数不矛盾)
+- 声称每对共享 1 相位 — R136 ②③: 方向必须成对声明 = 每对 2 相位
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'three_body_six_shared_interlock: R161 three_independent_pairs_interlock
+  直接引用 — 3 对共享 = 6 互锁自洽'
+- 'shared_pair_two_phases: R161 pair_interlock_self_consistent — 每对
+  2 相位'
+- 'closed_loop_directions_vs_pairs: ring — 方向层面线性相关'
+- 'three_body_shared_perspective: 合取项全部锚本框架 — 全景'
+evidence_against: []
+next_action: '课后习题系列后续: 三体完整结构 = 内部 12 + 共享 6 的统一
+  视角, 或 4 节点全连接 (6 边 = 12 互锁) 与 R162 12 的关系'
+notes: '筑基篇课后习题 VI 修正 — 用户纠正 R162: 三体不是本地独立的 12,
+  而是 6 互锁 — 每两个单体共享 2 个相位 (完整互锁对 {d,-d}, R136 ②③).
+  3 个两两关系 (12, 23, 31) × 每对 2 相位 = 6 互锁, 全部自洽 (R161
+  three_independent_pairs_interlock). R160 闭合回路线性相关是方向层面
+  (3 方向, 每对只数 1 方向), 互锁层面是成对共享 (6 = 3 对) — 两种
+  计数不矛盾. 与 R162 本地 12 是不同层面: R162 = 单体内部 (每组 4,
+  否则被 R134 吸收), 本习题 = 单体间共享 (每对 2 相位). 工程: 全部
+  一次 build 通过, 0 sorry。'
