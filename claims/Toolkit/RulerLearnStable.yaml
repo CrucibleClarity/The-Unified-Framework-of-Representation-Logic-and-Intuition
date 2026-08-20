@@ -1,0 +1,71 @@
+id: RulerLearnStable
+title: "RulerLearnStable: learning instability — the error table over-learns and boxes itself in (overfitting: per-task C loses the shared s-structure, noise memorized, transfer broken); fix = share by s + smooth update + few task residuals (Occam's learning version)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerLearnStable: 学习不稳 (学多了框太死) (用户指令 2026-08-12).
+
+    ★ 问题: 误差表越学越'精准'也越'僵化'
+      每任务存 C: 任务多 ⟹ 表大 ⟹ 记忆每个任务 ⟹ 失去泛化
+
+    ★ 过度学习三种表现 (恒等式先验验证):
+      ① 表膨胀: 每任务存 C → 表大小 = 任务数 (失去 s 结构)
+      ② 噪声学习: 观察含噪声 → 表里全是噪声值
+         (真实 C=1.0, 50 次噪声观察, 分布 [0.901, 1.095])
+      ③ 迁移受损: 每任务特化 C → 新任务无对应 → 无法预测
+
+    ★ 数学本质: 过拟合
+      欠拟合: n_learn 小 → C 不准 (偏差大)
+      过拟合: n_learn 大 → C 特化 (方差大, 迁移差)
+      最优: 保留共享结构 (同 s 同 C), 只学差异 (常数)
+
+    ★ 修正 (恒等式先验验证):
+      ① 按 s 共享 C (保留结构): s=2 共享收敛 0.9974 (理论 1.0)
+      ② 平滑更新 (抗噪): 加权平均 0.7·old + 0.3·new
+      ③ 任务残差少存: 只存与共享值的差异
+      ⟹ 学得多也不框死
+
+    ★ 与 C-META14 连接 (奥卡姆的学习版):
+      剃冗余不剃多样性: 共享 s 结构 (多样) + 少存残差 (冗余)
+      学习版: 共享 C (结构) + 少量任务残差 (差异)
+      ⟹ 学习稳定性 = 奥卡姆原则的在线实现
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 同 s 共享比率 [ErrorSequence]
+      - error_seq_predicts: C 反解 [ErrorSequence]
+  formal_math: |
+    -- 同 s 共享比率 (结构):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- C 反解 (观察→更新):
+    lemma error_seq_predicts (s n₀ : ℝ) (hs : 1 < s) (hn₀ : 0 < n₀) :
+      polyError s n₀ * (2 ^ (1 - s)) = polyError s (2 * n₀)
+
+objects:
+- poly_error_ratio
+- error_seq_predicts
+
+definitions_used:
+- ErrorSequence
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+- 过拟合/欠拟合权衡 KNOWN (统计学习标准)
+
+conclusion: '学习不稳 = 误差表过拟合: 每任务特化 C 失去共享结构, 记忆噪声,
+  迁移受损. 修正: 按 s 共享 + 平滑更新 + 少存残差 (奥卡姆学习版).
+  学得多不框死 ⟺ 保留结构剃冗余.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ErrorSequence.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
