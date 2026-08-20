@@ -1,0 +1,57 @@
+id: TK2
+title: "Toolkit/SymmetryRecovery: recover basepoint displacement from ±1 sign projections of symmetries"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    自包含工具包 (只 import mathlib): 输入一组对称性的 ±1 投影, 解出基点 delta.
+
+    ★ signProjection σ = Perm.sign σ (ℤˣ, 置换奇偶性)
+    ★ sign_is_pm_one: 符号投影是 ±1
+    ★ sign_mul: sign(σ·τ) = sign σ · sign τ (同态)
+    ★ observedSign σ delta = sign(σ·delta) (基点位移 delta 后的观测符号)
+    ★ Recovers σs s delta ⟺ ∀i, observedSign σs_i delta = s_i
+    ★ recovery_pins_parity: 若 delta 恢复观测 s, 则 sign(delta) = s · sign(σ)
+      (基点奇偶性被任一对称性观测钉死)
+    ★ recovery_of_even_symmetries: 若所有对称性偶 (sign=+1), 则恢复的 delta 偶
+      (基点位移保定向)
+
+    数学定位: 经典 (置换奇偶性/群同态标准), 形式化价值 = 通用"符号→基点位移"
+    解算器 API, 替代繁琐的逐例证明. KNOWN (置换群理论).
+  formal_math: |
+    def signProjection (σ : Equiv.Perm α) : ℤˣ := Equiv.Perm.sign σ
+    def observedSign (σ delta : Equiv.Perm α) : ℤˣ := signProjection (σ * delta)
+    def Recovers (σs : ι → Equiv.Perm α) (s : ι → ℤˣ) (delta : Equiv.Perm α) : Prop :=
+      ∀ i, observedSign (σs i) delta = s i
+    theorem recovery_pins_parity : observedSign σ delta = s → signProjection delta = s * signProjection σ
+    theorem recovery_of_even_symmetries [Nonempty ι] :
+      (∀ i, signProjection (σs i) = 1) → Recovers σs (fun _ => 1) delta → signProjection delta = 1
+
+objects:
+- signProjection
+- observedSign
+- Recovers
+
+definitions_used:
+- Equiv.Perm.sign (mathlib Mathlib.GroupTheory.Perm.Sign)
+- ℤˣ (unit group)
+
+assumptions:
+- α : Type with [Fintype α] [DecidableEq α]
+- 自包含: 仅 import mathlib
+
+conclusion: '符号向量 (±1 投影) 钉死基点位移的奇偶性类 (recovery_pins_parity);
+  偶对称性族 ⟹ 基点保定向 (recovery_of_even_symmetries). 通用符号→基点解算器.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/SymmetryRecovery.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
