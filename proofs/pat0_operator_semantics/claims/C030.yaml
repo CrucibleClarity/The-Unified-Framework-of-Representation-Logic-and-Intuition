@@ -1,0 +1,61 @@
+id: C030
+title: "Symplectic projection — J² = -I and projection cancellation of the four phases"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    辛结构: J(z) = i·z (虚数乘法), J² = -I。
+    四相位 {1, -1, i, -i} 在 J 下循环: 1 → i → -1 → -i → 1 (4 步回自身)。
+    核心命题 (投影对消):
+    1. 四相位向量和 = 0: 1 + i + (-1) + (-i) = 0
+    2. 互锁对: 实轴对 {±1} 对消, 虚轴对 {±i} 对消
+    3. 任意方向投影对消: 四相位在任意方向 u 的投影之和 = 0
+       (投影 = Re(z · conj u); 由向量和 = 0 与 Re 线性直接推出)
+    4. J 是正交变换 (保内积) 且 J² = -I — 辛结构的载体
+    这解释了 Q2_0 格点中 ±1 的对消对 (C028/C029) 是实轴方向的投影对消。
+  formal_math: |
+    J(z) := i·z on ℂ. J² = -I. The four phases {1, i, -1, -i} sum to 0;
+    for any direction u, Σ_{p ∈ {1,i,-1,-i}} Re(p · conj u) = 0.
+
+objects: ["J : ℂ → ℂ, J(z) = i·z", "four phases {1, i, -1, -i}", "projection Re(· conj u)"]
+definitions_used: ["Complex", "orthogonal transformation", "sum"]
+
+assumptions:
+  - "z : ℂ (complex plane)"
+conclusion: "The four phases are a balanced point set on the unit circle: they cancel under projection in every direction; J is an orthogonal transformation with J² = -I (symplectic structure)."
+
+known_special_cases:
+  - "u = 1 (real axis): ±1 pair cancels"
+  - "u = i (imaginary axis): ±i pair cancels"
+closest_known_results:
+  - "Classical: roots of unity sum to zero; rotation matrices (KNOWN)"
+  - "R047 (orthogonality/symplectic orthogonality), R149 (four-phase interlock)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is projection-cancellation as the Q2_0 ±1 pair explanation."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/SymplecticProjection.lean"
+  theorem_name: "ZeroRelative (symplectic projection theorems in the file)"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "projection cancellation holds for the balanced four phases, not for arbitrary subsets"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/SymplecticProjection.lean, no sorry"
+evidence_against: []
+
+next_action: "Basis of C031 (discrete four-phase group) and C033 (dual projection)."
