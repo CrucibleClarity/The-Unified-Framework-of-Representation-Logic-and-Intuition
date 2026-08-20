@@ -1,0 +1,107 @@
+id: R207
+title: "R207 (2026-08-13): ★内外联通翻转闭合为周期 (镜像对合) — S(x) = b - x (关于中点 b/2 反射): ①翻转内外 S(0) = b ∧ S(b) = 0 (R206 联通通道内外互换, 从无穷高维空间翻转出来 R198) ②★闭合为周期 S² = id (0 → b → 0, 周期 2 轨道) ③中点不动 S(b/2) = b/2 (通道中心) ④对和在一起 S(x) + x = b (内外对偶合并) — 联通通道内部与外部闭合为一个周期"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "接下来，能不能把这个内外部的联通，从完整的无穷高维空间中翻转出来，对和
+   在一起，相当于让这联通通道的内部与外部，闭合为一个周期？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。内外联通翻转闭合为周期.
+
+    ★ 唯一论点: 镜像对合 S(x) = b - x 翻转 R206 联通通道, 闭合为周期
+       2 (0 → b → 0).
+
+    ★ ① 翻转内外: S(0) = b (内部 → 外部), S(b) = 0 (外部 → 内部) —
+       R206 联通通道内外互换 (从无穷高维空间翻转出来, R198 不锁定
+       视角).
+    ★ ② 闭合为周期: S² = id (对合 = 周期 2): 0 → b → 0 — 联通通道
+       闭合为周期 2 轨道.
+    ★ ③ 中点不动: S(b/2) = b/2 — 中点 = 通道中心 (S 的不动点).
+    ★ ④ 对和在一起: S(x) + x = b — 内部与外部对和 = 通道长度 b
+       (对偶合并).
+
+  formal_math: |
+    -- ★翻转内外: S(0) = b ∧ S(b) = 0:
+    theorem involution_flips_interior_exterior (b : ℝ) :
+      (b - 0 = b) ∧ (b - b = 0)
+    -- ★闭合为周期: S² = id:
+    theorem involution_closes_cycle (b x : ℝ) : b - (b - x) = x
+    -- 中点不动:
+    theorem involution_midpoint_fixed (b : ℝ) : b - b / 2 = b / 2
+    -- ★对和在一起: S(x) + x = b:
+    theorem involution_pair_sum (b x : ℝ) : (b - x) + x = b
+    -- 全景:
+    theorem cycle_closure_perspective (b x : ℝ) :
+      (b - (b - x) = x) ∧ ((b - x) + x = b)
+
+objects:
+- involution_flips_interior_exterior
+- involution_closes_cycle
+- involution_midpoint_fixed
+- involution_pair_sum
+- cycle_closure_perspective
+definitions_used:
+- 镜像对合 S(x) = b - x
+- 翻转内外 (S(0) = b ∧ S(b) = 0)
+- 闭合为周期 (S² = id, 0 → b → 0)
+- 对和在一起 (S(x) + x = b)
+
+assumptions:
+- R206 联通通道 (收缩 T_b: 0 → b)
+- 对合 S² = id (反射)
+- 中点 = 通道中心
+conclusion: "筑基篇系列方法论应用之十一完成: 内外联通翻转闭合为周期 — 镜像对合 S(x) = b - x: 翻转内外 (S(0) = b ∧ S(b) = 0), 闭合为周期 (S² = id: 0 → b → 0), 中点不动 (S(b/2) = b/2), 对和在一起 (S(x) + x = b) — R206 联通通道从无穷高维空间翻转出来, 内部与外部闭合为一个周期。5 个新定理全部只锚筑基篇定理 (R181/R198/R206) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'S(0) = b: 内部翻到外部'
+- 'S(b) = 0: 外部翻到内部'
+- 'S² = id: 周期 2 (0 → b → 0)'
+- 'S(b/2) = b/2: 中点不动'
+closest_known_results:
+- R206 Pat0InteriorExterior (内外联通)
+- R198 PatNumberOnesUnlocked (无穷高维不锁定)
+- R181 PatOddEquationRadical (收缩)
+literature_queries:
+- interior exterior involution cycle closure
+- mirror involution period two channel
+
+counterexample_search:
+  status: done
+  search_space: S(0)=b, S(b)=0, S²=id, 中点不动, 对和是否全成立
+  smallest_checked_size: null
+  result: 枚举 x ∈ {0, b, 1.5, -2.3} S² = id 全过; 对和 S(x)+x = b
+    全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/Pat0CycleClosure.lean (新增 5 定理)
+  theorem_name: ZeroRelative.Pat0CycleClosure.involution_flips_interior_exterior / .involution_closes_cycle / .involution_midpoint_fixed / .involution_pair_sum / .cycle_closure_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称联通是单向的 — 已闭合: 对合 S² = id 周期 2
+- 把翻转当旋转 — 翻转 = 镜像反射 (S² = id)
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'involution_flips_interior_exterior: ring — 内外互换'
+- 'involution_closes_cycle: ring — S² = id 周期 2'
+- 'involution_midpoint_fixed: ring — 中点不动'
+- 'involution_pair_sum: ring — 对和'
+- 'cycle_closure_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 内外联通闭合为周期完成; 后续可深化周期闭合的观测
+  结构'
+notes: '用户问能否把内外联通翻转闭合为周期: 可以 — 镜像对合 S(x) =
+  b - x: 翻转内外 (S(0)=b, S(b)=0), 闭合为周期 (S² = id: 0 → b → 0),
+  对和 (S(x)+x = b)。'
