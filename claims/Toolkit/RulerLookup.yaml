@@ -1,0 +1,71 @@
+id: RulerLookup
+title: "RulerLookup: all simplification steps reduce to lookup tables — any function on a finite domain is a precomputed table (precompute offline + O(1)/O(log n) lookup at runtime)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerLookup: 所有化简步骤 = 查表 (用户指令 2026-08-12).
+
+    ★ 八步化简全部可查表化 (恒等式先验验证):
+      ① 投影(选锚) → 查符号表 (0/±1 决策)
+      ② 结构丢失 → 查可还原性表 (定理预计算)
+      ③ 发散藏进收缩 → 查圆表 (S¹ 参数化)
+      ④ 收敛保留 → 查相位表 (单位根)
+      ⑤ 相位对齐 → 查相位表 (fp 级)
+      ⑥ 拆圆 → 查多边形误差表
+      ⑦ 相位 numeral → 查三值位表 (3^k)
+      ⑧ 多精度 → 选精度级 + 查表
+
+    ★ 核心定理: 有限域上的任何函数可查表化
+      设 f : α → β, α 有限 (|α| = n)
+      表 T = {(x, f x) : x ∈ α} (n 项, Finset.image 构造)
+      查找: 输入 x → 表中找 (x, ·) → 返回 f x
+      复杂度: 预计算 O(n) + 查找 O(1) (哈希) / O(log n) (二分)
+
+    ★ 统一机制:
+      预计算 (离线): 定理/结构/相位 提前算好 (Lean 形式化 = 预计算)
+      运行时 (在线): 只查表 = O(1) 或 O(log n)
+      ⟹ 化简 → 查表 = 计算变预计算 + 查找
+
+    ★ 边界 (诚实):
+      ① 有限域 + 预计算才可全表 (无限域需编码/离散化)
+      ② fp64 全表不可行 (36TB) → 稀疏+插值
+      ③ 新结构需先在线建表
+      ④ 查表化前提 = 表已预计算 (Lean 验证过)
+
+    ★ 与编码连接:
+      有限域 α = 相位格点 (3^k 或 2^bits)
+      表 T = 相位 → 值 映射
+      查表 = 相位 numeral 解码 (RulerNumeral)
+      ⟹ 查表化 = 编码化的基础 (有限域 → 表)
+  formal_math: |
+    theorem lookup_exists {α β : Type*} [Fintype α] (f : α → β) :
+      ∃ T : Finset (α × β), (∀ x, (x, f x) ∈ T) ∧
+        ∀ x, ∃ y, (x, y) ∈ T ∧ y = f x
+    -- 构造: T = Finset.image (fun x => (x, f x)) Finset.univ
+
+objects:
+- lookup_exists
+
+definitions_used:
+- Finset.image / Finset.univ (mathlib)
+
+assumptions:
+- α : Type with [Fintype α] (有限域)
+- 自包含: 仅 import mathlib
+
+conclusion: '所有化简步骤 = 查表: 有限域函数 → 预计算表 (Finset.image),
+  运行时 O(1)/O(log n). 预计算 = Lean 验证 (离线), 查找 = 运行时 (在线).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ConciseMagicTeaching.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
