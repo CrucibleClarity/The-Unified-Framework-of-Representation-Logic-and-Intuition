@@ -1,0 +1,66 @@
+id: C036
+title: "Trigonometric direction — cos even (direction loss), sin odd (direction kept), basepoints, and the four-phase grid"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: operator_semantics
+
+statement:
+  informal: |
+    三角函数的方向问题 (方向问题重灾区):
+    1. cos 偶函数: cos(-θ) = cos(θ) — 单用 cos 丢方向!
+       (方向必须成对声明: cos 把 θ 与 -θ 投影到同一点, 无法区分)
+    2. sin 奇函数: sin(-θ) = -sin(θ) — 保留方向 (符号随 θ 反号)
+    3. 基点不同: cos 的基点 = 1 (乘法基点, cos 0 = 1);
+       sin 的基点 = 0 (加法基点, sin 0 = 0)
+    4. 周期 2π = 四相位互锁的连续化: 90° 格点上的 (cos, sin) 只取
+       {(1,0), (0,1), (-1,0), (0,-1)} — 与辛投影 J²=-I 同构 (rotJ² = -I, rotJ⁴ = I)
+    pat0 落实: 连续旋转 → 四相位格点旋转 — θ 量化到 90° 格点,
+    cos/sin 只取 {0, ±1} (无小数!), 纯格点运算; 旋转必须成对使用 (cos, sin)。
+  formal_math: |
+    cos_even: cos(-θ) = cos θ.  sin_odd: sin(-θ) = -sin θ.
+    cos_not_injective: ∃ θ₁ ≠ θ₂ with cos θ₁ = cos θ₂ (θ and -θ).
+    rot_keeps_norm: (x cos θ - y sin θ)² + (x sin θ + y cos θ)² = x² + y².
+    cos_basepoint_one: cos 0 = 1;  sin_basepoint_zero: sin 0 = 0.
+    quad_phase_grid: (cos, sin) at {0, π/2, π, 3π/2} = {(1,0), (0,1), (-1,0), (0,-1)}.
+    rotJ² = -I, rotJ⁴ = I (four-phase cycle).
+
+objects: ["cos/sin : ℝ → ℝ", "basepoints: cos → 1, sin → 0", "rotJ (90° grid rotation)", "four-phase grid"]
+definitions_used: ["Real.cos", "Real.sin", "Real.pi", "pair rotation"]
+
+assumptions:
+  - "θ : ℝ"
+conclusion: "cos alone loses direction (even function); sin keeps it (odd); their basepoints differ (1 vs 0); the 90° grid is the discrete four-phase interlock isomorphic to the symplectic J² = -I rotation."
+
+known_special_cases:
+  - "rotJ⁴ = I: four 90° rotations return to the basepoint"
+  - "grid points: cos/sin take only {0, ±1} at 90° lattice"
+closest_known_results:
+  - "Classical trigonometry (KNOWN)"
+  - "R136 (direction must be declared in pairs), C030 (symplectic J), R149 (four-phase interlock)"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "Classical facts; the contribution is the direction-reading (cos alone = direction loss)."
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/TrigPat0.lean"
+  theorem_name: "ZeroRelative.cos_even_direction_loss / sin_odd_direction_keep / cos_not_injective_direction_loss / rot_keeps_norm / cos_basepoint_one / sin_basepoint_zero / quad_phase_grid_* / rotJ_sq_neg_id / rotJ_pow4_id / rot90_phase_advance"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "cos being even is intrinsic: direction recovery requires the (cos, sin) pair"
+
+evidence_for:
+  - "Lean accepts Formal/ZeroRelative/TrigPat0.lean, no sorry"
+evidence_against: []
+
+next_action: "C037 (Q2_0 four-grid-point symbol quantization of the four phases)."
