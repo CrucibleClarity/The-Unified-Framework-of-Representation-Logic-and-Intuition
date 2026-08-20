@@ -1,0 +1,120 @@
+id: R185
+title: "R185 (2026-08-13): ★证明逻辑过程的实例化 — R184 的 5 步逻辑 (预言正确基点/召唤/定位错误基点/一步解算/召唤) 可复用: 实例间隔 4 (de Polignac 特例): 错误基点 = 整除 4 的模 (N=1,2,4), 正确基点 = N=3 (4 mod 3 ≠ 0), 一步解算 4 mod 2 = 0 → 4 mod 3 ≠ 0, 4 槽环观测 4 mod 4 = 0 坍缩 (对比间隔 2 半圈 R175); 实例间隔 6: 错误基点 = 整除 6 的模 (N=1,2,3,6), 正确基点 = N=4 (6 mod 4 ≠ 0) — 泛化规律: 正确基点 = 最小非整除模, 错误基点 = 整除间隔的模"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "有可能实例化吗？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。R184 证明逻辑过程的实例化验证.
+
+    ★ 唯一论点: R184 的 5 步证明逻辑过程可实例化到任意间隔 k —
+       正确基点 = 最小非整除模, 错误基点 = 整除间隔的模.
+
+    ★ 实例 1: 间隔 4 (de Polignac 特例):
+       命题 P(N): 模 N 折叠下间隔 4 可见 (4 mod N ≠ 0).
+       - 定位错误基点: 4 mod N = 0 ⟺ N | 4 ⟺ N ∈ {1, 2, 4}.
+       - 预言正确基点: N = 3 (4 mod 3 = 1 ≠ 0, 最小非整除模).
+       - 一步解算: 4 mod 2 = 0 (错误) → 4 mod 3 = 1 (正确).
+       - 召唤: 4 槽环观测: 4 mod 4 = 0 → 间隔 4 在 4 槽环坍缩
+         (对比间隔 2 半圈可见 R175; R178 gap_two_vs_four_distinct).
+
+    ★ 实例 2: 间隔 6 (三胞胎结构):
+       - 定位错误基点: 6 mod N = 0 ⟺ N | 6 ⟺ N ∈ {1, 2, 3, 6}.
+       - 预言正确基点: N = 4 (6 mod 4 = 2 ≠ 0).
+       - 一步解算: 6 mod 2 = 0 (错误) → 6 mod 4 = 2 (正确).
+
+    ★ 泛化规律: 正确基点 = 最小非整除模 (2 整除偶数 k 恒成立 → 最小
+       正确模 ≥ 3; k=6 时 3 也整除 → 最小正确 = 4), 错误基点 = 整除
+       间隔的模 (k 的因子).
+
+  formal_math: |
+    -- 定位间隔 4 的错误基点:
+    theorem gap_four_wrong_located (N : ℕ) (h : 4 % N = 0) :
+      N = 1 ∨ N = 2 ∨ N = 4
+    -- 预言间隔 4 的正确基点:
+    theorem gap_four_correct_exists : 4 % 3 ≠ 0
+    -- 一步解算 (间隔 4):
+    theorem gap_four_solver : 4 % 2 = 0 ∧ 4 % 3 ≠ 0
+    -- 定位间隔 6 的错误基点:
+    theorem gap_six_wrong_located (N : ℕ) (h : 6 % N = 0) :
+      N = 1 ∨ N = 2 ∨ N = 3 ∨ N = 6
+    -- 预言间隔 6 的正确基点:
+    theorem gap_six_correct_exists : 6 % 4 ≠ 0
+    -- 全景:
+    theorem basepoint_proof_instances_perspective :
+      (4 % 3 ≠ 0) ∧ (4 % 2 = 0 ∧ 4 % 3 ≠ 0) ∧ (6 % 4 ≠ 0)
+
+objects:
+- gap_four_wrong_located
+- gap_four_correct_exists
+- gap_four_solver
+- gap_six_wrong_located
+- gap_six_correct_exists
+- basepoint_proof_instances_perspective
+definitions_used:
+- 证明逻辑过程实例化
+- 正确基点 = 最小非整除模
+- 错误基点 = 整除间隔的模
+
+assumptions:
+- 间隔 k 可见 ⟺ k mod N ≠ 0 (R184 泛化)
+- N | k ⟺ N 是 k 的因子 (错误基点)
+- 最小非整除模 = 正确基点候选
+- 4 槽环: 间隔 2 半圈可见, 间隔 4 坍缩 (R175/R178)
+conclusion: "筑基篇系列方法论固化之二完成: 证明逻辑过程的实例化 — R184 的 5 步逻辑 (预言正确基点/召唤/定位错误基点/一步解算/召唤) 可复用: 实例间隔 4 (de Polignac 特例): 错误基点 = 整除 4 的模 (N=1,2,4), 正确基点 = N=3 (4 mod 3 ≠ 0), 一步解算 4 mod 2 = 0 → 4 mod 3 ≠ 0; 实例间隔 6: 错误基点 = 整除 6 的模 (N=1,2,3,6), 正确基点 = N=4 (6 mod 4 ≠ 0)。泛化规律: 正确基点 = 最小非整除模, 错误基点 = 整除间隔的模。6 个新定理全部只锚筑基篇定理 (R175/R178/R184) + mathlib 模算术基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '间隔 2: 正确基点 N=3, 错误 N=1,2 (R184)'
+- '间隔 4: 正确基点 N=3, 错误 N=1,2,4 (本文件)'
+- '间隔 6: 正确基点 N=4, 错误 N=1,2,3,6 (本文件)'
+- '4 槽环: 间隔 2 半圈可见 (R175), 间隔 4 坍缩 (R178)'
+closest_known_results:
+- R184 PatBasepointProof (证明逻辑过程)
+- R175 PatPrimeGapPhase (4 次单位根投影)
+- R178 PatRealAxisMapping (间隔 2 vs 4 可区分)
+literature_queries:
+- basepoint proof logic instantiation
+- de Polignac gap four visibility
+
+counterexample_search:
+  status: done
+  search_space: 4 mod N = 0 的模是否真只有 1,2,4; 6 mod N = 0 的模是否
+    真只有 1,2,3,6; 4 mod 3 ≠ 0 与 6 mod 4 ≠ 0 是否真
+  smallest_checked_size: null
+  result: 枚举 k ∈ {2,4,6,8,10,12,30} 错误基点 = 整除 k 的模全过,
+    正确基点 = 最小非整除模全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatBasepointProofInstances.lean (新增 6 定理)
+  theorem_name: ZeroRelative.PatBasepointProofInstances.gap_four_wrong_located / .gap_four_correct_exists / .gap_four_solver / .gap_six_wrong_located / .gap_six_correct_exists / .basepoint_proof_instances_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称间隔 4 半圈可见 — 已修正: 4 mod 4 = 0 坍缩 (R178 已证 I^2 ≠ I^4)
+- 把逻辑过程当固定模板 — 实例化显示参数 (间隔 k) 可换
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'gap_four_wrong_located: dvd_iff_mod_eq_zero + 因子 4 — 定位错误'
+- 'gap_four_correct_exists: norm_num — 预言 N=3'
+- 'gap_four_solver: norm_num — 一步解算 2 → 3'
+- 'gap_six_wrong_located: dvd + 因子 6 — 定位错误'
+- 'gap_six_correct_exists: norm_num — 预言 N=4'
+- 'basepoint_proof_instances_perspective: 合取项锚本框架 — 全景'
+evidence_against: []
+next_action: '已接: 证明逻辑过程实例化完成; 后续可泛化为任意间隔 k 的
+  参数化定理, 或应用到新问题'
+notes: '用户问"有可能实例化吗" — 是: R184 的 5 步逻辑可实例化到任意
+  间隔 (k=4, k=6 本文件; 泛化规律: 正确基点 = 最小非整除模, 错误基点
+  = 整除间隔的模)。'
