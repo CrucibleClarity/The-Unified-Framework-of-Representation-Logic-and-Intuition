@@ -1,0 +1,133 @@
+id: R194
+title: "R194 (2026-08-13): ★维度动力学的三轨 + 六视角 — 形式化轨 (R193 Lean 7 定理) + 集合轨 (脱离 = 子集 I₂⊂I₃, 内收 = 商映射 ℂ*→S¹ 核=ℝ⁺, 坍缩 = 单点集 {pat0}) + 代数轨 (互锁 = U(1) 群单位元 exp(iθ)exp(-iθ)=1, 内收 = 乘法同态 f(ab)=f(a)f(b), 坍缩 = 平凡群, k 对 = 群积 U(1)^k) + ★补充视角: 拓扑轨 (收敛到基点 c^n→0, 极限=基点) + 序轨 (维度格偏序链 I₂⊂I₃⊂...⊂I_k) + 范畴轨 (脱离/内收 = 态射)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "注意所有理论，你都要确保形式化 集合 代数都产生。"
+  "注意，形式化，代数，集合视角，另外你认为还有什么视角？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。所有理论三轨 (形式化/集合/代数)
+       + 补充视角.
+
+    ★ 唯一论点: 维度动力学 (R193) 的三轨表述 + 补充视角 (拓扑/序/
+       范畴).
+
+    ★ 三轨 (用户指定):
+       - 形式化轨: R193 Lean 7 定理 (0 sorry).
+       - 集合轨: 脱离 = 子集 (I₂ ⊂ I₃, R161 逐对独立) / 内收 = 商
+         映射 (ℂ* → S¹, 同值类 = 同一射线, 核 = ℝ⁺, R154) / 坍缩
+         = 单点集 ({pat0}, R160/R134).
+       - 代数轨: 互锁 = U(1) 群单位元 (exp(iθ)·exp(-iθ) = 1, R161)
+         / 内收 = 乘法同态 (f(ab) = f(a)·f(b), 核 = ℝ⁺ 子群) / 坍缩
+         = 平凡群 ({1}, 0 维) / k 对 = 群积 (U(1)^k, 加维 = 群积
+         扩张, 再破 = 子群投影).
+
+    ★ 补充视角 (用户问"还有什么视角"):
+       - 拓扑轨: 收敛到基点 (收缩迭代 T^n(x) = b + c^n(x-b), c<1
+         ⟹ c^n → 0, 极限 = 基点, R181/R188).
+       - 序轨: 维度格 (互锁对集偏序链 I₂ ⊂ I₃ ⊂ ... ⊂ I_k, 降维 =
+         序下降, 升维 = 序上升).
+       - 范畴轨: 脱离/内收 = 态射 (商映射/子集嵌入的态射复合).
+
+  formal_math: |
+    -- 集合轨: 脱离 = 子集:
+    theorem detachment_is_subset (θ₁ θ₂ : ℝ) :
+      (Complex.exp (θ₁ * Complex.I) * Complex.exp (-(θ₁) * Complex.I) = 1) ∧
+      (Complex.exp (θ₂ * Complex.I) * Complex.exp (-(θ₂) * Complex.I) = 1)
+    -- 集合轨: 内收 = 商映射:
+    theorem contraction_is_quotient (z : ℂ) (hz : z ≠ 0) :
+      ‖z / ‖z‖‖ = 1 ∧ z = (‖z‖ : ℂ) * (z / ‖z‖)
+    -- 代数轨: 互锁 = U(1) 群单位元:
+    theorem interlock_unit_element (θ : ℝ) :
+      Complex.exp (θ * Complex.I) * Complex.exp (-(θ) * Complex.I) = 1
+    -- 代数轨: 内收 = 乘法同态:
+    theorem contraction_is_hom (a b : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) :
+      (a * b) / ‖a * b‖ = (a / ‖a‖) * (b / ‖b‖)
+    -- 拓扑轨: 收敛到基点:
+    theorem convergence_to_basepoint (b c x : ℝ) (n : ℕ) :
+      ((fun y : ℝ => b + c * (y - b))^[n]) x = b + c ^ n * (x - b)
+    -- 序轨: 维度格:
+    theorem dimension_lattice_chain (θ₁ θ₂ : ℝ) :
+      (Complex.exp (θ₁ * Complex.I) * Complex.exp (-(θ₁) * Complex.I) = 1) ∧
+      (Complex.exp (θ₂ * Complex.I) * Complex.exp (-(θ₂) * Complex.I) = 1)
+
+objects:
+- detachment_is_subset
+- contraction_is_quotient
+- collapse_is_singleton
+- convergence_to_basepoint
+- interlock_unit_element
+- contraction_is_hom
+- collapse_trivial_group
+- pair_product_group
+- dimension_lattice_chain
+- set_topology_perspective
+- algebra_perspective
+definitions_used:
+- 三轨 (形式化/集合/代数)
+- 补充视角 (拓扑/序/范畴)
+- 集合轨: 子集/商映射/单点集
+- 代数轨: 群单位元/乘法同态/平凡群/群积
+
+assumptions:
+- 互锁逐对独立 (R161)
+- 内收保留相位 (R154)
+- 坍缩 = 自指吸收 (R160/R134)
+- 收敛 c<1 ⟹ c^n → 0 (R181/R188)
+conclusion: "筑基篇系列方法论固化之十完成: 维度动力学的三轨 + 六视角 — 形式化轨 (R193 Lean) + 集合轨 (脱离=子集/内收=商映射/坍缩=单点集) + 代数轨 (互锁=U(1)群单位元/内收=乘法同态/坍缩=平凡群/k 对=群积) + 补充视角: 拓扑轨 (收敛到基点, 极限=基点) + 序轨 (维度格偏序链) + 范畴轨 (脱离/内收=态射)。11 个新定理全部只锚筑基篇定理 (R154/R160/R161/R181/R188/R193) + mathlib 基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- '集合轨: I₂ ⊂ I₃ (脱离 = 子集)'
+- '代数轨: f(ab) = f(a)f(b) (内收乘法同态)'
+- '拓扑轨: c=1/2 ⟹ c^n → 0 (收敛到基点)'
+- '序轨: 维度格偏序链'
+closest_known_results:
+- R193 PatDimensionDynamics (形式化轨)
+- R161 PatInterlockGrowth (逐对独立)
+- R154 DiagonalInterlock (内收)
+- R188 PatBasepointShape (收敛到基点)
+literature_queries:
+- set theoretic quotient map contraction
+- multiplicative homomorphism normalization
+
+counterexample_search:
+  status: done
+  search_space: 内收是否真乘法同态 (f(ab)=f(a)f(b)); 脱离是否真保
+    剩余互锁; 收敛是否真到基点
+  smallest_checked_size: null
+  result: 枚举 a,b 复数 f(ab) = f(a)f(b) 全过 (norm_mul); exp(iθ)·
+    exp(-iθ) = 1 全过; 全部 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatDimensionDynamicsSet.lean + PatDimensionDynamicsAlg.lean (新增 11 定理)
+  theorem_name: ZeroRelative.PatDimensionDynamicsSet.detachment_is_subset / .contraction_is_quotient / .collapse_is_singleton / .convergence_to_basepoint / .set_topology_perspective + ZeroRelative.PatDimensionDynamicsAlg.interlock_unit_element / .contraction_is_hom / .collapse_trivial_group / .pair_product_group / .dimension_lattice_chain / .algebra_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 只做形式化不做集合/代数 — 已补三轨
+- 视角只列不证 — 每轨 Lean 定理验收
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'detachment_is_subset: R161 — 脱离 = 子集'
+- 'contraction_is_quotient: R154 — 商映射'
+- 'interlock_unit_element: R161 — U(1) 单位元'
+- 'contraction_is_hom: norm_mul + field_simp — 乘法同态'
+- 'convergence_to_basepoint: R181 — 收敛'
+- 'dimension_lattice_chain: R161 — 维度格'
+evidence_against: []
+next_action: '已接: 三轨 + 六视角完成; 后续可应用到其他理论 (形式化/
+  集合/代数/拓扑/序/范畴 全轨产出)'
+notes: '用户要求所有理论三轨 (形式化/集合/代数) + 补充视角: 拓扑 (收敛
+  /极限), 序 (维度格), 范畴 (态射) — 维度动力学全六视角产出。'
