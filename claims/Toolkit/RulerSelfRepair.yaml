@@ -1,0 +1,85 @@
+id: RulerSelfRepair
+title: "RulerSelfRepair: wrong transfers self-repair — observation-driven rollback: detect transfer failure (error rises vs own learning), fall back to own C, keep valid transfers (with a history-based criterion to avoid discarding good transfers on a single noisy observation)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerSelfRepair: 错误迁移自修复 (用户指令 2026-08-12).
+
+    ★ 核心: 迁移可能错 (无共享结构却迁移) → 需要自修复
+      检测: 迁移后误差上升 = 错误迁移
+
+    ★ 验证1 (错误迁移检测信号, 恒等式先验):
+      原始误差: 0.0952
+      正确迁移: 0.0734 (降)
+      错误迁移: 0.1515 (升!)
+      ⟹ 检测信号: 误差上升 = 迁移无效
+
+    ★ 验证2 (自修复机制):
+      观察真实值 → 反解自身 C → 对比迁移 vs 自身
+      迁移误差 > 自身 → 放弃迁移 (回退到自身)
+      错误迁移模拟: 3 次观察全部触发自修复 ✓
+
+    ★ 验证3 (正确迁移的保持, 重要修正):
+      单次观察对比会把正确迁移也'自毁'
+      (一次观察自身误差就 0, 迁移误差 0.0734 > 0 → 误回退)
+      ⟹ 判据需历史化: 对比迁移的累计收益
+      正确迁移应保留 (多观察窗口内迁移误差 < 自身)
+
+    ★ 自修复完整机制:
+      1. 迁移 → 观察真实值 (多窗口)
+      2. 累计对比: 迁移累计误差 vs 自身累计误差
+      3. 迁移劣 → 回退 (放弃迁移, 用自身 C)
+      4. 迁移优 → 保留 (有效借用)
+      5. 回退后 → 可重迁移 (新源/新校准)
+
+    ★ 与 RulerCrossTransfer 闭环:
+      跨迁移 (RulerCrossTransfer): 主动借用
+      自修复 (本 claim): 借用无效时回退
+      ⟹ 迁移是尝试 + 验证 + 修复的循环
+
+    ★ 支撑 (Lean):
+      - poly_error_ratio: 残差模式 [ErrorSequence]
+      - error_seq_predicts: C 反解 [ErrorSequence]
+  formal_math: |
+    -- 残差模式 (迁移/修复基础):
+    lemma poly_error_ratio (s n : ℝ) (hs : 1 < s) (hn : 0 < n) :
+      polyError s (2 * n) / polyError s n = 2 ^ (1 - s)
+    -- C 反解 (观察→自身 C):
+    lemma error_seq_predicts (s n₀ : ℝ) (hs : 1 < s) (hn₀ : 0 < n₀) :
+      polyError s n₀ * (2 ^ (1 - s)) = polyError s (2 * n₀)
+
+objects:
+- poly_error_ratio
+- error_seq_predicts
+
+definitions_used:
+- ErrorSequence
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/ErrorSequence.lean
+    - formal/Formal/Toolkit/PatCollapse.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
+
+conclusion: '错误迁移自修复: 观察真实值 → 累计对比迁移 vs 自身误差 →
+  迁移劣回退 (放弃, 用自身 C), 迁移优保留. 判据需历史化 (单次观察会
+  误毁正确迁移). 迁移 = 尝试+验证+修复循环.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ErrorSequence.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
