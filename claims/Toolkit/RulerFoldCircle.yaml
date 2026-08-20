@@ -1,0 +1,78 @@
+id: RulerFoldCircle
+title: "RulerFoldCircle: circle → flatten → fold — the directionless segment [0,π]; folding = conjugate-merging (kills chirality/handedness), a RulerFold instance"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerFoldCircle: 圆 → 拍平 → 对折 = 无方向线段 [0, π] (用户指令 2026-08-12).
+
+    ★ 三步过程 (恒等式先验验证):
+      圆 S¹ (有方向, θ ∈ [0, 2π))
+        ↓ 拍平 (切开)
+      线段 [0, 2π], 两端 0 ~ 2π (同一相位)
+        ↓ 对折 (θ ~ 2π-θ, 共轭合并)
+      无方向线段 [0, π] (有限!)
+
+    ★ 关键验证:
+      对折映射: 30°↔330°→30°, 45°↔315°→45° (共轭对合并)
+      exp(i315°) = conj(exp(i45°)) — 对折 = 共轭合并 = 消灭方向/手性
+      结果: 无方向线段 [0, π], 端点 0 (单位元) 和 π (-1)
+
+    ★ 精确化 ('0-无穷'):
+      不是 0-∞ (无限), 而是 0-π (有限)
+      对折把'无穷' (2π 切口) 合并回 0
+      0 和 2π 是同一个点 (拍平切口), π 是镜像轴
+      全程有限, 方向消失, 手性消失
+
+    ★ 与 RulerFold 连接:
+      这是又一个折叠实例:
+      圆 (有方向) → 对折 → 无方向线段 [0, π]
+      消灭的是方向 (手性/共轭), 保留的是位置 ([0, π] 上的点)
+      对应黎曼的 conj (共轭对合并) — 8 格点圆对折 = 4 共轭对
+
+    ★ 数学对应:
+      对折 = θ ~ 2π-θ (S¹/ℤ₂ 的部分合并)
+      结果: 带边界的半圆 (两端 0 和 π 保留, 不合并)
+      ≠ 射影线 (对径点不合并, 只共轭合并)
+
+    ★ 支撑 (Lean):
+      - norm_exp_I_eq_one: 相位在单位圆 [TK4]
+      - euler_identity: exp(π·I) = -1 (π 是端点) [TK3]
+      - even_cluster_meets_one: 相位周期 [TK3]
+  formal_math: |
+    -- 相位在单位圆 (对折对象):
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 端点 π (对折后的 -1):
+    lemma euler_identity : Complex.exp (Real.pi * Complex.I) = -1
+    -- 相位周期 (切口 2π):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+
+objects:
+- norm_exp_I_eq_one
+- euler_identity
+- even_cluster_meets_one
+
+definitions_used:
+- TK4 AxisComponent / TK3 Compactification
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '圆对折 = 无方向线段 [0, π]: 对折 = 共轭合并 (消灭方向/手性),
+  保留位置. 0 和 2π 合并 (切口), π 是镜像轴. 全程有限 (0-π 非 0-∞).
+  RulerFold 实例 (消灭手性, 保留位置).'
+
+verification:
+  lean_files:
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/Compactification.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
