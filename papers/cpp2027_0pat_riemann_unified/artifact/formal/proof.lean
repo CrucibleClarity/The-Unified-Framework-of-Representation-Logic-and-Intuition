@@ -3639,4 +3639,22 @@ theorem term_on_line_explicit (n : ℕ) (hn : n ≠ 0) (t : ℝ) :
   simp
   ring
 
+theorem cpow_two_half_minus_im (t : ℝ) :
+    (2 : ℂ) ^ ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (Real.log 2 / 2) : ℂ) * (Real.cos (t * Real.log 2) : ℂ)
+        - (Real.exp (Real.log 2 / 2) : ℂ) * (Real.sin (t * Real.log 2) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by norm_num : (2 : ℂ) ≠ 0)]
+  have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+  rw [hlog]
+  have hdecomp : (Real.log 2 : ℂ) * ((1 / 2 : ℂ) - (t : ℂ) * Complex.I)
+      = ((Real.log 2 / 2 : ℝ) : ℂ) + ((-(t * Real.log 2) : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.sub_re,
+      Complex.sub_im, Complex.neg_re, Complex.neg_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
 end RiemannUnifiedObservation
