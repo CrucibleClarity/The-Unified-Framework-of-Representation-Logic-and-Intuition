@@ -3619,4 +3619,24 @@ theorem gamma_abs_sq_on_line (t : ℝ) :
   -- 目标 ‖Γ(s)‖² = π/cosh(πt): normSq = ‖·‖²
   simpa [s, Complex.normSq_eq_norm_sq] using hfin
 
+theorem term_on_line_explicit (n : ℕ) (hn : n ≠ 0) (t : ℝ) :
+    (n : ℂ) ^ (-((1 / 2 : ℂ) + (t : ℂ) * Complex.I) : ℂ)
+      = (Real.exp (-Real.log n / 2) : ℂ) * (Real.cos (t * Real.log n) : ℂ)
+        - (Real.exp (-Real.log n / 2) : ℂ) * (Real.sin (t * Real.log n) : ℂ) * Complex.I := by
+  have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+  rw [Complex.cpow_def_of_ne_zero hn0]
+  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) := by
+    exact (Complex.ofReal_log (Nat.cast_nonneg n)).symm
+  rw [hlog]
+  have hdecomp : (Real.log n : ℂ) * (-((1 / 2 : ℂ) + (t : ℂ) * Complex.I))
+      = ((-Real.log n / 2 : ℝ) : ℂ) + ((-(t * Real.log n) : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re,
+      Complex.neg_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  -- exp((-(t·ln n))·I) = cos(t·ln n) - i·sin(t·ln n)
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
 end RiemannUnifiedObservation
