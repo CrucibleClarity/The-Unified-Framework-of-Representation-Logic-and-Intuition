@@ -1,0 +1,80 @@
+id: Ruler2Exam
+title: "Ruler2Exam: the reduction chain 8→4→2→1 — two layers (parameter family X, structure family Y) unify in basepoint teleport"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    Ruler2Exam: 归约链 8→4→2→1 (返回原始基点, 用户指令 2026-08-12).
+
+    ★ 归约链:
+      8 分量 → 4 家族 (Ruler4Exam: A迭代/张缩, B夹角/角速度, C对称/不变量,
+      D度规/嵌入) → 2 层 → 1 基点穿折越
+
+    ★ 2 层:
+      X = 参数族 (A+B): 一切变换参数 (张缩 n,a,b + 夹角 θ) = 基点位移 delta
+      Y = 结构族 (C+D): 一切保持的性质 (不变量 + 度规/嵌入) = D(H) 等价类
+
+    ★ 统一 (2→1): 基点穿折越 teleport e f x = (f -ᵥ e) +ᵥ x 同时携带两层:
+      - 参数层 X: teleportParameter e f = f -ᵥ e (delta)
+        teleport_eq_iff_parameter_eq: 参数决定变换 (变换=参数函数)
+        teleport_parameter_compose: (g-f)+(f-e) = g-e (参数可加)
+      - 结构层 Y: teleport_preserves_structure: (e,a) ~ (f, T a) (等价类保持)
+        displacement_structure_is_equiv: 位移关系是等价关系 (D(H))
+
+    ★ 核心定理:
+      reduction_chain_unifies: teleport 同时参数化 (X) 且结构保持 (Y)
+      reduction_chain_to_basepoint: 参数可加 + 结构每步保持
+        (返回原始基点 = 每步穿折越结构不变, 只坐标漂移)
+
+    ★ 意义: 归约链收敛于基点穿折越 — 参数=delta, 结构=等价类.
+      这就是"返回原始基点" (C007: 结构基点无关, 坐标基点漂移).
+  formal_math: |
+    def teleportParameter (e f : P) : G := f -ᵥ e
+    lemma teleport_eq_iff_parameter_eq (e f e' f' : P) :
+      teleport e f = teleport e' f' ↔
+      teleportParameter e f = teleportParameter e' f'
+    lemma teleport_parameter_compose (e f g : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g
+    lemma teleport_preserves_structure (e f a : P) :
+      Displacement e a f (teleport e f a)
+    lemma displacement_structure_is_equiv :
+      Equivalence (fun p q : P × P => Displacement p.1 p.2 q.1 q.2)
+    theorem reduction_chain_unifies (e f a : P) :
+      (∀ e' f', teleport e f = teleport e' f' ↔
+        teleportParameter e f = teleportParameter e' f') ∧
+      Displacement e a f (teleport e f a)
+    theorem reduction_chain_to_basepoint (e f g a : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g ∧
+      Displacement e a f (teleport e f a) ∧
+      Displacement f (teleport e f a) g (teleport f g (teleport e f a))
+
+objects:
+- teleportParameter
+- teleport_eq_iff_parameter_eq
+- teleport_preserves_structure
+- reduction_chain_unifies
+- reduction_chain_to_basepoint
+
+definitions_used:
+- BasepointToolkit.teleport / Displacement (TK1)
+- AddTorsor vadd / vsub
+
+assumptions:
+- 'G : Type with [AddGroup G]; P : Type with [AddTorsor G P]'
+- 依赖 TK1 BasepointGen (自包含, 仅 import mathlib)
+
+conclusion: '归约链 8→4→2→1 收敛于基点穿折越: 参数族 (delta) + 结构族
+  (位移等价类) 在 teleport 中统一 — 结构保持, 坐标漂移 (C007).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
