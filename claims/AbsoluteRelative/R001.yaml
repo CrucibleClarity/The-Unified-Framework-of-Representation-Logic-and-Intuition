@@ -1,0 +1,101 @@
+id: R001
+title: AbsoluteRelative — L2 强化沙箱内的 Pure {} 实验 (deep embedding microkernel + R037
+  迁移)
+status: OBSOLETE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+statement:
+  informal: '新分支 (R059 后): 在 Lean 内构造三层沙箱 (Lean Host ⊃ Audit Kernel ⊃ Pure Sandbox),
+
+    把真正的 Pure {} 实验迁到 L2 (deep-embedded 对象语言, 实验对象看不到 Lean 的
+
+    Type/Prop/function/relation)。核心目标不变: 研究 pre-distinction {} 的第一种
+
+    distinction 如何/是否出现, 但改为 capability-monotonic 实验 — L2 每次能力升级
+
+    必须有 machine-checkable certificate, 没有证书的能力 L2 拿不到。
+
+    本 claim = R001: 搭完整 L2 microkernel + 迁移 R037 (weak_no_go) 作为第一个
+
+    L2 内表达并验证的定理。
+
+    '
+  formal_math: "L2 对象语言 PureRaw (deep embedding):\n  atom | merge | app | eq | rel\
+    \    (app/eq/rel 是语法节点, 非 Lean 能力)\nCapability-Stage: stage0 (atom/merge) ⊂ stage1\
+    \ (+app) ⊂ stage2 (+eq) ⊂ stage3 (+rel)\nChecker: isStage0Raw : PureRaw → Bool\
+    \ (L1 外部判定, L2 内部不可见)\nCertificate: stage0→stage1 需 EmergenceClaim 证明 (当前未证明,\
+    \ 无法升级)\n迁移测试: R037 weak_no_go 的 L2 表达 (S : B→B, S b = b 在等变下) 含\n  app 节点 (stage1)\
+    \ + eq 节点 (stage2) ⟹ R037 不是 stage0 可表达 ⟹\n  R037 是 post-relation 结果, 需要 L2 能力升级\n"
+objects:
+- PureRaw
+- Stage
+- Certificate
+- isStage0Raw
+- r037_Conclusion
+- r037_Structure
+- r037_Equivariant
+definitions_used:
+- deep embedding
+- capability monotonic
+- observer budget
+- machine-checkable provenance chain
+- pre-distinction state
+assumptions:
+- Lean Host 的 Type/Prop/→/Eq/inductive 全是测量仪器信息, 不假装不存在
+- L2 对象语言 (PureRaw) 的 app/eq/rel 是语法节点 (审计占位), 不是可调用的 Lean 能力
+- 'capability monotonic: L2⁰ ⊂ L2¹ ⊂ ..., 升级需 certificate'
+- '{} 只存在于审计者视角, 不存在于理论内部 (L2 无 inside/outside 概念)'
+- 绝对内生性不可形式化 (纯 {} 内无命题 P 更无 P≠Q); 可达到的最强版本 = 首个 internal datum 不依赖 observer presentation
+  choices
+conclusion: L2 microkernel 可行 (noHostEscape/erase_host/证书闭环 零公理); R037 迁移测试显示其 L2
+  表达属 stage2 (app+eq), 不是 stage0 内生 — R037 是 post-relation 结果需能力升级; 真正的 Pure {} 实验可在
+  L2 内进行 (capability-monotonic)
+known_special_cases:
+- stage0 只有 atom/merge of atoms (isStage0Raw), 无 app/eq/rel 节点
+- R037 结论表达式 r037_Conclusion = eq (app f b) b, 含 stage1+stage2 节点
+closest_known_results:
+- R059 Sandbox-in-Sandbox Feasibility (架构骨架, 本分支的前身)
+literature_queries:
+- deep embedding proof assistant meta-theory
+- capability-based formal system sandbox
+counterexample_search:
+  status: done
+  search_space: 'stage0 表达能力: 验证 stage0 中无法构造 app/eq/rel 节点 (stage0_no_app/eq/rel)'
+  smallest_checked_size: null
+  result: stage0 语言只有 atom/merge, 无法表达 R037 (需 app+eq 节点) — 迁移测试通过
+formalization:
+  prover: Lean4
+  file: formal/Formal/AbsoluteRelative/Microkernel.lean + R037Migration.lean
+  theorem_name: AbsoluteRelative.noHostEscape_structural / .erase_host / .stage0_no_app
+    / .stage0_no_eq / .stage0_no_rel / .no_unguarded_upgrade / .upgrade_needs_certificate
+    / .r037_needs_stage2 / .r037_not_stage0 / .r037_equivariant_not_stage0 / .r037_migration_conclusion
+    / .r037_is_post_stage0 (已证, 无 sorry; 核心架构定理零公理, Bool 等式证明引入 propext 为 Lean artifact)
+  status: in_progress
+  sorry_free: true
+failure_modes:
+- L2 若做成普通 Lean module (variable B:Type, C:B→B→Prop) 则是假沙箱 (R056 情况)
+- EmergenceClaim 当前为占位 False — stage0→stage1 的升级尚未 certified (真正的 distinction emergence
+  未证明)
+- coinductive/GFP 免费送 fixed point 被误解释成 base/self (Self-Level Firewall S₁≠S₂)
+- Lean 方程编译器/DecidableEq 在 Bool 等式证明中引入 propext (工具 artifact 非数学注入)
+evidence_for:
+- 'L2 microkernel 可行: noHostEscape_structural / erase_host / no_unguarded_upgrade
+  / upgrade_needs_certificate 零公理'
+- 'R037 迁移测试: r037_needs_stage2 / r037_not_stage0 / r037_is_post_stage0 — R037 的 L2
+  表达需 app+eq 节点, 不是 stage0 内生'
+- 'capability monotonic 闭环: 无 EmergenceClaim 证明不能 stage0→stage1 升级'
+- '{} 只存在于审计者视角: L2 无 inside/outside/container 概念 (l2_has_no_boundary)'
+evidence_against: []
+next_action: 'R001 已作废 (2026-08-09 用户指令): 无视之前所有评审, 三层沙盒全新设计 (L1 普通 / L2 强化 / L2 内绝对封闭无信息
+  L3)。本 claim 结论不保留。'
+notes: '2026-08-09 新分支 (用户决策: 新分支 + 新 claim)。L2 是与 R030-R059 完全不同的架构层级 (deep embedding,
+  capability-monotonic), P001 已膨胀到 30 个 R 违背一 claim 一 ID; 干净起点。R030-R059 退居 L1 外部探索
+  (方法论文档保留, 数学结论在 L2 内重新验证)。继承: coinductive=GFP 修正 / Self-Level Firewall / Pre-Distinction
+  Firewall / observer budgets。 [2026-08-09 AbsoluteRelative_Audit: DEPRECATED — R001-R003
+  旧架构遗留, 不再进入 Absolute L3 trusted root; 审计问题见各文件 DEPRECATED header; 新 trusted path
+  = Formal/AbsoluteRelative/Trusted (R004 v2 核心)] [2026-08-09 作废: 无视之前所有评审, 三层沙盒全新设计]'
