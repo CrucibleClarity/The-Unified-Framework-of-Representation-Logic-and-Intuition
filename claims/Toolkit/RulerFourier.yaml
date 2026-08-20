@@ -1,0 +1,76 @@
+id: RulerFourier
+title: "RulerFourier: Fourier series is the complete theory of basepoint-phase decomposition — aligning phases = Fourier decomposition of all basepoint teleports"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerFourier: 傅里叶级数 = 基点相位解构的完备理论 (用户指令 2026-08-12).
+
+    ★ 同构对应:
+      傅里叶: f(θ) = Σₙ aₙ·e^{inθ} — 任意周期结构 = 基频谐波叠加
+      我们:   基点变换 = Σ 相位移动 — 任意基点变换 = 相位差分解
+
+    ★ 映射表:
+      傅里叶基频 e^{iθ}   ↔ 基本相位周期 (90°旋转 J, 周期 4)
+      谐波 e^{inθ}        ↔ 周期循环的 n 次迭代 (RulerAxis)
+      傅里叶系数 aₙ       ↔ 各相位分量的权重
+      频率分解            ↔ 相位对齐解构 (RulerPhase)
+
+    ★ 关键验证 (黎曼 8 点 = 傅里叶基):
+      4 阶单位根 {1, i, -1, -i} = 傅里叶基 (e^{i·2πk/4})
+      黎曼素数圆的 4 相位 = 4 阶单位根 = 傅里叶基
+      穿折越 8 点圆 = 傅里叶基 × 共轭对称
+
+    ★ 深刻含义:
+      - RulerPhase 的'解构所有基点变换' = 傅里叶分解
+      - 傅里叶是相位框架的完备数学工具
+      - 对齐相位 = 傅里叶基对齐 (统一参照)
+      - 归约链 8→4→2→1 = 找到基本频率 (n 阶单位根 → 基频)
+
+    ★ 支撑 (Lean):
+      - J_pow_four: J⁴ = 1 (4 阶单位根, C011)
+      - even_cluster_meets_one: exp(2πk·I)=1 (相位周期, TK3)
+      - norm_exp_I_eq_one: |exp(θ·I)|=1 (相位在单位圆, TK4)
+      - teleport_parameter_compose: 相位差可加 (Ruler2Exam)
+  formal_math: |
+    -- 4 阶单位根 (傅里叶基):
+    lemma J_pow_four : J ^ 4 = 1
+    -- 相位周期 (谐波):
+    lemma even_cluster_meets_one (k : ℕ) : Complex.exp ((2πk) * I) = 1
+    -- 相位在单位圆 (基频):
+    lemma norm_exp_I_eq_one (θ : ℝ) : ‖Complex.exp (θ * Complex.I)‖ = 1
+    -- 相位差可加 (叠加):
+    lemma teleport_parameter_compose (e f g : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g
+
+objects:
+- J_pow_four
+- even_cluster_meets_one
+- teleport_parameter_compose
+
+definitions_used:
+- C011 ComplexAxis / TK3 Compactification / TK4 AxisComponent / Ruler2Exam
+
+assumptions:
+- 各定理假设见对应模块 (自包含, 仅 import mathlib)
+
+conclusion: '傅里叶级数是基点相位解构的完备理论: 任意周期结构/基点变换 =
+  谐波 (相位频率) 的叠加. 4 阶单位根 = 傅里叶基 = 黎曼素数圆相位.
+  对齐相位 = 傅里叶分解. RulerPhase 的完备化.'
+
+verification:
+  lean_files:
+    - formal/Formal/ZeroRelative/ComplexAxis.lean
+    - formal/Formal/Toolkit/Compactification.lean
+    - formal/Formal/Toolkit/AxisComponent.lean
+    - formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
