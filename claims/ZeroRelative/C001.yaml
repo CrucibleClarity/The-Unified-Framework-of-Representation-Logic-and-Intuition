@@ -1,1 +1,61 @@
-hello
+id: C001
+title: "Semiconjugacy preserves iteration and basepoint orbits"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: semiconjugacy_baseline
+
+statement:
+  informal: |
+    若 T semiconjugates 两个 self-map S1 S2（T∘S1 = S2∘T），则 T 保持迭代
+    T(S1^[n] x) = S2^[n] (T x)。若进一步 T e = f，则基点轨道也被保持。
+  formal_math: |
+    Let S1 : X → X, S2 : Y → Y, T : X → Y with T ∘ S1 = S2 ∘ T.
+    Then for all n : ℕ, x : X: T ((S1^[n]) x) = (S2^[n]) (T x).
+    If moreover T e = f, then T (S1^[n] e) = S2^[n] f.
+
+objects: ["S1 : X → X", "S2 : Y → Y", "T : X → Y", "e : X", "f : Y"]
+definitions_used: ["Function.Semiconj", "Function.iterate", "Function.IsFixedPt"]
+
+assumptions:
+  - "T ∘ S1 = S2 ∘ T  (semiconjugacy)"
+  - "T e = f  (basepoint preservation)"
+conclusion: "T (S1^[n] e) = S2^[n] f for all n : ℕ"
+
+known_special_cases:
+  - "S1 = S2 = S, T = id: 平凡"
+  - "T 是双射: conjugacy 情形，轨道结构同构"
+closest_known_results: []
+literature_queries:
+  - "mathlib Function.Semiconj iterate"
+  - "semiconjugacy preserves orbits"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "已知结果，无需反例搜索；novelty 定位 KNOWN"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Semiconj.lean"
+  theorem_name: "ZeroRelative.semiconj_iterate / semiconj_iterate_apply / semiconj_iterate_basepoint / semiconj_maps_fixedPoints"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "mathlib 已有等价 lemma（确认：是，直接复用不重证）"
+  - "n 需显式有限迭代；transfinite 情形不在本 claim 范围"
+
+evidence_for:
+  - "mathlib Function.Semiconj.iterate_right (Mathlib.Logic.Function.Iterate:111) 即 statement 的归纳证明"
+  - "Lean 接受 formal/Formal/ZeroRelative/Semiconj.lean，依赖链无 sorry"
+evidence_against: []
+
+next_action: "已由 mathlib 现成 lemma 覆盖，形式化完成。作为方向 B/C 的共享 baseline 推进下一 claim"
+notes: "方向 B/C 的共享 baseline。本 claim 定位为 baseline，novelty 不主张。文件路径因 lake lib 根目录为 Formal/ 与 README 表述 (formal/ZeroRelative/) 有差异，实际模块 ZeroRelative.Semiconj。★ 定位声明: 本 claim 研究'已给定迭代系统下的 semiconjugacy 保持', 显式使用 Nat 索引 (n : ℕ, S^[n])——它是 KNOWN 数学 baseline, 不回答'自然数从哪里来'。自然数来源研究 (C008/C009 起) 禁止用 Nat 作为迭代 primitive (用户指令, 见 llm-research/AGENTS.md §自然数来源研究边界)。"
