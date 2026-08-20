@@ -1,0 +1,89 @@
+id: R230
+title: "R230 (user 2026-08-14): 语义闭包不变性 (原生推理, 零实验) — 编译语义保持 ⟹ 快路径可执行集 = 慢路径可执行集; 蒸馏深度无关"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲)"
+proposed_by: user (anonymous, 2026-08-14)
+
+statement:
+  informal: |
+    ★ 用户指令 (2026-08-14): 结果时序竞争风险 — 不做实验结果, 不放实验,
+    改用原生推理结构。语义闭包不变性 (P2 G5 / EXP-52 设计命题) 本质是
+    纯推理定理, 不需要训练实验:
+
+    编译 (快路径) 是语义保持变换 ⟹ 快路径可执行集 ⊆ 慢路径可执行集 (闭包不扩)。
+
+    形式化:
+    - f = 慢路径 (构造, 定义驱动, 语义基准)
+    - g = 快路径 (编译/蒸馏后的执行)
+    - 语义保持: ∀ x, g x = f x (三通道等价已由 exp50 验证, 此处为抽象定理)
+    - 结论: range g ⊆ range f (闭包不扩) ∧ range f ⊆ range g (闭包不缩)
+      ⟹ range f = range g (可执行集不变)
+
+    推论 (蒸馏深度无关): 编译是传递的 — 多次编译 (1/10/15 epochs) 仍保持
+    语义 ⟹ 可执行集逐次不变。编译 = 执行优化, 非新语义 (P2: 编译 ≠ 学习)。
+
+formal_math: |
+    theorem semantic_preservation_closure {A B} (f g : A → B) :
+      (∀ x, g x = f x) → Set.range g ⊆ Set.range f
+    theorem semantic_preservation_anti {A B} (f g : A → B) :
+      (∀ x, g x = f x) → Set.range f ⊆ Set.range g
+    theorem closure_unchanged {A B} (f g : A → B) :
+      (∀ x, g x = f x) → Set.range f = Set.range g
+    theorem compile_composition {A B} (f g h : A → B) :
+      (∀ x, g x = f x) → (∀ x, h x = g x) → ∀ x, h x = f x
+    theorem compile_composition_closure {A B} (f g h : A → B) :
+      (∀ x, g x = f x) → (∀ x, h x = g x) → range f = range g ∧ range g = range h
+    theorem compile_is_optimization_not_learning {A B} (f g : A → B) :
+      (∀ x, g x = f x) → range g ⊆ range f ∧ range f ⊆ range g ∧ range f = range g
+
+objects:
+- Set.range
+- (编译抽象: 语义保持变换)
+
+definitions_used:
+- "P2 宏编译 (编译 = 语义保持的执行优化) / exp50 三通道等价 (经验支撑, 非本证明前提)"
+
+assumptions:
+- "语义保持 (∀ x, g x = f x) 为编译正确性的抽象前提 (三通道等价的代数形式)"
+
+conclusion: "用户指令成立 (2026-08-14): 语义闭包不变性无需实验 —
+  纯推理定理: 编译语义保持 ⟹ 快路径可执行集 = 慢路径可执行集 (闭包不扩
+  不缩); 编译传递 ⟹ 蒸馏深度 (多次编译) 不改变语义闭包; 编译 = 执行优化,
+  非新语义 (P2 核心区分, 原生推理支撑)。"
+
+known_special_cases:
+  - "蒸馏深度无关: 编译链 f → g → h 每步可执行集相同 (1/10/15 epochs)"
+  - "快路径不扩: range g ⊆ range f (不产生新语义)"
+  - "快路径不缩: range f ⊆ range g (不损失已编译能力)"
+
+counterexample_search:
+  status: done
+  search_space: "集合包含/相等的定义推理 (Set.range/子集/双向包含)"
+  smallest_checked_size: null
+  result: "纯定义推理 (exact/rfl), 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/ClosureInvariance.lean
+  theorem_name: semantic_preservation_closure, semantic_preservation_anti, closure_unchanged, compile_composition, compile_composition_closure, compile_is_optimization_not_learning
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "本定理是抽象语义层 (函数/值域), 不绑定具体模型权重 — 这是原生推理的代价与优势 (无实验依赖, 普适)"
+  - "经验侧 (三通道等价实测 1.000) 作为支撑引用, 不作为本证明前提"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① P2 论文 EXP-52 标注为原生推理定理 (ClosureInvariance.lean), 非实验待办 ② 回顾文档证据表更新: EXP-52 △ → ✓ (原生推理)"
+
+notes: "观点归属: 用户 (2026-08-14) 指令转向原生推理 (时序竞争风险); assistant 构建
+  抽象语义闭包定理 (纯 Set.range 推理, 零实验)。"
