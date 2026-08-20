@@ -1,0 +1,136 @@
+id: R175
+title: "R175 (2026-08-13): ★素数间隔的 4 次单位根投影 — 奇偶性结构完全没丢失且周期行的轴: 奇素数 → 虚轴 ±I (re=0), 偶 → 实轴 ±1 (im=0), 间隔 2 = 半圈 (I^(p+2) = -I^p 可见!), 孪生对相位和 = 0 (对称对), 基点 2 投影 = -1 (唯一实轴素数); ★最小上界: 偶间隔相位差 sup ‖I^d - 1‖ = 2, 由最小间隔 d = 2 达到 (半圈 = 直径)"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-13)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-13, 原封不动保存, 未经改写):
+  "注意，那就说明要投影到一个奇偶性结构完全没丢失、且周期行的轴上。
+   并且还得选对基点。"
+  "那最小上界是多少？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-13)。R174 轴修正的续: 模 2 折叠丢失
+       间隔结构, 要找奇偶性结构完全没丢失、且周期行的轴.
+
+    ★ 唯一论点: 4 次单位根投影 p ↦ I^p (模 4 相位, R141 单位根 4
+       槽环 / R047 周期轴 J⁴=1) 是奇偶性不丢失 + 周期行的轴:
+       - 奇偶性结构完全没丢失: 奇数 p → I^p = ±I (虚轴, re=0);
+         偶数 p → I^p = ±1 (实轴, im=0) — 奇偶 = 实/虚轴区别,
+         完全保留 (模 2 折叠下素数全坍缩 1 槽, 间隔全坍缩 0 槽
+         = 丢失).
+       - 间隔 2 = 半圈: I^(p+2) = -I^p — 间隔 2 在 4 槽环上可见
+         (I^2 = -1 ≠ 1; 模 2 折叠下 2 ≡ 0 丢失).
+       - 孪生对相位和 = 0: I^p + I^(p+2) = 0 — 关于圆心对称 (对称
+         对, R170 相位版) — 孪生对 = 4 槽环直径两端.
+       - 选对基点: 基点 2 投影 = I^2 = -1 (唯一实轴素数, R171
+         two_shared_basepoint 相位版); 奇数素数全落虚轴 ±I.
+       - 间隔 2 vs 间隔 4 可区分: I^2 = -1 ≠ I^4 = 1 (奇偶性结构
+         = 间隔模 4 保留).
+
+    ★ ★最小上界: 间隔 d 全为偶数 (R174 prime_gap_even) → 投影
+       I^d ∈ {±1} (只落 0/2 槽). 相位差 ‖I^d - 1‖: d ≡ 2 (mod 4)
+       → 2 (半圈), d ≡ 0 (mod 4) → 0 (全圈). 上确界 = 2, 由最小
+       间隔 d = 2 达到 (even_gap_phase_bound: ‖I^d - 1‖ ≤ 2;
+       gap_two_achieves_bound: ‖I^2 - 1‖ = 2) — 间隔 2 = 达到相位
+       差上界的最小间隔.
+
+  formal_math: |
+    -- 奇相位落虚轴:
+    theorem odd_pow_I_imag {p : ℕ} (hp : Odd p) : Complex.re (Complex.I ^ p) = 0
+    -- 偶相位落实轴:
+    theorem even_pow_I_real {p : ℕ} (hp : Even p) : Complex.im (Complex.I ^ p) = 0
+    -- 间隔 2 = 半圈:
+    theorem twin_gap_half_turn (p : ℕ) : Complex.I ^ (p + 2) = -Complex.I ^ p
+    -- 孪生对相位和 = 0:
+    theorem twin_pair_phase_opposite (p : ℕ) : Complex.I ^ p + Complex.I ^ (p + 2) = 0
+    -- 基点 2 投影 = -1:
+    theorem basepoint_two_phase : Complex.I ^ 2 = -1
+    -- 间隔 2 vs 4 可区分:
+    theorem gap_two_vs_four_distinct : Complex.I ^ 2 ≠ Complex.I ^ 4
+    -- ★最小上界: 偶间隔相位差 ≤ 2:
+    theorem even_gap_phase_bound {d : ℕ} (hd : Even d) : ‖Complex.I ^ d - 1‖ ≤ 2
+    -- ★间隔 2 达到上界:
+    theorem gap_two_achieves_bound : ‖Complex.I ^ 2 - 1‖ = 2
+    theorem gap_four_phase_zero : ‖Complex.I ^ 4 - 1‖ = 0
+    -- 全景:
+    theorem twin_prime_phase_perspective (p : ℕ) (hp : Odd p) :
+      (Complex.re (Complex.I ^ p) = 0) ∧
+      (Complex.I ^ (p + 2) = -Complex.I ^ p) ∧
+      (Complex.I ^ p + Complex.I ^ (p + 2) = 0) ∧
+      (Complex.I ^ 2 = -1) ∧ (‖Complex.I ^ 2 - 1‖ = 2)
+
+objects:
+- odd_pow_I_imag
+- even_pow_I_real
+- twin_gap_half_turn
+- twin_pair_phase_opposite
+- basepoint_two_phase
+- gap_two_vs_four_distinct
+- even_gap_phase_bound
+- gap_two_achieves_bound
+- gap_four_phase_zero
+- twin_prime_phase_perspective
+definitions_used:
+- 4 次单位根投影 (模 4 相位, 奇偶 = 实/虚轴)
+- 间隔 2 = 半圈
+- 孪生对相位和 = 0 (对称对)
+- 最小上界 = 2 (由间隔 2 达到)
+
+assumptions:
+- I^2 = -1, I^4 = 1 (4 次单位根)
+- 素数间隔全为偶数 (R174 prime_gap_even)
+- 素数基点 = 2 (R171 two_shared_basepoint)
+- 奇偶性 = 模 2 折叠 (R171/R141); 模 4 保留奇偶性结构
+conclusion: "筑基篇课后习题 XVI 修正之二完成: 4 次单位根投影 = 奇偶性不丢失 + 周期行的轴 (R141 4 槽环/R047 周期轴) — 奇素数全落虚轴 ±I (re=0), 偶全落实轴 ±1 (im=0), 间隔 2 = 半圈 (可见), 孪生对相位和 = 0 (对称对), 基点 2 投影 = -1 (唯一实轴素数); ★最小上界: 偶间隔相位差 sup = 2, 由最小间隔 d = 2 达到。10 个新定理全部只锚筑基篇定理 (R047/R141/R170/R171/R172/R174) + mathlib 复数/奇偶基础。Lean 验收: lake build 通过, 0 sorry。"
+
+known_special_cases:
+- 'p = 3 (奇): I^3 = -I (虚轴 -1 方向)'
+- '间隔 d = 2: 相位差 2 (半圈, 上界); 间隔 d = 4: 相位差 0 (全圈)'
+- '基点 2: I^2 = -1 (唯一实轴素数投影)'
+closest_known_results:
+- R174 PatPrimeGapAxis (模 2 折叠丢失间隔结构 — 本 claim 修正)
+- R171 PatParityPrime (奇偶性坍缩, 基点 2)
+- R141 PatCircle (单位根 n 槽环)
+- R047 DivergencePeriodSymmetry (周期轴 J⁴=1)
+literature_queries:
+- fourth roots of unity prime gap phase
+- parity preserved phase projection
+
+counterexample_search:
+  status: done
+  search_space: I^(p+2) 是否真 = -I^p (I^2=-1); 奇相位是否真 re=0
+    (虚轴); 偶间隔相位差是否真有界 ≤ 2; 间隔 2 是否真达到上界
+  smallest_checked_size: null
+  result: 枚举验证 p=1..39 全过 (python); Lean 证明全部通过 0 sorry
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/PatPrimeGapPhase.lean (新增 10 定理)
+  theorem_name: ZeroRelative.PatPrimeGapPhase.odd_pow_I_imag / .even_pow_I_real / .twin_gap_half_turn / .twin_pair_phase_opposite / .basepoint_two_phase / .gap_two_vs_four_distinct / .even_gap_phase_bound / .gap_two_achieves_bound / .gap_four_phase_zero / .twin_prime_phase_perspective (已证, 无 sorry, 全构造性)
+  status: done
+  sorry_free: true
+failure_modes:
+- 声称证明孪生素数猜想 — 诚实边界: 投影轴选择观测非素数分布理论
+- 把 4 槽环当 2 槽环 (奇偶性坍缩) — 已修正: 4 次单位根保留奇偶
+- 用外部引理 — R153 纠正精神延续: 全部锚本框架定理
+evidence_for:
+- 'odd_pow_I_imag: pow_add + pow_mul + I^2=-1 — 奇相位虚轴'
+- 'twin_gap_half_turn: pow_add + I^2=-1 — 间隔 2 半圈'
+- 'twin_pair_phase_opposite: half_turn — 相位和 0'
+- 'even_gap_phase_bound: Even d → I^d=±1 — 上界 2'
+- 'gap_two_achieves_bound: norm_num — 间隔 2 达到上界'
+evidence_against: []
+next_action: '已接: 考拉兹猜想 pat 重新观测 (R176)'
+notes: '用户纠正续: 模 2 折叠丢失间隔结构 → 4 次单位根投影 = 奇偶性
+  不丢失 + 周期行 (奇 → 虚轴 ±I, 偶 → 实轴 ±1, 间隔 2 = 半圈可见,
+  孪生对相位和 0); 选对基点 (2 → -1); ★最小上界 = 2 由最小间隔 2
+  达到 (半圈 = 直径)。'
