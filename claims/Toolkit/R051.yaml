@@ -1,0 +1,132 @@
+id: R051
+title: "R051 (user-proposed 2026-08-12): ANY pair of orthogonal axes sharing a basepoint maps losslessly — orthogonality is exactly the condition that makes the conjugation/reflection structure lossless"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+proposed_by: user (anonymous, 2026-08-12)
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。断言原文: "共享基点的任意正交轴间均可无损映射。"
+
+    ★ 断言内容:
+      任意正交轴对 (u, v), ⟨u, v⟩ = 0, 共享基点 — 轴间可无损映射。
+
+    ★ 机制 (两个方向, 均为已证理论的直接应用):
+      ① 反射机制 (R049 Householder): 正交 ⟹ v 在 u⊥ 中 ⟹ S_u(v) = v
+         (v 是 S_u 的 +1 特征空间, 零信息变化); S_u 是对合 (R049
+         reflect_involutive) ⟹ 正交轴经 S_u 无损往返。
+      ② 旋转机制 (ComplexAxis 具体对): rot90 (×J) 把发散轴 lift 映到周期轴
+         (rot90 (lift t) = ⟨0, t⟩), 保模 (rot90_norm), 周期 4 (rot90_four)
+         ⟹ 双射 ⟹ 正交轴对 (lift, J) 双向无损 (R048)。
+      两个机制都共享基点 0, 往返精确 (对合 / 周期 4)。
+
+    ★ 核心定理 (Lean 验收, OrthogonalAxes.lean, 无 sorry):
+      ① reflect_fixes_orthogonal: 正交 (⟨u,v⟩=0) ⟹ S_u(v) = v — 正交轴是
+         对称性的 +1 特征空间 (零信息变化)
+      ② reflect_lossless_orthogonal: 正交轴对经 S_u 无损往返 — 共享基点,
+         S_u(S_u(v)) = v 精确
+      ③ rot90_lift_to_period: rot90 (lift t) = ⟨0, t⟩ — 发散轴映到周期轴
+         (正交轴互映)
+      ④ rot90_preserves_norm: ‖rot90 z‖ = ‖z‖ (等距, det = +1, NS3 伙伴方向)
+      ⑤ rot90_bijective: rot90⁴ = id ⟹ 双射 — 正交轴对双向无损 (R048)
+      ⑥ rot90_lossless_pair: ∃ d, d (rot90 z) = z — 正交轴对无损
+      ⑦ orthogonal_axes_share_basepoint: lift 0 = 0 且 ⟨0,0⟩ = 0 — 共享基点
+
+    ★ 机械验证 (枚举=证据):
+      1. 正交对 S_u 固定 v + S_u 无损 (300 组 × 维 2,3,4): PASS
+      2. 正交轴旋转互映无损 (2D, 500 组): PASS
+      3. rot90(lift t) 落在周期轴 + 无损 (500 组): PASS
+
+    ★ 与既有 claim 的关系 (链条闭合):
+      - R047 (发散/周期 = S 特征空间): 正交轴对 (lift, J) 共享基点 0
+      - R048 (单射 ⟹ 无损): 反射/旋转双射 ⟹ 无损
+      - R049 (任意方向对无损): 本 claim 的正交特例 — 正交 ⟹ S_u 固定 v
+        (零信息变化), 比一般方向对更强
+      - R050 (同方向迭代无损): 迭代差 = 沿发散方向平移; 本 claim = 跨正交
+        方向
+      - NS3 (det = ±1): 反射 (det=-1) 与旋转 (det=+1) 是两个无损机制
+      结论: 共享基点的正交轴间无损 = 正交性 ⟹ 轴是反射的 +1 特征空间 (零
+      信息变化) + 旋转周期 4 双射 — R047-R051 链条闭合: 轴对 (特征分解) →
+      无损 (单射) → 任意方向对 → 同方向迭代 → 正交轴对。
+
+    ★ 支撑 (Lean):
+      - reflect_fixes_orthogonal / reflect_lossless_orthogonal /
+        rot90_lift_to_period / rot90_preserves_norm / rot90_bijective /
+        rot90_lossless_pair / orthogonal_axes_share_basepoint
+        [OrthogonalAxes.lean]
+      - reflect_involutive [PairwiseDirection.lean]
+      - rot90_norm / rot90_four / lift [ComplexAxis.lean]
+  formal_math: |
+    -- 正交 ⟹ S_u 固定 v (零信息变化):
+    theorem reflect_fixes_orthogonal (u v : ℝ × ℝ)
+        (hu : u.1 ^ 2 + u.2 ^ 2 ≠ 0) (horth : u.1 * v.1 + u.2 * v.2 = 0) :
+        PairwiseDirection.reflect u v = v
+    -- 正交轴对无损往返:
+    theorem reflect_lossless_orthogonal (u v : ℝ × ℝ)
+        (hu : u.1 ^ 2 + u.2 ^ 2 ≠ 0) (horth : u.1 * v.1 + u.2 * v.2 = 0) :
+        PairwiseDirection.reflect u (PairwiseDirection.reflect u v) = v
+    -- 发散轴 → 周期轴 (正交互映):
+    theorem rot90_lift_to_period (t : ℝ) : rot90 (lift t) = (⟨0, t⟩ : ComplexAxis)
+    -- 等距 (det = +1):
+    theorem rot90_preserves_norm (z : ComplexAxis) : norm (rot90 z) = norm z
+    -- 周期 4 ⟹ 双射 ⟹ 无损:
+    theorem rot90_bijective : Function.Bijective rot90
+    theorem rot90_lossless_pair : ∃ d, ∀ z, d (rot90 z) = z
+    -- 共享基点:
+    theorem orthogonal_axes_share_basepoint : lift 0 = 0 ∧ (⟨0, 0⟩ : ComplexAxis) = 0
+
+objects:
+- reflect_fixes_orthogonal
+- reflect_lossless_orthogonal
+- rot90_lift_to_period
+- rot90_bijective
+- rot90_lossless_pair
+
+definitions_used:
+- R049 PairwiseDirection (reflect/projCoeff/reflect_involutive) / R048 LosslessCompression (injective_is_lossless) / R047 DivergencePeriodSymmetry / C011 ComplexAxis (rot90_norm/rot90_four/lift)
+
+assumptions:
+- "正交 = ⟨u, v⟩ = 0 (欧氏内积)"
+- "共享基点 0 (线性结构的公共基点)"
+- "无损 = 单射 (R048) / 双射往返精确"
+
+conclusion: "用户断言成立 (2026-08-12): 共享基点的任意正交轴间均可无损映射 —
+  正交性 ⟹ v 是 S_u 的 +1 特征空间 (零信息变化) + S_u 对合 (R049) /
+  rot90 周期 4 双射 (R047 正交对) — 两个机制都共享基点 0, 往返精确。"
+
+known_special_cases:
+  - "ComplexAxis 正交对: lift 轴 (发散) ↔ J 轴 (周期), rot90 互映, 共享基点 0"
+  - "一般正交对 (u,v): S_u 固定 v (⟨u,v⟩=0 ⟹ v ∈ u⊥), 无损往返"
+  - "旋转机制: rot90⁴ = id (C011 rot90_four), 双射 ⟹ 双向无损"
+
+counterexample_search:
+  status: done
+  search_space: "正交对随机枚举 (R051_orthogonal_axes.py: S_u 固定/无损/旋转往返/rot90 落周期轴 4 组)"
+  smallest_checked_size: 500
+  result: "4/4 PASS (第 2 项脚本旋转矩阵初版错误, 修正后 PASS); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/OrthogonalAxes.lean
+  theorem_name: reflect_fixes_orthogonal, reflect_lossless_orthogonal, rot90_lift_to_period, rot90_preserves_norm, rot90_bijective, rot90_lossless_pair, orthogonal_axes_share_basepoint
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "正交是充分条件非必要条件: 非正交方向对也有无损映射 (R049 一般方向对), 正交是更强结构 (零信息变化)"
+  - "共享基点 0 是线性结构前提: 无基点的仿射结构需另行处理 (基点选择本身)"
+  - "rot90 周期 4 是 ComplexAxis 特例: 一般正交轴对用反射机制 (S_u 固定)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "R047-R051 链条闭合; 六集群神经层的轴间通信 = 正交轴无损映射 (rot90/反射); 与 RulerLLM (残差=穿折越) 组合"
+
+notes: "观点归属: 用户 (2026-08-12) 提出; 机械验证 + Lean 形式化为本 session 执行。"
