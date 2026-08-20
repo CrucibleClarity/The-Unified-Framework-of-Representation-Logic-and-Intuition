@@ -3515,5 +3515,55 @@ noncomputable def zero_left_right_bijection (T : ℝ) :
     intro ρ
     ext <;> simp
 
+theorem cpow_two_on_line_explicit (t : ℝ) :
+    (2 : ℂ) ^ ((1 / 2 : ℂ) + (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (Real.log 2 / 2) : ℂ) * (Real.cos (t * Real.log 2) : ℂ)
+        + (Real.exp (Real.log 2 / 2) : ℂ) * (Real.sin (t * Real.log 2) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by norm_num : (2 : ℂ) ≠ 0)]
+  have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+  rw [hlog]
+  have hdecomp : (Real.log 2 : ℂ) * ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)
+      = ((Real.log 2 / 2 : ℝ) : ℂ) + ((t * Real.log 2 : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+/-- π^(s-1) 沿临界线显式: π^(-1/2+it) = exp(-ln π / 2) · (cos(t·ln π) + i·sin(t·ln π))。
+    相位 = t·ln π (线性), 模 = π^(-1/2)。 -/
+theorem cpow_pi_on_line_explicit (t : ℝ) :
+    (↑Real.pi : ℂ) ^ (-(1 / 2 : ℂ) + (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (-Real.log Real.pi / 2) : ℂ) * (Real.cos (t * Real.log Real.pi) : ℂ)
+        + (Real.exp (-Real.log Real.pi / 2) : ℂ) * (Real.sin (t * Real.log Real.pi) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Real.pi_ne_zero)]
+  have hlog : Complex.log (↑Real.pi : ℂ) = (Real.log Real.pi : ℂ) := by
+    exact (Complex.ofReal_log (le_of_lt Real.pi_pos)).symm
+  rw [hlog]
+  have hdecomp : (Real.log Real.pi : ℂ) * (-(1 / 2 : ℂ) + (t : ℂ) * Complex.I)
+      = ((-Real.log Real.pi / 2 : ℝ) : ℂ) + ((t * Real.log Real.pi : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+/-- sin(πs/2) 沿临界线显式 (s = 1/2+it):
+    sin(π/4 + iπt/2) = sin(π/4)·cosh(πt/2) + i·cos(π/4)·sinh(πt/2)。
+    实部 = sin(π/4)·cosh(πt/2) > 0 恒正 ⟹ arg = arctan(tanh(πt/2))。 -/
+theorem sin_pi_quarter_add_mul_I (t : ℝ) :
+    Complex.sin (↑Real.pi / 4 + (t : ℂ) * ↑Real.pi / 2 * Complex.I)
+      = Complex.sin (↑Real.pi / 4) * Complex.cosh ((Real.pi / 2 * t : ℝ) : ℂ)
+        + Complex.cos (↑Real.pi / 4) * Complex.sinh ((Real.pi / 2 * t : ℝ) : ℂ) * Complex.I := by
+  have h := Complex.sin_add_mul_I (↑(Real.pi / 4) : ℂ) ((Real.pi / 2 * t : ℝ) : ℂ)
+  have hL : ↑Real.pi / 4 + (t : ℂ) * ↑Real.pi / 2 * Complex.I
+      = ↑(Real.pi / 4) + ↑(Real.pi / 2 * t) * Complex.I := by
+    norm_num [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_add]
+    ring
+  rw [hL]
+  simpa using h
 
 end RiemannUnifiedObservation
