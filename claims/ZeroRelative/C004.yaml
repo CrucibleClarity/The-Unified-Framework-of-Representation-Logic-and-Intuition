@@ -1,0 +1,73 @@
+id: C004
+title: "Heap retract baseline: choosing a basepoint in an abelian heap recovers an abelian group"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: true
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    设 H 为 abelian heap（三元运算 [x,y,z] 满足 heap 公理），e ∈ H 为选定基点。
+    定义二元运算 x +_e y := [x, e, y]。则 (H, +_e, e) 构成 abelian group：
+    (1) +_e 结合、交换;
+    (2) e 是 +_e 的单位元;
+    (3) 每个元素 x 有 +_e 的逆 (逆 = [e, x, e], 由 heap 结合性给出)。
+    这是 heap 理论已知基线 (KNOWN_RESULT), 本项目用它建立 Lean 形式化地基,
+    确立"同一 unpointed carrier 选不同基点恢复不同群结构"的精确模型 (模型 II)。
+  formal_math: |
+    Let H : Type with an abelian heap operation [_,_,_] : H → H → H → H
+    (satisfying the heap laws). Let e : H. Define +_e : H → H → H by
+    x +_e y := [x, e, y]. Then (H, +_e, e) is an abelian group.
+
+objects: ["H : Type (abelian heap)", "e : H (basepoint)", "[x,y,z] : ternary heap op", "+_e : x +_e y = [x,e,y]"]
+definitions_used: ["heap (需自建, mathlib 无)", "AddCommGroup"]
+
+assumptions:
+  - "H 满足 abelian heap 公理"
+  - "e : H 是选定基点"
+conclusion: "(H, +_e, e) 构成 AddCommGroup"
+
+known_special_cases:
+  - "H = 集合 (无结构): heap 退化为 trivial heap"
+  - "H 来自群 (H,+,0): [x,y,z]=x-y+z, 选 e=0 恢复原群"
+  - "不同基点 e,f 给出同构的群 (C005 的 translation 同构)"
+closest_known_results:
+  - "经典 heap/torsor 理论: 选一点恢复群 (heap retract)"
+  - "GLOSSARY.md: retract x *_e y := [x,e,y]"
+literature_queries:
+  - "heap retract group operation"
+  - "abelian heap recovers group"
+
+counterexample_search:
+  status: not_needed
+  search_space: ""
+  smallest_checked_size: null
+  result: "KNOWN baseline, 无反例风险; 需验证 heap 公理 ⇒ group 公理"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/Heap.lean"
+  theorem_name: "AbelianHeap.heap_retract_group_laws (群律 Prop) / ZeroRelative.heap_retract_group / IsHeapRetractGroup"
+  status: PROVED
+  sorry_free: true
+
+failure_modes:
+  - "heap 公理选择不当导致无法推出群公理 (已解决: para-assoc + 左右 identity + commutation)"
+  - "需要 mathlib 已有 group/abelian 结构可复用 (AddTorsor 已查: 无 heap; 但 torsor 层换基点方向可复用)"
+  - "AddCommGroup 实例构造需 nsmul/zsmul (已绕过: 用 Prop 群律而非完整实例)"
+  - "mathlib 无 heap (已审计确认)"
+
+evidence_for:
+  - "mathlib 审计: 无 Heap 类 (grep Algebra/Combinatorics 零命中)"
+  - "AddTorsor 已 deprecated (2026-06-12), 迁移至 Mathlib.Algebra.Torsor"
+  - "AddTorsor 需先有群 G, 与 heap 恢复群方向相反; 反向 (torsor→heap [x,y,z]=x-ᵥy+ᵥz) 可复用"
+  - "Lean 接受 heap_retract_group_laws (结合/交换/单位/逆 6 律), 无 sorry"
+evidence_against: []
+
+next_action: "C005: 用 AddTorsor 建立 torsor↔heap 双向联系 (选基点恢复加法), 换基点 translation 同构; 避免重证 mathlib 已有 torsor/affine 结果"
+notes: "评审 + 其他AI意见: (1) 已审计 Mathlib.Algebra.AddTorsor/Torsor, 确认无 heap 类; (2) 自建最小 AbelianHeap 类, 但用 Prop 群律而非完整 AddCommGroup 实例 (避免 nsmul/zsmul 样板); (3) C005 起应优先用 AddTorsor 表达 torsor 层结果, 仅在表达能力不足时才依赖自建 heap; (4) 不重证 mathlib 已有 torsor/affine 结果。"
