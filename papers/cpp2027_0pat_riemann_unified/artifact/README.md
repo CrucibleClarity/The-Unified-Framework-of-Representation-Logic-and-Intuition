@@ -7,7 +7,7 @@
 lean proof.lean   # 0 errors, 0 warnings, 0 sorry
 ```
 
-## Theorems (112, all 0pat)
+## Theorems (117, all 0pat)
 
 Merged from exercises XXIV–XXXVI (original namespaces preserved) plus
 new theorems in `RiemannUnifiedObservation`:
@@ -21,6 +21,7 @@ new theorems in `RiemannUnifiedObservation`:
 | Compression | complex_mul_imag_leaks, split_mul_imag_leaks, leak_sign_is_unit_square |
 | Divergence/period | zeta_term_norm_split, period_pair_reduces, divergence_pair_reduces, term_conj_symmetry, functional_equation_bridges, complex_zeta_convergence_region |
 | Zeta conjugation | zeta_conj_of_one_lt_re (Re > 1, series), zeta_conj_of_re_lt_zero (Re < 0, functional equation), zeta_conj_of_critical_strip (0 < Re < 1, Mellin definition penetration), chi_conj, chi_mul_chi_one_sub |
+| Re/Im split | zeta_re_conj_symm (even real part), zeta_im_conj_antisymm (odd imaginary part), zeta_re_even_on_line, zeta_im_odd_on_line (critical line), zeta_eq_zero_iff_re_im (zero = common zero) |
 | Hardy Z | hardyZ_real: conj(Z(t)) = Z(t) — functional-equation multiplier unit modulus, conjugation cancellation |
 | Conjugation counting | zero_orbit_counting: zeros form 2-point conjugate pairs on the line, 4-point orbits off the line; orbit_degenerate_iff_on_line, recip_on_critical_circle_iff, zero_orbit_four |
 | Zero structure | zeta_zero_reflection, prime_factor_zero, trivial_zero_condition, critical_line_observation |
@@ -34,7 +35,7 @@ the functional equation, zero symmetry, prime-factor zeros on the
 imaginary axis, trivial zeros from the trigonometric factor, the
 critical-line observation, the real axis as iteration of i
 (i^i = e^{−π/2}), and the completed zeta structure. The Riemann
-hypothesis itself is not claimed; the twelve observation records in
+hypothesis itself is not claimed; the twenty-two observation records in
 observation.md document the numerical evidence and the exact location
 of the gap.
 
