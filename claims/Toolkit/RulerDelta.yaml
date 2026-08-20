@@ -1,0 +1,76 @@
+id: RulerDelta
+title: "RulerDelta: the basepoint moves naturally — delta (displacement) is the primitive identity, basepoints are anchors/projections of delta"
+status: PROVED
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    RulerDelta: 基点天然移动, delta 才是基点的原始身份 (用户指令 2026-08-12).
+
+    ★ 原有概念 (基点优先):
+      基点 e (点) → 变换 T_{e→f} → delta = f -ᵥ e (位移)
+      基点 = 身份, delta = 变换的结果
+
+    ★ 新概念 (delta 优先):
+      delta (位移) → 基点对 (e, f) = (e, e + delta)
+      基点 = delta 在坐标系中的投影 (锚点选择)
+
+    ★ 验证 (delta 是原始对象):
+      - 给定 delta, 基点对 (e, e+delta) 中 e 任意 (整个轨道):
+        e=0: (0, delta); e=a: (a, a+delta) — 同一 delta, 不同基点
+      - 基点移动 e → e' 不改变 delta (若 f-e = f'-e' 则同一位移)
+      - ⟹ delta 是基点移动的不变量, 基点只是锚定 (投影)
+
+    ★ 与现有结果的关系:
+      C007: D(H) 基点无关 (位移空间) — 早已证明 delta 类独立于基点
+      新洞察: 把 C007 推到极致 — 基点只是 delta 的投影
+      ⟹ 身份 = delta (位移类), 基点 = 表示 (锚)
+
+    ★ 与'为什么是 2'的连接:
+      2 = 区分的最小基数 (RulerTwo 元定理)
+      区分 = 位移 (两点差) = delta
+      ⟹ 2 的来源 = delta 的存在 (区分)
+      ⟹ delta 是形式化/区分的原始单元, 基点由 delta 锚定
+
+    ★ 支撑 (Lean):
+      - teleportParameter e f = f -ᵥ e: delta 是变换的参数 (Ruler2Exam)
+      - teleport_parameter_compose: delta 可加 (参数族)
+      - Displacement 等价: delta 类基点无关 (TK1 C007)
+  formal_math: |
+    -- delta 是变换参数 (参数族 X):
+    def teleportParameter (e f : P) : G := f -ᵥ e
+    lemma teleport_eq_iff_parameter_eq (e f e' f' : P) :
+      teleport e f = teleport e' f' ↔
+      teleportParameter e f = teleportParameter e' f'
+    -- delta 可加 (参数合成):
+    lemma teleport_parameter_compose (e f g : P) :
+      teleportParameter f g + teleportParameter e f = teleportParameter e g
+    -- delta 类基点无关 (结构族 Y, C007):
+    lemma teleport_preserves_structure (e f a : P) :
+      Displacement e a f (teleport e f a)
+
+objects:
+- teleportParameter
+
+definitions_used:
+- Ruler2Exam / TK1 BasepointGen (Displacement)
+
+assumptions:
+- 'G : Type with [AddGroup G]; P : Type with [AddTorsor G P]'
+- 依赖 TK1/Ruler2Exam (自包含, 仅 import mathlib)
+
+conclusion: 'delta (位移) 是基点的原始身份: 基点对 (e, e+delta) 中 e 任意,
+  delta 是基点移动的不变量. 基点 = delta 的锚 (投影), 身份 = delta (位移类).
+  C007 推到极致. 2 的来源 = delta 的存在 (区分).'
+
+verification:
+  lean_file: formal/Formal/Toolkit/ReductionChain.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
