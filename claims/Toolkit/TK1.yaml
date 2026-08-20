@@ -1,0 +1,54 @@
+id: TK1
+title: "Toolkit/BasepointGen: self-contained basepoint teleport on additive torsors (T_{e→f}, displacement space)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+
+statement:
+  informal: |
+    自包含工具包 (只 import mathlib, 无项目依赖): 加法挠空间 (AddTorsor G P) 上的
+    基点穿折越.
+
+    ★ teleport (e f x) = (f -ᵥ e) +ᵥ x  (基点从 e 移到 f 的平移)
+    ★ teleport_basepoint: T_{e→f}(e) = f (基点移到 f)
+    ★ teleport_teleport: T_{f→g}(T_{e→f} x) = T_{e→g} x (路径无关)
+    ★ teleport_inv: T_{f→e}(T_{e→f} x) = x (可逆)
+    ★ teleport_bijective: T_{e→f} 是双射
+    ★ displacement_add_assoc: (g-f) + (f-e) = g-e (位移向量加法)
+    ★ Displacement 关系: (e,a) ~ (f,b) ⟺ b = T_{e→f}(a) (位移等价, C007 对应)
+    ★ displacement_equiv: 位移关系是等价关系 (reflexive/symmetric/transitive)
+    ★ displacement_teleport_invariant: (e,a) ~ (f, T_{e→f} a) (相对稳定性)
+
+    数学定位: 经典 (挠空间/平移群标准), 形式化价值 = 自包含工具包 API,
+    替代 heap 主定理的繁琐版本. KNOWN (挠空间理论).
+  formal_math: |
+    def teleport (e f : P) (x : P) : P := (f -ᵥ e) +ᵥ x
+    theorem teleport_bijective (e f : P) : Function.Bijective (teleport e f)
+    theorem displacement_equiv : Equivalence (fun p q : P×P => Displacement p.1 p.2 q.1 q.2)
+
+objects:
+- teleport
+- Displacement
+
+definitions_used:
+- AddTorsor (mathlib Mathlib.Algebra.Torsor.Defs)
+- vadd / vsub
+- add_vadd (AddSemigroupAction)
+
+assumptions:
+- G : Type with [AddGroup G]; P : Type with [AddTorsor G P]
+- 自包含: 仅 import mathlib
+
+conclusion: '基点穿折越 T_{e→f} 在挠空间上是可逆平移 (路径无关), 位移空间是
+  基点无关的等价类 (相对稳定性). 自包含工具包 API.'
+
+verification:
+  lean_file: formal/Formal/Toolkit/BasepointGen.lean
+  lake_build: PASS
+  sorry_count: 0
+  warning_count: 0
