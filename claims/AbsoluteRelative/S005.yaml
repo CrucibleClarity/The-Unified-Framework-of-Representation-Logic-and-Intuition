@@ -1,0 +1,109 @@
+id: S005
+title: "Symmetry / Information Separation Audit — transitive symmetry + invariant observation ⟹ no internal distinction; bit carrier ≠ bit value"
+status: CONJECTURE
+novelty_status: NOVELTY_UNASSESSED
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: absolute_relative
+
+statement:
+  informal: |
+    S004 概念修正后 (用户指令): bit carrier ≠ bit value。拆三层:
+      ① raw multiplicity:        两个 realization 存在 (a ≠ b) — Host 视角的两种可能性
+      ② symmetric binary capacity: 无标签二元素 carrier, 交换保持结构 (Aut ≃ C₂),
+                                  未选中任何值 ⟹ 1-bit capacity 而非 bit value
+      ③ internally distinguishable bit value: 存在内部 observable O, O a ≠ O b
+
+    核心定理: transitive symmetry + invariant observation ⟹ no internal
+    distinction。若一个 group 对两个 realization 传递作用 (swap 可互相到达),
+    而所有内部 observable 都 invariant (O(flip x) = O x), 则所有 observable
+    在两个 realization 上取相同结果 ⟹ 内部无区分。⟹ 对称 carrier 本身不是
+    bit value。
+
+    关键张力: 两 realization 完全 role-equivalent (a↔b) ⟹ 有 symmetry 但内部
+    无法说自己现在是 a 还是 b; 内部首次获得 observable (O a ≠ O b) ⟹ 真正
+    binary information 出现, 但此时 a↔b 已不保持全部结构。
+    ⟹ accessible bit value 的产生本身就是 symmetry breaking。
+
+    生成顺序 (用户指令):
+      occurrence → interaction → symmetric binary carrier → internal
+      distinction → bit value / orientation
+    这比 "first bit ≡ first C₂" 干净。
+
+    技术修正 (用户指令): S004 的 flip_involutive/flip_nontrivial 只证存在
+    非平凡 involutive symmetry, 没证完整 Aut(Bool) ≅ C₂ (需分类所有
+    automorphism 为 id 或 flip)。ledger 写: unlabelled two-state carrier
+    admits a nontrivial C₂-symmetry; fixing source/target kills that symmetry。
+    本文件补完整分类 bool_automorphism_classification。
+
+    Pointed ≃ Orientation (待测): 在已存在二元素 carrier 上, 选 bit value
+    (pointed) 与选 source (orientation) 都是二选一, 都把 C₂ 压到 {id}。
+    形式化: Pointed ≃ OrientedPair (对 Bool)。但二元素 carrier 已先存在,
+    此等价不能解释"第一 pair 从哪里来"。
+  formal_math: |
+    flip : Bool → Bool (false↔true)
+    raw_multiplicity: ∃ a b : Bool, a ≠ b
+    swap_involutive: ∀x, flip (flip x) = x
+    swap_transitive: ∀x y, x = y ∨ flip x = y
+    symmetric_capacity: (∀x, flip(flip x)=x) ∧ (∀x y, x=y ∨ flip x=y) ∧ (∃x, flip x≠x)
+    transitive_invariant_no_distinction {V} (O) (hinv: ∀x, O(flip x)=O x): ∀x y, O x = O y
+    symmetry_carrier_is_not_bit_value: swap_transitive ∧ (∀O, invariant ⟹ 无内部区分)
+    distinguishability_breaks_symmetry: O false ≠ O true ⟹ O (flip true) ≠ O true
+    OrientedPair (source ≠ target)
+    pointedOrientationEquiv : Bijection Bool OrientedPair (Pointed ≃ Orientation)
+    bool_automorphism_classification: 满射 h ⟹ (∀x, h x=x) ∨ (∀x, h x=flip x) — Aut(Bool) ≅ C₂
+
+objects: ["Bool (二 realization 结构)", "flip (swap)", "observable O", "OrientedPair", "Pointed", "subsingleton invariant observation"]
+definitions_used: ["raw multiplicity", "symmetric binary capacity", "internally distinguishable bit value", "observational equivalence", "transitive symmetry", "symmetry breaking", "bit carrier ≠ bit value"]
+
+assumptions:
+  - "Bool 作二 realization 结构 (raw multiplicity)"
+  - "swap 传递 + 对合 = symmetric binary capacity"
+  - "observable invariant ⟹ 无内部区分 (核心)"
+  - "zero import (仅 BoundaryGenesis 的 Bijection, 零公理)"
+conclusion: "三层概念严格不同: raw multiplicity (∃a≠b) ≠ symmetric binary capacity (传递 swap, 1-bit capacity 非 bit value) ≠ internally distinguishable bit value (∃O, O a≠O b)。核心: 传递对称 + 全 observable invariant ⟹ 无内部区分 — 对称 carrier 本身不是 bit value。可区分 ⟹ symmetry breaking (internal_distinction_is_symmetry_breaking)。Pointed ≃ Orientation (在已存在二元素 carrier 上, 同一 binary choice)。完整分类 Aut(Bool) ≅ C₂ (补 S004 声称)。生成顺序: occurrence → interaction → symmetric binary carrier → internal distinction → bit value / orientation。"
+
+known_special_cases:
+  - "singleton {ω}: 无 contrast, 0 bit, Aut 平凡 (仅 identity)"
+  - "二元素 {a,b}: 1-bit capacity + C₂, 无内部 bit value (若全 observable invariant)"
+  - "有内部区分 (O a ≠ O b): bit value 出现 = symmetry breaking"
+closest_known_results:
+  - "S004 Process–Content Non-Equivalence (概念混淆修正: bit carrier ≠ bit value); S003 Index Injection Audit (back-reaction 可区分 ⟹ 预先 index distinction)"
+literature_queries:
+  - "transitive group action invariant observation no distinction"
+  - "symmetry carrier information content separation"
+
+counterexample_search:
+  status: done
+  search_space: "swap 传递 + invariant observable: 两 realization 观察是否可区分"
+  smallest_checked_size: null
+  result: "transitive_invariant_no_distinction 零公理: 全 invariant ⟹ 观察恒等 (无内部区分); distinguishability_breaks_symmetry 零公理: 可区分 ⟹ breaking"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/AbsoluteRelative/SymmetryInformationSeparation.lean (import 仅 BoundaryGenesis)"
+  theorem_name: "AbsoluteRelative.SymmetryInformationSeparation.raw_multiplicity / .symmetric_capacity / .transitive_invariant_no_distinction / .symmetry_carrier_is_not_bit_value / .distinguishability_breaks_symmetry / .pointing_equiv_orientation / .bool_automorphism_classification / .symmetry_information_separation (已证, 无 sorry, 全零公理)"
+  status: in_progress
+  sorry_free: true
+
+failure_modes:
+  - "声称两个 symmetric realization 已有内部 1 bit — 无: 全 invariant ⟹ 无内部区分"
+  - "声称 first bit ≡ first nontrivial symmetry carrier — 太强: 应为 first binary carrier ≈ first candidate carrier of nontrivial symmetry"
+  - "声称完整 Aut(Bool) ≅ C₂ 未证 — 本文件已补分类 (bool_automorphism_classification)"
+  - "用 : True := trivial 当证据 — 核心定理有反事实力量"
+  - "用 Pointed ≃ Orientation 解释第一 pair 来源 — carrier 已先存在, 不能"
+
+evidence_for:
+  - "transitive_invariant_no_distinction 零公理: 全 observable invariant ⟹ O 在任意两 realization 上恒等 — 核心"
+  - "symmetry_carrier_is_not_bit_value 零公理: swap 传递 ∧ invariant ⟹ 无内部区分"
+  - "distinguishability_breaks_symmetry 零公理: O false≠O true ⟹ O(flip true)≠O true"
+  - "pointing_equiv_orientation 零公理: Pointed ≃ OrientedPair (双射存在)"
+  - "bool_automorphism_classification 零公理: 满射 h ⟹ id 或 flip — 完整 Aut ≅ C₂"
+evidence_against: []
+
+next_action: "S005 完成: 三层概念分离 (raw multiplicity / symmetric capacity / internal bit value) + 核心定理 (传递对称 + invariant ⟹ 无内部区分) + Pointed ≃ Orientation + Aut(Bool) ≅ C₂ 分类。真正要寻找的 (用户指令): 第一次 interaction 能不能在不预定义两个 index 的情况下产生一个无标签、可交换的二 realization structure (symmetric binary carrier) — 这是 emergence 的真正候选, 尚未形式化。下一步 (用户判断): ① 建模无向 incidence (两 realization 只在'参与同一次 interaction'意义上出现, 交换保持全部已认证事实) ② 或证明完整生成次序 (occurrence→interaction→symmetric binary carrier→internal distinction→bit value/orientation) ③ 或 lean4checker 验证 + Agda 第二实现。"
+
+notes: "2026-08-09 用户评审 (S004 概念混淆修正): ① bit carrier ≠ bit value — S004 拿来与有向过程比较的是裸二元素 carrier, 不是 bit 实际承载内容。② 拆三层: raw multiplicity (∃a≠b) / symmetric binary capacity (无标签 carrier, Aut≃C₂, 1-bit capacity 非 bit value) / internally distinguishable bit value (∃O, O a≠O b)。③ 更重要: 两个 symmetric realizations 未必有内部 1 bit — 若所有内部 observable 保持 swap symmetry (O a=O b), 内部根本区分不了; 定义 observational equivalence x~y ⟺ ∀O, O x=O y, 即使 Host 看见 |X|=2, 内部可能只有 |X/~|=1; two realizations ≠ one internally accessible bit。④ first bit ≡ first nontrivial symmetry carrier 太强, 改 first binary carrier ≈ first candidate carrier of nontrivial symmetry; 真正内部 bit 要求内部出现两个 observational classes。⑤ 张力: 完全 role-equivalent (a↔b) ⟹ 有 symmetry 但内部无法说自己是 a 还是 b; 内部首次获得 observable (O a≠O b) ⟹ binary information 出现但 swap 已不保持全部结构; accessible bit value 的产生本身就是 symmetry breaking。⑥ 生成顺序: occurrence→interaction→symmetric binary carrier→internal distinction→bit value/orientation (比 first bit≡first C₂ 干净)。⑦ S004 Lean 两处降级: flip_involutive/flip_nontrivial 只证存在非平凡 involutive symmetry, 未证 Aut(Bool)≅C₂ (需分类所有 automorphism 为 id 或 flip) — S005 已补; oriented_stabilizer_identity 充分 (fixing source/target kills swap symmetry)。ledger 写: unlabelled two-state carrier admits a nontrivial C₂-symmetry; fixing source/target kills that symmetry。⑧ 下一步 S005 Symmetry / Information Separation Audit, 验证 raw multiplicity / symmetric binary capacity / internally distinguishable bit value 严格不同; 核心 theorem: transitive symmetry + invariant observation ⟹ no internal distinction (group 对两 realization 传递作用 + 全 observable invariant ⟹ 所有 observable 在两 realization 取相同结果); 再测 chosen point ≃ orientation 在已存在二元素 carrier 上是否真等价 — 若成立, '0→1 的方向' 与 'bit 具体取值' 是同一次 symmetry breaking 的两种 presentation, 真正不等价的是它们和那个未选边的 symmetric binary carrier。"
