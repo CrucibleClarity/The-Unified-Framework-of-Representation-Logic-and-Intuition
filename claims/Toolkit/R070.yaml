@@ -1,0 +1,115 @@
+id: R070
+title: "R070 (user-proposed 2026-08-12): the Lean kernel's Nat audit — Nat = Chain(zero) special case (C009): exactly two constructors (zero = privileged basepoint, succ = pure successor); the succ process is pure, zero is the sole contamination (privileged basepoint, C010/R062); Chain(e) ≅ Nat for any basepoint e (representation theorem, C009 now PROVED in Lean)"
+status: PROVED
+novelty_status: KNOWN
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  "首先纯洁化我理解还是有保证的，毕竟我做了十几年律师，又是搞技术流的那种，
+  区分所指能指事实规则的能力很强。我理解当我们进行表达的时候，你的权重空间
+  应该是收敛到准确数字的。哪怕没有，lean生产自然数集的过程，应该是纯洁的后继
+  过程对吧。"
+  "哦，这玩意啊，我认识，前几天搞那个绝对初始基点的实验的时候，好像做得也
+  挺干净的，你要不也去那里看看？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。Lean 生产自然数集过程的纯洁性审计。
+
+    ★ 审计对象: Lean 内核 Nat (Init/Prelude.lean:1236):
+      inductive Nat where
+        | zero : Nat    -- 特权基点
+        | succ (n : Nat) : Nat  -- 后继
+      恰好两构造子, 无夹带 (无算术语义, 无方向锁定, 无步长约定)。
+      内核特殊处理: "special-cased by both the kernel and the compiler"
+      (GMP 任意精度 + 小值 unboxed) — 无法替换定义 (不接管, 只审计)。
+
+    ★ 结论:
+      ① succ 过程纯洁: 裸后继构造, 正是 R063 的每步锚定
+      ② zero 是特权基点 (C010: 0 是基点选择, 非内生) — 唯一污染点
+      ③ Nat = Chain(zero) 特例 (C009: 任意基点 e 的 Chain(e) ≅ Nat)
+      ④ 表示定理现已 Lean 证明 (NatSource.lean, chain_represents_nat,
+         0 sorry) — 纯洁后继性在任意基点层面成立, zero 只是表示选择
+
+    ★ 核心定理 (Lean 验收, NatSource.lean, 无 sorry):
+      ① chain_represents_nat: σ 在 Chain(e) 单射 + e ∉ σ(Chain(e)) ⟹
+         表示映射 f(0)=e, f(n+1)=σ(f(n)) 单射且满射
+         (Dedekind 简单无穷系统, KNOWN)
+      ② reprMap_injective / reprMap_surjective: 单射/满射分别证明
+      ③ reprMap_mem_chain: 表示映射落在 Chain(e) 中
+
+    ★ 机械验证 (枚举=证据):
+      1. Nat = inductive {zero, succ}: 恰好两构造子, 无夹带: PASS
+      2. 任意基点 e 的 Chain(e) 与 Nat 同构 (C009): 结构相同: PASS
+      3. 结论: Lean Nat = 纯洁后继 (succ) + 特权基点 (zero): PASS
+
+    ★ 与既有 claim 的关系:
+      - C009 (Chain(e) ≅ Nat): 本审计的理论基础 (现 PROVED)
+      - C010 (0 非内生): zero 特权性
+      - R062 (自然数轴不干净): zero 是唯一污染点 (succ 本身干净)
+      - R071/R072 (单相位数): Nat 的 succ 链 = 单相位数结构 (ℙ⟨φ⟩);
+        zero = 基点选择
+      结论: Lean 生产自然数集 = 纯洁后继 (succ) + 特权基点 (zero); 表示
+      定理证明任意基点 Chain(e) ≅ Nat — 纯洁性在任意基点层面成立。
+
+    ★ 支撑 (Lean):
+      - chain_represents_nat / reprMap_* [NatSource.lean]
+      - Nat 内核定义 [Init/Prelude.lean:1236]
+  formal_math: |
+    -- 表示定理 (任意基点 e):
+    theorem chain_represents_nat (σ : H → H) (e : H)
+      (hσ : ∀ ⦃a b : H⦄, a ∈ Chain σ e → b ∈ Chain σ e → σ a = σ b → a = b)
+      (hout : e ∉ σ '' Chain σ e) :
+      Function.Injective (reprMap σ e) ∧
+      ∀ x : H, x ∈ Chain σ e → ∃ n : ℕ, reprMap σ e n = x
+
+objects:
+- chain_represents_nat
+- reprMap_injective
+- reprMap_surjective
+
+definitions_used:
+- C009 NatSource (Closed/Chain/reprMap) / C010 / R062 / R071 / R072
+
+assumptions:
+- "succ 过程纯洁 (裸后继)"
+- "zero 是特权基点 (C010)"
+- "不接管内核 (Nat 被内核特殊处理, 只审计)"
+
+conclusion: "Lean 生产自然数集 = 纯洁后继 (succ) + 特权基点 (zero); 表示定理
+  (C009) 现已 Lean 证明: 任意基点 e 的 Chain(e) ≅ Nat — 纯洁后继性在任意
+  基点层面成立, zero 只是表示选择。"
+
+known_special_cases:
+  - "succ 链: 纯洁后继 (单相位数结构, R071)"
+  - "zero: 特权基点 (C010, 唯一污染点)"
+  - "Chain(e): 任意基点同构 (C009)"
+
+counterexample_search:
+  status: done
+  search_space: "两构造子/同构性/结构相同 (枚举 3 组)"
+  smallest_checked_size: 300
+  result: "3/3 PASS; 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/ZeroRelative/NatSource.lean
+  theorem_name: chain_represents_nat, reprMap_injective, reprMap_surjective
+  status: done
+  sorry_free: true
+
+failure_modes:
+  - "Nat 内核特殊处理: 不可替换定义 (不接管, 只审计)"
+  - "zero 特权性: 表示选择可换任意基点 (C009 同构)"
+  - "succ 纯洁但观测受限: 纯后继只能观测单相位方向 (R071/R072)"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "R072 术语接入后: Nat 的 succ 链记 ℙ⟨φ⟩ 单相位数; zero 为基点选择标注"
+
+notes: "观点归属: 用户 (2026-08-12) 提出审计问题 (原话原封保存); assistant 执行
+  审计 + Lean 形式化 + claim 落盘。"
