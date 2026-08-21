@@ -5151,4 +5151,160 @@ theorem phase_align_two_zeta_lift_eq_chi_lift (T : ℝ)
       rw [← hf01]
     _ = thetaLift T 1 - thetaLift T 0 := by ring
 
+  -- ============================================================
+  -- T6e: S(T) 整数层结构 — θ_ζ - θ_χ/2 ∈ πiℤ (pat ±1 过程) (2026-08-21)
+  -- 符号改变 (翻转 ±1) 但位置 (零点) 不变; 整数层 = 2πi 的迭代计数
+  -- ============================================================
+
+/-- u² = χ (T5): 无零点处 (ζ/‖ζ‖)² = χ (def chi 形式)。 -/
+lemma zeta_unit_sq_eq_chi_short (t : ℝ)
+    (hz : riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) ≠ 0) :
+    (riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) /
+        ‖riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I)‖ : ℂ) ^ 2 = chi ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) := by
+  simpa [chi] using (zeta_unit_sq_eq_chi t hz)
+
+/-- **S(T) 的整数层结构**: θ_ζ - θ_χ/2 ∈ πiℤ 逐点 —
+    符号改变 (翻转 ±1) 但位置 (零点) 不变 = pat 正负 1 过程。
+    整数层 = 2πi 的迭代计数 (i 的迭代), θ_χ 显式 (快路径)。 -/
+theorem zeta_lift_half_chi_lift_pi_int (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0)
+    (s : unitInterval) :
+    ∃ n : ℤ, uLift T hz s - thetaLift T s / 2 = (n : ℂ) * (↑Real.pi * Complex.I) := by
+  -- 2θ_ζ - θ_χ ∈ expKernel = 2πiℤ (从 u² = χ: exp(2θ_ζ) = u² = χ = exp(θ_χ))
+  have hk : 2 * uLift T hz s - thetaLift T s ∈ expKernel := by
+    rw [expKernel]
+    change Complex.exp (2 * uLift T hz s - thetaLift T s) = 1
+    rw [Complex.exp_sub]
+    have h2e : Complex.exp (2 * uLift T hz s) = (Complex.exp (uLift T hz s)) ^ 2 := by
+      rw [show (2 : ℂ) * uLift T hz s = uLift T hz s + uLift T hz s by ring]
+      rw [Complex.exp_add]
+      ring
+    rw [h2e]
+    rw [uLift_lifts, thetaLift_lifts]
+    -- u² = χ (T5)
+    rw [zeta_unit_sq_eq_chi_short (T * s.1) (hz s)]
+    exact div_self (chi_ne_zero_on_line (T * s.1))
+  -- 2θ_ζ - θ_χ = 2πi·n ⟹ θ_ζ - θ_χ/2 = πi·n
+  rcases (expKernel_mem_iff (2 * uLift T hz s - thetaLift T s)).1 hk with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  -- hn : 2θ_ζ - θ_χ = n·2πi
+  -- 目标: θ_ζ - θ_χ/2 = n·πi
+  calc
+    uLift T hz s - thetaLift T s / 2 = (2 * uLift T hz s - thetaLift T s) / 2 := by ring
+    _ = (n : ℂ) * (2 * ↑Real.pi * Complex.I) / 2 := by rw [hn]
+    _ = (n : ℂ) * (↑Real.pi * Complex.I) := by ring
+
+  -- ============================================================
+  -- T6f: 预言学残差方法 0pat 化 — 误差测量序列 (2026-08-21)
+  -- 比率恒定 e(2n)/e(n) = 2^{1-s}, 测量一次推全部, 提前量反解
+  -- log = e⁻¹ (有限↔无限逆桥), 残差控制全快路径
+  -- ============================================================
+
+/-- 多项式级数 ∑ k^{-s} (k > n) 的截断误差模型: e(n) = n^{1-s}/(s-1)。
+    来源: ∫_n^∞ x^{-s} dx = n^{1-s}/(s-1) (积分判别, s > 1)。 -/
+def polyError (s : ℝ) (n : ℕ) : ℝ := (n : ℝ) ^ (1 - s) / (s - 1)
+
+/-- **核心比率定理**: e(2n)/e(n) = 2^{1-s} — 每层误差比率恒定,
+    测量一次 e(n₀) ⟹ 推出所有 e(2^k·n₀)。 -/
+theorem poly_error_ratio {s : ℝ} (hs : s ≠ 1) {n : ℕ} (hn : 0 < n) :
+    polyError s (2 * n) / polyError s n = (2 : ℝ) ^ (1 - s) := by
+  dsimp [polyError]
+  have hpow : ((2 * n : ℕ) : ℝ) ^ (1 - s) = (2 : ℝ) ^ (1 - s) * (n : ℝ) ^ (1 - s) := by
+    rw [show ((2 * n : ℕ) : ℝ) = (2 : ℝ) * (n : ℝ) by norm_num]
+    rw [Real.mul_rpow]
+    · norm_num
+    · exact_mod_cast (Nat.zero_le n)
+  rw [hpow]
+  have hnpos : 0 < (n : ℝ) := by exact_mod_cast hn
+  have hnsq : (n : ℝ) ^ (1 - s) ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hnpos (1 - s))
+  field_simp [hs, hnsq]
+
+/-- 误差序列预测: 测量一次推全部 — e(2n) = e(n)·2^{1-s}。 -/
+theorem error_seq_predicts {s : ℝ} (hs : s ≠ 1) {n : ℕ} (hn : 0 < n) :
+    polyError s (2 * n) = polyError s n * (2 : ℝ) ^ (1 - s) := by
+  have hr := poly_error_ratio hs hn
+  dsimp [polyError] at hr ⊢
+  -- 从比率定理: e(2n)/e(n) = 2^{1-s} ⟹ e(2n) = e(n)·2^{1-s}
+  -- 需要 e(n) ≠ 0
+  have hnpos : 0 < (n : ℝ) := by exact_mod_cast hn
+  have hnsq : (n : ℝ) ^ (1 - s) ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hnpos (1 - s))
+  have hne : polyError s n ≠ 0 := by
+    dsimp [polyError]
+    exact div_ne_zero hnsq (sub_ne_zero.mpr hs)
+  -- hr : e(2n)/e(n) = 2^{1-s} ⟹ e(2n) = e(n)·2^{1-s}
+  have hr' : polyError s (2 * n) = polyError s n * (2 : ℝ) ^ (1 - s) := by
+    -- 从比率: e(2n)/e(n) = 2^{1-s} ⟹ e(2n) = e(n)·2^{1-s}
+    dsimp [polyError] at hr ⊢
+    -- 同 poly_error_ratio 的代数
+    have hpow : ((2 * n : ℕ) : ℝ) ^ (1 - s) = (2 : ℝ) ^ (1 - s) * (n : ℝ) ^ (1 - s) := by
+      rw [show ((2 * n : ℕ) : ℝ) = (2 : ℝ) * (n : ℝ) by norm_num]
+      rw [Real.mul_rpow]
+      · norm_num
+      · exact_mod_cast (Nat.zero_le n)
+    rw [hpow] at hr ⊢
+    -- hr : (2^{1-s}·n^{1-s}/(s-1)) / (n^{1-s}/(s-1)) = 2^{1-s}
+    -- 目标: (2^{1-s}·n^{1-s})/(s-1) = (n^{1-s}/(s-1))·2^{1-s}
+    field_simp [hs, hnsq]
+  exact hr' 
+
+/-- 误差单调递减: n 加倍 ⟹ 误差按 2^{1-s} 收缩 (s > 1 时 2^{1-s} < 1)。 -/
+theorem poly_error_monotone {s : ℝ} (hs1 : 1 < s) {n : ℕ} (hn : 0 < n) :
+    polyError s (2 * n) < polyError s n := by
+  change ((2 * n : ℕ) : ℝ) ^ (1 - s) / (s - 1) < (n : ℝ) ^ (1 - s) / (s - 1)
+  have hr := error_seq_predicts (ne_of_gt hs1) hn
+  -- e(2n) = e(n)·2^{1-s}, s > 1 ⟹ 2^{1-s} < 1, e(n) > 0
+  have hpos : 0 < polyError s n := by
+    dsimp [polyError]
+    -- n^{1-s} > 0 (n > 0), s-1 > 0
+    exact div_pos (Real.rpow_pos_of_pos (by exact_mod_cast hn) (1 - s)) (sub_pos.mpr hs1)
+  have hratio : (2 : ℝ) ^ (1 - s) < 1 := by
+    -- s > 1 ⟹ 1-s < 0 ⟹ 2^{1-s} < 1 (rpow_lt_one_iff)
+    have hneg : 1 - s < 0 := by linarith
+    rw [Real.rpow_lt_one_iff_of_pos (by norm_num : (0 : ℝ) < 2)]
+    exact Or.inl ⟨by norm_num, hneg⟩
+  calc
+    polyError s (2 * n) = polyError s n * (2 : ℝ) ^ (1 - s) := hr
+    _ < polyError s n * 1 := by
+      exact mul_lt_mul_of_pos_left hratio hpos
+    _ = polyError s n := by ring
+
+/-- 提前量反解: 要精度 ε ⟹ n ≥ (1/ε)^{1/(s-1)} 时 e(n) ≤ ε/(s-1)。
+    从 e(n) = n^{1-s}/(s-1) 反解 (s > 1): n^{1-s} ≤ ε ⟺ n ≥ (1/ε)^{1/(s-1)}。 -/
+theorem error_precision_bound {s : ℝ} (hs1 : 1 < s) {n : ℕ} {ε : ℝ}
+    (hε : 0 < ε) (hn : (1 / ε) ^ (1 / (s - 1)) ≤ (n : ℝ)) :
+    polyError s n ≤ ε / (s - 1) := by
+  dsimp [polyError]
+  have hs1' : 0 < s - 1 := sub_pos.mpr hs1
+  have hεinv : 0 < 1 / ε := one_div_pos.mpr hε
+  have hnpos : 0 < (n : ℝ) := lt_of_lt_of_le (Real.rpow_pos_of_pos hεinv (1 / (s - 1))) hn
+  -- (1/ε)^{1/(s-1)} ≤ n ⟹ 1/ε ≤ n^{s-1} (rpow (s-1) 保序 + 复合)
+  have hle : 1 / ε ≤ (n : ℝ) ^ (s - 1) := by
+    have h1 : ((1 / ε) ^ (1 / (s - 1))) ^ (s - 1) ≤ (n : ℝ) ^ (s - 1) :=
+      Real.rpow_le_rpow (le_of_lt (Real.rpow_pos_of_pos hεinv (1 / (s - 1)))) hn (le_of_lt hs1')
+    have hcomp : ((1 / ε) ^ (1 / (s - 1))) ^ (s - 1) = 1 / ε := by
+      rw [← Real.rpow_mul (le_of_lt hεinv) (1 / (s - 1)) (s - 1)]
+      congr 1
+      field_simp [hs1', hε]
+      simp [pow_one]
+      field_simp [hε]
+    rwa [hcomp] at h1
+  -- 1/ε ≤ n^{s-1} ⟹ n^{1-s} = 1/n^{s-1} ≤ ε (倒数保序)
+  have hle2 : (n : ℝ) ^ (1 - s) ≤ ε := by
+    have hneg : (n : ℝ) ^ (1 - s) = (n : ℝ) ^ (-(s - 1) : ℝ) := by
+      congr 1
+      ring
+    rw [hneg]
+    rw [Real.rpow_neg (le_of_lt hnpos) (s - 1)]
+    -- 目标: (n^{s-1})⁻¹ ≤ ε ⟸ hle: 1/ε ≤ n^{s-1}
+    have hle' : (n : ℝ) ^ (s - 1) ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hnpos _)
+    rw [inv_eq_one_div]
+    have hle'' : 1 / (n : ℝ) ^ (s - 1) ≤ 1 / (1 / ε) := by
+      exact one_div_le_one_div_of_le hεinv hle
+    -- 1/(1/ε) = ε
+    have hle3 : 1 / (n : ℝ) ^ (s - 1) ≤ ε := by
+      simpa using hle''
+    exact hle3
+  -- n^{1-s} ≤ ε ⟹ n^{1-s}/(s-1) ≤ ε/(s-1)
+  exact div_le_div_of_nonneg_right hle2 (le_of_lt hs1')
+
 end RiemannUnifiedObservation
