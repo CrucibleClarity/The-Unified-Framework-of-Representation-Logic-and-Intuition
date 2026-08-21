@@ -1,0 +1,729 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 II：√2/2 的 pat 展开------无理数的
+1}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-ii22-ux7684-pat-ux5c55ux5f00ux65e0ux7406ux6570ux7684-1}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_1 & 各数域的 1（R158） & DiagonalInterlock.lean /
+PatNumberOnes.lean & DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise II for the Foundation-Building Chapter: √2/2 as the
+PAT-constructed 1 of the Irrationals}
+
+\begin{quote}
+习题定位：课后习题系列第二题。前置三节（零\textasciitilde 二）为固定格式------pat
+单相位数 1 的表达、各数域 pat 构造 1 的对应点、tokenizer
+直觉数字/构造数字 token 列；随后展开
+√2/2。全部新定理只锚框架定理（R146/R150/R154/RulerLookup），不用外部引理（延续
+R153 用户纠正精神）。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 全部新定理 PROVED no sorry · 课后习题 II }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、pat 单相位数 1
+的表达}\label{ux96f6pat-ux5355ux76f8ux4f4dux6570-1-ux7684ux8868ux8fbe}
+
+\textbf{★核心：单相位数 = 成对互锁的 a+bi；数值 1 在 pat 中 = 单位 1 在
+θ = 0 格点的投影------相位与数值重合时的可交换性实例（R146/R154）。}
+
+\subsubsection{定义（R146 pat
+单相位数的规范形）}\label{ux5b9aux4e49r146-pat-ux5355ux76f8ux4f4dux6570ux7684ux89c4ux8303ux5f62}
+
+单相位数 z 由两个互锁对称对组成（R143：互锁 = 1 的两重分解）：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{数值对}：r · (1/r) = 1------乘法对称对 \{r, 1/r\} 还原到
+ 1（R143 magnitude\_pair\_reduces\_to\_one）。
+\item
+ \textbf{相位对}：exp(iθ) · exp(-iθ) = 1------相位对称对 \{iθ, -iθ\}
+ 还原到 1（R143 phase\_pair\_reduces\_to\_one）。
+\end{enumerate}
+
+\textbf{规范形}（R146 monophase\_pair\_locked\_form）：
+
+\begin{verbatim}
+z = pat0 + (r·cosθ) + i·(r·sinθ) (a = r·cosθ 在 1 轴, b = r·sinθ 在 i 轴)
+\end{verbatim}
+
+\textbf{数值 1 在 pat 中的表达}（θ = 0 格点）：
+
+\begin{verbatim}
+1 = 1·cos0 + i·1·sin0 = 1 + 0·i —— 相位 0 = 数值 1 重合
+\end{verbatim}
+
+\textbf{√2/2 的 pat 表达}（θ = π/4 格点，R154）：
+
+\begin{verbatim}
+√2/2 = 单位 1 在 θ = 45° 格点的投影位置
+ = 1·cos(π/4) = 1·sin(π/4) —— 45° 处数值 = 相位（可交换性实例）
+\end{verbatim}
+
+\textbf{关键区分（R154 用户指示 ⑨⑩）}：√2/2
+\textbf{不是}''根号化简''------是单位 1 在 θ =
+45°（π/4）格点的投影位置；sin²(π/4) = 1/2 由三角恒等式推出（sin = cos at
+45° + sin² + cos² = 1），非手工开方。
+
+\subsubsection{形式化（DiagonalInterlock.lean，已有）}\label{ux5f62ux5f0fux5316diagonalinterlock.leanux5df2ux6709}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{sin\_cos\_norm\_sq}：‖(sinx - i)(siny + i)‖² =
+ (sin²x+1)(sin²y+1)。
+\item
+ \texttt{sin\_cos\_three}：‖(sin(π/2) - i)(sin(π/4) + i)‖² =
+ 3------√2/2 出现在 sin²(π/4) = 1/2。
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、各数域 pat 构造 1 的对应点（R142/R143/R146
+总结）}\label{ux4e00ux5404ux6570ux57df-pat-ux6784ux9020-1-ux7684ux5bf9ux5e94ux70b9r142r143r146-ux603bux7ed3}
+
+\textbf{★核心：每个数域都有自己的''1''------它是对称对还原的锚点（R144：0
+= 加法还原点，1 = 乘法/相位还原点）。pat 方法构造 1 的方式 =
+各数域对称对的还原。}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+数域
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+pat 构造 1 的方式
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定定理
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{自然数} & patChain 0 1 n = n------单位方向链的第 n 点 & 1 = pat0
++ 1·d（步长 = 单位 1） & pat\_constructs\_nat（R137/R142） \\
+\textbf{整数} & 方向取反------正负链对称对 \{n·d, -n·d\} 还原到 0 & 1 =
++d（正方向单位）；-1 = -d & pat\_constructs\_int（R142） \\
+\textbf{有理数} & 倒数对称对 \{m, 1/m\} 还原到 1 & 1 =
+m·(1/m)（乘法还原点） & pat\_constructs\_rational（R143） \\
+\textbf{相位/圆} & 相位对称对 \{exp(iθ), exp(-iθ)\} 还原到 1 & 1 =
+exp(i·0)（相位 0 = 数值 1） & phase\_pair\_reduces\_to\_one（R143） \\
+\textbf{π（半圈相位）} & pat 链蜷曲到圆，半圈 t = T/2 & exp(π·I) =
+-1------π 的半圈相位（1 的镜像） & pat\_constructs\_pi（R146） \\
+\textbf{素数} & 方向 log p 的幂链 & 素数的''1'' = log 基点（乘法单位 1 =
+exp(0i)） & pat\_constructs\_prime（R142） \\
+\textbf{实数/连续统} & pat 格点量化极限------任意精度统一 & 1 ∈
+patGrid（θ=0 格点）；连续统 = 格点闭包 &
+pat\_quantization\_converges（R146）/ R150/R151 \\
+\textbf{复数（单相位数）} & 成对互锁 a+bi------数值对 × 相位对 & 1 =
+(1·cos0) + i·(1·sin0) = 1 + 0i &
+monophase\_pair\_locked\_form（R146） \\
+\textbf{★无理数的 1（本题）} & 单位 1 在 θ = 45° 的投影 & √2/2 =
+cos(π/4) = sin(π/4) & sin\_cos\_three（R154） \\
+\end{longtable}
+}
+
+\textbf{统一规律}：每个数域的 1 = 该数域对称对的还原锚点（R144
+fold\_centers\_dual：0 ↔ 1 对偶）。pat 方法不预设 1------1
+从各数域自己的对称结构还原出来。\textbf{无理数 ≠ 有缺失的
+1}（用户洞察：无理数 = 高维结构投影丢失部分承载结构后的剩余）；√2/2
+不是''不完整的 1''，是单位 1 在 45° 格点的投影------它携带的相位信息（θ
+= π/4）本身就是完整的（R154 ⑨⑩）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、tokenizer 体系：直觉数字与构造数字的 token
+列}\label{ux4e8ctokenizer-ux4f53ux7cfbux76f4ux89c9ux6570ux5b57ux4e0eux6784ux9020ux6570ux5b57ux7684-token-ux5217}
+
+\begin{quote}
+本节记录 tokenizer 体系（B/C/S/G/P
+五层投影）中数字的两种身份：\textbf{直觉数字}（公设基 B 层/概念 C
+层的原子 digit/value token）与\textbf{构造数字}（沿定义链逐层构造出的
+token 列）。token 记号规范：\texttt{{[}x{]}} = x 指向的 C
+token；\texttt{\{x\}} = {[}x{]} 沿定义链向上追溯至 B token 的展开。
+\end{quote}
+
+\subsubsection{1. 直觉数字（原子
+token，无需构造）}\label{ux76f4ux89c9ux6570ux5b57ux539fux5b50-tokenux65e0ux9700ux6784ux9020}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+eid
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+层
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+形态
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+含义
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+D:117--D:126 & value\_zero \ldots{} value\_nine & C 概念 & inductive
+atom & 数值 0--9（直觉值） \\
+D:127--D:136 & digit\_zero \ldots{} digit\_nine & C 概念 & inductive
+atom & 数字符号 0--9（书写形式） \\
+D:138 / D:139 & truth\_true / truth\_false & C 概念 & explicit atom &
+真/假（判等值域） \\
+\end{longtable}
+}
+
+直觉数字 = 公设基（B
+层）认可的最小原子------\textbf{它们是符号的锚，不需要定义}（tokenizer
+硬编码纪律：知识在 token 数据里，代码只读取执行）。
+
+\subsubsection{2. 构造数字（token
+列，沿定义链构造）}\label{ux6784ux9020ux6570ux5b57token-ux5217ux6cbfux5b9aux4e49ux94feux6784ux9020}
+
+\begin{quote}
+⚠️ \textbf{临时稿声明（用户 2026-08-13）}：本节 token 列由 AI 从
+concept\_token.jsonl 整理，\textbf{肯定有错误的地方}（eid
+对应关系/构造链细节），用户日后会想办法纠正。当前仅作方向性参考，不视为最终规范。
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+eid
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定义链
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+构造方式
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+D:179 & succ & 规则: {[}D:194 successor{]} & 后继 = successor
+的应用（一次迭代） \\
+D:194 & successor & 规则: {[}D:178{]} & 原子后继（迭代生成器） \\
+D:118 & value\_one & {[}D:102 eq, D:179 succ, D:117{]} & 1 =
+succ(0)------后继应用到 0 \\
+D:100 & addition & {[}D:102, D:117, D:179{]} & 加法 = 后继递归（x+0=x;
+x+succ y = succ(x+y)） \\
+D:141 & numeral & {[}D:238, D:143, D:146, D:127{]} & 数词 =
+语法构造（digit 串） \\
+D:148 & numeral\_value & application & 数词 → 数值的求值映射 \\
+D:151 & digit\_add & 进位规则 & 数字加法（带进位） \\
+D:207/D:208 & number\_domain / natural\_domain & {[}B:0, D:179{]} /
+{[}D:207{]} & 数域 = 后继的闭包；自然数域 = 数域实例 \\
+\end{longtable}
+}
+
+\textbf{构造数字的 token 列示例}：
+
+\begin{verbatim}
+[5] 的直觉形式: [D:122 value_five]（原子，直觉值）
+[5] 的构造形式: [D:179 succ]([D:179 succ]([D:179 succ]([D:179 succ]([D:117 value_zero]))))
+ = succ⁵(0) —— 后继迭代 5 层（Church 式迭代，但定义在本框架的 successor 原子）
+[5] 的符号形式: [D:132 digit_five]（书写符号，S 层）
+[5] 的求值: [D:148 numeral_value]([D:141 numeral]([D:132 digit_five])) = [D:122 value_five]
+\end{verbatim}
+
+\textbf{直觉 vs 构造的分界}（对齐用户洞察）：
+
+\begin{itemize}
+\tightlist
+\item
+ \textbf{直觉数字}（D:117--D:136）= 快路径的直接符号------token
+ 体系的''一切皆表''（RulerLookup 同构：直觉 = 查表 O(1)）。
+\item
+ \textbf{构造数字}（succ 链/加法递归/数词语法）=
+ 慢路径的生成列------token 体系的''结构找回精确''（构造 =
+ 沿定义链验证）。
+\item
+ 两者经
+ \texttt{numeral\_value}（D:148）互锁：直觉是构造的查表快路径，构造是直觉的定义链验证------\textbf{与''用模糊换速度、用结构找回精确''同构}（习题
+ I 论点在 tokenizer 层的对应）。
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、习题陈述}\label{ux4e09ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+用框架已证定理，展开 √2/2 的 pat 表达并 Lean
+验证。唯一论点：\textbf{√2/2 不是''根号化简''，是单位 1 在 θ = 45°
+格点的投影位置（无理数的 1）------pat 方法不预设
+1，无理数域从自己的对称结构还原出 1。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、√2/2 = 单位 1 在 45°
+格点的投影（R146/R154）}\label{ux56db22-ux5355ux4f4d-1-ux5728-45-ux683cux70b9ux7684ux6295ux5f71r146r154}
+
+\textbf{★核心：sin²(π/4) = 1/2 由三角恒等式推出（sin = cos at 45° + sin²
++ cos² = 1），非手工开方；√2/2 携带完整相位信息（θ =
+π/4），不是''有缺失的 1''。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{√2/2 是投影，不是化简}（R154 用户指示 ⑨⑩）：单位 1 在 θ =
+ 45°（π/4）格点的投影位置 = cos(π/4) = sin(π/4)（R146：a = r·cosθ, b =
+ r·sinθ；45° 处数值 = 相位 = 可交换性实例）。
+\item
+ \textbf{sin²(π/4) = 1/2 的推导}（不用手工开方）：
+
+ \begin{itemize}
+ \tightlist
+ \item
+ sin(π/4) = cos(π/4)（45° 单位 1 位置：数值 = 相位）
+ \item
+ sin² + cos² = 1 ⟹ 2·sin²(π/4) = 1 ⟹ sin²(π/4) = 1/2。
+ \end{itemize}
+\item
+ \textbf{√2/2 出现在 pat 展开规范化中}（R154）：\textbar(sin(π/2) -
+ i)(sin(π/4) + i)\textbar² = (sin²(π/2)+1)(sin²(π/4)+1) = 2·(3/2) =
+ 3------sin²(π/4) = 1/2 是 3 出现的关键输入（sin\_cos\_three）。
+\item
+ \textbf{无理数的 1 是完整的}（用户洞察对应）：√2/2 的相位信息（θ =
+ π/4）完整无缺失------``无理数丢失结构''是投影方向的损失（高维球 →
+ 平面），不是 1 本身的残缺（R154 ⑨⑩：√2/2 本质上是无理数在 45° 角的单位
+ 1）。
+\end{enumerate}
+
+\subsubsection{形式化（DiagonalInterlock.lean，已有，2
+定理）}\label{ux5f62ux5f0fux5316diagonalinterlock.leanux5df2ux67092-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{sin\_cos\_norm\_sq} / \texttt{sin\_cos\_three}------pat
+ 展开规范化（0, 2, 1+i → 0, (sin ae - i)², (sin be + i)²；3
+ 的出现；√2/2 = 45° 单位 1 位置）。
+\end{itemize}
+
+\textbf{验证}：0 sorry（ R154 已验收）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、复数的 1：θ=0 格点与 i
+的平方还原（R146/R149/R154）}\label{ux4e94ux590dux6570ux7684-1ux3b80-ux683cux70b9ux4e0e-i-ux7684ux5e73ux65b9ux8fd8ux539fr146r149r154}
+
+\textbf{★核心：复数的 1 = 互锁对 \{1, i\} 的还原------1 = θ=0
+格点（1+0i），i = θ=π/2 格点，i² = -1 = π 半圈相位 = 1 的镜像；复数的 1
+经 \{1, -1, i, -i\} 四相位互锁还原。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{复数的 1 = θ=0 格点}：单相位数（R146
+ monophase\_pair\_locked\_form）z = pat0 + r·d(θ)，d(θ) = exp(iθ)；数值
+ 1 = pat0=0, r=1, θ=0 ⟹ 1 = 0 + 1·exp(0·i) = 1 + 0i------\textbf{相位 0
+ = 数值 1 重合}（R154 可交换性：45° 处数值 = 相位，0° 处同样）。
+\item
+ \textbf{复数的 i = θ=π/2 格点}：i = 0 + 1·exp(i·π/2)------单位 1 在
+ θ=π/2 格点的投影（1 轴分量 cos(π/2)=0，纯 i 轴单位；R047：pat 轴 ⊥
+ ipat 轴；R051：rot90 无损互映）。
+\item
+ \textbf{i² = π 半圈相位（1 的镜像）}：i² = -1，且 -1 = exp(π·I)（R146
+ pat\_constructs\_pi：π = pat 链蜷曲半圈相位）------i
+ 旋转两次（90°×2）= 180° = π = 1 的镜像。\textbf{复数的 1
+ 不是孤立点，是四相位互锁的中心}（R149：\{1, -1, i, -i\}
+ 两两互锁；R085：0 = ±1 折叠类，\{1, -1\} 镜像对称对）。
+\item
+ \textbf{与无理数 √2/2 的连接}：45° 格点同时给出 cos(π/4) = sin(π/4) =
+ √2/2（无理数的 1）------复数域中 45° 是''数值 =
+ 相位''的可交换点，无理数的 1 是复数的 1 在 45° 方向上的投影（R154
+ ⑨⑩）。
+\end{enumerate}
+
+\subsubsection{形式化（PatNumberOnes.lean，新增 4
+定理）}\label{ux5f62ux5f0fux5316patnumberones.leanux65b0ux589e-4-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{complex\_one\_locked\_form}：completePat1 0 0 1 =
+ 1------复数的 1 = θ=0 格点。
+\item
+ \texttt{imaginary\_one\_quarter\_turn}：completePat1 0 (π/2) 1 =
+ i------i = θ=π/2 格点。
+\item
+ \texttt{i\_sq\_is\_pi\_mirror}：i² = -1 ∧ exp(π·I) = -1------i
+ 的平方还原 = π 半圈相位（1 的镜像）。
+\item
+ \texttt{quadriphase\_contains\_one}：1·(1/1)=1 ∧ exp(0)·exp(-0)=1 ∧
+ log 1 + log(1/1)=0 ∧ ‖exp(0)‖=1------复数的 1 ∈ 四相位互锁（R149）。
+\end{itemize}
+
+\textbf{验证}：一次 build 通过，0 sorry。教训：\texttt{(Real.pi/2)} 的 ℂ
+cast 形式 \texttt{↑(Real.pi/2)} 与 \texttt{((Real.pi:ℂ)/2)}
+不同，\texttt{simpa\ using\ Complex.exp\_pi\_div\_two\_mul\_I}
+归一化解决。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、任意元数的 1：S³ 点 (1, 0)
+与无损内收（R149/R154）}\label{ux516dux4efbux610fux5143ux6570ux7684-1suxb3-ux70b9-1-0-ux4e0eux65e0ux635fux5185ux6536r149r154}
+
+\textbf{★核心：4 相位互锁（2 轴 × 2 方向）归一化 = 单位 3 维球面
+S³；任意元数域的 1 = 该维数单位球上的基点相位------S³ 点 (1, 0) 是 2
+维复数 1 的任意元数推广；无损内收使任意维数的 1 还原到同一单位圆。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{S³ = 任意元数的几何载体}（R154 S3Point）：4 相位互锁（R149
+ quadriphase\_interlock：数值对 a·(1/a)=1 + 相位对
+ exp(iθ)·exp(-iθ)=1，2 轴 × 2 方向）归一化 = \{(z₁, z₂) : ‖z₁‖² + ‖z₂‖²
+ = 1\}------4 相位互锁本质上是 4 维球，可无损内收到 2
+ 维圆（几何路线，非代数，R154 用户指示 ⑦⑧）。
+\item
+ \textbf{任意元数域的 1 = 单位球上的基点相位}：S³ 点 (1, 0)（数值 1 在
+ 1 轴，i 轴分量为 0）∈ S³------2 维复数 1（θ=0
+ 格点）的任意元数推广。任意维数元数域（四元数、八元数\ldots）的 1
+ 都是该维数单位球上''1 轴单位、其余轴为零''的基点。
+\item
+ \textbf{无损内收（任意元数 1 的还原）}（R154 contract\_to\_circle）：z
+ ↦ z/‖z‖ ∈ S¹（z ≠ 0）------任意元数域的 1
+ 经归一化无损内收到单位圆（R147：内收 = 收敛方向；R048：无损 =
+ 往返精确；R138：相位锁定）。\textbf{任意维数的 1
+ 最终都还原到同一单位圆------pat 是通用表示}。
+\item
+ \textbf{任意旋转自由}（R154 circle\_rotation）：圆上乘 exp(iφ)
+ 保模（SO(2) 旋转自由，R078）------内收后的 1
+ 可任意旋转，相位信息完整。
+\end{enumerate}
+
+\subsubsection{形式化（PatNumberOnes.lean，新增 2 定理 + 锚定
+R154）}\label{ux5f62ux5f0fux5316patnumberones.leanux65b0ux589e-2-ux5b9aux7406-ux951aux5b9a-r154}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{s3\_contains\_numeric\_one}：S³ 点 (1, 0) ∈
+ S3Point------任意元数域的 1 = 单位球基点相位。
+\item
+ \texttt{hypercomplex\_one\_contracts}：‖1/‖1‖‖ = 1------任意元数 1
+ 无损内收到单位圆（锚定 contract\_to\_circle）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定：\texttt{contract\_to\_circle} /
+\texttt{s3\_contract\_orthogonal\_circles} /
+\texttt{orthogonal\_circles} / \texttt{circle\_rotation}（R154
+已验收）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{七、超越数的 1：π = 1 的镜像，e =
+相位载体（R146/R154）}\label{ux4e03ux8d85ux8d8aux6570ux7684-1ux3c0-1-ux7684ux955cux50cfe-ux76f8ux4f4dux8f7dux4f53r146r154}
+
+\textbf{★核心：超越数的 1 = 单位圆上的相位结构------π = pat
+链蜷曲半圈相位 = 1 的镜像（exp(π·I) = -1）；e = exp(1) 单位速度（R146
+开放点，e 未单独构造）；超越数的 1 不是孤立点，是 exp 的相位载体结构。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{π = 1 的镜像}（R146 pat\_constructs\_pi）：exp(π·I) =
+ -1------π 是 1 的镜像（半圈旋转：1 → -1 → 1；R085：0 = ±1 折叠类，\{1,
+ -1\} 镜像对称对；R143：对称对还原到 1）。\textbf{π 的''1'' =
+ 半圈旋转的镜像对还原}------超越数域里 1 与 -1 经 π 互锁。
+\item
+ \textbf{e = 单位速度（开放点）}（R146 ⑥）：e = exp(1)
+ 是单位圆上的''单位速度''；e 未单独构造（log 基点相位与 2πi/π/2
+ 不对齐，RulerTernary 批判），框架当前用 exp 函数但不以 e
+ 为原始常数------e 的框架内构造留待后续。
+\item
+ \textbf{超越数的 1 = exp 相位载体}（R154：e 是相位载体）：sin/cos 是
+ e\^{}\{iθ\} 的分量；exp(i·π/4) = √2/2·(1+i)------\textbf{无理数 √2/2
+ 与超越数 e\^{}\{iθ\} 在 45° 格点连接}（π/4 处：无理数的 1
+ 是超越数相位的分量）。
+\item
+ \textbf{统一}：无理数（√2/2 = 45° 投影）、复数（i² = π
+ 镜像）、任意元数（S³ 基点）、超越数（π = 1 的镜像）的 1 全部是 exp
+ 相位载体上的对称对还原（R144：0 ↔ 1 对偶）。
+\end{enumerate}
+
+\subsubsection{形式化（PatNumberOnes.lean，新增 1
+定理）}\label{ux5f62ux5f0fux5316patnumberones.leanux65b0ux589e-1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{pi\_is\_one\_mirror}：exp(π·I) = -1 ∧ -(-1) = 1------π = 1
+ 的镜像（半圈旋转，锚定 R146 pat\_constructs\_pi）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定：\texttt{pat\_constructs\_pi}（R146
+已验收，TK3 euler\_identity）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{八、各数域 1 的 pat
+全景（组合定理）}\label{ux516bux5404ux6570ux57df-1-ux7684-pat-ux5168ux666fux7ec4ux5408ux5b9aux7406}
+
+\textbf{★核心：无理数 ∧ 复数 ∧ 任意元数 ∧ 超越数的 1
+全部是''对称对还原锚点''------数值 1
+不是预设，从各数域自己的对称结构还原出来。}
+
+\subsubsection{形式化（PatNumberOnes.lean，新增 1
+定理）}\label{ux5f62ux5f0fux5316patnumberones.leanux65b0ux589e-1-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{number\_ones\_pat\_perspective}：sin²(π/4) = 1/2（无理数）∧
+ completePat1 0 0 1 = 1（复数 1）∧ completePat1 0 (π/2) 1 = i（复数
+ i）∧ S³ 点 (1,0) ∈ S3Point（任意元数）∧ exp(π·I) =
+ -1（超越数）------各数域 1 的 pat 全景。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚：R154 sin\_cos\_three 内部推导 /
+本文件定理 1,2 / s3\_contains\_numeric\_one / R146 pat\_constructs\_pi。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{九、习题解答总结}\label{ux4e5dux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+论点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚到
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定理
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+pat 1 的表达 & 单相位数 = 成对互锁 a+bi；数值 1 = θ=0 格点投影 &
+R146/R143 & monophase\_pair\_locked\_form /
+phase\_pair\_reduces\_to\_one \\
+各数域 1 的对应点 & 每个数域的 1 = 对称对还原锚点（9 个数域） &
+R142/R143/R144/R146 & pat\_constructs\_* / fold\_centers\_dual \\
+tokenizer 数字 & 直觉数字 = 原子 token；构造数字 = 定义链 token
+列（⚠️临时稿） & tokenizer 体系 & D:117--D:136 / D:179/D:100/D:141 \\
+★√2/2（无理数） & 单位 1 在 45° 格点投影；sin²(π/4)=1/2 由恒等式推出 &
+R154/R146 & sin\_cos\_norm\_sq / sin\_cos\_three \\
+复数 & 1 = θ=0 格点（1+0i）；i = θ=π/2 格点；i² = π 镜像 &
+R146/R149/R154 & complex\_one\_locked\_form /
+imaginary\_one\_quarter\_turn / i\_sq\_is\_pi\_mirror \\
+任意元数 & S³ 点 (1,0) = 单位球基点相位；无损内收到单位圆 & R149/R154 &
+s3\_contains\_numeric\_one / hypercomplex\_one\_contracts \\
+超越数 & π = 1 的镜像（exp(π·I) = -1）；e = 相位载体（开放点） &
+R146/R154 & pi\_is\_one\_mirror / pat\_constructs\_pi \\
+★全景 & 四类数域的 1 = 对称对还原锚点（组合） & R144/R146/R154 &
+number\_ones\_pat\_perspective \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{每个数域的 1 =
+该数域对称对的还原锚点------√2/2 是无理数的 1（45° 投影），复数 1 = θ=0
+格点（i² = π 镜像），任意元数 1 = S³ 基点 (1,0)（无损内收），超越数 1 =
+π 镜像（e 相位载体）；数值 1 不是预设，从各数域自己的对称结构还原出来。}
+
+\subsection{十、相关对照}\label{ux5341ux76f8ux5173ux5bf9ux7167}
+
+\begin{quote}
+完整书目见习题 I
+\texttt{../shared/pat\_pnp\_shared\_references\_ZH.md}（共享引用清单）（全字段
++ 验证记录）。本条习题新增对照：
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Berry, M. V.} 1984. \emph{Quantal Phase Factors Accompanying
+Adiabatic Changes}, Proc. R. Soc. A 392 {[}Q1{]} & 几何相位------相位 =
+几何量，非动力学量 & √2/2 的''投影位置'' = 几何相位思想的实数实例 \\
+\textbf{Aharonov, Y., Bohm, D.} 1959. \emph{Significance of
+Electromagnetic Potentials in the Quantum Theory}, Phys. Rev.~115
+{[}Q4{]} & 相位 = 物理实在 & θ = π/4 携带完整信息，非计算伪影 \\
+\textbf{Hestenes, D.} 1986. \emph{New Foundations for Classical
+Mechanics} {[}Q2{]} & 几何代数------方向/旋转的几何表示 & 45° 投影 =
+几何代数的旋量分量思想 \\
+\textbf{Chomsky, N.} 1957. \emph{Syntactic Structures} {[}L1{]} & 语言 =
+结构 & tokenizer 直觉/构造数字列 = 结构语法的数字实例 \\
+\textbf{R154 用户指示 ⑨⑩} & √2/2 即单位 1 在 θ=45° 的投影 &
+本框架定理，非外部引理 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 II · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 新增 8
+定理全部 PROVED no sorry（PatNumberOnes.lean）+ 锚定 R154
+sin\_cos\_three 已验收 · 配套 Lean
+形式化：formal/Formal/Toolkit/PatNumberOnes.lean（快照见
+../lean/PatNumberOnes.lean）与 DiagonalInterlock.lean（快照见
+../lean/DiagonalInterlock.lean）}
+
+\end{document}
