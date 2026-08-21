@@ -1,0 +1,488 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 VII：五大力逐领域 Pat
+观测}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-viiux4e94ux5927ux529bux9010ux9886ux57df-pat-ux89c2ux6d4b}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_7 & 五大力逐领域 Pat 观测（R164） &
+PatPhysicsObservation.lean & DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise VII for the Foundation-Building Chapter: Per-Domain PAT
+Observations of the Five Forces}
+
+\begin{quote}
+习题定位：课后习题系列第七题。对力学、量子力学、引力、电磁力、强弱力逐领域做
+Pat 结构观测------每个力在 pat
+框架中找一个结构对应（互锁/相位/正交/投影/折叠），能形式化的锚定已证定理，不能的标
+OBSERVATION（结构对应）或
+CONJECTURE（需新结构）。观测是''找结构同构''，不是证明物理定律（诚实边界）。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 8 new theorems PROVED no sorry · 课后习题 VII }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+开始尝试力学、量子力学、引力、电磁力、强弱力的逐领域观测。每个力在 pat
+框架中的结构对应是什么？唯一论点：\textbf{五大力是 pat
+框架五个基础结构的物理投影------力学 = 锁定链/成对，量子 =
+S³=SU(2)，引力 = 脱离投影，电磁 = 发散⊥周期，强弱 = 规范群对数。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、总论：五大力 = pat
+框架五个基础结构}\label{ux96f6ux603bux8bbaux4e94ux5927ux529b-pat-ux6846ux67b6ux4e94ux4e2aux57faux7840ux7ed3ux6784}
+
+已经构造了五个基础结构，五大力分别是它们的物理投影：
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+pat 结构 & 物理力 & 锚定 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+锁定方向链（R050/R137） & 力学（惯性） & x ↦ x+d 单射 \\
+S³ = SU(2)（R149/R154） & 量子力学（自旋） & 4 互锁归一化 \\
+脱离投影（R161） & 引力（高维耦合） & 逐对独立 \\
+发散轴 ⊥ 周期轴（R047） & 电磁（E⊥B） & 正交 \\
+规范群对数（R161） & 强弱力（规范对称） & k 对 = 2k 互锁 \\
+\end{longtable}
+}
+
+\textbf{观测纪律}：每力只找结构同构，不证明物理定律（诚实边界：OBSERVATION
+= 结构对应已锚定，CONJECTURE = 需新结构）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、力学：惯性 = 锁定链；作用-反作用 =
+成对还原}\label{ux4e00ux529bux5b66ux60efux6027-ux9501ux5b9aux94feux4f5cux7528-ux53cdux4f5cux7528-ux6210ux5bf9ux8fd8ux539f}
+
+\textbf{★核心：牛顿第一定律（惯性）= 锁定方向链 x ↦ x+d
+单射；牛顿第三定律（作用-反作用）= 力对 \{F, -F\} 成对还原到 0。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{惯性 =
+ 锁定方向链}（R050/R153①）：无外力时位置沿锁定方向链唯一演进------x ↦
+ x+d 单射（R050：锁定方向迭代单射 ⟹ 不坍缩；R137：pat n = pat0 +
+ n·d）。\textbf{牛顿第一定律的 pat 结构}：惯性 = 方向的锁定。
+\item
+ \textbf{作用-反作用成对}（R136 ②③/R085）：力对 \{F, -F\}
+ 成对声明（方向必须成对），组合还原到折叠类 0（R085：0 = ±1
+ 折叠类）------\textbf{牛顿第三定律的 pat 结构}：作用力与反作用力之和 =
+ 0。
+\item
+ \textbf{二体/三体}：二体 = 单互锁对（R147，Kepler 可解）；三体 =
+ 闭合回路断裂（R160）的本地视角 = 3 个 4 互锁单体 + 3
+ 对共享互锁（R162/R163）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，2
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean2-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{inertia\_locked\_chain}：x ↦ x+d 单射------惯性 =
+ 锁定方向链（R050/R153①）。
+\item
+ \texttt{action\_reaction\_pair}：F + (-F) =
+ 0------作用-反作用成对还原（R136 ②③/R085）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 deterministic\_locked\_chain\_unique /
+ring。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、量子力学：4 互锁 = S³ = SU(2)
+自旋群}\label{ux4e8cux91cfux5b50ux529bux5b664-ux4e92ux9501-suxb3-su2-ux81eaux65cbux7fa4}
+
+\textbf{★核心：量子自旋的 pat 结构 = 4 相位互锁归一化 = S³ = SU(2)。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{4 互锁 = S³}（R149/R154）：4 相位互锁（数值对 a·(1/a)=1 +
+ 相位对 exp(iθ)·exp(-iθ)=1 + log 对 + 范数对）归一化 = 单位 3 维球面
+ S³（R154 S3Point）。
+\item
+ \textbf{S³ = SU(2)}（OBSERVATION）：S³ 是 SU(2)
+ 自旋群的空间------量子自旋的 pat 结构 = 4 互锁。
+\item
+ \textbf{泡利 i² = -1}（R146）：i² = π 半圈相位 = 1
+ 的镜像------泡利矩阵的 i 结构已在框架（i\_sq\_is\_pi\_mirror）。
+\item
+ \textbf{自旋-空间对应}（CONJECTURE）：6 互锁（三维空间 3 对）投影掉 1
+ 对 = 4 互锁 = SU(2)------量子结构可能是空间投影的剩余（R163
+ 共享互锁视角）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{spin\_SU2\_structure}：4 相位互锁全部成立------量子自旋的 pat
+ 结构（R149 quadriphase\_interlock）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。直接锚定 R149。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、引力：脱离对 =
+高维方向（投影保持）}\label{ux4e09ux5f15ux529bux8131ux79bbux5bf9-ux9ad8ux7ef4ux65b9ux5411ux6295ux5f71ux4fddux6301}
+
+\textbf{★核心：引力 =
+最大脱离的耦合------一对互锁彻底脱离物理空间（高维方向），物理空间剩余对仍互锁（逐对独立）。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{脱离投影}（R161 pair\_detachment\_general）：任意 k
+ 对互锁逐对独立------脱离某些对，剩余对仍互锁。
+\item
+ \textbf{引力 = 最大脱离的耦合}（CONJECTURE）：一对互锁彻底脱离物理空间
+ = 高维方向（超出可观测维度）------引力（时空曲率）的 pat 对应 =
+ 脱离对与剩余对的耦合方式。
+\item
+ \textbf{测地线 = 基点漂移}（CONJECTURE）：R142 基点 0
+ 视角数域映射------测地线可能是基点漂移的路径。
+\item
+ \textbf{物理定律保持性}（OBSERVATION）：脱离后剩余部分遵守物理空间法则
+ = 互锁逐对独立（已 PROVED R161）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean1-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{gravity\_detachment\_projection}：任意 k
+ 对互锁逐对独立------引力脱离投影的结构（R161）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 k\_pairs\_independent\_interlock。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、电磁：E⊥B 正交（发散轴 ⊥
+周期轴）}\label{ux56dbux7535ux78c1eb-ux6b63ux4ea4ux53d1ux6563ux8f74-ux5468ux671fux8f74}
+
+\textbf{★核心：电磁波 E⊥B 的 pat 结构 = 发散轴 ⊥ 周期轴（电场 =
+发散方向，磁场 = 周期方向）。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{电场 = 发散方向}（实轴）：库仑场沿径向（发散）。
+\item
+ \textbf{磁场 = 周期方向}（虚轴 J）：磁场环绕（周期）。
+\item
+ \textbf{E⊥B 正交}（R047 orthogonal\_axes）：proj (lift t * J) =
+ 0------发散轴 ⊥
+ 周期轴，同一共轭对称性的两个特征空间，正交。\textbf{电磁波 E⊥B 的 pat
+ 结构}。
+\item
+ \textbf{光子 = 无质量 = 相位冻结}：质量 0 ⟹ 相位不演进（冻结在
+ 1）------与 YM 无质量同构（R160 massless\_phase\_frozen 同型）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，2
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean2-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{em\_orthogonal\_axes}：proj (lift t * J) = 0------E⊥B
+ 正交（R047）。
+\item
+ \texttt{photon\_massless\_phase}：exp(-(0·t)·I) =
+ 1------光子相位冻结（无质量）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 R047 orthogonal\_axes / simp。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、强弱力：规范群维数 =
+互锁对数}\label{ux4e94ux5f3aux5f31ux529bux89c4ux8303ux7fa4ux7ef4ux6570-ux4e92ux9501ux5bf9ux6570}
+
+\textbf{★核心：规范对称性成对增长------U(1) 电磁 = 1 对，SU(2) 弱 = 2
+对（S³），SU(3) 强 = 4 对 = 8 互锁。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-4}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{规范群生成元 = 互锁对数 × 2}（CONJECTURE）：U(1) = 1 对 = 2
+ 互锁（单相位圆，R138）；SU(2) = 2 对 = 4 互锁（S³，R149）；SU(3) = 4
+ 对 = 8 互锁。
+\item
+ \textbf{成对增长}（R136 ②③/R161）：任意 k
+ 对独立互锁自洽（k\_pairs\_independent\_interlock）------规范对称性成对增长（2
+ 的倍数）。
+\item
+ \textbf{对称破缺 = 基点还原}（CONJECTURE）：R144
+ 对称对还原到折叠类------自发对称破缺（Higgs 机制）的 pat 对应。
+\item
+ \textbf{诚实边界}：生成元与互锁对的具体对应需群表示理论（SU(3) 的 8
+ 生成元 vs 4 对的精确映射未形式化）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean1-ux5b9aux7406-2}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{gauge\_pair\_structure}：任意 k
+ 对独立互锁自洽------规范群对数结构（R161）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 k\_pairs\_independent\_interlock。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、全景（组合定理）}\label{ux516dux5168ux666fux7ec4ux5408ux5b9aux7406}
+
+\textbf{★核心：作用-反作用成对还原 0（力学）∧ 4 互锁 = S³（量子）∧ 任意
+k 对独立互锁（引力脱离/强弱规范群）∧ E⊥B 正交（电磁）------五大力在 pat
+框架中的结构观测。}
+
+\subsubsection{形式化（PatPhysicsObservation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patphysicsobservation.lean1-ux5b9aux7406-3}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{forces\_pat\_perspective}：F + (-F) = 0 ∧ k 对独立互锁 ∧ E⊥B
+ 正交------五大力全景。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚 R136/R085 / R161 / R047。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{七、习题解答总结}\label{ux4e03ux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+力
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+pat 结构
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定理
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+标签
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+力学 & 惯性 = 锁定链；作用-反作用成对 & R050/R136/R085 &
+inertia\_locked\_chain / action\_reaction\_pair & PROVED \\
+量子 & 4 互锁 = S³ = SU(2) & R149/R154 & spin\_SU2\_structure &
+OBSERVATION \\
+引力 & 脱离投影保持 & R161 & gravity\_detachment\_projection &
+OBSERVATION+CONJECTURE \\
+电磁 & E⊥B = 发散⊥周期 & R047 & em\_orthogonal\_axes /
+photon\_massless\_phase & PROVED \\
+强弱 & 规范群对数（k 对 = 2k 互锁） & R161 & gauge\_pair\_structure &
+CONJECTURE \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{五大力是 pat
+框架五个基础结构的物理投影------力学 = 锁定链/成对还原，量子 = 4 互锁 =
+S³ = SU(2)，引力 = 脱离投影保持，电磁 = 发散轴 ⊥ 周期轴（E⊥B），强弱 =
+规范对称性成对增长（U(1)=1 对, SU(2)=2 对, SU(3)=4
+对）。这是结构观测（OBSERVATION/CONJECTURE），非物理定律证明。}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{八、相关对照}\label{ux516bux76f8ux5173ux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Newton, I.} 1687. \emph{Principia Mathematica} &
+三定律（惯性/作用-反作用） & 力学的 pat 结构对照 \\
+\textbf{Pauli, W.} 1927. 自旋/泡利矩阵 & S³ = SU(2) 自旋群 & 量子的 pat
+结构（OBSERVATION） \\
+\textbf{Maxwell, J. C.} 1865. \emph{A Dynamical Theory of the
+Electromagnetic Field} & E⊥B 传播 & 电磁的 pat 结构（R047 正交） \\
+\textbf{Yang, C. N., Mills, R.} 1954. \emph{Conservation of Isotopic
+Spin} & 规范对称性 & 强弱力的 pat 结构（CONJECTURE） \\
+\textbf{R047/R050/R136/R149/R154/R160/R161}（） &
+正交/锁定/成对/S³/闭合回路/脱离 & 本框架定理，非外部引理 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 VII · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 8
+theorems PROVED no sorry（PatPhysicsObservation.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatPhysicsObservation.lean（快照见
+../lean/PatPhysicsObservation.lean）}
+
+\end{document}
