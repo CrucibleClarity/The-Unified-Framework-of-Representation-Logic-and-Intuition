@@ -782,3 +782,96 @@ pat0 视角: 相位绕转 = 多轴 (1,2,3,4...) 旋转的合成净旋转; 零点
 
 绕转数的数值 = 端点相位差 (显式项: 线性 + arctan(tanh) + N₀),
 不是沿路径积分 — 快速路径 = 对称约化 + 显式端点, 无暴力。
+
+## 观测 AJ: Γ 相位对称约化组合定理 — 倍增+反射+共轭全机证 (2026-08-19)
+
+观测 AI 方案的完整形式化 (4 定理, 无 Stirling, 无 sorry, 全 Real.Angle 模 2π):
+
+- **A 共轭** (gamma_conj_arg_angle): arg Γ(conj s) = -arg Γ(s)。
+  0pat: 无条件 — mathlib 的 arg_conj_coe_angle 本身就是 Angle 层恒等式,
+  π 分支 (arg_conj 的 if) 在模 2π 下自动消失, 无需扭证明。
+- **B 倍增** (gamma_doubling_arg_angle): Legendre 乘法公式的 arg 版本:
+  arg Γ(1/4+it/2) + arg Γ(3/4+it/2) = arg Γ(1/2+it) + (log 2^{1/2-it}).im。
+  2^{1/2-it} 乘子的相位 = -t·ln2 (线性, 观测 AI 已机证)。
+- **C 反射** (gamma_reflection_arg_angle): Euler 反射公式的 arg 版本:
+  arg Γ(3/4+it/2) + arg Γ(1/4-it/2) = -(log sin(π(3/4+it/2))).im。
+  关键 0pat 技巧: sin(πz) ≠ 0 不证整数/无理数 (sin_ne_zero_iff 的 ℤ 论证),
+  而从左侧 Γ(z)Γ(1-z) ≠ 0 (re > 0) + 反射公式直接推出 — 非零从对称性来。
+- **D 组合** (gamma_quarter_phase_combine): 2·arg Γ(1/4+it/2)
+  = arg Γ(1/2+it) + (log 2^{1/2-it}).im + (log sin(π(3/4+it/2))).im。
+  代数: B + C + A ⟹ 2a = d + e + f (Γ 完全消去, 全显式)。
+
+组合意义: G(t) = (1/2)arg Γ(1/2-it) + arg Γ(1/4+it/2) 约化为
+2G = -t·ln2 + (log sin(...)).im — 只剩线性项 + 显式 sin 对数相位,
+Γ 自身从 N(T) 的相位计数中彻底消失。倍增/反射/共轭 = 三个对称操作,
+差分链/Stirling 全程未出现 (pat0: 对称操作得到的结果)。
+
+状态: 4 定理机证, proof.lean 合并编译通过 (0 error 0 sorry), 声明 165。
+剩余缺口 (RH 诚实边界): 连续幅角形式化 + S(T) (Hadamard 乘积的相位)。
+
+## 观测 AK: 等价框架 + 对称延拓 — N₀=N 命题形式与连续幅角=相位 (2026-08-19)
+
+用户方向 (2026-08-19): "连续幅角本质上就是相位"; "有限向无限的映射过程,
+之前的对称延拓能不能用"; 纠正: 对称延拓 = 交替反射迭代 (可设计成单方向
+延拓), 本质是一阶差分 (左脚踩右脚), 非"一轮闭合"。
+
+4 定理机证 (proof.lean, 169 声明, 0 error 0 sorry):
+
+- **T0** (zeta_neg_nat_ne_zero_of_odd): ζ(-n) ≠ 0 (n 奇, n ≥ 1)。
+  函数方程 s = n+1 + cos(π(n+1)/2) = ±1 (n+1 偶) + Γ(n+1) 无零点 +
+  ζ(n+1) ≠ 0 (Re > 1) — Re ≤ 0 无零点定理的 hs_int 补丁 (此前缺口)。
+- **T1** (rh_iff_all_zeros_on_line_in_strips): **等价框架** —
+  RH ⟺ ∀T, 全带 [0,1]×[0,T] 内零点都在临界线上 (N₀(T)=N(T) 的命题形式)。
+  ⟸ 方向: 反证离线零点 → 临界带 (Re≤0 无零点 + Re≥1 无零点, 0pat 已证,
+  T0 补负整数) → 取 T = |z.im| 落入带内。 "有限→无限": 每个零点落在
+  有限带内, ∀T 的带内性质 = 全域性质。
+- **T2** (offline_zero_gives_half_strip): 轨道 — 离线零点 ⟹ 左半带
+  (Re < 1/2) 同高度零点。轨道 {z, conj z, 1-z, 1-conj z}: z.re > 1/2 时
+  1-conj z (反射+共轭, 0pat 已证) 落在左半带, |Im| 相同。
+- **T3** (zeta_two_arg_eq_arg_chi): **对称延拓 = 连续幅角** —
+  s = 1/2+it 时 1-s = conj s, 函数方程 + 共轭穿透 ⟹ ζ(s) = χ(s)·conj ζ(s),
+  取相位: 2·arg ζ(1/2+it) = arg χ(1/2+it) (模 2π, ζ≠0 处),
+  χ(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2)。
+
+连续幅角 = 相位: arg ζ(1/2+it) 的连续分支 = (1/2)·arg χ(1/2+it) + π·N₀(t)
+(整数分支 = 零点计数)。arg χ 全显式 (幂/sin/Γ 相位, 观测 AF/AI/AJ 构件) —
+"连续幅角需要解析延拓"的洞被函数方程 + 共轭的对称延拓直接填上
+(延拓本身 0pat 已机证)。
+
+单方向延拓 (用户例子: 交替中心 {2,1.5} 反射 → 每两步平移 -1):
+χ 的平移递推 χ(s+2) = -4π·χ(s)/(s(s+1)) (sin 周期 + 幂 + Γ 递推) 给
+连续幅角的步进差分: arg ζ(1/2+i(t+2)) - arg ζ(1/2+it) =
+-(1/2)arg((1/2+it)(3/2+it)) + π·(t,t+2] 零点数 (T4 待机证)。
+
+状态: 169 声明 0 sorry。剩余缺口 (RH 诚实边界): 零点有限性 (离散性
+mathlib 有 isDiscrete_riemannZetaZeros, 但 olean 未含 ZetaZeros 模块,
+需自证或换路径) + Backlund 拼装 + S(T) 控制。
+
+## 观测 AL: 单方向延拓差分 + u²=χ — 交换延拓与三角函数累积 (2026-08-19)
+
+用户方向: "对称点与延拓点交换, 每个对称点都是以延拓点为对称点的延拓点";
+"取三角函数后以累积数值延拓, 整数就出来了 (傅里叶相位校准)"。
+
+6 定理机证 (proof.lean, 175 声明, 0 error 0 sorry), 隔离开发后合并:
+
+**T4 χ 平移递推 (单方向延拓差分)**:
+- chi_translation_two: χ(s+2) = -4π²/(s(s+1))·χ(s)
+  (sin 周期 π + Γ 递推两次 + cpow_add — 全 mathlib 0pat)
+- chi_arg_translation_two: arg χ(s+2) - arg χ(s) = π - arg(s(s+1)) (模 2π)
+- chi_translation_four: χ(s+4) = 16π⁴/(s(s+1)(s+2)(s+3))·χ(s)
+  (延拓的延拓: 每步以上一步为对称点, 无固定中心)
+- chi_arg_translation_four: arg χ(s+4) = arg χ(s) - arg(s(s+1)(s+2)(s+3))
+  (π+π = 2π 抵消, arg(16π⁴) = 0 — 偶数步差分纯显式)
+
+**T5 u² = χ (无分支相位恒等式)**:
+- zeta_eq_chi_mul_conj_on_line: ζ(s) = χ(s)·conj ζ(s), s = 1/2+it
+  (函数方程 1-s = conj s + mathlib 全域共轭 riemannZeta_conj)
+- zeta_unit_sq_eq_chi: u(t)² = χ(1/2+it), u = ζ/|ζ| = e^{i·arg ζ}
+  (|ζ|² = χ·(conj ζ)² ⟹ 1 = χ·(conj u)² ⟹ u² = χ, u·conj u = 1)
+
+意义: u 良定义连续 (无分支), u 是 χ 的连续平方根。沿 t 累积延拓,
+每跨零点 u → -u (符号翻转 = arg 跳 π = 一个零点), 翻转次数 = N₀(T)
+— 整数计数由累积自动给出 (相位校准), 不需要解析维护分支。
+
+状态: 175 声明 0 sorry。剩余缺口 (RH 诚实边界): 零点翻转的连续性
+形式化 (u 的分段连续 + 翻转计数) + Backlund 拼装 + S(T) 控制。
