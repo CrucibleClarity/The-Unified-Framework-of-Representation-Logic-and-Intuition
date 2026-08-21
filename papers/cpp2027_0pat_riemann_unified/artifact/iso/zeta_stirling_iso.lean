@@ -32,6 +32,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 
 open Complex
+open Filter
 open scoped Topology ComplexConjugate
 
 namespace RiemannUnifiedObservation
@@ -217,5 +218,340 @@ def thetaChi (T : ℝ) : ℝ :=
 /-- χ 圈数 (主枝): 相位/2π。 -/
 def chiTurnNumber (T : ℝ) : ℝ :=
   thetaChi T / (2 * ↑Real.pi)
+
+
+/-- **log cosh 分解**: log cosh(x) = x - log 2 + log(1+e^{-2x}) (x ≥ 0)。
+    cosh x = e^x·(1+e^{-2x})/2 (提取 e^x), log 展开。 -/
+theorem log_cosh_self_add (x : ℝ) (_hx : 0 ≤ x) :
+    Real.log (Real.cosh x) = x - Real.log 2 + Real.log (1 + Real.exp (-2 * x)) := by
+  -- cosh x = (e^x + e^{-x})/2 = e^x·(1+e^{-2x})/2
+  have hcosh : Real.cosh x = Real.exp x * (1 + Real.exp (-2 * x)) / 2 := by
+    rw [Real.cosh_eq]
+    -- e^x + e^{-x} = e^x·(1 + e^{-2x}): 提取 e^x
+    have hx1 : Real.exp x + Real.exp (-x) = Real.exp x * (1 + Real.exp (-2 * x)) := by
+      -- e^{-x} = e^x·e^{-2x} (exp_add: e^{x + (-2x)} = e^{-x})
+      have he : Real.exp (-x) = Real.exp x * Real.exp (-2 * x) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      rw [he]
+      ring
+    rw [hx1]
+  -- log 展开: log(e^x·A/2) = log(e^x) + log A - log 2
+  have he : (0 : ℝ) < Real.exp x := Real.exp_pos x
+  have hA : 0 < 1 + Real.exp (-2 * x) := by positivity
+  have h2 : (0 : ℝ) < 2 := by norm_num
+  rw [hcosh]
+  rw [Real.log_div (ne_of_gt (mul_pos he hA)) (ne_of_gt h2)]
+  rw [Real.log_mul (ne_of_gt he) (ne_of_gt hA)]
+  rw [Real.log_exp]
+  -- x + log A - log 2 整理
+  ring
+
+/-- **|Γ(1/2+it)|² 精确公式** (反射公式): |Γ(1/2+it)|² = π/cosh(πt)。
+    Γ(s)Γ(1-s) = π/sin(πs) (反射) + sin(π/2+iπt) = cos(iπt) = cosh(πt)
+    + Γ 实系数共轭 (|Γ|² = Γ·conj Γ = Γ(s)·Γ(1-s))。 -/
+theorem gammaSq_half_line (t : ℝ) :
+    ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ ^ 2 =
+      Real.pi / Real.cosh (Real.pi * t) := by
+  let s : ℂ := 1 / 2 + (t : ℂ) * Complex.I
+  -- |Γ(s)|² = Γ(s)·conj Γ(s) = Γ(s)·Γ(1-s) (Γ 实系数, conj s = 1-s)
+  have hsq : ‖Complex.Gamma s‖ ^ 2 = (Complex.Gamma s * Complex.Gamma (1 - s)).re := by
+    -- |z|² = (z·conj z).re
+    have hnorm : ‖Complex.Gamma s‖ ^ 2 = (Complex.Gamma s * conj (Complex.Gamma s)).re := by
+      rw [Complex.sq_norm]
+      unfold Complex.normSq
+      simp [mul_re, conj_re, conj_im]
+    -- conj (Γ s) = Γ (1-s) (Gamma_conj + conj s = 1-s)
+    have hconj : conj (Complex.Gamma s) = Complex.Gamma (1 - s) := by
+      have hcs : conj s = 1 - s := by
+        dsimp [s]
+        apply Complex.ext
+        · simp
+          norm_num
+        · simp
+      simpa [hcs] using (Gamma_conj s).symm
+    -- (Γs·Γ(1-s)).re = (Γs·conj Γs).re
+    have hright : (Complex.Gamma s * Complex.Gamma (1 - s)).re =
+        (Complex.Gamma s * conj (Complex.Gamma s)).re := by
+      exact congrArg (fun w : ℂ => (Complex.Gamma s * w).re) hconj.symm
+    exact hnorm.trans hright.symm
+  -- 反射: Γ(s)·Γ(1-s) = π/sin(πs)
+  have href : Complex.Gamma s * Complex.Gamma (1 - s) = Real.pi / Complex.sin (Real.pi * s) := by
+    simpa [mul_comm] using (Gamma_mul_Gamma_one_sub s)
+  -- sin(πs) = sin(π/2 + iπt) = cos(iπt) = cosh(πt) (实数)
+  have hsin : Complex.sin (Real.pi * s) = (Real.cosh (Real.pi * t) : ℂ) := by
+    -- π·s = π/2 + i·(πt): 展开
+    have harg : Real.pi * s = Real.pi / 2 + (Real.pi * t : ℂ) * Complex.I := by
+      dsimp [s]
+      apply Complex.ext
+      · simp
+        ring
+      · simp
+    rw [harg]
+    -- sin(π/2 + z) = cos z (交换序); cos(i·(πt)) = cosh(πt)
+    rw [show ↑Real.pi / 2 + ↑Real.pi * ↑t * I = ↑Real.pi * ↑t * I + ↑Real.pi / 2 by ring]
+    rw [Complex.sin_add_pi_div_two]
+    rw [Complex.cos_mul_I]
+    -- cosh 的 ℝ → ℂ cast: (cosh (πt) : ℂ) = Complex.cosh (πt : ℂ)
+    rw [← Complex.ofReal_mul, ← Complex.ofReal_cosh (Real.pi * t)]
+  -- 组合: |Γ|² = π/cosh(πt) (实数, sin 实数)
+  have hsq1 : ‖Complex.Gamma s‖ ^ 2 = (Real.pi / Real.cosh (Real.pi * t) : ℝ) := by
+    -- 从 hsq/href/hsin
+    rw [hsq, href]
+    rw [hsin]
+    -- ↑π/↑(cosh πt) = ↑(π/cosh πt), 实部 = π/cosh πt (ofReal_div 反向 + ofReal_re)
+    rw [← Complex.ofReal_div]
+    rw [Complex.ofReal_re]
+  -- 展开 s
+  simpa [s] using hsq1
+
+/-- **log|Γ(1/2+it)| 精确公式**: log|Γ(1/2+it)| = (1/2)(log π - log cosh(πt))。
+    由 |Γ|² = π/cosh(πt) (gammaSq_half_line) + log_sqrt。 -/
+theorem logAbsGamma_half_line (t : ℝ) :
+    Real.log ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ =
+      (1 / 2) * (Real.log Real.pi - Real.log (Real.cosh (Real.pi * t))) := by
+  -- |Γ|² = π/cosh(πt) > 0, log|Γ| = (1/2)log|Γ|²
+  have hsq := gammaSq_half_line t
+  have hpos : 0 < Real.pi / Real.cosh (Real.pi * t) := by
+    exact div_pos Real.pi_pos (Real.cosh_pos _)
+  -- log‖Γ‖ = log √‖Γ‖² = (1/2)log‖Γ‖²
+  have hsq2 : ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ ^ 2 =
+      Real.pi / Real.cosh (Real.pi * t) := hsq
+  have hsqrt : ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ =
+      Real.sqrt (Real.pi / Real.cosh (Real.pi * t)) := by
+    -- ‖Γ‖ ≥ 0 且 ‖Γ‖² = (√x)² ⟹ ‖Γ‖ = √x
+    have hnonneg : 0 ≤ ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ := norm_nonneg _
+    have hsq3 : ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ ^ 2 =
+        (Real.sqrt (Real.pi / Real.cosh (Real.pi * t))) ^ 2 := by
+      rw [hsq2, Real.sq_sqrt (le_of_lt hpos)]
+    exact (sq_eq_sq₀ (a := ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖)
+      (b := Real.sqrt (Real.pi / Real.cosh (Real.pi * t))) hnonneg (Real.sqrt_nonneg _)).mp hsq3
+  rw [hsqrt, Real.log_sqrt (le_of_lt hpos)]
+  -- (1/2)log(π/cosh) = (1/2)(log π - log cosh)
+  rw [Real.log_div (ne_of_gt Real.pi_pos) (ne_of_gt (Real.cosh_pos _))]
+  ring
+
+/-- **log|Γ(1/2+it)| 渐近主项** (t ≥ 0):
+    log|Γ(1/2+it)| = (1/2)log(2π) - πt/2 - (1/2)log(1+e^{-2πt})。
+    由精确公式 + log cosh 分解; 误差项 -log(1+e^{-2πt}) 指数衰减。 -/
+theorem logAbsGamma_half_line_asymp (t : ℝ) (ht : 0 ≤ t) :
+    Real.log ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ =
+      (1 / 2) * (Real.log (2 * Real.pi)) - (Real.pi * t) / 2 -
+        (1 / 2) * Real.log (1 + Real.exp (-2 * Real.pi * t)) := by
+  rw [logAbsGamma_half_line]
+  rw [log_cosh_self_add (Real.pi * t) (mul_nonneg (le_of_lt Real.pi_pos) ht)]
+  -- (1/2)(log π - (x - log 2 + log A)) = (1/2)log(2π) - x/2 - (1/2)log A
+  have hlog : Real.log Real.pi + Real.log 2 = Real.log (Real.pi * 2) := by
+    rw [Real.log_mul (ne_of_gt Real.pi_pos) (by norm_num : (2 : ℝ) ≠ 0)]
+  -- 左侧整理: (1/2)(log π - x + log 2 - log A) = (1/2)(log π + log 2) - x/2 - (1/2)log A
+  rw [show (1 / 2 : ℝ) * (Real.log Real.pi - (Real.pi * t - Real.log 2 +
+        Real.log (1 + Real.exp (-2 * (Real.pi * t))))) =
+      (1 / 2 : ℝ) * (Real.log Real.pi + Real.log 2) - (Real.pi * t) / 2 -
+        (1 / 2) * Real.log (1 + Real.exp (-2 * (Real.pi * t))) by ring]
+  rw [hlog]
+  ring
+
+-- ============================================================
+-- T6j: Stirling 第二层 — sin 相位精确项 + e^{iθ_χ} = χ 桥 (2026-08-19)
+-- 渐进用桥解决 (用户方法论): 不造 Binet 轮子, 桥 = 显式相位刻度
+--   e^{iθ_χ(T)} = χ(1/2+iT)  (与 e^{iπS} = u 平行: χ 的 e^{iπ} 桥)
+--   Im log sin(π/4+iπT/2) = arctan(tanh(πT/2)) → π/4 (显式相位, 精确渐近)
+-- θ_χ 的 Backlund 主项 (T/2)log(T/2π) - T/2 - π/8 + O(1/T) 是经典 KNOWN
+-- (Binet 展开, 标注引用, 不重新证明); 本文件给出可完全证明的桥接结构。
+-- ============================================================
+
+/-- **e^{iθ_χ} = χ 桥**: θ_χ 的 e^{iπ} 次幂 = χ 自身。
+    |χ(1/2+iT)| = 1 ⟹ log χ 纯虚 ⟹ log χ = i·θ_χ ⟹ e^{log χ} = e^{iθ_χ} = χ。
+    与 e^{iπS(T)} = u(T) 平行: u 是 ζ 的隐式相位, χ 是显式相位 (快路径)。 -/
+theorem exp_thetaChi_eq_chi (T : ℝ) :
+    Complex.exp ((thetaChi T : ℂ) * Complex.I) =
+      chi ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) := by
+  -- log χ = i·θ_χ: 实部 = log|χ| = log 1 = 0, 虚部 = θ_χ (定义)
+  have hlog : Complex.log (chi ((1 / 2 : ℂ) + (T : ℂ) * Complex.I)) =
+      (thetaChi T : ℂ) * Complex.I := by
+    apply Complex.ext
+    · rw [Complex.log_re, chi_modulus_one, Real.log_one]
+      simp [thetaChi]
+    · simp [thetaChi]
+  -- e^{log χ} = χ (χ ≠ 0, |χ| = 1)
+  have hne : chi ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) ≠ 0 := by
+    intro h
+    have hnorm : ‖chi ((1 / 2 : ℂ) + (T : ℂ) * Complex.I)‖ = 0 := by
+      rw [h]
+      simp
+    rw [chi_modulus_one T] at hnorm
+    norm_num at hnorm
+  rw [← hlog]
+  exact Complex.exp_log hne
+
+/-- **sin 相位精确**: Im log sin(π/4+iπT/2) = arctan(tanh(πT/2))。
+    sin(π/4+iy) = sin(π/4)cos(iy) + cos(π/4)sin(iy) = (√2/2)(cosh y + i·sinh y),
+    arg = arctan(sinh y/cosh y) = arctan(tanh y) (re > 0 ⟹ arg ∈ (-π/2, π/2))。 -/
+theorem sin_phase_exact (T : ℝ) :
+    (Complex.log (Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) / 2))).im
+      = Real.arctan (Real.tanh (Real.pi * T / 2)) := by
+  let y : ℝ := Real.pi * T / 2
+  -- sin(π/4 + iy) = (√2/2)(cosh y + i·sinh y)
+  have hsin : Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) / 2) =
+      (↑(Real.sqrt 2 / 2) : ℂ) * (↑(Real.cosh y) + ↑(Real.sinh y) * Complex.I) := by
+    have harg : ↑Real.pi * ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) / 2 =
+        (↑Real.pi / 4 : ℂ) + (y : ℂ) * Complex.I := by
+      dsimp [y]
+      apply Complex.ext
+      · simp
+        ring
+      · simp
+    rw [harg]
+    rw [Complex.sin_add]
+    have hsinp : Complex.sin (↑Real.pi / 4) = ↑(Real.sqrt 2 / 2) := by
+      calc
+        Complex.sin (↑Real.pi / 4) = Complex.sin (↑(Real.pi / 4)) := by
+          congr 1
+          rw [Complex.ofReal_div]
+          norm_num
+        _ = ↑(Real.sin (Real.pi / 4)) := by rw [Complex.ofReal_sin]
+        _ = ↑(Real.sqrt 2 / 2) := by rw [Real.sin_pi_div_four]
+    have hcosp : Complex.cos (↑Real.pi / 4) = ↑(Real.sqrt 2 / 2) := by
+      calc
+        Complex.cos (↑Real.pi / 4) = Complex.cos (↑(Real.pi / 4)) := by
+          congr 1
+          rw [Complex.ofReal_div]
+          norm_num
+        _ = ↑(Real.cos (Real.pi / 4)) := by rw [Complex.ofReal_cos]
+        _ = ↑(Real.sqrt 2 / 2) := by rw [Real.cos_pi_div_four]
+    have hcosi : Complex.cos ((y : ℂ) * Complex.I) = ↑(Real.cosh y) := by
+      rw [Complex.cos_mul_I]
+      rw [← Complex.ofReal_cosh]
+    have hsini : Complex.sin ((y : ℂ) * Complex.I) = ↑(Real.sinh y) * Complex.I := by
+      rw [Complex.sin_mul_I]
+      rw [← Complex.ofReal_sinh]
+    rw [hsinp, hcosp, hcosi, hsini]
+    ring
+  -- arg: z = (√2/2)(cosh y + i·sinh y), re > 0 ⟹ arg = arctan(tanh y)
+  have hre : 0 < (↑(Real.cosh y) : ℂ).re := by simp [Real.cosh_pos]
+  have hz : (↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I ≠ 0 := by
+    intro h
+    have : ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).re = 0 := by rw [h]; simp
+    simp at this
+    linarith [Real.cosh_pos y]
+  have harg' : (Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) / 2)).arg
+      = Real.arctan (Real.tanh y) := by
+    rw [hsin]
+    -- arg(↑(√2/2)·z) = arg z (正标量, arg_real_mul)
+    have hpos : (0 : ℝ) < Real.sqrt 2 / 2 := by positivity
+    have hscalar : ((↑(Real.sqrt 2 / 2) : ℂ) * ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I)).arg
+        = ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg := by
+      simpa using
+        (Complex.arg_real_mul ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I) hpos)
+    rw [hscalar]
+    -- tan(arg z) = sinh/cosh = tanh y (tan_arg), arg ∈ (-π/2, π/2) (re > 0)
+    have htan : Real.tan (((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg)
+        = Real.tanh y := by
+      have hre_z : ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).re = Real.cosh y := by
+        simp only [add_re, Complex.ofReal_re, Complex.mul_I_re, Complex.ofReal_im]
+        ring
+      have him_z : ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).im = Real.sinh y := by
+        simp only [add_im, Complex.ofReal_im, Complex.mul_I_im, Complex.ofReal_re]
+        simp
+      rw [Complex.tan_arg]
+      rw [hre_z, him_z]
+      rw [Real.tanh_eq_sinh_div_cosh]
+    have hmem : ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg
+        ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
+      -- cos(arg z) = re/‖z‖ > 0 且 arg ∈ (-π, π] ⟹ |arg| < π/2
+      have hcos : 0 < Real.cos (((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) := by
+        rw [Complex.cos_arg hz]
+        -- re/‖z‖ > 0
+        have hre' : 0 < ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).re := by
+          simp [Real.cosh_pos y]
+        exact div_pos hre' (norm_pos_iff.mpr hz)
+      have hargmem := Complex.arg_mem_Ioc ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I)
+      constructor
+      · by_contra hnot
+        have hle : ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg ≤ -(Real.pi / 2) := by
+          linarith
+        have hcosle : Real.cos (((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) ≤ 0 := by
+          have h1 : Real.pi / 2 ≤ -(((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) := by
+            linarith
+          have h2 : -(((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) ≤
+              Real.pi + Real.pi / 2 := by
+            have hlt : -(((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) < Real.pi := by
+              linarith [hargmem.1]
+            linarith
+          have hc : Real.cos (-(((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg)) ≤ 0 := by
+            exact Real.cos_nonpos_of_pi_div_two_le_of_le h1 h2
+          rwa [Real.cos_neg] at hc
+        linarith
+      · by_contra hnot
+        have hle : Real.pi / 2 ≤ ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg := by
+          linarith
+        have hcosle : Real.cos (((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg) ≤ 0 := by
+          exact Real.cos_nonpos_of_pi_div_two_le_of_le hle (by linarith [hargmem.2])
+        linarith
+    -- arctan(tan(arg)) = arg (arg ∈ (-π/2, π/2)), tan(arg) = tanh y
+    have harct : Real.arctan (Real.tanh y) = ((↑(Real.cosh y) : ℂ) + ↑(Real.sinh y) * Complex.I).arg := by
+      rw [← htan]
+      exact Real.arctan_tan hmem.1 hmem.2
+    exact harct.symm
+  -- Im log = arg (log_im)
+  rw [Complex.log_im]
+  -- y = πT/2 代入
+  simpa [y] using harg'
+
+/-- **sin 相位渐近**: Im log sin(π/4+iπT/2) → π/4 (T → ∞)。
+    arctan(tanh(πT/2)) → arctan 1 = π/4: tanh → 1 (指数表示) + arctan 连续。 -/
+theorem sin_phase_tendsto_pi_div_four :
+    Tendsto (fun T : ℝ => (Complex.log
+        (Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (T : ℂ) * Complex.I) / 2))).im)
+      atTop (𝓝 (Real.pi / 4)) := by
+  -- tanh x → 1: tanh x = (e^{2x}-1)/(e^{2x}+1) = 1 - 2/(e^{2x}+1)
+  have htanh : Tendsto Real.tanh atTop (𝓝 1) := by
+    have hdecomp : ∀ x : ℝ, Real.tanh x = 1 - 2 / (Real.exp (2 * x) + 1) := by
+      intro x
+      calc
+        Real.tanh x = (Real.exp x - Real.exp (-x)) / (Real.exp x + Real.exp (-x)) := by
+          rw [Real.tanh_eq_sinh_div_cosh, Real.sinh_eq, Real.cosh_eq]
+          field_simp
+        _ = 1 - 2 * (Real.exp (-x) / (Real.exp x + Real.exp (-x))) := by
+          field_simp
+          ring
+        _ = 1 - 2 / (Real.exp (2 * x) + 1) := by
+          congr 1
+          -- e^{-x}/(e^x+e^{-x}) = 1/(e^{2x}+1): 交叉乘 (field_simp)
+          field_simp [Real.exp_ne_zero]
+          -- e^{-x}·(e^{2x}+1) = e^{-x}·e^{2x} + e^{-x} = e^{x} + e^{-x}
+          rw [mul_add]
+          rw [← Real.exp_add]
+          have hpar : -x + 2 * x = x := by ring
+          rw [hpar]
+          simp
+    have h_exp : Tendsto (fun x : ℝ => Real.exp (2 * x)) atTop atTop := by
+      exact Real.tendsto_exp_atTop.comp
+        (Tendsto.const_mul_atTop (by norm_num : (0 : ℝ) < 2) tendsto_id)
+    have h_inv : Tendsto (fun x : ℝ => (Real.exp (2 * x) + 1)⁻¹) atTop (𝓝 0) := by
+      have h_add : Tendsto (fun x : ℝ => Real.exp (2 * x) + 1) atTop atTop :=
+        tendsto_atTop_add_const_right atTop 1 h_exp
+      exact tendsto_inv_atTop_zero.comp h_add
+    have h_two : Tendsto (fun x : ℝ => 2 * (Real.exp (2 * x) + 1)⁻¹) atTop (𝓝 0) := by
+      simpa [mul_comm] using (tendsto_const_nhds.mul h_inv)
+    have h_one : Tendsto (fun x : ℝ => 1 - 2 * (Real.exp (2 * x) + 1)⁻¹) atTop (𝓝 (1 - 0)) :=
+      tendsto_const_nhds.sub h_two
+    simpa [hdecomp] using (h_one.congr' (Eventually.of_forall (fun x => by rw [hdecomp x]; ring)))
+  -- arctan 连续 + tanh(πT/2) → 1 + arctan 1 = π/4
+  have htan' : Tendsto (fun T : ℝ => Real.tanh (Real.pi * T / 2)) atTop (𝓝 1) := by
+    have hmul : Tendsto (fun T : ℝ => Real.pi * T / 2) atTop atTop := by
+      have hc : Tendsto (fun T : ℝ => Real.pi * T) atTop atTop :=
+        Tendsto.const_mul_atTop (by positivity : (0 : ℝ) < Real.pi) tendsto_id
+      simpa [div_eq_inv_mul, mul_comm, mul_left_comm, mul_assoc] using
+        (hc.atTop_div_const (by positivity : (0 : ℝ) < 2))
+    exact htanh.comp hmul
+  have harct : Tendsto (fun T : ℝ => Real.arctan (Real.tanh (Real.pi * T / 2))) atTop
+      (𝓝 (Real.pi / 4)) := by
+    have hc : ContinuousAt Real.arctan 1 := Real.continuousAt_arctan
+    simpa [Function.comp_def, Real.arctan_one] using (hc.tendsto.comp htan')
+  -- sin_phase_exact 代入
+  refine harct.congr' (Eventually.of_forall (fun T => ?_))
+  rw [← sin_phase_exact]
 
 end RiemannUnifiedObservation
