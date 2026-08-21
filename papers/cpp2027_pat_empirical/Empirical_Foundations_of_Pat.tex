@@ -1,0 +1,571 @@
+%% CPP 2027 Submission — Empirical Foundations of Pat:
+%% transformer OOD observations, structural laws, and machine-checked theorems
+\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\settopmatter{printfolios=true,printacmref=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{\normalfont B\scshape ib\TeX}}}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% XeTeX (tectonic): acmart loads newtxmath/libertine which already defines \Bbbk;
+% reset it so amssymb's definition is accepted.
+\let\Bbbk\relax
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Empirical Foundations of Pat: Transformer OOD Observations,\\
+Structural Laws, and Machine-Checked Continuum Theorems}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+We record the empirical route by which the Pat framework is grounded:
+starting from controlled transformer training observations, extracting
+structural laws, and ending in machine-checked theorems. The starting
+observation is a two-pole out-of-distribution (OOD) dichotomy, reproduced
+in 45 training runs: a low-epoch transformer reaches training accuracy
+$1.000$ on successor-notation arithmetic, yet OOD accuracy is $32/32$ on
+length extrapolation in the trained notation and $0/32$ on the same
+structure written in an untrained notation of the same basepoint; adding
+explicit equivalence statements bridges the two notations ($0/32 \to
+32/32$). From this and supporting experiments we extract five structural
+laws (anchor binding, notation translatability, shift invariance,
+structure-bearing representation, definition-layer invisibility). The
+laws map, as an observational correspondence, to the Pat framework's
+paired-direction declaration, phase-relation locking, and phase-magnitude
+interlock. A completeness criterion --- the decoupling operator $D$
+(exclusion + cancellation + layering) implying completeness at any
+order, element, and subject-object --- organizes the correspondence, and
+three mapping judgments (symbol-norm, presentation-legality,
+intuition-precision) give the layer-to-layer verdicts that the OOD
+two-pole dichotomy exhibits. The framework chain is formalized in Lean
+4 / mathlib: twenty-two theorems with zero errors and zero
+\texttt{sorry}, from the interlock matrix (determinant
+$\theta \cdot (r + 1/r) \neq 0$) through the four-phase interlock, the
+countable pat grid, and the density theorem, to the continuum closure
+theorems (the continuum $[0, 2\pi]$ is the closure of the pat grid; an
+endogenous version constructs the same closure from two paired
+basepoints and midpoint reduction). The honest boundary is stated
+exactly: the empirical-to-framework mapping is an observational
+correspondence, not a deductive implication, and the training results
+are reproducible from the artifact (one command, Python + PyTorch).
+\end{abstract}
+
+\keywords{Lean, formalization, transformer, out-of-distribution, pat grid, continuum, empirical}
+
+\maketitle
+
+\subsection*{Verification map}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.22\textwidth}p{0.72\textwidth}@{}}
+\toprule
+\textbf{Main theorems} &
+Continuum closure: every $x \in [0, 2\pi]$ lies in the closure of the
+pat grid (and in the closure of the endogenous constructible grid);
+interlock: the phase-magnitude matrix is nonsingular; mapping
+judgments: resolvability verdicts. \\
+\midrule
+\textbf{Assumptions} &
+Lean 4.32.2 + mathlib v4.32.2; standard Lean axioms
+(\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}
+per the mathlib dependency); no additional axioms, no
+\texttt{sorry}. \\
+\midrule
+\textbf{Core lemma chain} &
+R143 interlock ($\det \neq 0$) $\to$ R149 four-phase interlock $\to$
+R150 countable grid + density $\to$ R151 continuum closure $\to$
+R163 endogenous closure (two basepoints + midpoint reduction). \\
+\midrule
+\textbf{Lean theorems} &
+\texttt{MutualLocking.lean} (3), \texttt{Pat4Phase.lean} (4),
+\texttt{PatCountableInfinitPhaseUnification.lean} (5),
+\texttt{ContinuumPatGrid.lean} (1),
+\texttt{ContinuumConstructible.lean} (4),
+\texttt{MappingJudgmentTheorems.lean} (5) --- 22 total. \\
+\midrule
+\textbf{Repository / version} &
+artifact in this submission; \texttt{lake build} passes; mathlib
+v4.32.2 pinned by \texttt{lean-toolchain}; 26-file minimal dependency
+closure. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Introduction}
+
+The Pat framework is a family of claims about direction declaration,
+phase locking, and symmetric-pair reduction, developed in a program of
+small transformer experiments. Small transformers trained on
+algorithmic datasets exhibit rich and counterintuitive generalization
+behavior: delayed generalization (grokking) on small algorithmic
+datasets~\cite{power2022grokking}, systematic failures on
+out-of-distribution inputs~\cite{deletang2022chomsky,
+madsen2020arithmetic}, and length extrapolation that depends on the
+position encoding~\cite{press2021alibi, su2021roformer,
+duan2023interpolation}; in-context arithmetic emerges at
+scale~\cite{brown2020gpt3}. This paper records the empirical route
+that grounds the framework: what was observed, what structural laws
+were extracted, and which claims were machine-checked. The route is a
+chain of four links.
+
+\paragraph{Empirical starting point.} A low-epoch transformer trained on
+successor-notation arithmetic (addition up to 9, multiplication up to 4,
+fully enumerated with true and false labels) reaches training accuracy
+$1.000$ in every one of 45 runs (5 groups $\times$ 3 seeds $\times$ 3
+independent executions). Yet out-of-distribution (OOD) accuracy
+dichotomizes: $32/32$ on length extrapolation in the trained notation,
+$0/32$ on the same structure written in an untrained second notation of
+the same basepoint, and $32/32$ after explicit equivalence statements
+bridge the two notations. Training completeness does not imply
+extrapolation completeness; this is the starting observation from which
+everything else follows.
+
+\paragraph{Structural laws.} From this and the supporting experiments
+we extract five laws about what training intuition is and is not:
+operations bind to a basepoint (anchor binding); notations of the same
+anchor are translatable when equivalence is declared (notation
+translatability); one step of successor extrapolates along the chain
+(shift invariance); structure must be fully expanded in the sequence
+(structure-bearing representation); and the definition layer of tokens
+is invisible to training (definition-layer invisibility). The meta-law
+is: training intuition is representation-bound statistics.
+
+\paragraph{Framework correspondence.} The laws correspond, as an
+observational correspondence rather than a deductive implication, to
+framework claims: anchor binding to paired basepoint declaration
+(R136), notation translatability to symmetric-pair reduction (R143),
+and the collapse of undeclared notations to the self-referential
+degenerate case (R138). A completeness criterion organizes the
+correspondence: the decoupling operator $D$ --- exclusion, cancellation,
+layering --- implies completeness at any order, any element, and any
+subject-object, exhibited as perfect OOD behavior; and three mapping
+judgments (symbol-norm, presentation-legality, intuition-precision)
+give the layer-to-layer verdicts that the OOD two-pole dichotomy
+exhibits.
+
+\paragraph{Machine-checked theorems.} The framework chain is formalized
+in Lean 4 / mathlib: twenty-two theorems, zero errors, zero
+\texttt{sorry}, from the interlock matrix to the continuum closure
+theorems. The theorem chain is: the interlock matrix is nonsingular
+(det $= \theta \cdot (r + 1/r) \neq 0$); the four phases
+$\{1, -1, i, -i\}$ pairwise interlock; every phase in
+$[0, 2\pi]$ is uniformly approximated by the countable pat grid
+$\{2\pi j / N\}$; the continuum is the closure of the pat grid; and an
+endogenous construction from two paired basepoints and midpoint
+reduction reaches the same closure.
+
+The paper is organized as the route itself: Section~2 reports the
+empirical starting point; Section~3 states the structural laws;
+Section~4 gives the framework correspondence; Section~5 states the
+completeness criterion and the mapping judgments; Section~6 presents
+the machine-checked theorems; Section~7 states the honest boundary;
+Section~8 concludes.
+
+\section{The empirical starting point}
+
+\subsection{Setup and judgment discipline}
+
+All experiments use the same training runtime (included in the
+artifact), a small transformer~\cite{vaswani2017attention}
+(dimension 64, 2 layers, 60 epochs,
+learning rate $10^{-3}$, batch 512) over tokenized arithmetic
+sequences. Tokens are fully expanded successor chains (true numerals):
+the chain length carries the number. The judgment discipline is strict:
+a sample is correct only if the full sequence is reconstructed token by
+token (end-truth judgment); positional accuracy is not trusted, because
+aggregate accuracy masks collapse points. Every reported count is a
+full-sequence count.
+
+\subsection{Observation 1: training accuracy 1.000, OOD dichotomizes}
+
+Training completes perfectly in all 45 runs (5 groups $\times$ 3 seeds
+$\times$ 3 executions) --- no exception. OOD, however, splits into two
+poles: some probes score $32/32$, others $0/32$. Training completeness
+$\neq$ extrapolation completeness. This dichotomy is the fixed point
+from which all subsequent observations are made.
+
+\subsection{Observation 2: same-notation extrapolation is 32/32}
+
+Group \textbf{1a}: train on the notation $\mathit{succ}_a$ (addition
+$\le 9$, multiplication $\le 4$), probe OOD by length extrapolation in
+$\mathit{succ}_a$ (addition $10$--$12$, multiplication $5$--$6$):
+$32/32$. The chain-length rule (chain concatenation) holds beyond the
+training coverage. Within a representation, statistics extrapolate;
+this is consistent with prior reports of length generalization in
+arithmetic transformers~\cite{duan2023interpolation,
+madsen2020arithmetic}.
+
+\subsection{Observation 3: same-basepoint zero-shot is 0/32}
+
+Group \textbf{1b}: the training samples are identical to 1a; only the
+OOD probe changes notation, from $\mathit{succ}_a$ to $\mathit{succ}_b$
+--- the same successor structure, same basepoint, a different spelling.
+The probe scores $0/32$: complete collapse. $\mathit{succ}_b$ is
+``the same successor written differently''; zero-shot does not
+transfer. Training intuition binds to the notation, not to the
+semantics: the meaning of \emph{successor} never entered the training.
+
+\subsection{Observation 4: equivalence statements bridge, 0/32 to 32/32}
+
+Group \textbf{2}: add equivalence contrast samples to the training set
+($\mathit{succ}_a$-chain $n$ = $\mathit{succ}_b$-chain $n$, $n =
+0..9$) plus anchored wrong samples (shown by a control group to be
+irrelevant). The OOD probe on $\mathit{succ}_b$ now scores $32/32$.
+Explicit statements that the two notations are equivalent bridge the
+notations: $0/32 \to 32/32$. An equivalence statement is a paired
+declaration; it is the bridge tool.
+
+\subsection{Reproducibility}
+
+All three executions (two in the original environment, one inside the
+self-contained package) reproduce the same per-seed counts: $32/32$,
+$0/32$, $32/32$ for groups 1a, 1b, 2 respectively, with the control
+groups 2' (bridge does not damage the original notation) and 4
+(symmetry-special training) also $32/32$. The core two-pole contrast
+($0/32 \leftrightarrow 32/32$) is stable across seeds and executions.
+
+\section{Five structural laws}
+
+\subsection{Law 1: anchor binding (E11)}
+
+Shifting the basepoint (anchor drift) collapses zero-shot to $0/32$;
+each anchor requires its own training; explicit equivalence samples
+between anchors do not transfer the operation rules. Anchor type makes
+no difference (a value-zero anchor and a basepoint anchor drift
+identically). Every reference frame's operations must be established
+independently.
+
+\subsection{Law 2: notation translatability (E12)}
+
+Different notations of the same anchor are bridgeable by equivalence
+statements ($0/32 \to 32/32$); the same notation across anchors is not
+bridgeable (E11, $0/32$). The anchor (basepoint) is the structural
+identity to which operations bind; a notation is a translatable
+representation within an anchor. Contrast samples (equivalence
+statements) are the bridge tool.
+
+\subsection{Law 3: shift invariance (E9)}
+
+Training only $\mathit{succ}(0) = 1$ (two samples) extrapolates to
+$\mathit{succ}(1..7)$: $14/14$. The step $0 \to 1$ and the step
+$1 \to 2$ are the same successor; this is the mechanism of chain-length
+extrapolation.
+
+\subsection{Law 4: structure-bearing representation (E6)}
+
+Position-value bare symbols (implicit place weight, nominal position
+tokens) collapse ($0/30$); true numerals (fully expanded successor
+chains, chain length = value) are stable ($30/30$). Structure must be
+fully expanded in the sequence; it cannot be left to intuition.
+
+\subsection{Law 5: definition-layer invisibility (E4/E5)}
+
+Four definitions of 0 (postulate, iteration zero, empty-chain default,
+cancellation law) and two designs of successor (explicit concept,
+atomic counting) train equivalently. Training intuition is sensitive
+only to the representation form (sequence structure); the token
+definition layer (where the semantics comes from) is invisible.
+
+\subsection{The meta-law: training intuition is representation-bound statistics}
+
+Strip one representation and probe the same value in another: total
+collapse ($0/32$). Joint training on several representations does not
+induce cross-representation invariants (a third representation still
+scores $0/32$). An OOD score of $1.0$ proves only that statistics
+extrapolate within that representation; it says nothing about
+structure. Structure (value, semantics) is the object of the
+formalization layer (Lean, definitions); the training layer cannot
+reach it.
+
+\section{The framework correspondence}
+
+The five laws correspond to framework claims. We state the
+correspondence explicitly and mark it as observational: each framework
+concept has a statistical manifestation, but the manifestation does not
+imply the concept.
+
+\paragraph{Anchor binding $\leftrightarrow$ paired basepoint declaration (R136).}
+Empirically, operations bind to an anchor: shifting it collapses
+($0/32$), changing notation without declaration collapses ($0/32$).
+In the framework, a basepoint cannot be used alone; directions must be
+declared in symmetric pairs at once (a single direction is a privilege
+pollution). The empirical $0/32$ is the statistical manifestation of
+an undeclared pair: training $\mathit{succ}_a$ without declaring
+$\mathit{succ}_b$ leaves the $\mathit{succ}_b$ side without an anchor,
+and it collapses.
+
+\paragraph{Equivalence statements $\leftrightarrow$ symmetric-pair reduction (R143).}
+Empirically, equivalence contrast samples bridge two notations
+($0/32 \to 32/32$). In the framework, a symmetric pair
+$\{\mathit{succ}_a, \mathit{succ}_b\}$ reduces to 1: the numerical pair
+$r \cdot (1/r) = 1$ and the phase pair $e^{i\theta} \cdot e^{-i\theta}
+= 1$ are the two decompositions of the unit. The bridge is the
+statistical manifestation of symmetric-pair reduction: once declared,
+$\mathit{succ}_b$ is solvable from $\mathit{succ}_a$ and back.
+
+\paragraph{Interlock: bidirectional solvability (R143).}
+After bridging, both directions work (groups 2 and 2', both $32/32$).
+In the framework, interlock is equivalent to nonsingularity of the
+interlock matrix ($\det = \theta \cdot (r + 1/r) \neq 0$): from either
+coordinate (phase or magnitude) the other is solvable. Bidirectional
+translatability is the statistical manifestation of interlock
+nonsingularity.
+
+\paragraph{Undeclared = collapse (R138).}
+An undeclared equivalence collapses to $0/32$: information is
+unreachable across representations. In the framework, an unlocked phase
+relation is the self-referential degenerate case: every operation on it
+returns itself (absorption). The $0/32$ is the statistical
+manifestation of the degenerate collapse: the undeclared side's
+information is unreachable, and the loop closes on itself.
+
+\paragraph{Shift invariance $\leftrightarrow$ successor identity (R137).}
+Empirically $\mathit{succ}(0)$ extrapolates to $\mathit{succ}(1..7)$.
+In the framework, a declared direction yields a non-collapsing chain:
+each successor step is the same direction. Chain-length extrapolation
+is the statistical manifestation of chain injectivity.
+
+\section{The completeness criterion and the mapping judgments}
+
+\subsection{The completeness criterion}
+
+The correspondence above is organized by a completeness criterion: the
+decoupling operator $D$ --- exclusion (remove what does not belong),
+cancellation (pair off and cancel what reduces), layering (separate
+what plays different roles) --- implies completeness at any order, any
+element, and any subject-object, exhibited as perfect OOD behavior.
+The empirical program verifies the criterion's clauses: at the order
+level, algebraic axioms $12/12$, involutions $12/12$, truth/false
+separation $6/6$ (token-level, per the reporting discipline); at the
+element level, the orthogonality-declaration bridging succeeds
+same-anchor ($32/32$) and a double declaration (orthogonality +
+equivalence) restores stability across seeds ($5/5$); at the
+subject-object level, direction localization with two symmetry groups
+scores $16/16 \times 3$ seeds, and a single declaration is
+insufficient --- two groups of symmetries are necessary to localize a
+direction (Cartan--Dieudonn\'e: rotations are composites of two
+reflections; a single reflection only defines $\pm$).
+
+\subsection{The three mapping judgments}
+
+The OOD two-pole dichotomy is the training-layer exhibition of three
+layer-to-layer judgments about the token system (five layers:
+basepostulate B, concept C, symbol S, grammar G, presentation P).
+Each judgment decides, for a multi-to-multi mapping between layers,
+whether every target is resolvable.
+
+\paragraph{Symbol-norm judgment (S $\to$ C/I).}
+How is the multi-to-multi mapping from symbols to logic and intuition
+judged? Every target must be resolvable: ambiguity converges by
+context (no context = all candidates; given context = one);
+unresolvable ambiguity or collision is non-norm. The two symmetric
+directions are symbol $\to$ logic and symbol $\to$ intuition. The
+experimental exhibition is the structure-vs-symbol contrast: mapped
+symbols $30/30$, bare symbols $0/30$ (E6).
+
+\paragraph{Presentation-legality judgment (C/I $\to$ P).}
+How is the multi-to-multi mapping from logic and intuition to
+presentation judged? Every presentation source must be resolvable:
+multiple presentations of one source are bridgeable by equivalence
+statements; numeric coincidence without explicit declaration is
+illegal (the supervision signal carries no direction information).
+The experimental exhibitions are the two poles of the dichotomy:
+undeclared notation collapse ($0/32$) and equivalence bridging
+($32/32$).
+
+\paragraph{Intuition-precision judgment (I $\to$ C/P).}
+How is the multi-to-multi mapping from intuition to logic and
+presentation judged? The intuition-token interface must be
+definitionally resolvable (it must not impersonate a logic concept);
+intuition-path precision is judged by the two-pole comparison
+(in-representation OOD $1.0$, cross-representation $0$); polarity
+confusion events are the canonical failure. The experimental
+exhibition is exactly the two-pole dichotomy with the bridge as the
+resolvability restoration ($0/32 \to 32/32$).
+
+A fourth judgment (symbol $\to$ presentation: notation context
+precedence and associativity resolve; glyph identification is unique;
+round trips are lossless) completes the five-layer coverage. All four
+judgments share one structure: resolvability of every target of a
+multi-to-multi mapping, judged by declaration, context, or two-pole
+comparison.
+
+\section{Machine-checked theorems}
+
+The theorems are formalized in Lean 4~\cite{lean4} against
+mathlib~\cite{mathlib2020, mathlib2026}. Recent systems couple language
+models with proof assistants for formal mathematics --- from
+curriculum learning over formal statements~\cite{polu2022curriculum,
+han2021gptf} and the MiniF2F benchmark~\cite{zheng2021minif2f}, to
+retrieval-augmented and copilot-style proving~\cite{yang2023leandojo,
+song2024leancopilot}, interleaved thinking and
+proving~\cite{lin2024leantar}, large-scale synthetic
+data~\cite{xin2024deepseekprover, azerbayev2023llemma}, and guiding
+provers with informal proofs~\cite{jiang2022draftsketch}. The present
+development is a small, fully machine-checked library produced in this
+style (Section~7).
+
+\subsection{The interlock matrix (R143, MutualLocking.lean)}
+
+A declaration is two groups of symmetries: a phase (direction) pair
+$(\theta, -\theta)$ and a magnitude (distance) pair $(r, 1/r)$. The
+two paired vectors are a $2 \times 2$ matrix
+\[
+  \begin{pmatrix} \theta & r \\ -\theta & 1/r \end{pmatrix},
+  \qquad \det = \theta \cdot (r + 1/r).
+\]
+\verb|mutual_lock_invertible|: for $\theta \neq 0$ and $r > 0$ the
+determinant is nonzero --- the matrix is nonsingular, so either
+coordinate is solvable from the other. Phase and magnitude are mutually
+locked; no third layer of locking is needed. Supporting theorems:
+\verb|magnitude_locks_phase_round_trip| (the normalized displacement
+$(pat0 + d - pat0)/\|pat0 + d - pat0\| = d$ recovers the direction
+from the locked magnitude position) and \verb|magnitude_pair_log_mirror|
+($\log(1/r) = -\log r$: the magnitude pair is the log mirror pair).
+
+\subsection{Four-phase interlock (R149, Pat4Phase.lean)}
+
+The unit's two symmetry decompositions combine: the numerical pair
+$a \cdot (1/a) = 1$ and the phase pair $e^{i\theta} \cdot e^{-i\theta}
+= 1$. \verb|quadriphase_interlock|: the four phases $\{1, -1, i, -i\}$
+pairwise interlock (magnitude pair + phase pair), normalizing to
+$S^3$. Supporting theorems establish axis orthogonality
+(\verb|axis_pair_orthogonal|) and the extrapolation to the pat circle
+(\verb|extrapolation_to_pat_circle|, \verb|infinite_isomorphic_extrapolation|).
+
+\subsection{Countable grid and density (R150, PatCountableInfinitPhaseUnification.lean)}
+
+The pat grid is the union of all $N$-slot rings:
+\[
+  \mathrm{patGrid} = \big\{\, 2\pi j / N \;\big|\; 0 < N,\; j \le N
+  \,\big\}.
+\]
+\verb|pat_grid_countable|: the grid is countable (it is the image of
+$\mathbb{N} \times \mathbb{N}$). \verb|pat_phase_unification|: every
+phase $\theta \in [0, 2\pi]$ is approximated to arbitrary precision by
+a grid point ($\forall \varepsilon > 0,\ \exists x \in
+\mathrm{patGrid},\ |\theta - x| \le \varepsilon$); the quantization
+error is $\le \pi/N$, so $N \ge \pi/\varepsilon$ suffices. This is the
+bridge theorem from the finite construction to the continuum.
+
+\subsection{Continuum closure (R151, ContinuumPatGrid.lean)}
+
+\verb|continuum_in_pat_grid_closure|: every $x \in [0, 2\pi]$ belongs
+to the closure of the pat grid. The proof uses the density theorem and
+the closure criterion directly (no sequence or limit lemmas). The
+continuum is not a clean object; it is the closure of the countable
+reachable grid --- a generated structure's limit.
+
+\subsection{Endogenous closure (R163, ContinuumConstructible.lean)}
+
+The closure is re-derived from endogenous generation: two paired
+basepoints ($base_0 = 0$, $base_1 = 2\pi$) and the symmetry reduction
+rule (the reduction point of a symmetric pair is its midpoint)
+generate the grid
+\[
+  \mathrm{patGrid}' = \big\{\, 2\pi \cdot k / 2^m \;\big|\; 0 \le k
+  \le 2^m \,\big\}
+\]
+(dyadic rationals $\times$ $2\pi$). \verb|dyadic_InPat|: every dyadic
+point is generated; \verb|patGrid'_dense|: the generated grid is dense
+in $[0, 2\pi]$; \verb|continuum_in_constructible_closure|: every $x
+\in [0, 2\pi]$ lies in the closure of the generated grid. The
+definition layer uses no natural numbers: generation is closure under
+midpoint from the two paired basepoints, and the dyadic representation
+is a representation theorem, not an input. The construction mirrors
+the paired-declaration discipline: two basepoints, declared as a pair;
+symmetric pairs reduce to their midpoint.
+
+\subsection{Mapping judgments (MappingJudgmentTheorems.lean)}
+
+Five theorems formalize the resolvability verdicts of Section~5:
+\verb|context_convergence_resolvable| (context convergence implies the
+existence of a resolution verdict for the symbol mapping),
+\verb|equivalence_bridge_judgment| (an equivalence declaration yields a
+bridge verdict), \verb|conflict_declared_resolvable| (a declared
+conflict yields an injective resolvability verdict),
+\verb|round_trip_precise_injective| (lossless round trip $B \circ A =
+\mathrm{id}$ implies the assembly map is injective --- symbols are
+resolvable), and \verb|polar_judgment_separated| (the two-pole
+judgment separates: in-representation truth and cross-representation
+falsity are judged by the same verdict structure). All five compile
+with zero errors and zero \texttt{sorry}.
+
+\section{Honest boundary}
+
+The boundary is stated exactly, in three points.
+
+\paragraph{The empirical-to-framework mapping is observational.}
+The correspondences of Section~4 (statistical manifestations) are not
+deductive implications: no theorem states that training behavior
+implies a framework claim. The Lean theorems hold independently of the
+training observations; the observations provide motivation and
+correspondence.
+
+\paragraph{No structural claim about the model.}
+Training intuition is representation-bound statistics. The paper does
+not claim the transformer learned structure; it reports what the
+statistics do and do not transfer to.
+
+\paragraph{The proofs were developed in a human--AI collaboration.}
+The direction, the framework claims, the observation judgments, and
+the corrections are human-authored; the Lean proof scripts were
+drafted by an AI assistant and checked by the machine. The
+collaboration is part of the methodology, not of the proofs: every
+theorem stands on the machine check alone, and no claim depends on
+the drafting process. This mirrors the growing practice of
+AI-assisted formalization~\cite{yang2023leandojo, song2024leancopilot,
+lin2024leantar, xin2024deepseekprover}.
+
+\paragraph{Novelty discipline.}
+The classical components are marked KNOWN: the interlock matrix is a
+2--2 nonsingularity statement over the reals; the density of dyadic
+rationals in the interval is classical; the closure theorems are
+reformulations of standard density results in the framework's
+vocabulary. The claims R136--R163 carry \texttt{novelty\_status}
+annotations (KNOWN or NOVELTY\_UNASSESSED) in the artifact's claim
+ledger. The empirical observations are reported as observations, not
+as theorems.
+
+\section{Conclusion}
+
+The route from transformer empiricism to the Pat framework and the
+continuum is complete and recorded: the two-pole OOD dichotomy
+($0/32 \leftrightarrow 32/32$, 45 runs reproduced) yields five
+structural laws (anchor binding, notation translatability, shift
+invariance, structure-bearing representation, definition-layer
+invisibility); the laws correspond observationally to the framework's
+paired declaration, phase locking, and interlock; a completeness
+criterion (the decoupling operator $D$) organizes the correspondence;
+and the framework chain is machine-checked in Lean 4 / mathlib ---
+twenty-two theorems, zero \texttt{sorry}, from the interlock matrix
+through the countable pat grid and its density to the continuum
+closure theorems.
+
+In one sentence: the training layer says ``representation-bound
+statistics,'' the formalization layer says ``paired-declaration
+structure,'' and the two meet at the continuum closure: a
+representation is an anchor's notation, and the continuum is the
+anchor's closure.
+
+\begin{acks}
+We thank the Lean and mathlib communities for the toolchain.
+\end{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
