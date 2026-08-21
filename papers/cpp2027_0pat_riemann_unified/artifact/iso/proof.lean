@@ -5391,4 +5391,91 @@ theorem flip_count_from_theta_lifts (T : ℝ)
     simpa [sub_div] using hd
   simpa using hdiv
 
+
+  -- ============================================================
+  -- T6m: 矩形闭合骨架 — Λ₀ 反射对消 (2026-08-19)
+  -- 用户方法论继续: 未证部分用桥接+相位对消推进。
+  -- mathlib completedRiemannZeta₀ (整函数, 无极点) 替代 ζ (s=1 极点):
+  --   Λ₀(1-s) = Λ₀ s (mathlib 反射) ⟹ log Λ₀(1-s) - log Λ₀ s ∈ 2πiℤ
+  --   (矩形顶边/左边相位对消的代数骨架: 反射对称的两边 log 差是整数层)
+  -- ============================================================
+
+/-- **Λ₀ 反射对消**: log Λ₀(1-s) - log Λ₀ s ∈ 2πiℤ —
+    矩形顶边 (s) 与左边 (1-s) 的相位差是整数层 (mathlib 整函数反射
+    completedRiemannZeta₀_one_sub + exp 相等 ⟹ log 差 2πi·n)。
+    矩形闭合的对称性骨架: 反射两边相位对消, 剩整数圈数。 -/
+theorem completedZeta₀_log_reflection (s : ℂ) (hs : completedRiemannZeta₀ s ≠ 0) :
+    ∃ n : ℤ, Complex.log (completedRiemannZeta₀ (1 - s)) -
+        Complex.log (completedRiemannZeta₀ s)
+      = (n : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+  -- exp(log Λ₀(1-s)) = Λ₀(1-s) = Λ₀ s = exp(log Λ₀ s) (反射 + exp_log)
+  have h1 : Complex.exp (Complex.log (completedRiemannZeta₀ (1 - s))) =
+      Complex.exp (Complex.log (completedRiemannZeta₀ s)) := by
+    rw [Complex.exp_log, Complex.exp_log, completedRiemannZeta₀_one_sub]
+    · exact hs
+    · rw [completedRiemannZeta₀_one_sub]
+      exact hs
+  -- exp 相等 ⟹ log 差 = n·2πi
+  rcases (Complex.exp_eq_exp_iff_exists_int).1 h1 with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  -- hn : log Λ₀(1-s) = log Λ₀ s + n·2πi
+  rw [hn]
+  ring
+
+
+/-- **Λ₀ 带内零点等价**: 0 < Re s < 1 时 ζ(s) = 0 ⟺ Λ₀(s) = 0。
+    ζ(s) = (Λ₀(s) - 1/s - 1/(1-s)) / (π^{-s/2}Γ(s/2)) (mathlib
+    riemannZeta_eq_completedRiemannZeta₀): 带内 s ≠ 0,1 且 1/s + 1/(1-s) ≠ 0
+    (两个分式的零点在 s=0 与 s=1, 带外) ⟹ 零点 ⟺ Λ₀(s) = 0。
+    参数原理换函数依据: 用整函数 Λ₀ 绕矩形 (避开 ζ 的 s=1 极点)。 -/
+theorem completedZeta₀_zero_iff_zeta_zero {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hre : 0 < s.re) :
+    completedRiemannZeta₀ s = 0 ↔ riemannZeta s = 0 := by
+  have hzeq := riemannZeta_eq_completedRiemannZeta₀ (s := s) hs0
+  -- ζ(s) = (Λ₀(s) - 1/s - 1/(1-s)) / (π^{-s/2}Γ(s/2))
+  have hpi : (↑Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have hpow : (↑Real.pi ^ (-s / 2) : ℂ) ≠ 0 := by
+    -- π^z = exp(z·log π) (π ≠ 0) ≠ 0
+    rw [Complex.cpow_def_of_ne_zero hpi]
+    exact Complex.exp_ne_zero _
+  have hgam : Complex.Gamma (s / 2) ≠ 0 := by
+    apply Complex.Gamma_ne_zero
+    intro m hm
+    -- s/2 = -m ⟹ Re(s/2) = s.re/2 > 0 但 = -m ≤ 0: 矛盾
+    have hre2 : (s / 2).re = s.re / 2 := by simp
+    have hneg : (s / 2).re = -((m : ℂ).re) := by rw [hm]
+    have hmre : ((m : ℂ).re) = (m : ℝ) := by simp
+    have : s.re / 2 = -((m : ℝ) : ℂ).re := by
+      rw [← hre2, hneg, hmre]
+    have hmcast : -((m : ℝ) : ℂ).re = -((m : ℝ) : ℝ) := by simp
+    rw [hmcast] at this
+    have hmnonneg : (0 : ℝ) ≤ (m : ℝ) := by exact_mod_cast (Nat.zero_le m)
+    nlinarith
+  have hden : (↑Real.pi ^ (-s / 2) * Complex.Gamma (s / 2) : ℂ) ≠ 0 :=
+    mul_ne_zero hpow hgam
+  -- 带内 1/s + 1/(1-s) = 1/(s(1-s)) ≠ 0 (s ≠ 0, s ≠ 1)
+  have hmid : 1 / s + 1 / (1 - s) ≠ 0 := by
+    have hprod : s * (1 - s) ≠ 0 := mul_ne_zero hs0 (sub_ne_zero.mpr hs1)
+    have h : 1 / s + 1 / (1 - s) = 1 / (s * (1 - s)) := by
+      field_simp [hs0, sub_ne_zero.mpr hs1]
+      ring
+    rw [h]
+    exact inv_ne_zero hprod
+  constructor
+  · intro hz
+    -- ζ(s) = 0 ⟹ 分子 = 0 (分母非零) ⟹ Λ₀(s) = 1/s + 1/(1-s) ≠ 0
+    have hnum : completedRiemannZeta₀ s - 1 / s - 1 / (1 - s) = 0 := by
+      have hq : (completedRiemannZeta₀ s - 1 / s - 1 / (1 - s)) /
+          (↑Real.pi ^ (-s / 2) * Complex.Gamma (s / 2)) = 0 := by
+        simpa [hzeq] using hz
+      exact (div_eq_zero_iff hden).1 hq
+    by_contra hz0
+    have : 1 / s + 1 / (1 - s) = 0 := by
+      rw [← hz0] at hnum
+      linarith
+    exact hmid this
+  · intro hz
+    rw [hzeq, hz]
+    simp
+
 end RiemannUnifiedObservation
