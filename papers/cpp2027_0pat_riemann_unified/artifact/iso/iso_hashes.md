@@ -34,6 +34,7 @@
 | 2026-08-21 (当前) | zeta_zero_order_iso.lean | ad40314e738eb291 | T6h v2 + 翻转比值 (乘除法对消, 反射对称) | 隔离 |
 | 2026-08-21 (当前) | zeta_argument_iso.lean | a27dcfd2bab9a658 | T6j 参数原理 (单零点, 对消积分形式) | 隔离 |
 | 2026-08-21 10:06 | zeta_stirling_iso.lean | 581010a30921f455 | T6i Stirling 第一层 (乘子自反+模恒1) | 隔离 |
+| 2026-08-21 (当前) | zeta_e_pi_i_bridge_iso.lean | fe17c58a083fe007 | T6k e^{iπ} 桥接 (e^{iπS}=u + 共轭奇性 S(-T)=-S(T)) | 隔离 |
 ## 记录纪律 (2026-08-21 用户要求)
 
 - 每个新隔离文件编译通过后: 立即记录 hash + 时间戳到本台账 (含对应 claim/观测)
