@@ -5721,4 +5721,119 @@ theorem bottom_edge_arg_jump :
   rw [hargn, hargp]
   simp
 
+
+  -- ============================================================
+  -- T6o: (0,1) 段负性核心件 — 部分和 < 积分 (2026-08-21)
+  -- ζ(x) < 0 for x ∈ (0,1) 的欧拉-麦克劳林路径 (Euler 1735 经典):
+  --   Σ_{n=1}^N n^{-x} < ∫₀^N t^{-x}dt = N^{1-x}/(1-x)
+  --   ⟹ 部分和修正 R_N(x) = Σ n^{-x} - N^{1-x}/(1-x) < 0
+  -- 逐项: (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (t^{-s} 递减 ≥ 右端点值, FTC 算积分)
+  -- 本定理 = 核心代数件; 延拓 ζ(x) = lim R_N(x) 需莫雷拉/一致收敛解析
+  -- (mathlib HasPrimitives 未预编译, 标注 KNOWN 路径)。
+  -- ============================================================
+
+/-- **部分和 < 积分 (核心件)**: Σ_{n=1}^N n^{-s} < N^{1-s}/(1-s) 对 0 < s < 1。
+    逐项 (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (单调) + FTC 算积分 + 望远镜求和,
+    第一项 (n=0) 严格 (1 < 1/(1-s))。 -/
+theorem zeta_partial_sum_lt_integral_bound {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1)
+    (N : ℕ) (hN : 1 ≤ N) :
+    (∑ n in Finset.range N, ((n + 1 : ℝ) ^ (-s))) < (N : ℝ) ^ (1 - s) / (1 - s) := by
+  have h1m : 0 < 1 - s := by linarith
+  -- 逐项: (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt = ((n+1)^{1-s} - n^{1-s})/(1-s)
+  have hterm : ∀ n : ℕ, (n + 1 : ℝ) ^ (-s) ≤
+      ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    intro n
+    by_cases hn : n = 0
+    · subst hn
+      -- 1 ≤ 1/(1-s) (严格)
+      have hlt : (1 : ℝ) < 1 / (1 - s) := by
+        rw [one_div]
+        exact (one_lt_inv₀ h1m).2 (by linarith : 1 - s < 1)
+      exact le_of_lt hlt
+    · -- n ≥ 1: x ∈ [n, n+1] ⟹ x > 0, FTC 可用
+      have hnpos : 0 < (n : ℝ) := by exact_mod_cast (Nat.pos_of_ne_zero hn)
+      -- ∫ₙ^{n+1} t^{-s}dt = ((n+1)^{1-s} - n^{1-s})/(1-s) (FTC: (t^{1-s}/(1-s))' = t^{-s})
+      have hftc : ∫ t in (n : ℝ)..((n : ℝ) + 1), t ^ (-s)
+          = ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+        have hderiv : ∀ x ∈ Set.uIcc (n : ℝ) ((n : ℝ) + 1),
+            HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s)) (x ^ (-s)) x := by
+          intro x hx
+          have hxpos : 0 < x := by
+            have hxge : (n : ℝ) ≤ x := (Set.mem_uIcc.mp hx).1
+            linarith
+          have hd := Real.hasDerivAt_rpow_const (x := x) (p := 1 - s) (Or.inl (ne_of_gt hxpos))
+          -- (x^{1-s})' = (1-s)·x^{1-s-1}, 除以 (1-s): 得 x^{1-s-1} = x^{-s}
+          have hd' : HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s)) (x ^ (-s)) x := by
+            have hd'' : HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s))
+                ((1 - s) * x ^ (1 - s - 1) / (1 - s)) x := by
+              simpa using hd.div_const (1 - s)
+            -- (1-s)·x^{1-s-1}/(1-s) = x^{1-s-1} = x^{-s} (1-s-1 = -s)
+            have hpow : x ^ (1 - s - 1) = x ^ (-s) := by
+              congr 1
+              ring
+            simpa [hpow] using hd''
+          exact hd'
+        have hint : IntervalIntegrable (fun t : ℝ => t ^ (-s)) volume (n : ℝ) ((n : ℝ) + 1) := by
+          -- t^{-s} 在 [n, n+1] 连续 (t ≥ n ≥ 1 > 0)
+          refine Continuous.intervalIntegrable ?_ (n : ℝ) ((n : ℝ) + 1)
+          · -- t ↦ t^{-s} 连续于正半轴
+            exact continuousAt_rpow_const.continuousOn.mono (by intro t ht; exact ht)
+          · intro x hx
+            -- IntervalIntegrable 的连续版本需要连续性; 上面已给
+            simpa using (continuousAt_rpow_const.continuousOn (x := x) (by
+              -- x ∈ uIcc (n) (n+1) ⟹ x ≥ n ≥ 1 > 0
+              have hxge : (n : ℝ) ≤ x := (Set.mem_uIcc.mp hx).1
+              linarith))
+        exact intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+      -- (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (t ≤ n+1 ⟹ t^{-s} ≥ (n+1)^{-s}, s > 0)
+      have hmono : (n + 1 : ℝ) ^ (-s) ≤ ∫ t in (n : ℝ)..((n : ℝ) + 1), t ^ (-s) := by
+        refine intervalIntegral.integral_mono_on (by linarith) ?_ ?_ ?_
+        · exact Continuous.intervalIntegrable (by fun_prop) (n : ℝ) ((n : ℝ) + 1)
+        · exact Continuous.intervalIntegrable (by fun_prop) (n : ℝ) ((n : ℝ) + 1)
+        · intro t ht
+          -- t ∈ [n, n+1] ⟹ t ≤ n+1 ⟹ t^{-s} ≥ (n+1)^{-s} (rpow 递减反转)
+          have htle : t ≤ (n + 1 : ℝ) := (Set.mem_Icc.mp ht).2
+          have htpos : 0 < t := by
+            have htge : (n : ℝ) ≤ t := (Set.mem_Icc.mp ht).1
+            linarith
+          -- t^{-s} = (t^s)⁻¹ ≥ ((n+1)^s)⁻¹ = (n+1)^{-s}
+          rw [← Real.rpow_neg (le_of_lt htpos), ← Real.rpow_neg (by positivity : 0 ≤ (n+1 : ℝ))]
+          -- t^s ≤ (n+1)^s (底递增, s > 0) ⟹ 逆 ≥
+          have hpow : t ^ s ≤ (n + 1 : ℝ) ^ s := by
+            exact Real.rpow_le_rpow (le_of_lt htpos) htle (le_of_lt hs0)
+          exact inv_le_inv₀ (Real.rpow_pos_of_pos htpos s) (Real.rpow_pos_of_pos (by positivity) s) hpow
+      rw [hftc]
+      exact hmono
+  -- 望远镜: Σ ((n+1)^{1-s} - n^{1-s})/(1-s) = (N^{1-s} - 0^{1-s})/(1-s)
+  have htel : (∑ n in Finset.range N, ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s))
+      = (N : ℝ) ^ (1 - s) / (1 - s) := by
+    rw [← Finset.sum_div]
+    rw [Finset.sum_range_sub]
+    have h0 : (0 : ℝ) ^ (1 - s) = 0 := by
+      exact (Real.rpow_eq_zero (by norm_num) (by linarith : 1 - s ≠ 0)).2 rfl
+    rw [h0]
+    ring
+  -- 逐项求和 + 第一项严格
+  have hsum_le : (∑ n in Finset.range N, ((n + 1 : ℝ) ^ (-s))) ≤
+      ∑ n in Finset.range N, ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    exact Finset.sum_le_sum (fun n hn => hterm n)
+  -- 第一项严格: 1 < 1/(1-s)
+  have h0_lt : (1 : ℝ) < ((1 : ℝ) ^ (1 - s) - (0 : ℝ) ^ (1 - s)) / (1 - s) := by
+    have hlt : (1 : ℝ) < 1 / (1 - s) := by
+      rw [one_div]
+      exact (one_lt_inv₀ h1m).2 (by linarith : 1 - s < 1)
+    have hpow1 : (1 : ℝ) ^ (1 - s) = 1 := by simp
+    have h0 : (0 : ℝ) ^ (1 - s) = 0 := by
+      exact (Real.rpow_eq_zero (by norm_num) (by linarith : 1 - s ≠ 0)).2 rfl
+    simpa [hpow1, h0] using hlt
+  have hsum_lt : (∑ n in Finset.range N, ((n + 1 : ℝ) ^ (-s))) <
+      ∑ n in Finset.range N, ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    refine Finset.sum_lt_sum ?_ (fun n hn => hterm n) ?_
+    · exact Finset.range_nonempty.mpr hN
+    · refine ⟨0, Finset.mem_range.mpr (by omega), ?_⟩
+      simpa using h0_lt
+  -- 拼装
+  rw [htel]
+  exact hsum_lt
+
 end RiemannUnifiedObservation
