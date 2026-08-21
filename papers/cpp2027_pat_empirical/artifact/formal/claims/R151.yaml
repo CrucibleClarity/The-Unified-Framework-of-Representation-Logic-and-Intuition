@@ -1,0 +1,98 @@
+id: R151
+title: "R151 (user-proposed 2026-08-12): ★连续统 = pat 格点的闭包 (连续统的可构造形式化) — 连续统 [0,2π] 的每个点 ∈ pat 格点闭包: 直接用王氏可达周期与不可达无穷间相位锁定一致性定理 (R150 pat_phase_unification: ∀ε, ∃格点, |x-y| ≤ ε) + 闭包判定一步得出; 不依赖自然数序列/极限引理 (用户纠正); 连续统 = 可数可达格点的极限闭包 (R059/R060/R061); 2026-08-15 内生版: 定义层零 Nat (InPat 中点闭包, R163 对称性降维)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+branch: toolkit
+proposed_by: user (anonymous, 2026-08-12)
+term_ref: "R072 (前置术语总纲): 表述待按单相位数/多相位数前缀声明式梳理"
+
+user_original_words: |
+  ★★★ 用户原话 (2026-08-12, 原封不动保存, 未经改写):
+  ① "最后拣出来几个值得做的东西：连续统、P NP  能形式化了吧。"
+  ② "等等，为什么不用我的定理，还用自然数的引理？"
+
+statement:
+  informal: |
+    ★ 观点提出者: 用户 (2026-08-12)。连续统的可构造形式化。
+
+    ★ 主张内容 (每环锚到已证 claim):
+      ① 连续统 [0, 2π] 的每个点 ∈ pat 格点的闭包:
+         任意 x ∈ [0, 2π] 被可数可达格点任意精度锁定
+      ② ★直接用王氏定理 (R150 pat_phase_unification: ∀ ε > 0,
+         ∃ y ∈ patGrid, |x - y| ≤ ε) + 闭包判定 (Metric.mem_closure_iff)
+         一步得出 — 不依赖自然数序列/极限引理 (用户纠正: 不用自然数的
+         引理, 用我们的定理)
+      ③ 连续统 = 可数可达格点的极限闭包 (R150: 可达周期统一不可达
+         无穷; R059: 单位根 n 槽环; R060: 离散⟷连续互逆; R061:
+         连续统的可构造批判 — 不是干净对象, 是可达格点的极限闭包)
+
+    ★ 验证结论: 用户要求成立 — 连续统能形式化: 连续统 ⊆ pat 格点闭包,
+       用王氏定理一步完成。
+
+  formal_math: |
+    -- 连续统 = pat 格点的闭包 (直接用王氏定理 R150):
+    theorem continuum_in_pat_grid_closure (x : ℝ) (hx₁ : 0 ≤ x) (hx₂ : x ≤ 2 * Real.pi) :
+      x ∈ closure patGrid
+
+objects:
+- continuum_in_pat_grid_closure
+
+definitions_used:
+- R150 PatCountableInfinitPhaseUnification (pat_phase_unification: 王氏相位锁定性定理) / R059 (单位根 n 槽环) / R060 (离散⟷连续互逆) / R061 (连续统批判) / Metric.mem_closure_iff (闭包判定, 标准)
+
+assumptions:
+- "连续统 = [0, 2π] (相位空间, R141 量化前提)"
+- "用王氏定理 (R150) 直接证明, 不用自然数引理 (用户纠正)"
+
+conclusion: "用户要求成立 (2026-08-12): 连续统能形式化 — 连续统 [0,2π] ⊆
+  pat 格点的闭包, 直接用王氏可达周期与不可达无穷间相位锁定一致性定理
+  (R150) 一步得出; 连续统 = 可数可达格点的极限闭包 (非干净对象,
+  R061 一致)。"
+
+known_special_cases:
+  - "任意 x ∈ [0, 2π]: 王氏定理给出任意精度格点锁定"
+  - "闭包: x ∈ closure patGrid ⟺ ∀ε, ∃格点, dist x y < ε"
+  - "连续统 = 可达格点极限闭包 (R150/R059/R060)"
+
+counterexample_search:
+  status: done
+  search_space: "闭包判定 + 王氏定理组合 (Lean 验证)"
+  smallest_checked_size: null
+  result: "1/1 定理 Lean 验证 (0 sorry); 无反例"
+
+formalization:
+  prover: Lean4
+  file: formal/Formal/Toolkit/ContinuumConstructible.lean
+  theorem_name: continuum_in_constructible_closure
+  status: done
+  sorry_free: true
+  notes: "内生版 (2026-08-15): InPat 归纳 (base0/base1/mid 中点闭包),
+    定义层零 Nat — 修复旧版 patGrid ℕ 索引违反内生纪律;
+    表示定理层 (dyadic_InPat / InPat_dyadic / patGrid'_dense) 允许 Nat
+    (结论引用 N, 定义不预设); 4 定理 0 sorry, lake build PASS"
+
+failure_modes:
+  - "连续统是闭包不是逐点到达: 任意精度锁定 (逼近), 非逐一到达 (R123 闭包)"
+  - "用王氏定理 (R150): 不用自然数引理 (用户纠正, 首版用 tendsto 系列已弃)"
+  - "闭包判定是度量标准: 框架仅提供格点, 闭包判定借用标准拓扑"
+
+evidence_for: []
+evidence_against: []
+
+next_action: "① 连续统形式化接入 R061 (连续统批判): 可构造极限闭包替代'干净实数轴' ② 与 R150 组合: 王氏定理 = 连续统统一律 ③ 六集群神经层: 输入 = pat 格点闭包采样"
+
+notes: "观点归属: 用户 (2026-08-12) 提出 + 纠正 (原话原封保存); assistant 首版
+  用自然数序列极限引理 (tendsto 系列) 被用户纠正, 重写为直接用王氏定理
+  (R150) + 闭包判定; Lean 形式化 (ContinuumConstructible.lean 内生版,
+  4 定理 0 sorry, lake build PASS) + claim 落盘。
+  novelty 诚实评估 (2026-08-15): 数学内容 = 经典 dyadic 有理稠密性 +
+  度量完备化 (ℝ = 有理数闭包) — 经典构造, novelty KNOWN; 用户框架的
+  表述创新: '对称性降维闭包' (两基点方向对 → 还原点闭包, R163) 与
+  定义层零 Nat 的内生纪律是框架内的原创视角, 不构成新数学定理。
+  与 R150 的关系: R150 (王氏定理) 同样为经典有理数稠密性重述 (KNOWN),
+  本 claim 是其闭包表述的内生版。"
