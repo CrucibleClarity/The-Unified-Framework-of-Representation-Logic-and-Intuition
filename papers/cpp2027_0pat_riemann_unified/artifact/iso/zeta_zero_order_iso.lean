@@ -512,4 +512,51 @@ theorem flip_iff_odd {t₀ : ℝ} {m : ℕ} {g : ℂ → ℂ}
     intro hm
     exact flip_of_odd_order hm h_exp hg hg_cont
 
+
+  -- ============================================================
+  -- T6n: 翻转 = π 相位跳桥 (2026-08-19)
+  -- 用户方法论继续: 未证部分 (翻转计数 = 零点数) 用桥接推进。
+  -- 翻转 (u⁻ = -u⁺, ① flip_of_odd_order) ⟹ u⁻/u⁺ = -1 = e^{iπ}:
+  -- 左右对称方向的相位 (I^m 与 (-I)^m) 在对消后只剩 e^{iπ},
+  -- 翻转 = π 相位跳 = e^{iπ} 桥的离散版 (与 e^{iπS} = u 平行)。
+  -- 翻转计数 = 零点数的最后拼装: 每跨零点 θ_ζ 跳 π (此桥) +
+  -- T6e 整数层 (2θ_ζ - θ_χ = 2πim) + θ_χ 连续 ⟹ 层跳 1。
+  -- ============================================================
+
+/-- **翻转 = π 相位跳**: u(t₀⁻)/u(t₀⁺) = -1 — 左右对称方向的相位
+    (I^m 与 (-I)^m) 在比值中对消, 剩下符号 -1 = e^{iπ}。
+    翻转 (m 奇, ①) 的比值形式: 相位跳 π 而非任意相位。 -/
+theorem flip_phase_jump_pi {t₀ : ℝ} {m : ℕ} {g : ℂ → ℂ}
+    (hm : Odd m)
+    (h_exp : ∀ᶠ s in 𝓝 (zetaLine t₀), riemannZeta s = (s - zetaLine t₀) ^ m * g s)
+    (hg : g (zetaLine t₀) ≠ 0) (hg_cont : ContinuousAt g (zetaLine t₀)) :
+    (I ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) /
+      ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) = -1 := by
+  -- u⁻ ≠ 0 (G = g/|g| ≠ 0)
+  have hden : (-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖) ≠ 0 := by
+    exact mul_ne_zero (pow_ne_zero _ (by simp : (-I : ℂ) ≠ 0)) (div_ne_zero hg (by simp))
+  -- 翻转: u⁺ = -u⁻ (flip_of_odd_order) ⟹ u⁺/u⁻ = -1
+  have hflip := flip_of_odd_order hm h_exp hg hg_cont
+  calc
+    (I ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) /
+        ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖))
+        = (-((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖))) /
+            ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) := by
+          rw [hflip]
+    _ = -1 := by
+      field_simp [hden]
+
+/-- **翻转 = e^{iπ} (指数形式)**: u(t₀⁻)/u(t₀⁺) = e^{iπ} —
+    e^{iπ} 桥的离散版: 翻转 = π 相位跳 = 单位元 -1 的指数表示。
+    与 e^{iπS(T)} = u(T) 平行: 连续相位用 e^{iπS}, 翻转用 e^{iπ}。 -/
+theorem flip_phase_jump_exp {t₀ : ℝ} {m : ℕ} {g : ℂ → ℂ}
+    (hm : Odd m)
+    (h_exp : ∀ᶠ s in 𝓝 (zetaLine t₀), riemannZeta s = (s - zetaLine t₀) ^ m * g s)
+    (hg : g (zetaLine t₀) ≠ 0) (hg_cont : ContinuousAt g (zetaLine t₀)) :
+    (I ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) /
+      ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) = Complex.exp (↑Real.pi * Complex.I) := by
+  -- -1 = e^{iπ} (exp_pi_mul_I)
+  rw [flip_phase_jump_pi hm h_exp hg hg_cont]
+  rw [Complex.exp_pi_mul_I]
+
 end RiemannUnifiedObservation
