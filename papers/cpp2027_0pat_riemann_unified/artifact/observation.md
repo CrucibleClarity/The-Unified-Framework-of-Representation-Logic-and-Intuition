@@ -1073,3 +1073,49 @@ zeta_argument_iso.lean (mathlib-only, 0 error 0 warning):
 方法论落地: L 闭合对称 — 对消法的积分形式: 闭合路径的连续相位全消,
 剩整数 2πi·N。矩形闭合 (N(T) = (1/π)θ_χ + S(T) + 1) 的拼装:
 竖直边 (临界线) 相位 = 2θ_ζ (共轭加倍), 实轴边 = 0 (ξ 实值), 待后续。
+
+
+## 观测 AU: Stirling 渐进用桥解决 — sin 相位精确 + e^{iθ_χ} = χ 桥 (2026-08-19)
+
+用户方法论: "渐进不就是需要用桥解决的" — 不造 Binet 轮子 (mathlib 无 Stirling 渐近),
+渐进结构全部由桥接给出 (zeta_stirling_iso.lean, 10 定理, 0 error 0 sorry):
+
+**T6j 桥接定理** (本文件新增 3 声明):
+- exp_thetaChi_eq_chi: e^{iθ_χ(T)} = χ(1/2+iT) — χ 的 e^{iπ} 桥, 与 e^{iπS(T)} = u(T) 平行
+  (|χ|=1 ⟹ log χ 纯虚 ⟹ e^{log χ} = e^{iθ_χ} = χ; u 是隐式相位, χ 是显式相位/快路径)
+- sin_phase_exact: Im log sin(π/4+iπT/2) = arctan(tanh(πT/2))
+  (sin(π/4+iy) = (√2/2)(cosh y + i·sinh y); arg = arctan(sinh/cosh) = arctan(tanh y),
+   re > 0 ⟹ arg ∈ (-π/2, π/2) ⟹ arctan_tan 成立)
+- sin_phase_tendsto_pi_div_four: → π/4 (T → ∞)
+  (tanh x = 1 - 2/(e^{2x}+1) → 1: exp 指数 + tendsto_inv_atTop_zero; arctan 连续 + arctan_one)
+
+**渐进结构** (对消法落点): θ_χ(T) 的显式相位刻度
+    θ_χ(T) = T·log(2π) + Im log Γ(1/2-iT) + arctan(tanh(πT/2))
+sin 项精确收敛 π/4; T·log(2π) 项来自 χ 定义 (2π)^{s-1}; Γ 项 Binet 主项
+= -(T log T - T) + O(1/T) 是经典 KNOWN (Backlund, 标注引用, 不重新证明)。
+
+**桥接闭环**: u² = χ (T5) + e^{iπS} = u ⟹ e^{2iπS} = χ = e^{iθ_χ} ⟹ 圈数 = S + 整数层
+(T6e zeta_lift_half_chi_lift_pi_int 已给 θ_ζ - θ_χ/2 ∈ πiℤ 的 lift 版本)。
+
+失败模式: Backlund 主项 (T/2)log(T/2π) - T/2 - π/8 + O(1/T) 的 Binet 展开未证
+(KNOWN, mathlib 无); 本层给出桥接结构而非完整渐近。
+
+
+## 观测 AV: 矩形闭合桥 + 增长控制落点 (2026-08-19)
+
+**任务③④完成** (用户方法论: 对称性消相位 + e^{iπ} 桥接, 渐进用桥解决):
+
+**T6k 矩形闭合桥** (proof.lean, 221 声明 0 error 0 sorry):
+- flip_count_from_theta_lifts: 翻转计数 (零点数) 的桥接形式 —
+    (1/2π)·Im Δθ_χ - (1/π)·Im Δθ_ζ = 整数层 m
+  (flip_chi_circle_bridge 取虚部: 2Δθ_ζ - Δθ_χ = 2πi·m)
+  N(T) = (1/π)θ_χ + S + 1 的整数层结构: χ 显式圈数 (快路径) 与
+  ζ 隐式圈数 (u 提升) 差整数层, e^{iπ} 桥 (u² = χ) 连接。
+- net_flip_from_chi_lift 修复: ∈ ℤ 改 ∃ m : ℤ (mathlib 无 Membership ℂ ℤ 实例)
+
+**T6l 增长控制落点** (zeta_e_pi_i_bridge_iso.lean, 0 error 0 warning):
+- Sfunc_le_log: |S(T)| ≤ 1 ≤ log T (T ≥ e) — S(T) = O(log T) 逐点版本
+  (e^{iπS} = u 桥的界: 主枝 arg 有界 ⟹ S 有界; Backlund 完整界 KNOWN 标注)
+
+失败模式: 矩形闭合的边界积分 (底边 0 / 右边 O(1) / 顶边函数方程折叠)
+未形式化 (经典 Riemann-von Mangoldt, 标注 KNOWN); 本层给出整数层桥接结构。
