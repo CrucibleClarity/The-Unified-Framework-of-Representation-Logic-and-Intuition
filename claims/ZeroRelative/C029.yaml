@@ -1,0 +1,90 @@
+id: C029
+title: "翻转计数的连续基础 — 零点离散/有限 + u/χ 连续 + χ 连续幅角提升 (覆盖映射 liftPath): 有限↔无限相互可达的相位桥"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲); 观测 AM"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    翻转计数 (u → -u 的跳变次数 = N₀(T)) 的连续基础, 全部 0pat (mathlib):
+    - (T6a) 零点集离散且闭 (mathlib riemannZetaZeros 官方定理), 带内
+      [0,1]×[-T,T] 零点有限 (带 ⊆ 闭球, 紧致 ∩ 离散 = 有限);
+    - (T6b) u(s) = ζ(s)/‖ζ(s)‖ 在 ζ ≠ 0 且 s ≠ 1 处连续 (ζ 在 {1}ᶜ 可微
+      differentiableOn_riemannZeta, 除法分母非零); χ 沿临界线连续
+      (幂/Γ/sin 逐项: 底 2π ∈ slitPlane, Γ(1-s) 无极点 re=1/2, sin 全局连续);
+    - (T6c) χ 沿临界线非零 (2 非零 / (2π)^{s-1} 底非零 / Γ re>0 / sin 零点在
+      πℤ 之外 — π 的超越性 Lindemann 保证相位跳变是精确 π 量子), 故 χ 本身是
+      基空间 ℂ\{0} 中的路径, 经覆盖映射 exp : ℂ → ℂ\{0}
+      (isCoveringMap_exp, mathlib) 提升为连续幅角 θ
+      (IsCoveringMap.liftPath, mathlib): exp(θ(s)) = χ(1/2+T·s·i), θ(0) = log χ(1/2)。
+    翻转 (u → -u) ⟺ χ 转一整圈 (u²=χ, T5): 翻转次数 = (θ(1)-θ(0)) 虚部差/2π。
+    连续 = 无数离散相位点的投影: χ 的相位场 (连续) 的整数圈数 = 离散翻转计数;
+    直径投影 (方波 σ) 见 π 跳变, 连续提升见 2π 圈数 — 两者互补 (Backlund 两半)。
+  formal_math: |
+    ℂ 上 (s = 1/2+it):
+    (1) riemannZetaZeros 离散闭;  ∀T, {z | ζ z = 0 ∧ 0≤re z≤1 ∧ |im z|≤T} 有限
+    (2) ContinuousOn (fun s => ζ s / ‖ζ s‖) ({1}ᶜ ∩ {ζ≠0})
+    (3) ContinuousOn chi {s | s.re = 1/2}, chi(s) = 2(2π)^{s-1}Γ(1-s)sin(πs/2)
+    (4) chi(1/2+it) ≠ 0;  chiPath : C(unitInterval, ℂ\{0}),  chiPath s = χ(1/2+T·s·i)
+    (5) thetaLift := isCoveringMap_exp.liftPath chiPath (log χ(1/2)) γ₀
+        exp(θ(s)) = χ(1/2+T·s·i),  θ(0) = log χ(1/2)
+
+objects:
+  - "riemannZetaZeros (mathlib 官方零点集, 离散+闭)"
+  - "u(s) = ζ(s)/‖ζ(s)‖ (单位圆投影, 零点外连续)"
+  - "chi(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2) (函数方程乘子, 临界线连续非零)"
+  - "isCoveringMap_exp / IsCoveringMap.liftPath (mathlib 覆盖映射路径提升)"
+objects_note: "ZetaZeros.lean / CoveringMap.lean / Homotopy.Lifting.lean 的 olean 在原预编译包缺失, 已用 lean 补编译入 mathlib 包"
+definitions_used: ["isDiscrete_riemannZetaZeros", "IsCompact.inter_riemannZetaZeros_finite", "differentiableOn_riemannZeta", "Complex.Gamma_ne_zero_of_re_pos", "Complex.sin_ne_zero_iff", "isCoveringMap_exp", "IsCoveringMap.liftPath / liftPath_lifts / liftPath_zero", "Complex.exp_log"]
+
+assumptions:
+  - "T6b: u 的连续域排除 s = 1 (ζ 在 1 的极点; 临界线不含 1)"
+  - "T6c: 翻转次数 = 提升差/2π 的等式需 T3 (2argζ=argχ) 对接 + 零点分段 (后续)"
+conclusion: "零点离散有限 + u/χ 连续 + χ 连续幅角提升 (覆盖映射): 翻转计数 = χ 圈数 = 提升差/2π 的全部连续前件已机证"
+
+known_special_cases: null
+closest_known_results:
+  - "ZetaZeros.lean (mathlib 官方, 2026): 零点离散闭 — 本工作直接复用"
+  - "覆盖映射路径提升 (mathlib Topology.Homotopy.Lifting, 经典代数拓扑)"
+  - "观测 AI/AJ/AK/AL (Γ 相位对称约化, T3 对称延拓, u²=χ)"
+literature_queries:
+  - "Riemann von Mangoldt formula phase counting"
+
+counterexample_search:
+  status: done
+  search_space: "T6a/T6b/T6c 共 17 个新声明全部 Lean 验收 (proof.lean 187 声明 0 error 0 sorry)"
+  smallest_checked_size: null
+  result: "17 个新声明 Lean 证明 (无 sorry); 覆盖映射提升路径实测 (chiPath → thetaLift)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "proof.lean 全量复制入 formal 项目 (187 声明, 独立编译通过); 隔离文件 zeta_flip_iso / zeta_u_continuous_iso / zeta_lift_iso 先各自编译 (mathlib-only), 再一次性合并"
+  theorem_name: |
+    zetaZeroSet / isClosed_zetaZeroSet / isDiscrete_zetaZeroSet /
+    IsCompact.inter_zetaZeroSet_finite / zeta_zeros_finite_in_strip /
+    zetaUnit / continuousOn_zetaUnit / chi / continuousOn_chi_line /
+    chi_ne_zero_on_line / chiPath / theta0 / exp_theta0 / liftPath_γ0 /
+    thetaLift / thetaLift_lifts / thetaLift_zero
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 连续/离散/覆盖提升全是经典事实"
+  - "翻转次数 = (θ(1)-θ(0)) 虚部差/2π 的等式本身未证 (需 T3 Angle 层对接 + 零点分段)"
+  - "RH 未证: 翻转计数 = N₀(T) 是构造, 但 ∀T 的零化与 Backlund/S(T) 仍待拼装"
+
+evidence_for:
+  - "Lean: 17 个新声明全证 (无 sorry), proof.lean 187 声明 0 error 0 sorry"
+  - "olean 补编译: ZetaZeros / CoveringMap / Homotopy.Lifting + 依赖链 (FundamentalGroupoid → TopCat → Grpd → SingleObj → Quiver)"
+evidence_against: []
+
+next_action: "(1) 翻转次数 = 提升差/2π (T3 对接 + 零点分段); (2) Backlund 拼装 (χ 圈数 = RvM 主体); (3) S(T) 控制"
+
+notes: "用户方向落地: 直径投影 (方波 σ = ±1) 见 π 翻转, 连续提升见 2π 圈数 — 互补两半; e^{iπ}+1=0 分解: e=有限↔无限桥 (差分→连续幂, e^{-t} 收敛因子), i=正交方向, π=发散↔周期转换。隔离开发后合并 (187 声明)。"
