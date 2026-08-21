@@ -87,4 +87,5 @@ evidence_against: []
 
 next_action: "(1) 翻转次数 = 提升差/2π (T3 对接 + 零点分段); (2) Backlund 拼装 (χ 圈数 = RvM 主体); (3) S(T) 控制"
 
-notes: "用户方向落地: 直径投影 (方波 σ = ±1) 见 π 翻转, 连续提升见 2π 圈数 — 互补两半; e^{iπ}+1=0 分解: e=有限↔无限桥 (差分→连续幂, e^{-t} 收敛因子), i=正交方向, π=发散↔周期转换。隔离开发后合并 (187 声明)。"
+notes: "用户方向落地: 直径投影 (方波 σ = ±1) 见 π 翻转, 连续提升见 2π 圈数 — 互补两半; e^{iπ}+1=0 分解: e=有限↔无限桥 (差分→连续幂, e^{-t} 收敛因子), i=正交方向, π=发散↔周期转换。隔离开发后合并 (187 声明)。
+0pat 自包含 (2026-08-21): 去掉 import Formal.ZeroRelative.ComplexAxis (pat 框架) — 复数轴结构 (二维旋转代数 a+bJ, 标准 ℂ 矩阵表示 KNOWN) + 六个交点定理 (imagAxis_inter_criticalCircle 等) 以独立 claim 文件 zeta_axis_iso.lean (mathlib-only) 形式加入, 内联合并; proof.lean 现只 import mathlib, 零 Formal 依赖。"
