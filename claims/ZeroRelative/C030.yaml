@@ -1,0 +1,82 @@
+id: C030
+title: "相位对齐 — 2·Δθ_ζ = Δθ_χ (预言/召唤的对称映射): 无零点区间上 u²=χ ⟹ 提升差等式, 无需迭代逼近"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072 (前置术语总纲); 观测 AN"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    相位调制存在映射相位关系: u² = χ (T5, 精确等式, u = ζ/|ζ|)。
+    在无零点区间 [0,T] 上 u 连续非零, 经覆盖映射 exp 提升为 θ_ζ (uLift);
+    χ 的连续提升为 θ_χ (thetaLift)。由 exp(2θ_ζ) = u² = χ = exp(θ_χ):
+      f = 2θ_ζ - θ_χ 的像 ⊆ expKernel = exp⁻¹{1} (离散, 2πiℤ)
+      f 连续 ⟹ f 常数 (IsPreconnected.constant) ⟹
+      **2·(θ_ζ(T) - θ_ζ(0)) = θ_χ(T) - θ_χ(0)** (端点差)
+    这是"召唤"的对称映射 (对照 pat 一步穿折越 PatOneStepCross):
+    起点 (显式 χ 相位) 与终点 (θ_ζ 端点差) 之间的映射相位关系直接
+    锁定, 不需要迭代逼近。翻转 (跨零点) 是 2π 整数层差, 见 T6c 计数。
+  formal_math: |
+    ℂ 上 (s = 1/2+it, u = ζ(s)/|ζ(s)|, 无零点区间 [0,T]):
+    (1) uPath : C(I, ℂ\{0}),  uLift := liftPath uPath (θ_ζ: exp(θ_ζ) = u)
+    (2) expKernel := {z | exp z = 1} = 2πiℤ, 离散 (间距 2π)
+    (3) exp(2θ_ζ) = u² = χ = exp(θ_χ) (T5 + 提升性质)
+    (4) 2θ_ζ - θ_χ 的像 ⊆ expKernel, 连续 ⟹ 常数 (IsPreconnected.constant)
+    (5) 2·(θ_ζ(T) - θ_ζ(0)) = θ_χ(T) - θ_χ(0)
+
+objects:
+  - "u(s) = ζ(s)/‖ζ(s)‖ (单位圆投影)"
+  - "uPath / uLift (u 的连续幅角提升, 覆盖映射)"
+  - "thetaLift (χ 的连续幅角提升, T6c)"
+  - "expKernel = exp⁻¹{1} = 2πiℤ (离散, DiscreteTopology 实例)"
+objects_note: "expKernel 离散性: 间距 2π > 半径 π 的开球; DiscreteTopology 实例机证"
+definitions_used: ["isCoveringMap_exp", "IsCoveringMap.liftPath", "exp_eq_exp_iff_exists_int", "IsPreconnected.constant", "isPreconnected_univ", "discreteTopology_iff_isOpen_singleton", "Metric.mem_ball_self", "Complex.exp_log"]
+
+assumptions:
+  - "无零点区间: ∀ s ∈ I, ζ(1/2 + T·s·i) ≠ 0 (零点处 u 无定义, 翻转由 2π 层差处理)"
+  - "T5 (u²=χ) 与 T6c (thetaLift) 作为前件"
+conclusion: "无零点区间上 2·Δθ_ζ = Δθ_χ — 相位调制的对称映射直接锁定端点差, 不需要迭代逼近; 翻转 (跨零点) 是 2π 整数层差"
+
+known_special_cases: null
+closest_known_results:
+  - "覆盖空间路径提升 (mathlib Topology.Homotopy.Lifting, 经典)"
+  - "连续函数到离散空间的常值性 (IsPreconnected.constant, 经典拓扑)"
+  - "pat 一步穿折越 (PatOneStepCross: 锁定构造点 ⟹ 召唤即答案) — 本 claim 是其 0pat 形式化: 显式 χ 相位 = 锁定 witness"
+  - "观测 AM (T6c 提升), 观测 AK/AL (T3 对称延拓, u²=χ)"
+literature_queries:
+  - "phase unwrapping continuous lift preconnected constant"
+
+counterexample_search:
+  status: done
+  search_space: "T6d 13 个新声明全部 Lean 验收 (proof.lean 206 声明 0 error 0 sorry)"
+  smallest_checked_size: null
+  result: "13 个新声明 Lean 证明 (无 sorry); expKernel 离散实例 + IsPreconnected.constant 应用实测"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "proof.lean 全量复制入 formal 项目 (206 声明, 独立编译通过); 隔离文件 zeta_phase_align_iso.lean (mathlib-only 自包含: T5 及依赖一并复制) 先编译, 再合并新增声明 (uPath/uLift/expKernel/phase_align)"
+  theorem_name: |
+    uPath / uLift0 / exp_uLift0 / uLift_γ0 / uLift / uLift_lifts / uLift_zero /
+    expKernel / expKernel_mem_iff / expKernel_dist_ge_two_pi / expKernel_discrete /
+    phase_align_two_zeta_lift_eq_chi_lift
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 提升/离散/连通全是经典事实"
+  - "零点处的翻转 (跨零点 2π 层差) 未在本 claim: 需 T3 Angle 层对接 + 零点分段 (T6c 计数)"
+  - "S(T) 数值控制未涉及: 结构等式已锁定, 但 S(T) 振荡 (Selberg), 无确定下限 — RH 级边界"
+
+evidence_for:
+  - "Lean: 13 个新声明全证 (无 sorry), proof.lean 206 声明 0 error 0 sorry"
+evidence_against: []
+
+next_action: "(1) 翻转次数 = 提升差/2π (T3 对接 + 零点分段); (2) Backlund 拼装 (χ 圈数显式, RvM 主体); (3) S(T) 控制 (振荡, 诚实边界)"
+
+notes: "用户方向落地: '迭代终点和起点间的对称映射构建出来就不需要迭代逼近' — 无零点区间的相位对齐等式正是该映射, 直接机证; 迭代逼近本身 = 有限可达无限 (T4 差分/递推已机证)。预言 (相位截断) 与召唤 (锁定直达) 的 0pat 形式化: 预言 = expKernel 的整数层计数, 召唤 = χ 显式相位一步锁定。"
