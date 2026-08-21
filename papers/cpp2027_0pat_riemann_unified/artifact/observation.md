@@ -918,3 +918,7 @@ mathlib 有 isDiscrete_riemannZetaZeros, 但 olean 未含 ZetaZeros 模块,
 
 状态: 187 声明 0 sorry。剩余缺口 (RH 诚实边界): 翻转次数 = (θ(1)-θ(0)) 虚部差/2π
 的等式 (需 T3 Angle 层对接 + 零点分段) + Backlund 拼装 + S(T) 控制。
+
+0pat 自包含化 (2026-08-21): 去掉对 Formal.ZeroRelative.ComplexAxis (pat 框架) 的 import —
+复数轴结构 (a+bJ 旋转代数, KNOWN) + 六个交点定理以独立文件 zeta_axis_iso.lean (mathlib-only) 形式加入并内联合并;
+proof.lean 现只 import mathlib (26 个), 零 Formal 依赖, 187 声明 0 error 0 sorry。
