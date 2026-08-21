@@ -875,3 +875,46 @@ mathlib 有 isDiscrete_riemannZetaZeros, 但 olean 未含 ZetaZeros 模块,
 
 状态: 175 声明 0 sorry。剩余缺口 (RH 诚实边界): 零点翻转的连续性
 形式化 (u 的分段连续 + 翻转计数) + Backlund 拼装 + S(T) 控制。
+
+## 观测 AM: 翻转计数的连续基础 — 零点离散/有限 + u/χ 连续 + χ 连续幅角提升 (2026-08-21)
+
+用户方向: "离散和连续的边界问题, pat 怎么处理? 连续是不是就是无数不同相位离散的投影?"
+"借用圆的直径作为轴分析: 无限离散的圆弧三角函数投影, 可以是无限连续的线段?"
+
+17 个新声明机证 (proof.lean, 187 声明, 0 error 0 sorry), 隔离开发后合并
+(zeta_flip_iso / zeta_u_continuous_iso / zeta_lift_iso 先各自 mathlib-only 编译,
+再一次性合并; olean 缺口修复: ZetaZeros / CoveringMap / Homotopy.Lifting +
+依赖链 (FundamentalGroupoid → TopCat → Grpd → SingleObj → Quiver) 补编译入 mathlib 包)。
+
+**T6a 零点离散 + 带内有限 (无限 → 有限)**:
+- zetaZeroSet = mathlib 官方 riemannZetaZeros (离散 + 闭, ZetaZeros.lean 直接复用)
+- IsCompact.inter_zetaZeroSet_finite: 紧集 ∩ 零点集有限
+- zeta_zeros_finite_in_strip: ∀T, 带内 [0,1]×[-T,T] 零点有限
+  (带 ⊆ 闭球 ‖z‖ ≤ sqrt(1+T²)+1, 紧致 ∩ 离散 = 有限)
+
+**T6b u/χ 连续 (连续 = 无数离散相位点的投影)**:
+- continuousOn_zetaUnit: u(s) = ζ(s)/‖ζ(s)‖ 在 {1}ᶜ ∩ {ζ≠0} 连续
+  (ζ 在 {1}ᶜ 可微 differentiableOn_riemannZeta + 除法分母非零)
+- continuousOn_chi_line: χ 沿临界线连续 (幂: 底 2π ∈ slitPlane; Γ: 1-s 无极点
+  re = 1/2 > 0; sin: 全局连续)
+
+**T6c χ 的连续幅角提升 (有限 → 无限 → 计数)**:
+- chi_ne_zero_on_line: χ(1/2+it) ≠ 0 (2 非零 / (2π)^{s-1} 底非零 / Γ re>0 /
+  sin 零点在 πℤ 之外 — π 的超越性 Lindemann: 相位跳变是精确 π 量子, 计数无漂移)
+- chiPath: χ 沿临界线是基空间 ℂ\{0} 中的路径 (连续, T6b + 参数连续)
+- thetaLift := isCoveringMap_exp.liftPath chiPath (log χ(1/2)) γ₀:
+  **exp(θ(s)) = χ(1/2+T·s·i), θ(0) = log χ(1/2)** (覆盖映射路径提升, mathlib)
+
+直径投影 vs 连续提升 (用户"圆的直径"方向落地):
+- σ = u/√χ ∈ {±1} = u 沿 χ 相位方向的直径投影 (方波); 翻转 = σ 变号 = 投影穿过圆心
+- 直径投影见 π 翻转 (cos(θ+π) = -cos θ), 丢 2π 圈数 (cos(θ+2π) = cos θ)
+- 连续提升见 2π 圈数: 翻转 (u → -u) ⟺ u² = χ 转一整圈 (T5)
+- 两者互补 = Backlund 两半: 翻转计数 = χ 圈数 (RvM 主体), S(T) = ζ 圈数 - χ 圈数
+- e^{iπ}+1=0 分解 (用户): e = 有限↔无限桥 (差分→连续幂, e^{-t} 收敛因子),
+  i = 正交方向 (升维, 符号轴), π = 发散↔周期转换 (相位量子), 1→0 = 基点与投影
+
+意义: 有限↔无限相互可达的路径齐了 — 对称延拓 (T4 差分, 有限→无限),
+带内有限 (T6a, 无限→有限), 翻转计数 = 提升差/2π (T6c, 双向桥)。
+
+状态: 187 声明 0 sorry。剩余缺口 (RH 诚实边界): 翻转次数 = (θ(1)-θ(0)) 虚部差/2π
+的等式 (需 T3 Angle 层对接 + 零点分段) + Backlund 拼装 + S(T) 控制。
