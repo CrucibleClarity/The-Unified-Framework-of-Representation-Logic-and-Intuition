@@ -1,0 +1,60 @@
+{
+  "package": "pat-empirical-package",
+  "date": "2026-08-16",
+  "experiment": "E12 succ_matrix_exp — 同基点 2 succ: 零样本 0/32 ↔ 等价声明桥接 32/32",
+  "trainer": "runtime/train/__init__.py::train_seq (位置 CE + 合法性 CE, batch 流式)",
+  "hyperparams": {
+    "epochs": 60,
+    "dim": 64,
+    "num_layers": 2,
+    "lr": 0.001,
+    "seeds": [0, 1, 2],
+    "batch_size": 512,
+    "device": "cuda if available else cpu",
+    "valid_w": 0.5
+  },
+  "token_design": "tokens/token_design.md (真 numeral = 基点 succ 链全展开)",
+  "tasks": [
+    {
+      "id": "1a",
+      "label": "训 succ_a → OOD succ_a (基线)",
+      "train_samples": "gen_arith(succ_a, basepoint): 加法 0..9 全枚举 ×(真+假) + 乘法 0..4 全枚举 ×(真+假) = 250",
+      "train_n": 250,
+      "ood": "succ_a 长度外推: (10,2),(2,10),(10,3),(3,10),(11,2),(12,2),(5,3),(6,2) × 加/乘 ×(真+假) = 32",
+      "expected": "32/32 (基线, 同记法外推)"
+    },
+    {
+      "id": "1b",
+      "label": "训 succ_a → OOD succ_b (同基点零样本)",
+      "train_samples": "同 1a",
+      "train_n": 250,
+      "ood": "succ_b 同结构长度外推 (succ_b 零训练样本)",
+      "expected": "0/32 (同基点不同记法零样本全崩 — 锚绑定)"
+    },
+    {
+      "id": "2",
+      "label": "训 succ_a + 等价/锚定错题 → OOD succ_b (桥接)",
+      "train_samples": "gen_arith(succ_a) + gen_equiv(succ_a,succ_b) 0..9 (等价对比题) + gen_anchor_wrong(succ_a) + gen_anchor_wrong(succ_b) 0..4 (锚定错题) = 270",
+      "train_n": 270,
+      "ood": "succ_b 同结构长度外推",
+      "expected": "32/32 (等价声明桥接 — 0/32 → 32/32 两极)"
+    },
+    {
+      "id": "2p",
+      "label": "同上 → OOD succ_a (对照)",
+      "train_samples": "同 2",
+      "train_n": 270,
+      "ood": "succ_a 同结构长度外推",
+      "expected": "32/32 (桥接不破坏原记法)"
+    },
+    {
+      "id": "4",
+      "label": "对称性专用 succ (加法 succ_a / 乘法 succ_b)",
+      "train_samples": "gen_arith(succ_a, hi_mul=0) 加法 0..9 ×(真+假) + 乘法 succ_b 0..4 ×(真+假) = 252",
+      "train_n": 252,
+      "ood": "加法 OOD (succ_a) + 乘法 OOD (succ_b) 各半",
+      "expected": "32/32 (各运算经自己的记法外推)"
+    }
+  ],
+  "run": "python3 experiments/run_all.py (输出 results/run_all_out.txt)"
+}
