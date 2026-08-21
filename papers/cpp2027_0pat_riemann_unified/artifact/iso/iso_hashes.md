@@ -40,3 +40,7 @@
 - 每个新隔离文件编译通过后: 立即记录 hash + 时间戳到本台账 (含对应 claim/观测)
 - 合并后: 更新 proof.lean/observation.md 的 hash 行
 - 阶段成果 hash 与合并文件 hash 分离保留, 可独立追溯
+| 2026-08-19 | zeta_stirling_iso.lean | 01bed96962535c5e | Stirling 模分量: log|Γ(1/2+it)| = (1/2)(log π - log cosh πt) + 渐近主项 |
+| 2026-08-19 | zeta_stirling_iso.lean | d3b1816d81ee7cc4 | Stirling 第二层(桥): e^{iθ_χ}=χ 桥 + sin 相位精确 arctan(tanh) → π/4 |
+| 2026-08-19 | proof.lean | 86ac6ae07ff4cc7e | 矩形闭合桥: 翻转计数 = χ 圈数 - 整数层 (flip_count_from_theta_lifts) + net_flip 修复 |
+| 2026-08-19 | zeta_e_pi_i_bridge_iso.lean | bdc6df74806f8ecf | 增长控制落点: Sfunc_le_log (|S|≤1 ⟹ O(log T)) |
