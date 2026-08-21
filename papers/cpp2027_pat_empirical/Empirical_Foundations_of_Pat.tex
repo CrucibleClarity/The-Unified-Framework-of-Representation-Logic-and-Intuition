@@ -171,8 +171,8 @@ The paper is organized as the route itself: Section~2 reports the
 empirical starting point; Section~3 states the structural laws;
 Section~4 gives the framework correspondence; Section~5 states the
 completeness criterion and the mapping judgments; Section~6 presents
-the machine-checked theorems; Section~7 states the honest boundary;
-Section~8 concludes.
+the machine-checked theorems; Section~7 describes the exercise
+series; Section~8 states the honest boundary; Section~9 concludes.
 
 \section{The empirical starting point}
 
@@ -416,7 +416,7 @@ proving~\cite{lin2024leantar}, large-scale synthetic
 data~\cite{xin2024deepseekprover, azerbayev2023llemma}, and guiding
 provers with informal proofs~\cite{jiang2022draftsketch}. The present
 development is a small, fully machine-checked library produced in this
-style (Section~7).
+style (Section~8).
 
 \subsection{The interlock matrix (R143, MutualLocking.lean)}
 
@@ -504,9 +504,26 @@ judgment separates: in-representation truth and cross-representation
 falsity are judged by the same verdict structure). All five compile
 with zero errors and zero \texttt{sorry}.
 
+\section{The exercise series}
+
+The route is accompanied by an independent verification face: the
+homework-exercise series --- twenty-five observation reports
+(Exercises I--XXII, the Pat0 exercise, and the series overview), each
+with its own Lean formalization, all zero \texttt{sorry}. The method
+of the series is the ``0pat'' discipline: take a pat observation,
+walk the genealogy map from the pat concept to its standard-
+mathematics coordinate, formalize the equivalence along the way, and
+keep the pat vocabulary out of the proof. Each exercise is a small
+independent formalization; together they form a corpus of
+machine-checked statements that the framework's concepts reduce to.
+The full series (reports, TeX sources, Lean code, and overview) is
+included in the artifact under \texttt{exercises/}. The series also
+records the oldest empirical anchor of the route: the first
+generalization observation, dated 2026-07-29 in the session log.
+
 \section{Honest boundary}
 
-The boundary is stated exactly, in three points.
+The boundary is stated exactly, in four points.
 
 \paragraph{The empirical-to-framework mapping is observational.}
 The correspondences of Section~4 (statistical manifestations) are not
