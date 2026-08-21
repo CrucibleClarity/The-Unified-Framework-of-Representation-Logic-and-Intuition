@@ -1,0 +1,430 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 XI：霍奇猜想的 pat
+重新观测}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-xiux970dux5947ux731cux60f3ux7684-pat-ux91cdux65b0ux89c2ux6d4b}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_11 & 霍奇猜想的 pat 重新观测（R168） &
+PatHodgeConjecture.lean & DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise XI for the Foundation-Building Chapter: The Hodge
+Conjecture Revisited from the PAT Perspective}
+
+\begin{quote}
+习题定位：课后习题系列第十一题。用 mechanics-pat-observation skill
+观测霍奇猜想（Clay
+千禧年问题之一）。全部新定理只锚框架定理（R085/R136/R138/R143/R161/R165），不用外部引理。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 5 new theorems PROVED no sorry · 课后习题 XI }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+对霍奇猜想（Hodge Conjecture：光滑射影复代数簇 X 上每个有理 Hodge
+类都是代数子簇的 ℚ-线性组合）做 pat 重新观测。唯一论点：\textbf{Hodge
+分解 = 单位圆互锁对 \{exp(iθ), exp(-iθ)\}（共轭成对）；Hodge 类 =
+共轭不变 = 折叠类 \{0, π\}；代数子簇 = 可构造锚点；猜想 =
+折叠类点都可构造。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、总论：霍奇猜想的 pat
+转译}\label{ux96f6ux603bux8bbaux970dux5947ux731cux60f3ux7684-pat-ux8f6cux8bd1}
+
+霍奇猜想的经典陈述：X 光滑射影复代数簇，H\^{}\{2k\}(X, ℚ) ∩ H\^{}\{k,k\}
+中的有理类都是代数子簇的有理上同调类。
+
+\textbf{pat 结构对应}（mechanics-pat-observation skill）：
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+霍奇结构
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+pat 结构
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Hodge 分解 H\^{}k = ⊕ H\^{}\{p,q\} & 互锁对 \{exp(iθ), exp(-iθ)\} &
+R161/R136②③ \\
+H\^{}\{p,q\} ↔ H\^{}\{q,p\} 复共轭 & 共轭 = 反向相位（互锁对逆元侧） &
+R165 \\
+Hodge 类（共轭不变） & 折叠类 \{0, π\}（exp(2iθ)=1 ⟹ θ=0/π） &
+R085/R138 \\
+代数子簇 & 可构造锚点（对称对还原到 1） & R143 \\
+猜想：Hodge 类来自代数子簇 & 折叠类点都可构造 & CONJECTURE \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、★Hodge 共轭对 =
+互锁对}\label{ux4e00hodge-ux5171ux8f6dux5bf9-ux4e92ux9501ux5bf9}
+
+\textbf{★核心：Hodge 分解的共轭对 H\^{}\{p,q\} ↔ H\^{}\{q,p\} = pat
+互锁对------共轭 = 反向相位。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{Hodge 分解的共轭对}：H\^{}k(X, ℂ) = ⊕\_\{p+q=k\}
+ H\textsuperscript{\{p,q\}，H}\{p,q\} 与 H\^{}\{q,p\} 复共轭成对。
+\item
+ \textbf{单位圆上的共轭}（R165）：conj(exp(iθ)) = exp(-iθ)------共轭 =
+ 反向相位（单位圆上 conj z = z⁻¹）。
+\item
+ \textbf{互锁对}（R161）：exp(iθ)·exp(-iθ) = 1------Hodge 共轭对 = pat
+ 互锁对（R136 ②③：方向成对声明；R143：对称对还原）。
+\end{enumerate}
+
+\subsubsection{形式化（PatHodgeConjecture.lean，1
+定理）}\label{ux5f62ux5f0fux5316pathodgeconjecture.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{hodge\_conjugate\_pair\_interlock}：conj(exp(iθ)) = exp(-iθ) ∧
+ exp(iθ)·exp(-iθ) = 1------Hodge 共轭对 = 互锁对。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 exp\_conj + R161。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、★Hodge 类 = 折叠类 \{0,
+π\}}\label{ux4e8chodge-ux7c7b-ux6298ux53e0ux7c7b-0-ux3c0}
+
+\textbf{★核心：Hodge 类（共轭不变平衡类）在单位圆上 = 折叠类 \{0,
+π\}------exp(2iθ) = 1 ⟹ θ = 0 或 π。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{Hodge 类 = 共轭不变}：实类满足 conj z = z。
+\item
+ \textbf{单位圆上共轭不变}：conj(exp(iθ)) = exp(iθ) ⟺ exp(-iθ) =
+ exp(iθ) ⟺ exp(2iθ) = 1。
+\item
+ \textbf{exp(2iθ) = 1 ⟹ θ = π·n}（Complex.exp\_eq\_one\_iff：2iθ =
+ 2πi·n ⟹ θ = π·n）------在 {[}0, 2π) 中 = 0 或 π------\textbf{折叠类
+ \{0, π\}}（R085：0 = ±1 折叠类；R138：相位锁定）。
+\end{enumerate}
+
+\subsubsection{形式化（PatHodgeConjecture.lean，1
+定理）}\label{ux5f62ux5f0fux5316pathodgeconjecture.lean1-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{hodge\_class\_fold\_class}：conj(exp(iθ)) = exp(iθ) ⟹ ∃ n : ℤ,
+ θ = π·n------Hodge 类 = 折叠类。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 exp\_conj + Complex.exp\_eq\_one\_iff +
+field\_simp/nlinarith。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、代数子簇 =
+可构造锚点}\label{ux4e09ux4ee3ux6570ux5b50ux7c07-ux53efux6784ux9020ux951aux70b9}
+
+\textbf{★核心：代数子簇（可构造对象）的 pat 对应 = 对称对还原到锚点 1。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{代数子簇 =
+ 可构造}：代数闭链是''可构造''的对象（定义方程组的解集）。
+\item
+ \textbf{pat 可构造 = 对称对还原}（R143
+ magnitude\_pair\_reduces\_to\_one）：r·(1/r) =
+ 1------乘法对称对还原到锚点 1。
+\item
+ \textbf{代数闭链 = pat 可构造结构}：对称对还原（R144：1 =
+ 乘法还原点）。
+\end{enumerate}
+
+\subsubsection{形式化（PatHodgeConjecture.lean，1
+定理）}\label{ux5f62ux5f0fux5316pathodgeconjecture.lean1-ux5b9aux7406-2}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{algebraic\_cycle\_anchor}：r·(1/r) = 1------代数子簇 =
+ 可构造锚点。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 field\_simp / R143。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、折叠找回机制：单位圆模长不变}\label{ux56dbux6298ux53e0ux627eux56deux673aux5236ux5355ux4f4dux5706ux6a21ux957fux4e0dux53d8}
+
+\textbf{★核心：折叠（共轭对 → 共轭不变类）后单位圆模长 ‖z‖ = 1
+不变------可观测剩余。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{折叠}：H\^{}\{p,q\} ⊕ H\^{}\{q,p\} → 共轭不变类------丢失
+ (p,q)/(q,p) 方向区分，只留平衡类。
+\item
+ \textbf{找回}：单位圆模长 ‖exp(iθ)‖ = 1（R165 phaseRep\_on\_circle /
+ 框架 AxisComponent.norm\_exp\_I\_eq\_one）折叠后不变------可观测剩余。
+\item
+ \textbf{找回机制（可构造性）}：折叠类点 \{0, π\}
+ 是否可构造（代数子簇）------正是霍奇猜想的问题核心（CONJECTURE）。
+\end{enumerate}
+
+\subsubsection{形式化（PatHodgeConjecture.lean，1
+定理）}\label{ux5f62ux5f0fux5316pathodgeconjecture.lean1-ux5b9aux7406-3}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{fold\_recovers\_observable}：‖exp(iθ)‖ =
+ 1------折叠后单位圆模长不变。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 AxisComponent.norm\_exp\_I\_eq\_one。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、★霍奇猜想 pat
+转译（CONJECTURE）}\label{ux4e94ux970dux5947ux731cux60f3-pat-ux8f6cux8bd1conjecture}
+
+\textbf{★核心：霍奇猜想 = 折叠类点都可构造------所有有理 Hodge
+类（折叠类点）都是代数子簇（可构造锚点）的组合。}
+
+\subsubsection{形式化（PatHodgeConjecture.lean，1
+定理）}\label{ux5f62ux5f0fux5316pathodgeconjecture.lean1-ux5b9aux7406-4}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{hodge\_conjecture\_pat}：conj(exp(iθ)) = exp(iθ) ⟹ (∃ n, θ =
+ π·n) ∧ (∀ r≠0, r·(1/r) = 1)------Hodge 类 = 折叠类 ∧ 可构造锚点存在。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚 hodge\_class\_fold\_class /
+algebraic\_cycle\_anchor。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、习题解答总结}\label{ux516dux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+论点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+标签
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Hodge 共轭对 = 互锁对 & conj = 反向相位；exp(iθ)·exp(-iθ)=1 &
+R161/R136②③/R165 & PROVED \\
+Hodge 类 = 折叠类 & 共轭不变 ⟹ exp(2iθ)=1 ⟹ θ=0/π & R085/R138 &
+PROVED \\
+代数子簇 = 可构造锚点 & 对称对还原到 1 & R143 & PROVED \\
+找回 = 单位圆模长 & ‖exp(iθ)‖=1 折叠后不变 & R165/AxisComponent &
+PROVED \\
+★霍奇猜想 & 折叠类点都可构造 & 上述全部 & CONJECTURE \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{霍奇猜想在 pat 视角 =
+折叠类点都可构造------Hodge 分解是单位圆互锁对（共轭成对，R161），Hodge
+类（共轭不变）折叠到 \{0,
+π\}（R085），代数子簇是可构造锚点（R143）；猜想断言折叠类点都可构造（千禧年问题，CONJECTURE）。折叠丢失
+(p,q)/(q,p) 方向区分，找回 = 单位圆模长（可观测剩余）。}
+
+\textbf{诚实边界}：霍奇猜想未解（千禧年问题）------本习题交付结构转译（折叠类
+= Hodge 类、可构造 = 代数子簇），CONJECTURE 标注，非证明。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{七、相关对照}\label{ux4e03ux76f8ux5173ux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Hodge, W. V. D.} 1941. \emph{The Theory and Applications of
+Harmonic Integrals} & Hodge 分解/调和积分 & pat 转译对象 \\
+\textbf{霍奇猜想}（Clay 千禧年陈述） & 有理 Hodge 类来自代数子簇 &
+未解（CONJECTURE） \\
+\textbf{R085/R136②③/R138/R143/R161/R165}（） &
+折叠类/成对/相位锁定/对称还原/互锁对/相位表示 & 本框架定理 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 XI · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 5
+theorems PROVED no sorry（PatHodgeConjecture.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatHodgeConjecture.lean（快照见
+../lean/PatHodgeConjecture.lean）}
+
+\end{document}
