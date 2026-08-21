@@ -48,3 +48,4 @@
 | 2026-08-21 | Zenodo | 10.5281/zenodo.22038154 | cpp_submission_0pat_riemann_unified 38 文件 (4 任务全部 0-sorry) |
 | 2026-08-19 | zeta_zero_order_iso.lean | e95377476a7897da | 翻转=π跳桥: flip_phase_jump_pi/exp (翻转⟹u⁻/u⁺=-1=e^{iπ}) |
 | 2026-08-19 | proof.lean | 8e574d945689f507 | 矩形闭合骨架: Λ₀反射对消 log∈2πiℤ + Λ₀零点等价 |
+| 2026-08-19 | proof.lean | cf01a4515387afac | 卷已知曲线: ζ(2+it)有界(级数) + Γ(1+it)≤1(积分表示) |
