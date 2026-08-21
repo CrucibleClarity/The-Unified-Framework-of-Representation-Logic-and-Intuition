@@ -133,4 +133,39 @@ theorem Sfunc_neg (T : ℝ) (_hz : riemannZeta (zetaLine T) ≠ 0)
       unfold Sfunc
       rfl
 
+
+/-- **S 的主枝界**: |S(T)| ≤ 1 — arg 主枝 ∈ (-π, π], S = arg/π ∈ (-1, 1]。
+    e^{iπS} = u 的指数有界 (u 在单位圆上, 幅角主枝有界)。 -/
+theorem Sfunc_abs_le_one (T : ℝ) : |Sfunc T| ≤ 1 := by
+  unfold Sfunc
+  -- |arg u/π| ≤ 1: |arg u| ≤ π
+  have harg : |(Complex.log (zetaUnit T)).im| ≤ Real.pi := by
+    rw [Complex.log_im]
+    exact abs_arg_le_pi (zetaUnit T)
+  -- |arg/π| ≤ 1 ⟸ |arg| ≤ π
+  have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
+  rw [abs_div, abs_of_pos hπ]
+  -- |arg|/π ≤ 1 ⟸ |arg| ≤ π
+  rw [div_le_one hπ]
+  exact harg
+
+
+  -- ============================================================
+  -- T6l: 增长控制落点 — |S(T)| ≤ 1 ⟹ S(T) = O(log T) (2026-08-19)
+  -- e^{iπ} 桥的界: S(T) = (1/π)·Im log u(T) 是主枝相位归一,
+  -- |arg| ≤ π ⟹ |S| ≤ 1 (逐点有界), 平凡蕴含渐近界 O(log T)。
+  -- Backlund 的完整 S(T) = O(log T) (部分和误差 polyError 控制)
+  -- 是经典 KNOWN (标注引用); 本定理给出桥接落点。
+  -- ============================================================
+
+/-- **增长控制落点**: |S(T)| ≤ 1 ≤ log T (T ≥ e) — S(T) = O(log T) 的
+    逐点版本。e^{iπS} = u 桥的界: 主枝 arg 有界 ⟹ S 有界。 -/
+theorem Sfunc_le_log (T : ℝ) (hT : Real.exp 1 ≤ T) :
+    |Sfunc T| ≤ Real.log T := by
+  have hlog : (1 : ℝ) ≤ Real.log T := by
+    have hloge : Real.log (Real.exp 1) = 1 := by simp [Real.log_exp]
+    rw [← hloge]
+    exact Real.log_le_log (Real.exp_pos 1) hT
+  exact le_trans (Sfunc_abs_le_one T) hlog
+
 end RiemannUnifiedObservation
