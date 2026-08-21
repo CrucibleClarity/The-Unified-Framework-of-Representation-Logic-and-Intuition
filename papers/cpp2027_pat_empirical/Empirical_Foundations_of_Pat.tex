@@ -20,8 +20,9 @@
 
 \begin{document}
 
-\title{Empirical Foundations of Pat: Transformer OOD Observations,\\
-Structural Laws, and Machine-Checked Continuum Theorems}
+\title{From Riemann Hypothesis Formalization to the Empirical\\
+Foundations of Pat: Transformer OOD Observations, Structural Laws,\\
+and Machine-Checked Continuum Theorems}
 
 \author{Anonymous}
 \affiliation{%
@@ -30,9 +31,14 @@ Structural Laws, and Machine-Checked Continuum Theorems}
 \email{anonymous@example.org}
 
 \begin{abstract}
-We record the empirical route by which the Pat framework is grounded:
-starting from controlled transformer training observations, extracting
-structural laws, and ending in machine-checked theorems. The starting
+We record the route from the formalization of the Riemann direction
+to the empirical foundations of the Pat framework. The route begins
+with a Riemann-direction visualization and its Lean formalization
+(claims C011--C025, zero \texttt{sorry}), whose basepoint-drift
+intuitions motivate controlled transformer training observations;
+structural laws are extracted, and the route ends in machine-checked
+theorems. The starting observation is a two-pole
+out-of-distribution (OOD) dichotomy, The starting
 observation is a two-pole out-of-distribution (OOD) dichotomy, reproduced
 in 45 training runs: a low-epoch transformer reaches training accuracy
 $1.000$ on successor-notation arithmetic, yet OOD accuracy is $32/32$ on
@@ -120,6 +126,18 @@ scale~\cite{brown2020gpt3}. This paper records the empirical route
 that grounds the framework: what was observed, what structural laws
 were extracted, and which claims were machine-checked. The route is a
 chain of four links.
+
+\paragraph{Route origin: the Riemann direction.} The route begins in
+the Riemann direction: a zeta visualization project (2026-08-06,
+138{,}067 zeros with the Riemann--Siegel correction, critical line and
+prime positions) and its Lean 4 / mathlib formalization (claims
+C011--C025, completed 2026-08-12, zero \texttt{sorry}). The formal
+work produced the basepoint-drift intuitions that motivate the
+empirical part: primes have no construction, irrationals are projected
+remainders, and basepoints drift on the circle. These intuitions are
+tested in controlled transformer experiments (Section~2), which
+extract the structural laws (Section~3). The Riemann hypothesis itself
+is not claimed here; the honest boundary is stated in Section~8.
 
 \paragraph{Empirical starting point.} A low-epoch transformer trained on
 successor-notation arithmetic (addition up to 9, multiplication up to 4,
@@ -532,10 +550,26 @@ implies a framework claim. The Lean theorems hold independently of the
 training observations; the observations provide motivation and
 correspondence.
 
+\paragraph{The Riemann hypothesis is not claimed.} The Riemann
+direction is the route's origin and motivation; its formalization
+(C011--C025) covers the basepoint-drift structure of the direction.
+No theorem here claims the Riemann hypothesis itself; it remains the
+unproved endpoint of that direction, out of scope for this paper.
+
 \paragraph{No structural claim about the model.}
 Training intuition is representation-bound statistics. The paper does
 not claim the transformer learned structure; it reports what the
 statistics do and do not transfer to.
+
+\paragraph{Ongoing work and conflict declaration.} The route
+does not end here. We are actively working on a direct formalization
+of the Riemann hypothesis through known mathematics, as the natural
+continuation of the Riemann direction that opens this route; and
+further directions of the framework are planned for publication.
+This paper claims only what is machine-checked within it; the
+concurrent and future work may overlap with parts of the route
+described here, and no priority is claimed beyond the timestamped
+evidence recorded in the accompanying manifest.
 
 \paragraph{The proofs were developed in a human--AI collaboration.}
 The direction, the framework claims, the observation judgments, and
