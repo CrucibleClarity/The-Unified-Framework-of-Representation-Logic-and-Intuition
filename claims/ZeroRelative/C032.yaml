@@ -1,0 +1,75 @@
+id: C032
+title: "零点阶翻转方向 — 反射对称 + 乘除法对消: u(σ(t))/u(t) → (-1)^m, 翻转 ⟺ m 奇"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072; 观测 AR"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    ζ 在零点 s₀ 的 m 阶局部展开 ζ(s) = (s-s₀)^m·g(s), g(s₀) ≠ 0 下,
+    反射对称 σ(t) = 2t₀-t (t₀ 的反射, 对合) 给出翻转比值:
+      u(σ(t))/u(t) → (-1)^m  (t → t₀⁺)
+    两个对称方向的相位贡献 ((t-t₀)^m·i^m 因子与 g/|g| 相位因子) 在
+    比值中乘除对消, 只剩符号 (-1)^m。翻转 (u(t₀⁻) = -u(t₀⁺)) ⟺
+    (-1)^m = -1 ⟺ m 奇。m = 1 (单零点, RH 预期) 时翻转 = -1 = i²
+    (pat ±1 最小步: 符号改变, 位置不变)。
+  formal_math: |
+    ℂ 上 (s₀ = 1/2 + t₀i, 零点阶 m):
+    (1) ζ(z) = (z-s₀)^m·g(z) 于 𝓝 s₀, g(s₀) ≠ 0 (p.order/dslope 展开)
+    (2) u(t) = ζ(1/2+it)/|ζ(1/2+it)|, σ(t) = 2t₀-t
+    (3) u(σ(t))/u(t) → (-1)^m (t → t₀⁺) — 乘除法对消 (比值)
+    (4) 翻转 ⟺ (-1)^m = -1 ⟺ Odd m
+
+objects:
+  - "zetaLine (t ↦ 1/2+it 临界线参数化)"
+  - "zetaUnit (u = ζ/|ζ| 单位化)"
+  - "σ (t ↦ 2t₀-t 反射对称, 对合)"
+objects_note: "翻转方向 = (-1)^m = i 的 m 次迭代符号"
+definitions_used: ["zeta_local_expansion", "flip_ratio_reflection", "flip_ratio_iff_odd", "flip_of_odd_order"]
+
+assumptions:
+  - "s₀ = 1/2+t₀i 是 ζ 的零点 (ζ(s₀) = 0)"
+  - "局部展开 ζ = (z-s₀)^m·g, g(s₀) ≠ 0, g 连续 (mathlib eq_pow_order_mul_iterate_dslope)"
+conclusion: "翻转 ⟺ m 奇; 翻转方向 = (-1)^m (乘除法对消后的符号)"
+
+known_special_cases: "m = 1: 翻转 = -1 = i² (pat ±1 最小步, RH 预期)"
+
+closest_known_results:
+  - "零点阶/幅角原理局部行为 (经典)"
+  - "观测 AN/AO (T6d/T6e 相位对齐与整数层)"
+  - "pat ±1 过程 (RulerProphecy 相位截断): 本 claim 是跨零点跳变方向的 0pat 形式"
+literature_queries:
+  - "zero order argument principle flip direction"
+
+counterexample_search:
+  status: done
+  search_space: "zeta_zero_order_iso.lean 0 error 0 warning (Lean 验收)"
+  smallest_checked_size: null
+  result: "全部声明机证 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "隔离文件 zeta_zero_order_iso.lean (mathlib-only), 已发布双仓"
+  theorem_name: "flip_ratio_reflection / flip_ratio_iff_odd / flip_of_odd_order"
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 零点阶-翻转方向是经典局部行为"
+  - "g 的连续性假设 (解析延拓给出); 全局拼装 (S(T) 增长) 未涉及"
+  - "多零点叠加 (翻转计数 = Σ ±1) 需零点分段 (后续)"
+
+evidence_for:
+  - "Lean: zeta_zero_order_iso.lean 0 error 0 warning"
+evidence_against: []
+
+next_action: "Stirling 主项 (θ_χ 渐近) + 参数原理矩形闭合 (N(T) = (1/π)θ_χ + S(T) + 1) + S(T) 增长控制"
+
+notes: "用户方向落地: '对称性成对 (对合), 双向证明, 对称方向相位对消, 不单向力迫' + '利用共轭, 乘除法而非加减法对消' — 反射比值 u(σt)/u(t) → (-1)^m 一次消掉全部连续因子。"
