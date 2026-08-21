@@ -60,3 +60,10 @@ divergence axis, divergence–period symmetry).
 ## Double-blind
 
 No author / affiliation / email / repository identifiers.
+
+## Stage artifacts (iso/)
+
+`iso/` 包含 22 个隔离文件 (zeta_*_iso.lean) — 每个 = 独立编译通过 (mathlib-only,
+0 error 0 sorry) 的阶段成果, 按 0pat 隔离开发纪律先独立验证再合并入 proof.lean。
+`iso_hashes.md` = 阶段成果 hash + 时间戳台账 (SHA256 前 16 位, mtime 精确到秒),
+与合并文件 hash (claims_manifest.md) 分离保留, 可独立追溯。
