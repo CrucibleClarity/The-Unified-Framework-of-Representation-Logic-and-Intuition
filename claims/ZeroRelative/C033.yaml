@@ -1,0 +1,75 @@
+id: C033
+title: "χ 乘子自反 + 临界线模恒 1 — 乘除法对消: χ(s)χ(1-s) = 1, |χ(1/2+it)| = 1"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072; 观测 AS"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    χ(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2) 是函数方程乘子。函数方程对称
+    (s → 1-s, 对合) 下乘子自反:
+      χ(s)·χ(1-s) = 1  (s ∉ ℤ)
+    沿临界线 s = 1/2+it (自动非整数), 由共轭对称 conj χ = χ(s̄) 得:
+      |χ(1/2+it)| = 1  (χ 临界线 = 单位圆路径)
+    乘除法对消: χ 的共轭 = 倒数 (模恒 1), 函数方程两端的相位贡献相乘
+    对消为 1。χ 的相位 θ_χ(T) = arg χ(1/2+iT) 是显式相位刻度
+    (圈数 = θ_χ/2π), 用于对消 ζ 的隐式相位 (整数层 S(T), C031)。
+  formal_math: |
+    ℂ 上:
+    (1) χ(s)·χ(1-s) = 4(2π)^{-1}·Γ(1-s)Γ(s)·sin(πs/2)sin(π(1-s)/2)
+        = 4(2π)^{-1}·(π/sin πs)·(1/2)sin πs = 1
+        (反射公式 Gamma_mul_Gamma_one_sub + 积化和差; s ∉ ℤ ⟺ sin(πs)≠0)
+    (2) |χ(1/2+it)|² = χ(s)·conj χ(s) = χ(s)·χ(1-s) = 1 (s = 1/2+it, conj s = 1-s)
+
+objects:
+  - "chi (函数方程乘子, 显式公式)"
+  - "thetaChi (θ_χ(T) = arg χ(1/2+iT), 显式相位刻度)"
+  - "chiTurnNumber (圈数 = θ_χ/2π)"
+objects_note: ""
+definitions_used: ["chi_mul_chi_one_sub", "chi_modulus_one", "chi_conj", "Gamma_mul_Gamma_one_sub"]
+
+assumptions:
+  - "s ∉ ℤ (临界线自动满足)"
+conclusion: "χ(s)χ(1-s) = 1; |χ(1/2+it)| = 1 — χ 是单位圆路径, 相位全显式"
+
+known_special_cases: null
+
+closest_known_results:
+  - "函数方程乘子 |χ(1/2+it)| = 1 (经典, Riemann 专著)"
+  - "观测 AF/AI/AJ (χ 显式构件)"
+  - "pat 对消法 (用户 2026-08-19): 乘除法对消相位"
+literature_queries:
+  - "Riemann zeta functional equation multiplier unit modulus critical line"
+
+counterexample_search:
+  status: done
+  search_space: "zeta_stirling_iso.lean 0 error 0 warning (Lean 验收)"
+  smallest_checked_size: null
+  result: "全部声明机证 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "隔离文件 zeta_stirling_iso.lean (mathlib-only), 已发布双仓"
+  theorem_name: "chi_mul_chi_one_sub / chi_modulus_one"
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 模恒 1 是经典事实"
+  - "Stirling 主项 (θ_χ 渐近 (T/2)log(T/2πe)-π/8+O(1/T)) 第二层未完成"
+  - "主枝 log 的 arg 条件 (θ_χ 用主枝, 提升差 2πik 不影响渐近)"
+
+evidence_for:
+  - "Lean: zeta_stirling_iso.lean 0 error 0 warning"
+evidence_against: []
+
+next_action: "Stirling 主项 (Im log Γ 的 Binet 展开) + 参数原理矩形闭合拼装"
+
+notes: "用户方向落地: '利用共轭, 通过乘除法而不是加减法对消相位' — 共轭 = 倒数 (模恒 1), 函数方程对称相乘对消为 1。"
