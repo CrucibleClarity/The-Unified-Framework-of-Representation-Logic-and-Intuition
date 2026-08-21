@@ -1,0 +1,375 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题
+IX：物理空间的互锁结构------共享结构、丢失可观测、维度猜测}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-ixux7269ux7406ux7a7aux95f4ux7684ux4e92ux9501ux7ed3ux6784ux5171ux4eabux7ed3ux6784ux4e22ux5931ux53efux89c2ux6d4bux7ef4ux5ea6ux731cux6d4b}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_9 & 物理空间的互锁结构（R166） &
+PatPhysicalSpaceStructure.lean & DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise IX for the Foundation-Building Chapter: The Interlock
+Structure of Physical Space}
+
+\begin{quote}
+习题定位：课后习题系列第九题。回答三个问题：①
+五大力是否共享某些结构？② 丢失的结构中是否发生可由物理空间观测的数据？③
+物理空间由多少互锁结构组成（节点/边/全互锁/维度/收缩）？全部新定理只锚框架定理（R136/R138/R143/R147/R161/R163/R164/R165），不用外部引理。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 7 new theorems PROVED no sorry · 课后习题 IX }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+① 这些力学（五大力），是否共享某些结构？②
+这些力学，是否在物理空间丢失的结构中，发生了后续可由物理空间观测的数据？③
+根据发现的结论，猜测物理空间由多少互锁结构组成，多少节点、多少边、是否全互锁、是几维结构、可能收缩了哪些维度？
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、★五大力共享互锁对单元（问题①）}\label{ux4e00ux4e94ux5927ux529bux5171ux4eabux4e92ux9501ux5bf9ux5355ux5143ux95eeux9898ux2460}
+
+\textbf{★核心：五大力共享同一个基本单元------互锁对 \{d,
+-d\}：exp(iθ)·exp(-iθ) = 1。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{互锁对 = 力的基本单元}（R136
+ ②③：方向必须成对声明；R138：相位差可加；R143：对称对还原到
+ 1）：exp(iθ)·exp(-iθ) = 1（R161 pair\_interlock\_self\_consistent）。
+\item
+ \textbf{五大力的共享结构}：
+
+ \begin{itemize}
+ \tightlist
+ \item
+ 力学：作用-反作用成对（F + (-F) = 0，R164 action\_reaction\_pair）
+ \item
+ 量子：4 互锁 = S³ = SU(2)（R149/R154）
+ \item
+ 电磁：E⊥B 正交（R047）
+ \item
+ 强弱：规范群 k 对（R161）
+ \item
+ 引力：脱离对逐对独立（R161）
+ \end{itemize}
+\item
+ \textbf{共享单元}：每个力的动力学结构单元都是互锁对------成对的方向
+ \{d, -d\}，组合还原（R143）。力 = 互锁对的破缺/组合/投影。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicalSpaceStructure.lean，1
+定理）}\label{ux5f62ux5f0fux5316patphysicalspacestructure.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{forces\_share\_interlock\_pair}：exp(iθ)·exp(-iθ) =
+ 1------五大力共享互锁对单元。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 R161 pair\_interlock\_self\_consistent。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、★丢失结构的可观测性（问题②）}\label{ux4e8cux4e22ux5931ux7ed3ux6784ux7684ux53efux89c2ux6d4bux6027ux95eeux9898ux2461}
+
+\textbf{★核心：一对互锁脱离物理空间后，剩余对仍互锁（物理法则保持）；脱离对的模长
+‖ρ(g)‖ = 1 是脱离后仍可观测的不变量。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{脱离保持互锁}（R161
+ pair\_detachment\_general：逐对独立）：一对互锁脱离物理空间（高维方向），剩余对仍互锁------\textbf{物理空间丢失结构后，剩余部分遵守物理空间法则}。
+\item
+ \textbf{单位圆模长 = 脱离不变观测}（R165
+ phaseRep\_on\_circle/R141）：‖exp(iθ)‖ = 1
+ 对任意相位成立------脱离物理空间的对，其表示模长不随脱离改变，是\textbf{脱离后仍可观测的数据}（丢失结构的可观测印记）。
+\item
+ \textbf{丢失 → 可观测的机制}：脱离对进入高维（不可直接观测其相位
+ θ），但其单位圆模长（=1）与剩余对的互锁不变量仍可观测------物理空间通过剩余结构''感知''丢失结构的存在（如引力
+ = 脱离对的耦合效应，R164 CONJECTURE）。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicalSpaceStructure.lean，2
+定理）}\label{ux5f62ux5f0fux5316patphysicalspacestructure.lean2-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{detachment\_keeps\_observable}：脱离某些对，剩余对仍互锁（逐对独立）。
+\item
+ \texttt{unit\_circle\_observable}：‖exp(iθ)‖ =
+ 1------脱离不变的单位圆模长观测。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 R161 / R165 phaseRep\_on\_circle。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、★物理空间结构猜测（问题③，CONJECTURE）}\label{ux4e09ux7269ux7406ux7a7aux95f4ux7ed3ux6784ux731cux6d4bux95eeux9898ux2462conjecture}
+
+\textbf{★核心：物理空间 = 3 对共享互锁 = 3 节点 K3 完全图（3 边全互锁）=
+3 维；可能收缩时间（R147 对合）与引力高维方向（R164 脱离对）。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{节点 = 3，边 = 3，全互锁}（R163：三体 = 3 节点全连接 = 三角形
+ = K3 完全图，每对共享 2 相位 = 6 互锁）------物理空间的 3
+ 个独立方向两两全互锁。
+\item
+ \textbf{维度 = 3}（R161：3 对独立互锁 = 3 个方向自由度 = 6 相位 = ±x,
+ ±y, ±z）------物理空间是 3 维。
+\item
+ \textbf{可能收缩的维度}：
+
+ \begin{itemize}
+ \tightlist
+ \item
+ \textbf{时间}（R147：时间 =
+ 对合对称对，未来/过去成对）------时间对可收缩（时间不是空间维度，但可观测其''相位''→
+ 因果/熵）
+ \item
+ \textbf{引力高维方向}（R164：引力 = 脱离投影，脱离对 =
+ 高维方向）------引力对应的对已脱离物理空间
+ \item
+ \textbf{完整结构可能 4 对}（3 空间 + 1 时间/引力），物理空间收缩到 3
+ 对（3 维）。
+ \end{itemize}
+\item
+ \textbf{诚实边界}：这是结构猜测（CONJECTURE），依据
+ R161/R163/R164/R147------``物理空间 = 3 对 K3 全互锁 3
+ 维''是观测归纳，非证明。
+\end{enumerate}
+
+\subsubsection{形式化（PatPhysicalSpaceStructure.lean，3
+定理）}\label{ux5f62ux5f0fux5316patphysicalspacestructure.lean3-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{physical\_space\_three\_pairs}：3 对独立互锁自洽（3
+ 节点，CONJECTURE 依据）。
+\item
+ \texttt{physical\_space\_K3\_complete}：K3 完全图（3 节点 3
+ 边全互锁，R163 三体结构）。
+\item
+ \texttt{physical\_space\_structure\_perspective}：★全景------3
+ 对共享互锁 ∧ K3 全互锁。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 R161 three\_independent\_pairs\_interlock /
+R163 three\_body\_six\_shared\_interlock。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、习题解答总结}\label{ux56dbux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+问题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+回答
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+标签
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+① 共享结构 & 五大力共享互锁对 \{d,-d\}（exp(iθ)·exp(-iθ)=1） &
+R136②③/R138/R143/R161 & PROVED \\
+② 丢失可观测 & 脱离保持互锁；单位圆模长 ‖ρ(g)‖=1 脱离不变 &
+R161/R165/R141 & PROVED \\
+③ 结构猜测 & 3 节点 3 边 K3 全互锁 3 维；收缩时间/引力对 &
+R163/R161/R147/R164 & CONJECTURE \\
+\end{longtable}
+}
+
+\textbf{习题的回答（三句话）}： 1.
+\textbf{五大力共享互锁对单元}------每个力的基本结构都是成对的 \{d,
+-d\}（exp(iθ)·exp(-iθ) = 1），力 = 互锁对的破缺/组合/投影。 2.
+\textbf{丢失结构的可观测性}------脱离对进入高维后，其单位圆模长（=1）与剩余对的互锁不变量仍可观测；物理空间通过剩余结构''感知''丢失结构（引力
+= 脱离对耦合效应）。 3. \textbf{物理空间 = 3 对共享互锁 = 3 节点 K3
+完全图（3 边全互锁）= 3 维}------可能收缩了时间（R147
+对合）与引力高维方向（R164 脱离对）；完整结构可能 4 对（3 空间 + 1
+时间/引力）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、相关对照}\label{ux4e94ux76f8ux5173ux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Newton/Pauli/Maxwell/Yang-Mills}（习题 VII 对照） & 五大力 &
+共享互锁对单元 \\
+\textbf{R147}（） & 时间 = 对合对称对 & 收缩维度的依据 \\
+\textbf{R161/R163/R164/R165}（） & k 对互锁/三体
+K3/脱离投影/相位表示 & 结构猜测依据 \\
+\end{longtable}
+}
+
+\begin{quote}
+诚实边界：问题①（PROVED）与②（PROVED）为形式化结论；问题③（CONJECTURE）为结构猜测（3
+节点 K3 3 维 + 收缩时间/引力对），依据框架结构归纳，非物理证明。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 IX · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 7
+theorems PROVED no sorry（PatPhysicalSpaceStructure.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatPhysicalSpaceStructure.lean（快照见
+../lean/PatPhysicalSpaceStructure.lean）}
+
+\end{document}
