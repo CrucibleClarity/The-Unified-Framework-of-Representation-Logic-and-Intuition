@@ -107,6 +107,9 @@ cpp_submission_pat/
 ├── Empirical_Foundations_of_Pat.pdf   # 编译产物 (tectonic, 6 页)
 ├── README.md                          # 本文件 (发布说明)
 ├── refs.bib                           # 20 条引用 (全部真实文献, arXiv/Crossref 核验)
+├── exercises/                        # ★习题集 (25 篇观测报告: I-XXII + Pat0 + 总览,
+│   │                              #   每篇独立 Lean 0 sorry; 报告/TeX/PDF/Lean 代码)
+├── Credibility_Bootstrap.md       # 独立作者信誉机制短文 (verification map 方法论)
 └── artifact/
     ├── README.md                      # artifact 构建说明 + 定理清单 + 溯源
     ├── formal/                        # Lean 形式化 (26 文件最小闭包 + lakefile +
@@ -131,6 +134,9 @@ cpp_submission_pat/
 5. **机器验证定理** — 22 定理 0 sorry: 互锁矩阵 (R143) → 四相位互锁
    (R149) → 可数格点 + 稠密 (R150) → 连续统闭包 (R151) → 内生闭包
    (R163); 映射判定 5 定理 (MappingJudgmentTheorems.lean)。
+6. **习题集** — 25 篇观测报告 (I-XXII + Pat0 + 总览), 每篇独立 Lean
+   0 sorry; 0pat 纪律: 从 Pat 概念走到标准数学坐标, Pat 词汇留在
+   证明外; 完整内容在 exercises/。
 
 ## 6. 编译方法
 
