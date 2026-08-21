@@ -1,0 +1,23 @@
+== ①a 训 succ_a → OOD succ_a (基线): 训练 250 ==
+[venv] UserWarning: The PyTorch API of nested tensors is in prototype stage and will change in the near future. We recommend specifying layout=torch.jagged when constructing a nested tensor, as this layout receives active development, has better operator coverage, and works with torch.compile. (Triggered internally at /pytorch/aten/src/ATen/NestedTensorImpl.cpp:178.)
+  output = torch._nested_tensor_from_mask(
+  seed=0 训练acc=1.000 OOD: 32/32
+  seed=1 训练acc=1.000 OOD: 32/32
+  seed=2 训练acc=1.000 OOD: 32/32
+== ①b 训 succ_a → OOD succ_b (同基点零样本): 训练 250 ==
+  seed=0 训练acc=1.000 OOD: 0/32
+  seed=1 训练acc=1.000 OOD: 0/32
+  seed=2 训练acc=1.000 OOD: 0/32
+== ② 训 succ_a + 等价/锚定错题 → OOD succ_b: 训练 270 ==
+  seed=0 训练acc=1.000 OOD: 32/32
+  seed=1 训练acc=1.000 OOD: 32/32
+  seed=2 训练acc=1.000 OOD: 32/32
+== ②' 同上 → OOD succ_a (对照): 训练 270 ==
+  seed=0 训练acc=1.000 OOD: 32/32
+  seed=1 训练acc=1.000 OOD: 32/32
+  seed=2 训练acc=1.000 OOD: 32/32
+== ④ 对称性专用 succ (加 succ_a/乘 succ_b): 训练 252 ==
+  seed=0 训练acc=1.000 OOD: 32/32
+  seed=1 训练acc=1.000 OOD: 32/32
+  seed=2 训练acc=1.000 OOD: 32/32
+== 完成 ==
