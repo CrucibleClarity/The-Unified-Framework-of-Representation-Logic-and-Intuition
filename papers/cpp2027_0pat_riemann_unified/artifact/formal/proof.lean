@@ -5307,4 +5307,45 @@ theorem error_precision_bound {s : ℝ} (hs1 : 1 < s) {n : ℕ} {ε : ℝ}
   -- n^{1-s} ≤ ε ⟹ n^{1-s}/(s-1) ≤ ε/(s-1)
   exact div_le_div_of_nonneg_right hle2 (le_of_lt hs1')
 
+  -- ============================================================
+  -- T6g: 反转对接 — 周期发散桥 + 连续离散逆桥 (2026-08-21)
+  -- 2Δθ_ζ = Δθ_χ + 2πi·m (翻转 ↔ χ 圈数); 净翻转 = (2Δθ_ζ-Δθ_χ)/(2πi) ∈ ℤ
+  -- ============================================================
+
+/-- **周期发散桥 (反转对接)**: 2·Δθ_ζ = Δθ_χ + 2πi·m —
+    每翻转一次 (u → -u, 离散 ±1) χ 转一整圈 (连续 2π)。 -/
+theorem flip_chi_circle_bridge (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    ∃ m : ℤ, 2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)
+      = (m : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+  rcases (zeta_lift_half_chi_lift_pi_int T hz 1) with ⟨n1, h1⟩
+  rcases (zeta_lift_half_chi_lift_pi_int T hz 0) with ⟨n0, h0⟩
+  refine ⟨n1 - n0, ?_⟩
+  -- h1 : θ_ζ(1) - θ_χ(1)/2 = n1·πi; h0 : θ_ζ(0) - θ_χ(0)/2 = n0·πi
+  -- 2Δθ_ζ - Δθ_χ = 2·[(θ_ζ(1)-θ_χ(1)/2) - (θ_ζ(0)-θ_χ(0)/2)]
+  calc
+    2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)
+        = 2 * ((uLift T hz 1 - thetaLift T 1 / 2) - (uLift T hz 0 - thetaLift T 0 / 2)) := by ring
+    _ = 2 * ((n1 : ℂ) * (↑Real.pi * Complex.I) - (n0 : ℂ) * (↑Real.pi * Complex.I)) := by
+      rw [h1, h0]
+    _ = ((n1 - n0 : ℤ) : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+      push_cast
+      ring
+
+/-- **连续离散逆桥**: 净翻转 m = (2·Δθ_ζ - Δθ_χ)/(2πi) ∈ ℤ —
+    从连续提升的端点差重构离散翻转计数。 -/
+theorem net_flip_from_chi_lift (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    ((2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)) /
+      (2 * ↑Real.pi * Complex.I)) ∈ ℤ := by
+  rcases (flip_chi_circle_bridge T hz) with ⟨m, hm⟩
+  rw [hm]
+  -- (m·2πi)/(2πi) = m ∈ ℤ
+  rw [show (m : ℂ) * (2 * ↑Real.pi * Complex.I) / (2 * ↑Real.pi * Complex.I) = (m : ℂ) by
+    exact mul_div_cancel_left₀ (m : ℂ) (by
+      -- 2πi ≠ 0
+      rw [show (2 * ↑Real.pi * Complex.I : ℂ) ≠ 0 by
+        exact mul_ne_zero (mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero)) Complex.I_ne_zero])]
+  exact ⟨m, rfl⟩
+
 end RiemannUnifiedObservation
