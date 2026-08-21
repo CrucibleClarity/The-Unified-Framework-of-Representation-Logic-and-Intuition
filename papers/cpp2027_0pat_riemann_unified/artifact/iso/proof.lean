@@ -5600,4 +5600,125 @@ theorem Gamma_one_add_it_norm_le_one (t : ℝ) :
               ↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1) else 0)))
     _ = 1 := hsum
 
+
+/-- **底边无零点 (假实轴拼装)**: ζ(x) ≠ 0 对 x ∈ [-1,2] 且 x ∉ (0,1)。
+    假实轴框架 (已证零散件拼装):
+      Re < 0: riemannZeta_ne_zero_of_re_lt_zero (函数方程, 平凡零点 -2,-4 不在段内)
+      Re = 0: riemannZeta_ne_zero_of_re_eq_zero (s ≠ 0)
+      x = 0: riemannZeta_zero (ζ(0) = -1/2)
+      x = 1: riemannZeta_one_ne_zero; 1 < x: riemannZeta_pos_of_one_lt
+    (0,1) 段: ζ(x) < 0 是经典 (欧拉-麦克劳林积分表示, mathlib 无, KNOWN)。
+    底边 Δarg = 0 的支撑: 实值 (riemannZeta_conj) + 无零点 ⟹ arg ∈ {0,π} 常数。 -/
+theorem zeta_ne_zero_on_bottom_edge (x : ℝ) (hx : x ∈ Set.Icc (-1 : ℝ) 2)
+    (hnot : x ∉ Set.Ioo (0 : ℝ) 1) : riemannZeta (x : ℂ) ≠ 0 := by
+  by_cases hx1 : x = 1
+  · subst hx1
+    exact riemannZeta_one_ne_zero
+  by_cases hx0 : x = 0
+  · subst hx0
+    have : riemannZeta (0 : ℂ) = -1 / 2 := riemannZeta_zero
+    rw [this]
+    norm_num
+  by_cases hpos : 1 < x
+  · exact riemannZeta_pos_of_one_lt hpos
+  -- x < 1 (hnot 排除 (0,1)): x ≤ 0, 且 x ≠ 0 ⟹ Re ≤ 0
+  have hle0 : x ≤ 0 := by
+    -- x ∈ [-1,2], x < 1, x ∉ (0,1) ⟹ x ≤ 0
+    have hx2 : x < 1 := by
+      by_contra hge
+      have hge' : 1 ≤ x := le_of_not_gt hge
+      -- x = 1 已排除 ⟹ 1 < x ⟹ hpos 矛盾
+      have : 1 < x := lt_of_le_of_ne hge' (Ne.symm hx1)
+      exact hpos this
+    by_contra hgt
+    have : 0 < x := lt_of_not_ge hgt
+    exact hnot ⟨this, hx2⟩
+  by_cases hz : x < 0
+  · -- Re < 0: 非平凡零点 (s ≠ -n 对所有 n, x ∈ (-1,0) 非负整数)
+    apply riemannZeta_ne_zero_of_re_lt_zero (s := (x : ℂ))
+    · simp [hz]
+    · intro n hn
+      -- x = -n ⟹ x ≤ -1 (n ≥ 1) 或 x = 0 (n = 0), 与 x ∈ (-1,0) 矛盾
+      have hxneg : -1 ≤ x := (Set.mem_Icc.mp hx).1
+      have hcast : (-(n : ℂ)).re = -(n : ℝ) := by simp
+      have hre : ((x : ℂ)).re = (-(n : ℂ)).re := by rw [hn]
+      have : x = -(n : ℝ) := by
+        simpa [hcast] using hre
+      by_cases hn0 : n = 0
+      · subst hn0
+        linarith
+      · have hnpos : 0 < (n : ℝ) := by exact_mod_cast (Nat.pos_of_ne_zero hn0)
+        have : x < -1 := by linarith
+        linarith
+  · -- x = 0 已排除, x < 0 否 ⟹ x = 0: 矛盾 (已在 hx0 分支)
+    have : x = 0 := le_antisymm hle0 (le_of_not_gt hz)
+    exact (hx0 this).elim
+
+
+/-- **ζ 实轴实值**: ζ(x) ∈ ℝ (x 实) — conj ζ(x) = ζ(conj x) = ζ(x)。
+    假实轴框架: 实轴上 ζ 的虚部 (y 轴泄漏) 为零。 -/
+theorem zeta_im_zero_on_real (x : ℝ) : (riemannZeta (x : ℂ)).im = 0 := by
+  have hc := riemannZeta_conj (x : ℂ)
+  have hx : (starRingEnd ℂ) (x : ℂ) = (x : ℂ) := by simp
+  have hz : (starRingEnd ℂ) (riemannZeta (x : ℂ)) = riemannZeta (x : ℂ) := by
+    rw [hc, hx]
+  have him : ((starRingEnd ℂ) (riemannZeta (x : ℂ))).im = -(riemannZeta (x : ℂ)).im := by
+    simp
+  have him' : ((starRingEnd ℂ) (riemannZeta (x : ℂ))).im = (riemannZeta (x : ℂ)).im := by
+    rw [hz]
+  linarith
+
+/-- **ζ(-1) 实部为负**: re ζ(-1) < 0 — 函数方程 s=2 (卷 riemannZeta_one_sub):
+    ζ(-1) = 2(2π)^{-2}Γ(2)cos(π)ζ(2) = -2(2π)^{-2}·ζ(2) < 0 (Γ(2)=1, cos π = -1, ζ(2)>0)。 -/
+theorem zeta_neg_one_re_neg : (riemannZeta (-(1 : ℂ))).re < 0 := by
+  have hfe := riemannZeta_one_sub (s := (2 : ℂ)) (by intro n hn; norm_num at hn) (by norm_num)
+  -- hfe : ζ(1-2) = 2(2π)^{-2}Γ(2)cos(π·2/2)ζ(2)
+  have hcos : Complex.cos (↑Real.pi * (2 : ℂ) / 2) = -1 := by
+    have harg : ↑Real.pi * (2 : ℂ) / 2 = ↑Real.pi := by
+      apply Complex.ext <;> simp <;> ring
+    rw [harg]
+    simpa using Complex.cos_pi
+  have hgam : Complex.Gamma (2 : ℂ) = 1 := by
+    simpa using (Complex.Gamma_nat_eq_factorial 1)
+  have hz2 : 0 < (riemannZeta (2 : ℂ)).re := by
+    exact (Complex.pos_iff.mp (riemannZeta_pos_of_one_lt (x := (2 : ℝ)) (by norm_num))).1
+  have hpow : (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) = ↑(1 / (2 * Real.pi) ^ 2) := by
+    have hne : (2 * ↑Real.pi : ℂ) ≠ 0 := by positivity
+    rw [Complex.cpow_intCast]
+    rw [show (-2 : ℤ) = -(2 : ℤ) by norm_num]
+    rw [zpow_neg]
+    rw [zpow_natCast]
+    have hsq : (2 * ↑Real.pi : ℂ) ^ 2 = ↑((2 * Real.pi) ^ 2) := by
+      norm_num [← Complex.ofReal_mul]
+    rw [hsq]
+    rw [← Complex.ofReal_inv]
+  have hmain : riemannZeta (-(1 : ℂ)) = 2 * (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) * (-1) * riemannZeta (2 : ℂ) := by
+    simpa [hcos, hgam] using hfe
+  -- 展开实部: 2·(2π)^{-2}·(-1)·ζ(2), 各系数实
+  have hre : (2 * (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) * (-1) * riemannZeta (2 : ℂ)).re
+      = -(2 * (1 / (2 * Real.pi) ^ 2)) * (riemannZeta (2 : ℂ)).re := by
+    rw [hpow]
+    simp [Complex.ofReal_mul, Complex.ofReal_re]
+    ring
+  rw [hmain, hre]
+  have hcoef : (0 : ℝ) < 2 * (1 / (2 * Real.pi) ^ 2) := by positivity
+  nlinarith
+
+/-- **底边 arg 跳 = π**: arg ζ(-1) - arg ζ(2) = π —
+    矩形闭合的底边 (实轴 -1 → 2) 相位修正: ζ(-1) 实负 (arg = π),
+    ζ(2) 实正 (arg = 0), 跳 = π = e^{iπ} 桥 (翻转半圈, 与零点计数 +1 对应)。
+    假实轴拼装: 实值 (zeta_im_zero_on_real) + 符号 (函数方程/级数)。 -/
+theorem bottom_edge_arg_jump :
+    (riemannZeta (-(1 : ℂ))).arg - (riemannZeta (2 : ℂ)).arg = Real.pi := by
+  have hargn : (riemannZeta (-(1 : ℂ))).arg = Real.pi := by
+    rw [Complex.arg_eq_pi_iff]
+    exact ⟨zeta_neg_one_re_neg, zeta_im_zero_on_real (-1)⟩
+  have hargp : (riemannZeta (2 : ℂ)).arg = 0 := by
+    rw [Complex.arg_eq_zero_iff]
+    constructor
+    · exact (Complex.pos_iff.mp (riemannZeta_pos_of_one_lt (x := (2 : ℝ)) (by norm_num))).1
+    · exact zeta_im_zero_on_real 2
+  rw [hargn, hargp]
+  simp
+
 end RiemannUnifiedObservation
