@@ -44,3 +44,7 @@
 | 2026-08-19 | zeta_stirling_iso.lean | d3b1816d81ee7cc4 | Stirling 第二层(桥): e^{iθ_χ}=χ 桥 + sin 相位精确 arctan(tanh) → π/4 |
 | 2026-08-19 | proof.lean | 86ac6ae07ff4cc7e | 矩形闭合桥: 翻转计数 = χ 圈数 - 整数层 (flip_count_from_theta_lifts) + net_flip 修复 |
 | 2026-08-19 | zeta_e_pi_i_bridge_iso.lean | bdc6df74806f8ecf | 增长控制落点: Sfunc_le_log (|S|≤1 ⟹ O(log T)) |
+
+| 2026-08-21 | Zenodo | 10.5281/zenodo.22038154 | cpp_submission_0pat_riemann_unified 38 文件 (4 任务全部 0-sorry) |
+| 2026-08-19 | zeta_zero_order_iso.lean | e95377476a7897da | 翻转=π跳桥: flip_phase_jump_pi/exp (翻转⟹u⁻/u⁺=-1=e^{iπ}) |
+| 2026-08-19 | proof.lean | 8e574d945689f507 | 矩形闭合骨架: Λ₀反射对消 log∈2πiℤ + Λ₀零点等价 |
