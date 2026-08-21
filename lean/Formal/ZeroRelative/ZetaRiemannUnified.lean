@@ -5151,4 +5151,47 @@ theorem phase_align_two_zeta_lift_eq_chi_lift (T : ℝ)
       rw [← hf01]
     _ = thetaLift T 1 - thetaLift T 0 := by ring
 
+  -- ============================================================
+  -- T6e: S(T) 整数层结构 — θ_ζ - θ_χ/2 ∈ πiℤ (pat ±1 过程) (2026-08-21)
+  -- 符号改变 (翻转 ±1) 但位置 (零点) 不变; 整数层 = 2πi 的迭代计数
+  -- ============================================================
+
+/-- u² = χ (T5): 无零点处 (ζ/‖ζ‖)² = χ (def chi 形式)。 -/
+lemma zeta_unit_sq_eq_chi_short (t : ℝ)
+    (hz : riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) ≠ 0) :
+    (riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) /
+        ‖riemannZeta ((1 / 2 : ℂ) + (t : ℝ) * Complex.I)‖ : ℂ) ^ 2 = chi ((1 / 2 : ℂ) + (t : ℝ) * Complex.I) := by
+  simpa [chi] using (zeta_unit_sq_eq_chi t hz)
+
+/-- **S(T) 的整数层结构**: θ_ζ - θ_χ/2 ∈ πiℤ 逐点 —
+    符号改变 (翻转 ±1) 但位置 (零点) 不变 = pat 正负 1 过程。
+    整数层 = 2πi 的迭代计数 (i 的迭代), θ_χ 显式 (快路径)。 -/
+theorem zeta_lift_half_chi_lift_pi_int (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0)
+    (s : unitInterval) :
+    ∃ n : ℤ, uLift T hz s - thetaLift T s / 2 = (n : ℂ) * (↑Real.pi * Complex.I) := by
+  -- 2θ_ζ - θ_χ ∈ expKernel = 2πiℤ (从 u² = χ: exp(2θ_ζ) = u² = χ = exp(θ_χ))
+  have hk : 2 * uLift T hz s - thetaLift T s ∈ expKernel := by
+    rw [expKernel]
+    change Complex.exp (2 * uLift T hz s - thetaLift T s) = 1
+    rw [Complex.exp_sub]
+    have h2e : Complex.exp (2 * uLift T hz s) = (Complex.exp (uLift T hz s)) ^ 2 := by
+      rw [show (2 : ℂ) * uLift T hz s = uLift T hz s + uLift T hz s by ring]
+      rw [Complex.exp_add]
+      ring
+    rw [h2e]
+    rw [uLift_lifts, thetaLift_lifts]
+    -- u² = χ (T5)
+    rw [zeta_unit_sq_eq_chi_short (T * s.1) (hz s)]
+    exact div_self (chi_ne_zero_on_line (T * s.1))
+  -- 2θ_ζ - θ_χ = 2πi·n ⟹ θ_ζ - θ_χ/2 = πi·n
+  rcases (expKernel_mem_iff (2 * uLift T hz s - thetaLift T s)).1 hk with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  -- hn : 2θ_ζ - θ_χ = n·2πi
+  -- 目标: θ_ζ - θ_χ/2 = n·πi
+  calc
+    uLift T hz s - thetaLift T s / 2 = (2 * uLift T hz s - thetaLift T s) / 2 := by ring
+    _ = (n : ℂ) * (2 * ↑Real.pi * Complex.I) / 2 := by rw [hn]
+    _ = (n : ℂ) * (↑Real.pi * Complex.I) := by ring
+
 end RiemannUnifiedObservation
