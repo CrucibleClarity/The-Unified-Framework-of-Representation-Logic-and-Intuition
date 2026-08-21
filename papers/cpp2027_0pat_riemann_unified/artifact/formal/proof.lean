@@ -4941,4 +4941,214 @@ lemma thetaLift_zero (T : ℝ) :
     thetaLift T 0 = theta0 T := by
   exact isCoveringMap_exp.liftPath_zero (chiPath T) (theta0 T) (liftPath_γ0 T)
 
+  -- ============================================================
+  -- T6d: 相位对齐 (预言/召唤的对称映射) — 2·Δθ_ζ = Δθ_χ (2026-08-21)
+  -- u²=χ (T5) ⟹ exp(2θ_ζ)=exp(θ_χ) ⟹ 2θ_ζ-θ_χ ∈ expKernel 常数 ⟹ 端点差
+  -- 无零点区间上直接等式, 不需要迭代逼近
+  -- ============================================================
+
+/-- u 沿临界线的路径 (无零点区间 [0,T] 上 ζ ≠ 0): 基空间 ℂ\{0} 值, 连续。 -/
+def uPath (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    C(unitInterval, {z : ℂ // z ≠ 0}) where
+  toFun s := ⟨riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) /
+      ‖riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I)‖,
+    by
+      exact div_ne_zero (hz s)
+        (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (hz s)))⟩
+  continuous_toFun := by
+    have hsfun : Continuous (fun s : ℝ => (1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I) := by
+      fun_prop
+    have hzeta : Continuous (fun s : ℝ => riemannZeta ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I)) := by
+      rw [← continuousOn_univ]
+      exact differentiableOn_riemannZeta.continuousOn.comp hsfun.continuousOn
+        (by
+          intro s hs h1
+          have h1' : (1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I = 1 := h1
+          have hre : ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I).re = 1 := by
+            rw [h1']
+            simp
+          have hre' : ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I).re = 1 / 2 := by
+            simp
+          rw [hre'] at hre
+          norm_num at hre)
+    have hnorm : Continuous (fun s : ℝ => (‖riemannZeta ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I)‖ : ℂ)) := by
+      have hc : Continuous (fun s : ℝ => ‖riemannZeta ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I)‖) :=
+        hzeta.norm
+      exact continuous_ofReal.comp hc
+    have hunitOn : ContinuousOn (fun s : ℝ =>
+        riemannZeta ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I) /
+          ‖riemannZeta ((1 / 2 : ℂ) + ((T * s : ℝ) : ℂ) * Complex.I)‖) (Set.Icc 0 1) := by
+      refine hzeta.continuousOn.div hnorm.continuousOn ?_
+      intro s hs
+      exact Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (hz ⟨s, hs⟩))
+    have hunit : Continuous (fun s : unitInterval =>
+        riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) /
+          ‖riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I)‖) :=
+      hunitOn.restrict
+    exact Continuous.subtype_mk hunit
+      (fun s => div_ne_zero (hz s) (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (hz s))))
+
+/-- u 的提升起点: y₀ = log u(0)。 -/
+noncomputable def uLift0 (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) : ℂ :=
+  Complex.log ((uPath T hz 0 : {z : ℂ // z ≠ 0}).1)
+
+lemma exp_uLift0 (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    Complex.exp (uLift0 T hz) = (uPath T hz 0 : {z : ℂ // z ≠ 0}).1 := by
+  dsimp [uLift0]
+  exact Complex.exp_log (uPath T hz 0).2
+
+/-- liftPath 的起点条件: γ 0 = p y₀。 -/
+private lemma uLift_γ0 (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    uPath T hz 0 = (⟨Complex.exp (uLift0 T hz), Complex.exp_ne_zero (uLift0 T hz)⟩ : {z : ℂ // z ≠ 0}) := by
+  ext
+  exact (exp_uLift0 T hz).symm
+
+/-- u 的连续幅角提升: exp(θ_ζ(s)) = u(s)。 -/
+noncomputable def uLift (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) : C(unitInterval, ℂ) :=
+  isCoveringMap_exp.liftPath (uPath T hz) (uLift0 T hz) (uLift_γ0 T hz)
+
+/-- 提升性质: exp(θ_ζ(s)) = ζ/‖ζ‖ (1/2 + T·s·i)。 -/
+lemma uLift_lifts (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) (s : unitInterval) :
+    Complex.exp (uLift T hz s) =
+      riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) /
+        ‖riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I)‖ := by
+  have h := (isCoveringMap_exp.liftPath_lifts (uPath T hz) (uLift0 T hz) (uLift_γ0 T hz))
+  have hs := congrArg (fun f : unitInterval → {z : ℂ // z ≠ 0} => (f s : ℂ)) h
+  dsimp [uLift]
+  simpa [uPath] using hs
+
+/-- 提升起点: θ_ζ(0) = y₀。 -/
+lemma uLift_zero (T : ℝ) (hz : ∀ s : unitInterval,
+    riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    uLift T hz 0 = uLift0 T hz := by
+  exact isCoveringMap_exp.liftPath_zero (uPath T hz) (uLift0 T hz) (uLift_γ0 T hz)
+
+/-- exp 的核: exp z = 1 的点集 (离散, 2πiℤ)。 -/
+def expKernel : Set ℂ := {z | Complex.exp z = 1}
+
+/-- expKernel = 2πiℤ: exp z = 1 ⟺ ∃ n : ℤ, z = n·2πi。 -/
+lemma expKernel_mem_iff (z : ℂ) :
+    z ∈ expKernel ↔ ∃ n : ℤ, z = (n : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+  rw [expKernel]
+  constructor
+  · intro hz
+    have he : Complex.exp z = Complex.exp 0 := by simpa using hz
+    rcases (exp_eq_exp_iff_exists_int.mp he) with ⟨n, hn⟩
+    refine ⟨n, ?_⟩
+    simpa using hn
+  · rintro ⟨n, rfl⟩
+    change Complex.exp (n * (2 * ↑Real.pi * Complex.I)) = 1
+    rw [← Complex.exp_zero, exp_eq_exp_iff_exists_int]
+    exact ⟨n, by ring⟩
+
+/-- expKernel 中不同点距离 ≥ 2π (2πiℤ 的网格间距)。 -/
+lemma expKernel_dist_ge_two_pi {z w : ℂ} (hz : z ∈ expKernel) (hw : w ∈ expKernel)
+    (hzw : z ≠ w) : 2 * Real.pi ≤ ‖z - w‖ := by
+  rcases (expKernel_mem_iff z).1 hz with ⟨n, rfl⟩
+  rcases (expKernel_mem_iff w).1 hw with ⟨m, rfl⟩
+  have hn0 : n ≠ m := by
+    intro hnm
+    apply hzw
+    rw [hnm]
+  have hnm1 : (1 : ℝ) ≤ |(n - m : ℤ)| := by
+    exact_mod_cast (Int.one_le_abs (sub_ne_zero.mpr hn0))
+  calc
+    2 * Real.pi ≤ |((n - m : ℤ) : ℝ)| * (2 * Real.pi) := by
+      have hnm1' : (1 : ℝ) ≤ |((n - m : ℤ) : ℝ)| := by
+        simpa [Int.cast_abs] using hnm1
+      nlinarith [hnm1', Real.pi_pos]
+    _ = ‖((n - m : ℤ) : ℂ) * (2 * ↑Real.pi * Complex.I)‖ := by
+      rw [Complex.norm_mul]
+      have hnorm : ‖(2 * ↑Real.pi * Complex.I : ℂ)‖ = 2 * Real.pi := by
+        rw [show (2 * ↑Real.pi * Complex.I : ℂ) = (2 * ↑Real.pi : ℂ) * Complex.I by ring]
+        rw [Complex.norm_mul]
+        have hcast : (2 * ↑Real.pi : ℂ) = (↑(2 * Real.pi : ℝ) : ℂ) := by norm_num
+        rw [hcast]
+        have hn2 : ‖(↑(2 * Real.pi : ℝ) : ℂ)‖ = 2 * Real.pi := by
+          exact (RCLike.norm_ofReal (2 * Real.pi)).trans
+            (abs_of_nonneg (mul_nonneg (by norm_num) (le_of_lt Real.pi_pos)))
+        rw [hn2, Complex.norm_I]
+        ring
+      rw [Complex.norm_intCast, hnorm]
+    _ = ‖(n : ℂ) * (2 * ↑Real.pi * Complex.I) - (m : ℂ) * (2 * ↑Real.pi * Complex.I)‖ := by
+      congr 1
+      rw [← sub_mul]
+      congr 1
+      simp
+
+/-- expKernel 的诱导拓扑离散 (每点孤立: 间距 2π > 半径 π 的开球)。 -/
+instance expKernel_discrete : DiscreteTopology {z : ℂ // z ∈ expKernel} := by
+  rw [discreteTopology_iff_isOpen_singleton]
+  intro z
+  -- {z} = ball z.1 π ∩ expKernel (诱导拓扑的开集)
+  refine ⟨Metric.ball (z : ℂ) Real.pi, Metric.isOpen_ball, ?_⟩
+  apply Set.ext
+  intro w
+  change w ∈ Subtype.val ⁻¹' Metric.ball (z.1 : ℂ) Real.pi ↔ w = z
+  constructor
+  · intro hw
+    apply Subtype.ext
+    by_contra hne
+    have hd : 2 * Real.pi ≤ ‖w.1 - z.1‖ :=
+      expKernel_dist_ge_two_pi w.2 z.2 hne
+    have hlt : ‖w.1 - z.1‖ < Real.pi := by
+      rw [← dist_eq_norm]
+      exact hw
+    nlinarith [hd, hlt, Real.pi_pos]
+  · intro hw
+    rw [hw]
+    have hself : z.1 ∈ Metric.ball (z.1 : ℂ) Real.pi :=
+      Metric.mem_ball_self Real.pi_pos
+    simpa [dist_eq_norm] using hself
+
+/-- **相位对齐 (预言/召唤的对称映射)**: 无零点区间 [0,T] 上,
+    u² = χ (T5) ⟹ exp(2θ_ζ) = exp(θ_χ) ⟹ 2θ_ζ - θ_χ ∈ expKernel 常数 ⟹
+    2·(θ_ζ(T) - θ_ζ(0)) = θ_χ(T) - θ_χ(0)。
+    起点 (显式 χ 相位) 与终点 (θ_ζ 端点差) 之间的映射相位关系直接锁定,
+    不需要迭代逼近。 -/
+theorem phase_align_two_zeta_lift_eq_chi_lift (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    2 * (uLift T hz 1 - uLift T hz 0) = thetaLift T 1 - thetaLift T 0 := by
+  let f : unitInterval → ℂ := fun s => 2 * uLift T hz s - thetaLift T s
+  have hk : ∀ s : unitInterval, f s ∈ expKernel := by
+    intro s
+    rw [expKernel]
+    dsimp [f]
+    rw [Complex.exp_sub]
+    have h2e : Complex.exp (2 * uLift T hz s) = (Complex.exp (uLift T hz s)) ^ 2 := by
+      rw [show (2 : ℂ) * uLift T hz s = uLift T hz s + uLift T hz s by ring]
+      rw [Complex.exp_add]
+      ring
+    rw [h2e]
+    rw [uLift_lifts, thetaLift_lifts]
+    rw [zeta_unit_sq_eq_chi (T * s.1) (hz s)]
+    exact div_self (chi_ne_zero_on_line (T * s.1))
+  let f' : unitInterval → {z : ℂ // z ∈ expKernel} := fun s => ⟨f s, hk s⟩
+  have hf' : Continuous f' := by
+    have hf : Continuous f := by
+      dsimp [f]
+      exact (continuous_const.mul (uLift T hz).continuous).sub (thetaLift T).continuous
+    exact Continuous.subtype_mk hf (fun s => hk s)
+  have hc : f' 0 = f' 1 :=
+    IsPreconnected.constant (s := Set.univ) (isPreconnected_univ)
+      hf'.continuousOn (by trivial) (by trivial)
+  have hf01 : f 0 = f 1 := by
+    have := congrArg Subtype.val hc
+    simpa using this
+  dsimp [f] at hf01
+  -- hf01 : 2·u0 - t0 = 2·u1 - t1 ⟹ 目标 2(u1-u0) = t1-t0
+  calc
+    2 * (uLift T hz 1 - uLift T hz 0)
+        = 2 * uLift T hz 1 - 2 * uLift T hz 0 := by ring
+    _ = (2 * uLift T hz 1 - thetaLift T 1) + (thetaLift T 1 - 2 * uLift T hz 0) := by ring
+    _ = (2 * uLift T hz 0 - thetaLift T 0) + (thetaLift T 1 - 2 * uLift T hz 0) := by
+      rw [← hf01]
+    _ = thetaLift T 1 - thetaLift T 0 := by ring
+
 end RiemannUnifiedObservation
