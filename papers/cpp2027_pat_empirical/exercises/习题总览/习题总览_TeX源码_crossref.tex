@@ -1,0 +1,592 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题
+I：内容详细对照（与原文逐项比对）}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-iux5185ux5bb9ux8be6ux7ec6ux5bf9ux7167ux4e0eux7b51ux57faux7bc7ux539fux6587ux9010ux9879ux6bd4ux5bf9}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}, 仅为基于
+Lean 4 形式化的一种\textbf{实验观测报告} (对照文档)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_crossref & 习题 I 内容详细对照 & PatPvsNPExercise.lean &
+DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Detailed Content Cross-Reference: Exercise I vs the
+Foundation-Building Chapter}
+
+\begin{quote}
+本对照文档服务对象：\texttt{pat\_pnp\_exercise\_ZH.md}（R157，4
+新定理）。逐项核对习题每个论点的锚定来源------题面（R152/R153 侧写）→
+解答（R157 展开）→ 源定理（ Lean
+定理），三列对齐。全部源定理可复验：\texttt{formal/Formal/Toolkit/*.lean}。
+\end{quote}
+
+\emph{2026-08-13 · 对照文档 · 无新增 claim（仅比对，不产生新定理）}
+
+\begin{quote}
+外部文献对照（全字段书目 + 验证记录 + 健在/已故标注，85+
+条）见\texttt{../shared/pat\_pnp\_shared\_references\_ZH.md}（共享引用清单）（引用清单），并已同步进
+\texttt{literature/references.bib}。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、对照总览}\label{ux4e00ux5bf9ux7167ux603bux89c8}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题章节
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+习题论点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定 claim
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定 Lean 文件
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对照结论
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+零、总论 & P vs NP = 发散/收敛互锁对的投影 & R047 / R147 / R148 &
+CausalityTime / InterlockIsomorphism & 论点 = R148
+互锁同构的计算投影，无新增 \\
+一、结构找回精确 & 验证 = 查表判等（双向） & R152 ② / RulerLookup /
+RulerRevLookup & ConciseMagicTeaching & ★新定理 lookup\_iff\_value：R152
+verification\_free 单向 → 双向 \\
+二、模糊与结构等价 & witness ⟺ 表条目（双向） & R153 ④ / RulerLookup &
+ConciseMagicTeaching / PatNondeterminism & ★新定理
+witness\_iff\_table\_entry：R153 np\_witness\_in\_table 单向 → 双向 \\
+三、★NP 模糊/结构对偶 & 模糊存在性 ∧ 结构判等 & R147 / R152 / R153 /
+R150 & 本习题新定理 & ★新定理
+np\_fuzzy\_structure\_duality：核心，前两定理组合 \\
+四、全景 & N=外推 ∧ 验证=判等 ∧ P=锁定链 & R150 / R152 / R153 ① / R050 &
+PatCountableInfinitPhaseUnification / PatNondeterminism & ★新定理
+p\_np\_pat\_perspective：全景组合 \\
+\end{longtable}
+}
+
+\textbf{一句话对照}：习题没有发明新结构------四个新定理都是已有定理的\textbf{双向化}（单向→双向）与\textbf{组合化}（分离→对偶/全景）。这正是''用结构找回精确''在形式化层面的体现：锚定结构不变，论证收束。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、定理级对照（R157 新定理 ↔
+源定理，逐证明步骤）}\label{ux4e8cux5b9aux7406ux7ea7ux5bf9ux7167r157-ux65b0ux5b9aux7406-ux6e90ux5b9aux7406ux9010ux8bc1ux660eux6b65ux9aa4}
+
+\subsubsection{\texorpdfstring{2.1 \texttt{lookup\_iff\_value} --- 验证
+=
+查表判等（双向）}{2.1 lookup\_iff\_value --- 验证 = 查表判等（双向）}}\label{lookup_iff_value-ux9a8cux8bc1-ux67e5ux8868ux5224ux7b49ux53ccux5411}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theorem lookup\_iff\_value \{D E\} [Fintype D] [DecidableEq D] [DecidableEq E]}
+\NormalTok{ (f : D → E) (x : D) (y : E) : y = f x ↔ (x, y) ∈ makeTable f}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+证明步骤
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用的源定理
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+来源
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+与原题面（R152）的关系
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+正向 \texttt{y\ =\ f\ x\ ⟹\ 表条目} & \texttt{rw\ {[}h{]}} +
+\texttt{lookup\_exists} & ConciseMagicTeaching（RulerLookup 表全量） &
+R152 \texttt{verification\_free} 只给
+\texttt{(x,\ f\ x)\ ∈\ makeTable\ f}（特例） \\
+反向 \texttt{表条目\ ⟹\ y\ =\ f\ x} & \texttt{lookup\_correct} &
+ConciseMagicTeaching（RulerLookup 表值 = 函数值） & R152
+未给反向；\textbf{习题新增双向} \\
+值域多态 \texttt{{[}DecidableEq\ E{]}} & --- & 习题修正（验证函数 Bool
+值域，非 D→D） & 初版错写 D→D，已修正 \\
+\end{longtable}
+}
+
+\textbf{对照结论}：R152 verification\_free 是 lookup\_iff\_value 在 y =
+f x 时的特例（代入即得）；lookup\_iff\_value 是 RulerLookup
+两个单引理（lookup\_exists/lookup\_correct）的 iff 组合。
+
+\subsubsection{\texorpdfstring{2.2 \texttt{witness\_iff\_table\_entry}
+--- witness ⟺
+表条目（双向）}{2.2 witness\_iff\_table\_entry --- witness ⟺ 表条目（双向）}}\label{witness_iff_table_entry-witness-ux8868ux6761ux76eeux53ccux5411}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theorem witness\_iff\_table\_entry \{D\} [Fintype D] [DecidableEq D]}
+\NormalTok{ (V : D → D → Bool) (x : D) :}
+\NormalTok{ (∃ w, V x w = true) ↔ (∃ w, (w, true) ∈ makeTable (fun w =\textgreater{} V x w))}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+证明步骤
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用的源定理
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+来源
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+与原题面（R153）的关系
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+正向 \texttt{witness\ ⟹\ 表条目} & \texttt{rw\ {[}h{]}} +
+\texttt{lookup\_exists} & ConciseMagicTeaching & 与 R153
+\texttt{np\_witness\_in\_table} \textbf{完全相同}（习题复用） \\
+反向 \texttt{表条目\ ⟹\ witness} & \texttt{lookup\_correct}
+反向（\texttt{.symm}） & ConciseMagicTeaching & R153
+未给反向；\textbf{习题新增双向} \\
+\end{longtable}
+}
+
+\textbf{对照结论}：R153 np\_witness\_in\_table 是
+witness\_iff\_table\_entry 的正向合取；反向由 lookup\_correct（表值 =
+函数值 ⟹ true = V x w ⟹ V x w =
+true）封死。\textbf{模糊（witness）与结构（表条目）等价}的论证核心是
+RulerLookup 的 lookup\_correct。
+
+\subsubsection{\texorpdfstring{2.3
+★\texttt{np\_fuzzy\_structure\_duality} --- NP
+的模糊/结构对偶（核心新定理）}{2.3 ★np\_fuzzy\_structure\_duality --- NP 的模糊/结构对偶（核心新定理）}}\label{np_fuzzy_structure_duality-np-ux7684ux6a21ux7ccaux7ed3ux6784ux5bf9ux5076ux6838ux5fc3ux65b0ux5b9aux7406}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theorem np\_fuzzy\_structure\_duality \{D\} [Fintype D] [DecidableEq D]}
+\NormalTok{ (V : D → D → Bool) (x : D) (hw : ∃ w, V x w = true) :}
+\NormalTok{ (∃ w, (w, true) ∈ makeTable (fun w =\textgreater{} V x w)) ∧}
+\NormalTok{ (∀ w, V x w = true ↔ (w, true) ∈ makeTable (fun w =\textgreater{} V x w))}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+证明步骤
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用的源定理
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+来源
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+前半 \texttt{结构存在性} & \texttt{witness\_iff\_table\_entry\ .mp} &
+习题 2.2（其反向即 R153+lookup\_correct） \\
+后半 \texttt{逐点判等} & \texttt{lookup\_iff\_value}（逐点实例化） &
+习题 2.1（RulerLookup 双向） \\
+\end{longtable}
+}
+
+\textbf{对照结论}：本题核心定理无新锚------是 2.1 与 2.2
+的机械组合，但语义是新的：\textbf{``模糊存在性 ⟹ 结构存在性 ∧
+逐点判等''把 R153 的''NP 存在性 =
+验证表条目''从单向断言升级为对偶结构}。对应论证：求解（前向，发散）与验证（后向，收敛）=
+R147 互锁对（CausalityTime.causality\_pair\_reduces: (f-e)+(e-f)=0）。
+
+\subsubsection{\texorpdfstring{2.4 \texttt{p\_np\_pat\_perspective} ---
+全景（N=外推 ∧ 验证=判等 ∧
+P=锁定链）}{2.4 p\_np\_pat\_perspective --- 全景（N=外推 ∧ 验证=判等 ∧ P=锁定链）}}\label{p_np_pat_perspective-ux5168ux666fnux5916ux63a8-ux9a8cux8bc1ux5224ux7b49-pux9501ux5b9aux94fe}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theorem p\_np\_pat\_perspective \{D\} [Fintype D] [DecidableEq D]}
+\NormalTok{ (V : D → D → Bool) (x : D) (θ : ℝ) (hθ₁ : 0 ≤ θ) (hθ₂ : θ ≤ 2 * Real.pi) :}
+\NormalTok{ (∀ ε, 0 \textless{} ε → ∃ y ∈ patGrid, |θ {-} y| ≤ ε) ∧}
+\NormalTok{ (∀ w, V x w = true ↔ (w, true) ∈ makeTable (fun w =\textgreater{} V x w)) ∧}
+\NormalTok{ (∀ d, Function.Injective (fun x : ℝ =\textgreater{} x + d))}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+合取项
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+使用的源定理
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+来源
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应题面
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+① N = 相位锁定外推 & \texttt{pat\_phase\_unification}（王氏定理） &
+PatCountableInfinitPhaseUnification（R150） & R153
+③（nondeterminism\_is\_phase\_locking\_extrapolation 同款） \\
+② 验证 = 查表判等 & \texttt{lookup\_iff\_value} 逐点 & 习题 2.1 & R152
+②（verification\_free 双向化） \\
+③ P = 锁定方向唯一链 & \texttt{deterministic\_locked\_chain\_unique} &
+PatNondeterminism（R153 ① / R050 机制） & R153 ① 直接复用 \\
+\end{longtable}
+}
+
+\textbf{对照结论}：全景定理 = R150（王氏）⊕ R153 ①（P）⊕ 习题
+2.1（验证）------三根支柱在 P vs NP 上的合取。R153
+nondeterminism\_pat\_perspective 是 (①②) 子集；习题全景新增 ③
+验证判等项并锚定 P。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、题面对照：R152/R153 说了什么，R157
+补了什么}\label{ux4e09ux9898ux9762ux5bf9ux7167r152r153-ux8bf4ux4e86ux4ec0ux4e48r157-ux8865ux4e86ux4ec0ux4e48}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+原题面 claim
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+原定理（数量）
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+R157 对照
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+增量性质
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+R152 有限域上 P=NP 平凡 & finite\_domain\_P\_eq\_NP &
+习题四论证引用，无新定理 & 复用 \\
+R152 验证 = 可逆查表后向免费 & verification\_free（单向） &
+lookup\_iff\_value（双向） & \textbf{双向化} \\
+R152 求解/验证 = 发散/收敛互锁对 & solve\_verify\_dual &
+习题三论证引用（causality\_pair\_reduces） & 复用（论证层） \\
+R153 ① P = 锁定方向唯一链 & deterministic\_locked\_chain\_unique &
+习题四 ③ 合取项直接复用 & 复用 \\
+R153 ② N = 未锁定多路径 & nondeterministic\_multiple\_paths &
+习题四论证引用（未锁 = 模糊） & 复用（论证层） \\
+R153 ③ N = 相位锁定外推 &
+nondeterminism\_is\_phase\_locking\_extrapolation & 习题四 ①
+合取项（同源 R150） & 复用 \\
+R153 ④ NP 存在性 = 验证表条目 & np\_witness\_in\_table（单向） &
+witness\_iff\_table\_entry（双向） & \textbf{双向化} \\
+R153 ⑤ N 的 Pat 视角组合 & nondeterminism\_pat\_perspective &
+np\_fuzzy\_structure\_duality + p\_np\_pat\_perspective &
+\textbf{组合化+对偶化} \\
+\end{longtable}
+}
+
+\textbf{增量清单（R157 独有的 4 个定理）}： 1.
+\texttt{lookup\_iff\_value}：验证判等双向（R152 未给反向）。 2.
+\texttt{witness\_iff\_table\_entry}：witness⟺表条目双向（R153
+未给反向）。 3.
+\texttt{np\_fuzzy\_structure\_duality}：模糊/结构对偶（新组合，核心）。
+4. \texttt{p\_np\_pat\_perspective}：全景合取（R150⊕R153①⊕习题①）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、论证链对照（习题章节 ↔
+章节）}\label{ux56dbux8bbaux8bc1ux94feux5bf9ux7167ux4e60ux9898ux7ae0ux8282-ux7b51ux57faux7bc7ux7ae0ux8282}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题章节
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+论证步骤
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应章节/claim
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+零、总论 & 发散/收敛互锁对投影 & ·十二（R147
+因果与时间，causality\_pair\_reduces）；·十三（R148 互锁同构） \\
+一、①表=结构 & 有限域函数=预计算表 &
+·RulerLookup（function\_is\_table）；R057 一切皆表 \\
+一、②验证不重算 & 查表判等 & ·R152 ②（verification\_free） \\
+二、①单向已有 & R153 np\_witness\_in\_table & ·十八（R153 ④） \\
+二、②反向封死 & lookup\_correct 表值=函数值 &
+·RulerLookup（lookup\_correct） \\
+三、①模糊换速度 & N 存在性由相位锁定外推 & ·十七·十八（R150
+王氏定理 / R153 ③） \\
+三、②结构找回精确 & 表判等还原真值 &
+·RulerLookup/RulerRevLookup \\
+三、③互锁对 & 发散端存在性/收敛端精确性 & ·十二（R147）；R047
+发散/收敛同一对称性 \\
+四、①N=外推 & pat\_phase\_unification & ·十六（R150
+王氏相位锁定性定理） \\
+四、②验证=判等 & lookup\_iff\_value & ·十七（R152）+
+RulerLookup \\
+四、③P=锁定链 & deterministic\_locked\_chain\_unique & ·十八（R153
+①）；R050 机制；R136 方向声明 \\
+四、④有限域平凡 & 表全量 ⟹ 模糊不必要 & ·十七（R152 ①
+finite\_domain\_P\_eq\_NP） \\
+四、⑤诚实边界 & 非 P≠NP 判定 & ·十七（R152 诚实边界原句延续） \\
+\end{longtable}
+}
+
+\textbf{结论}：习题全部论证步骤都能在找到章节级落点，无悬空引用；新增内容只发生在''双向化/组合化''层面。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、术语对照}\label{ux4e94ux672fux8bedux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题术语
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应概念
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚定
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+模糊（N 的存在性） & 未锁定相位 & R140
+single\_symmetry\_underdetermines（未锁定 ⟹ 位置不唯一）；R138 未锁定 =
+自指坍缩 \\
+速度（换来的） & 不穷举的存在性 & R150
+王氏定理（任意精度统一，不依赖搜索路径） \\
+结构（表） & 预计算表 / 一切皆表 & RulerLookup（makeTable）；R057
+存储⟷计算同构 \\
+精确（找回的） & 判等还原真值 & lookup\_correct（表值 = 函数值） \\
+锁定链（P） & 方向锁定的唯一链 &
+R050（迭代单射）；R136（成对一次性声明）；R137（pat n = pat0+n·d） \\
+互锁对 & 求解/验证 = 发散/收敛 &
+R147（causality\_pair\_reduces）；R047（发散/收敛同一对称性） \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、诚实边界对照}\label{ux516dux8bdaux5b9eux8fb9ux754cux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+边界
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+R152 原文
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+R157 延续
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对照
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+判定边界 & 完整 P≠NP 需要计算模型下界证明 & 习题仅交付结构侧写 &
+一致，无突破 \\
+定理边界 & 4 定理均为有限域/保留日志条件 & 4 新定理同样限 Fintype D &
+一致（Fintype 前提继承） \\
+引理边界 & R153 用户纠正：不用外部引理 & 习题全部锚本框架定理 & 一致，无
+mathlib 独有引理（仅 ring/simp 基础） \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 I 对照文档 · 2026-08-13 · 无新增
+claim，仅比对（源定理全部可复验于 formal/Formal/Toolkit/）}
+
+\end{document}
