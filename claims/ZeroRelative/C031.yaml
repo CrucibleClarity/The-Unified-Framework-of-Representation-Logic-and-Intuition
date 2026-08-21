@@ -1,0 +1,73 @@
+id: C031
+title: "S(T) 整数层结构 — θ_ζ - θ_χ/2 ∈ πiℤ (pat ±1 过程): 符号改变位置不变, 整数层 = i 的迭代计数"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072; 观测 AO"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    S(T) 的振荡 = 符号翻转序列 (pat 正负 1 过程): 由 T6d (2θ_ζ - θ_χ ∈
+    expKernel = 2πiℤ 逐点) 除以 2 得:
+      θ_ζ(s) - θ_χ(s)/2 ∈ πiℤ  (整数层)
+    S(T) = (1/(πi))·(θ_ζ - θ_χ/2) 是分段常数整数函数, 每跨零点跳 ±1 —
+    符号改变, 位置 (零点) 不变。翻转 = 乘 -1 = i² (i 的迭代, 四次单位根
+    {1,i,-1,-i}); 整数层 = 2πi 的迭代计数。θ_χ 显式 (快路径), 整数层 =
+    翻转计数 — 全部快路径, 无迭代逼近。
+  formal_math: |
+    ℂ 上 (无零点区间 [0,T]):
+    (1) 2θ_ζ - θ_χ ∈ expKernel = 2πiℤ (T6d hk)
+    (2) θ_ζ - θ_χ/2 = n·πi, n ∈ ℤ (逐点, 整数层)
+    (3) S(T) = (θ_ζ - θ_χ/2)/(πi) ∈ ℤ 的分段常数结构 (翻转计数)
+
+objects:
+  - "uLift (θ_ζ, u 的连续幅角提升)"
+  - "thetaLift (θ_χ, χ 的连续幅角提升)"
+  - "expKernel = exp⁻¹{1} = 2πiℤ"
+objects_note: ""
+definitions_used: ["expKernel_mem_iff", "phase_align (T6d)", "zeta_unit_sq_eq_chi (T5)", "exp_eq_exp_iff_exists_int"]
+
+assumptions:
+  - "无零点区间 (hz: ∀ s ∈ I, ζ ≠ 0)"
+  - "T5/T6d 前件"
+conclusion: "θ_ζ - θ_χ/2 ∈ πiℤ — S(T) 的整数层结构 (符号翻转序列), 全快路径"
+
+known_special_cases: null
+closest_known_results:
+  - "相位展开/整数绕数 (经典)"
+  - "观测 AN (T6d 相位对齐), 观测 AM (T6c 提升)"
+  - "pat 预言学 (RulerProphecy 相位截断): 本 claim 是翻转层计数的 0pat 形式"
+literature_queries:
+  - "S(T) argument principle integer jumps"
+
+counterexample_search:
+  status: done
+  search_space: "T6e 2 个新声明 Lean 验收 (proof.lean 208 声明 0 error 0 sorry)"
+  smallest_checked_size: null
+  result: "2 个新声明 Lean 证明 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "proof.lean 208 声明, 独立编译通过; 隔离文件 zeta_int_layer_iso.lean"
+  theorem_name: "zeta_unit_sq_eq_chi_short / zeta_lift_half_chi_lift_pi_int"
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 整数层结构是经典事实"
+  - "增长控制 (S(T) = O(log T)) 未涉及: 结构 vs 控制分离"
+  - "跨零点跳变 (±1 层) 的显式化需零点分段 (T3 对接)"
+
+evidence_for:
+  - "Lean: proof.lean 208 声明 0 error 0 sorry"
+evidence_against: []
+
+next_action: "(1) 跨零点跳变显式化 (T3 对接 + 零点分段); (2) 增长控制层: 预言学残差方法 0pat 化 (误差序列比率) + Backlund 界"
+
+notes: "用户方向落地: '震荡 = pat 正负 1 过程, 符号改变位置不变, 翻转 = i 的迭代, 展开接入快路径' — 整数层定理机证; log = e⁻¹ (有限↔无限逆桥), χ 显式相位含 log (快路径)。"
