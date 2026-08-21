@@ -922,3 +922,30 @@ mathlib 有 isDiscrete_riemannZetaZeros, 但 olean 未含 ZetaZeros 模块,
 0pat 自包含化 (2026-08-21): 去掉对 Formal.ZeroRelative.ComplexAxis (pat 框架) 的 import —
 复数轴结构 (a+bJ 旋转代数, KNOWN) + 六个交点定理以独立文件 zeta_axis_iso.lean (mathlib-only) 形式加入并内联合并;
 proof.lean 现只 import mathlib (26 个), 零 Formal 依赖, 187 声明 0 error 0 sorry。
+
+## 观测 AN: 相位对齐 — 2·Δθ_ζ = Δθ_χ (预言/召唤的对称映射) (2026-08-21)
+
+用户方向: "相位调制的时候存在映射相位关系, 把迭代终点和起点间的对称映射
+构建出来, 是不是就不需要迭代逼近了? 迭代逼近本身不就是有限可达无限吗?"
+
+13 个新声明机证 (proof.lean, 206 声明, 0 error 0 sorry), 隔离开发后合并
+(zeta_phase_align_iso.lean: mathlib-only 自包含, T5 及依赖一并复制; 合并只加
+新增声明, 与已有声明无重名冲突)。
+
+**相位调制的映射相位关系 + 对称映射 (T6d)**:
+- u² = χ (T5, 精确等式, u = ζ/|ζ|) — 相位调制的关系
+- 无零点区间 [0,T] 上 u 连续非零 ⟹ uPath + uLift (θ_ζ, 覆盖映射提升)
+- expKernel = exp⁻¹{1} = 2πiℤ, 离散 (间距 2π, DiscreteTopology 实例机证)
+- exp(2θ_ζ) = u² = χ = exp(θ_χ) ⟹ 2θ_ζ - θ_χ 的像 ⊆ expKernel
+- f 连续 + 值域离散 ⟹ f 常数 (IsPreconnected.constant) ⟹
+  **phase_align_two_zeta_lift_eq_chi_lift:
+   2·(θ_ζ(T) - θ_ζ(0)) = θ_χ(T) - θ_χ(0)** (端点差, 直接等式)
+
+这就是"召唤"的对称映射 (对照 pat 一步穿折越): 起点 (显式 χ 相位,
+锁定 witness) 与终点 (θ_ζ 端点差) 之间直接锁定, 0 次迭代。
+翻转 (跨零点) 是 2π 整数层差, 见 T6c 计数 (T3 Angle 层对接 + 零点分段)。
+S(T) 数值控制: 结构等式已锁定, 但 S(T) 振荡 (Selberg, 符号改变无限多次),
+无确定下限 — RH 级诚实边界, 与"迭代逼近"无关 (它不收敛)。
+
+状态: 206 声明 0 sorry。剩余缺口: 翻转次数 = 提升差/2π (T3 对接 + 零点
+分段) + Backlund 拼装 + S(T) 控制 (振荡, 诚实边界)。
