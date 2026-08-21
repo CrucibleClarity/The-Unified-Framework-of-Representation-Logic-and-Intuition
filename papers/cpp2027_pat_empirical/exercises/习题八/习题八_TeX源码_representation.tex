@@ -1,0 +1,389 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 VIII：pat
+原生群表示理论}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-viiipat-ux539fux751fux7fa4ux8868ux793aux7406ux8bba}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_8 & pat 原生群表示理论（R165） & PatRepresentation.lean &
+DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise VIII for the Foundation-Building Chapter: PAT-Native
+Group Representation Theory}
+
+\begin{quote}
+习题定位：课后习题系列第八题。用户指令：开始尝试对群表示理论进行
+Lean 形式化，但\textbf{不抄 mathlib}------pat
+原生定义。全部新定理只锚框架定理（R138/R141/R143/R161），不用外部引理，不
+import mathlib RepresentationTheory。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 7 new theorems PROVED no sorry · 课后习题 VIII }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+对群表示理论进行 Lean 形式化，pat 原生（用户纠正：不抄
+mathlib）。唯一论点：\textbf{群的 pat 原生表示 =
+相位表示------每个群元素映射到单位圆上的相位
+exp(i·θ(g))，保持群结构；每个元素与其逆元构成互锁对（ρ(g)·ρ(g⁻¹) =
+1）。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、总论：为什么群表示在 pat
+里是相位表示}\label{ux96f6ux603bux8bbaux4e3aux4ec0ux4e48ux7fa4ux8868ux793aux5728-pat-ux91ccux662fux76f8ux4f4dux8868ux793a}
+
+mathlib 的 RepresentationTheory 定义表示为
+\texttt{G\ →*\ V\ →ₗ{[}k{]}\ V}（群到线性算子的同态）------这是''抄现成的''。pat
+原生视角完全不同：
+
+\textbf{pat 框架的表示 = 相位表示}（RulerPhase：相位差 =
+方向；R138：相位关系锁定）： - 群元素 g ↦ 单位圆相位 exp(i·θ(g)) -
+同态性：θ(gh) = θ(g) + θ(h)（相位差可加） - 单位元：ρ(1) = exp(0) = 1 -
+\textbf{互锁对}：ρ(g⁻¹) = ρ(g)⁻¹（逆元 = 反向相位），ρ(g)·ρ(g⁻¹) = 1
+
+这不是''抄一个更弱的结构''------这是\textbf{从互锁原则推出的表示理论}：表示的结构单元不是线性算子，而是互锁对
+\{ρ(g), ρ(g)⁻¹\}（R136 ②③：方向必须成对声明）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、相位表示：群 →
+单位圆（RulerPhase/R141）}\label{ux4e00ux76f8ux4f4dux8868ux793aux7fa4-ux5355ux4f4dux5706rulerphaser141}
+
+\textbf{★核心：群 G 的相位表示 = 相位函数 θ : G → ℝ 保持群结构；表示值
+ρ(g) = exp(i·θ(g)) 在单位圆上。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{相位差 =
+ 方向}（RulerPhase）：群的每个元素映射到一个相位（方向）。
+\item
+ \textbf{表示值在单位圆}（R141）：‖exp(i·θ(g))‖ =
+ 1------单位根相位圆；U(1) 规范结构的单相位圆。
+\item
+ \textbf{单位元 = 相位 0}（exp\_zero/R143）：ρ(1) = exp(0) =
+ 1------对称对还原到 1。
+\end{enumerate}
+
+\subsubsection{形式化（PatRepresentation.lean，3
+定理）}\label{ux5f62ux5f0fux5316patrepresentation.lean3-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{phaseRep\_value}（def）：ρ(g) = exp(i·θ(g))。
+\item
+ \texttt{phaseRep\_on\_circle}：‖exp(i·θ(g))‖ = 1------表示值在单位圆。
+\item
+ \texttt{phaseRep\_one}：exp(i·0) = 1------单位元 = 相位 0。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 Complex.norm\_exp\_ofReal\_mul\_I / simp。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、同态性与互锁对（R138/R143/R136
+②③）}\label{ux4e8cux540cux6001ux6027ux4e0eux4e92ux9501ux5bf9r138r143r136-ux2461ux2462}
+
+\textbf{★核心：相位差可加 ⟹ 同态；逆元 = 反向相位 ⟹ 互锁对还原
+ρ(g)·ρ(g⁻¹) = 1。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{同态性}（R138：相位锁定后相位差可加）：θ(gh) = θ(g) + θ(h) ⟹
+ ρ(gh) = ρ(g)·ρ(h)（exp\_add）------表示的群同态性质。
+\item
+ \textbf{逆元 = 反向相位}（R136 ②③：方向必须成对声明）：θ(g⁻¹) = -θ(g)
+ ⟹ ρ(g⁻¹) = ρ(g)⁻¹（exp\_neg）------互锁对的逆元侧。
+\item
+ \textbf{★互锁对还原}（R143：对称对还原到 1）：ρ(g)·ρ(g⁻¹) =
+ exp(iθ)·exp(-iθ) = 1------每个群元素与其逆元构成互锁对，组合还原到
+ 1。\textbf{这是''互锁 = 成对''在群表示中的对应。}
+\end{enumerate}
+
+\subsubsection{形式化（PatRepresentation.lean，3
+定理）}\label{ux5f62ux5f0fux5316patrepresentation.lean3-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{phaseRep\_mul}：θ(gh) = θ(g)+θ(h) ⟹ ρ(gh) =
+ ρ(g)·ρ(h)------同态性。
+\item
+ \texttt{phaseRep\_inv}：θ(g⁻¹) = -θ(g) ⟹ ρ(g⁻¹) = ρ(g)⁻¹------逆元 =
+ 反向相位。
+\item
+ \texttt{phaseRep\_pair\_reduces}：ρ(g)·ρ(g⁻¹) = 1------★互锁对还原。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 exp\_add / exp\_neg / exp\_zero + ring。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、★规范群 = k
+个独立相位参数（R161）}\label{ux4e09ux89c4ux8303ux7fa4-k-ux4e2aux72ecux7acbux76f8ux4f4dux53c2ux6570r161}
+
+\textbf{★核心：U(1) = 1 相位参数（1 对互锁 = 2 互锁），SU(2) = 2
+相位参数（2 对 = 4 互锁 = S³），SU(3) = 4 相位参数（4 对 = 8
+互锁）------k 个独立相位参数各自给互锁对。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{k 对独立互锁自洽}（R161
+ k\_pairs\_independent\_interlock）：任意 k 个独立相位参数 θ : Fin k →
+ ℝ，每对 exp(iθⱼ)·exp(-iθⱼ) = 1。
+\item
+ \textbf{规范群对应}：U(1) = 1 参数（单相位圆 R138）；SU(2) = 2
+ 参数（S³，R149/R154，习题 VII 量子观测）；SU(3) = 4 参数 = 8 互锁。
+\item
+ \textbf{诚实边界}：生成元与互锁对的精确对应需群表示理论（CONJECTURE
+ 层）------本定理锚定的是 k 对独立互锁自洽（R161），非群同构证明。
+\end{enumerate}
+
+\subsubsection{形式化（PatRepresentation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patrepresentation.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{gauge\_k\_phase\_params}：任意 k
+ 个独立相位参数，每对互锁自洽------规范群结构。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定 k\_pairs\_independent\_interlock。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、全景（组合定理）}\label{ux56dbux5168ux666fux7ec4ux5408ux5b9aux7406}
+
+\textbf{★核心：表示值在单位圆 ∧ 单位元 = 相位 0 ∧ 同态性 ∧
+互锁对还原------pat 原生群表示理论的核心结构。}
+
+\subsubsection{形式化（PatRepresentation.lean，1
+定理）}\label{ux5f62ux5f0fux5316patrepresentation.lean1-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{phaseRep\_perspective}：‖ρ(g)‖ = 1 ∧ ρ(gh) = ρ(g)·ρ(h) ∧
+ ρ(g)·ρ(g⁻¹) = 1------全景。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚 phaseRep\_on\_circle /
+phaseRep\_mul / phaseRep\_pair\_reduces。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、习题解答总结}\label{ux4e94ux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+论点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚到
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定理
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+相位表示 & 群 → 单位圆 exp(i·θ(g))；值在单位圆；单位元 = 1 &
+RulerPhase/R141/R143 & phaseRep\_on\_circle / phaseRep\_one \\
+同态性 & θ(gh) = θ(g)+θ(h) ⟹ ρ(gh) = ρ(g)·ρ(h) & R138 & phaseRep\_mul \\
+★互锁对 & ρ(g)·ρ(g⁻¹) = 1（逆元 = 反向相位） & R143/R136②③ &
+phaseRep\_inv / phaseRep\_pair\_reduces \\
+规范群 & k 独立相位参数 = k 对互锁 = 2k 互锁 & R161 &
+gauge\_k\_phase\_params \\
+★全景 & 单位圆 + 同态 + 互锁对 & 上述全部 & phaseRep\_perspective \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{群的 pat 原生表示 =
+相位表示------群元素映射到单位圆相位
+exp(i·θ(g))，保持群结构；每个元素与其逆元构成互锁对（ρ(g)·ρ(g⁻¹) =
+1，R143 对称对还原）------表示的结构单元是互锁对，不是线性算子（不抄
+mathlib，pat 原生）。}
+
+\textbf{对 R164 强弱力观测的支撑}：相位表示给出 U(1) = 1
+相位参数（单相位圆）、SU(2) = 2 参数（4 互锁 = S³）、SU(3) = 4 参数（8
+互锁）的结构------R164 的''规范群 = 互锁对数''从 CONJECTURE 推进到''k
+对独立互锁自洽已 PROVED + 精确生成元对应仍 CONJECTURE''。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、相关对照}\label{ux516dux76f8ux5173ux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Weyl, H.} 1939. \emph{The Classical Groups} & 群表示理论经典 &
+pat 原生对照（不抄） \\
+\textbf{R138/R141/R143/R161}（） & 相位锁定/单位根圆/对称对还原/k
+对互锁 & 本框架定理，非外部引理 \\
+\end{longtable}
+}
+
+\begin{quote}
+诚实边界：本习题自建 pat 原生表示（相位表示），不使用 mathlib
+RepresentationTheory（用户纠正''不抄''）；与经典群表示的关系为结构对照（非替代）。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 VIII · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 7
+theorems PROVED no sorry（PatRepresentation.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatRepresentation.lean（快照见
+../lean/PatRepresentation.lean）}
+
+\end{document}
