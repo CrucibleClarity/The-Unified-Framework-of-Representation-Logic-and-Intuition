@@ -10,8 +10,8 @@ Compile: `tectonic Exercise_XXXVII_Riemann_Direction_Unified.tex`
 ## Content
 
 Unified machine-checked development of the Riemann direction
-(13 exercises XXIV–XXXVI merged + new theorems), 138 declarations
-(122 theorems + 15 lemmas + 1 def), 0 errors, 0 sorry:
+(13 exercises XXIV–XXXVI merged + new theorems), 175 declarations
+(0 error 0 sorry), 0 errors, 0 sorry:
 
 - prime structure: infinitely many primes, Fermat's little theorem,
   unit groups of prime residue rings
