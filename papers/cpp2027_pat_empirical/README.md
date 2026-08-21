@@ -34,7 +34,7 @@ CPP 近年持续关注的方向。人机合作证明视角作为方法论交代,
 ### Title (复制粘贴)
 
 ```
-Empirical Foundations of Pat: Transformer OOD Observations, Structural Laws, and Machine-Checked Continuum Theorems
+From Riemann Hypothesis Formalization to the Empirical Foundations of Pat: Transformer OOD Observations, Structural Laws, and Machine-Checked Continuum Theorems
 ```
 
 ### Submission PDF (上传)
@@ -46,10 +46,14 @@ Empirical_Foundations_of_Pat.pdf   (本包根目录, 6 页, 约 130 KB)
 ### Abstract (复制粘贴)
 
 ```
-We record the empirical route by which the Pat framework is grounded:
-starting from controlled transformer training observations, extracting
-structural laws, and ending in machine-checked theorems. The starting
-observation is a two-pole out-of-distribution (OOD) dichotomy,
+We record the route from the formalization of the Riemann direction to
+the empirical foundations of the Pat framework. The route begins with
+a Riemann-direction visualization and its Lean formalization (claims
+C011--C025, zero sorry), whose basepoint-drift intuitions motivate
+controlled transformer training observations; structural laws are
+extracted, and the route ends in machine-checked theorems. The
+starting observation is a two-pole out-of-distribution (OOD)
+dichotomy,
 reproduced in 45 training runs: a low-epoch transformer reaches training
 accuracy 1.000 on successor-notation arithmetic, yet OOD accuracy is
 32/32 on length extrapolation in the trained notation and 0/32 on the
@@ -118,8 +122,11 @@ cpp_submission_pat/
     └── evidence/                      # E12 训练实证 (一键复现 + 运行时快照 + 结果)
 ```
 
-## 5. 论文内容 (五节)
+## 5. 论文内容 (六节)
 
+0. **黎曼方向起点** — 2026-08-06 可视化 (138,067 zeros + Riemann-Siegel
+   修正) → 2026-08-12 Lean 形式化 (C011-C025, 0 sorry) → 基点漂移直觉
+   (素数无构造/无理数为投影余数/圆上基点漂移) 动机化实证部分。
 1. **实证起点** — E12: 训练 acc 1.000, OOD 两极 (同记法 32/32 ↔ 同基点
    零样本 0/32 ↔ 等价声明桥接 32/32), 45 次训练跨运行逐 seed 复现;
    判定口径 = 完整序列逐 token 重建 (位置级 acc 不可信)。
@@ -168,9 +175,26 @@ cd artifact/evidence && python3 run_all.py
 - 相关提交: `cpp_submission_pat_trail/` (完整研究轨迹版, 含时间线与
   证据链; 本包为聚焦"实证证明 Pat 过程"的独立论文)
 
+### 发布位置 (GitHub 匿名仓)
+
+本发布包已归档至 GitHub 匿名仓 (双盲, 无作者身份信息):
+
+- 仓: `github.com/CrucibleClarity/The-Unified-Framework-of-Representation-Logic-and-Intuition`
+- 路径: `papers/cpp2027_pat_empirical/` (论文 + artifact + 习题集全量)
+
+> 该仓为匿名仓 (CrucibleClarity), 不含任何作者/邮箱/机构信息;
+> 论文本身保持匿名 (acmart anonymous), 双盲审稿不受影响。
+
 ### Originality statement
 
 This research was conducted through an API, and the model capability
 has been distilled; the conflict scope cannot be confirmed.
 Originality is evidenced only by session logs and git backup
 timestamps.
+
+### Ongoing-work declaration (后续方向声明)
+
+本发布不排除其他方向的后续发布: 我们正在攻克黎曼猜想的**已知数学
+直接形式化证明** (黎曼方向的自然延续), 框架的更多方向亦计划发布。
+本论文只声明包内机器验证的内容; 进行中与未来的工作可能与本文路线
+部分重叠, 优先权仅以已记录的带时间戳证据 (manifest) 为准。
