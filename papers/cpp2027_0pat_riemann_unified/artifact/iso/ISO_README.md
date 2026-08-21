@@ -33,6 +33,8 @@
 | zeta_stirling_iso.lean | χ 圈数渐近第一层: 乘子自反 χ(s)χ(1-s)=1 + 临界线模恒 1 | T6i |
 | zeta_argument_iso.lean | 参数原理 (单零点): ∮ f'/f = 2πi (对消积分形式) | T6j |
 
+| zeta_e_pi_i_bridge_iso.lean | e^{iπ} 桥接: e^{iπS(T)}=u(T) + 共轭奇性 S(-T)=-S(T) | T6k |
+
 编译 (每个文件独立, mathlib-only):
 ```
 lean zeta_<name>_iso.lean   # LEAN_PATH 指向 mathlib olean
