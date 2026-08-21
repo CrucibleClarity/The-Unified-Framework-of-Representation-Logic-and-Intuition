@@ -1,0 +1,76 @@
+id: C034
+title: "参数原理单零点 — 对消积分形式: ∮ f'/f = 2πi (闭合路径连续相位全消, 剩整数零点计数)"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: false
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072; 观测 AT"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    参数原理 = 对消法的积分形式 (L 闭合对称): 绕闭合路径一圈, 连续相位
+    完全对消, 剩下的整数 = 内部零点数。单简单零点情形:
+      f 在开球可导, 唯一简单零点 z₀ (f(z₀) = 0, f'(z₀) ≠ 0), 去心非零
+      ⟹ ∮_{C(z₀,R/2)} f'/f = 2πi, 即 (∮ f'/f)/(2πi) = 1
+    证明: g := dslope f z₀ 解析延拓 (f = (z-z₀)·g, g(z₀) = f'(z₀) ≠ 0);
+      f'/f = 1/(z-z₀) + g'/g (乘积求导);
+      ∮ 1/(z-z₀) = 2πi (柯西积分公式);
+      ∮ g'/g = 0 (Goursat: g 解析且非零 ⟹ g'/g 解析于闭圆盘)。
+  formal_math: |
+    ℂ 上 (0 < R, f : ℂ → ℂ):
+    (1) f = (z-z₀)·g 处处, g = dslope f z₀, g(z₀) = deriv f z₀ ≠ 0
+    (2) f'/f = (z-z₀)⁻¹ + g'/g (z ≠ z₀)
+    (3) ∮_{C(z₀,R/2)} f'/f = ∮ (z-z₀)⁻¹ + ∮ g'/g = 2πi + 0
+
+objects:
+  - "f (圆盘内解析, 唯一简单零点)"
+  - "g = dslope f z₀ (除零点因子后的解析延拓)"
+  - "C(z₀, R/2) (绕零点的小圆路径)"
+objects_note: ""
+definitions_used: ["circle_argument_principle_simple_zero", "zero_count_formula", "logDeriv_decomposition", "integral_sub_inv_of_mem_ball"]
+
+assumptions:
+  - "f 在开球 ball z₀ R 可导 (DifferentiableOn)"
+  - "f(z₀) = 0, deriv f z₀ ≠ 0 (简单零点)"
+  - "∀ z ∈ ball z₀ R, z ≠ z₀ → f z ≠ 0 (去心非零)"
+conclusion: "∮_{C(z₀,R/2)} f'/f = 2πi — 单零点计数 = 1 (相位对消剩整数)"
+
+known_special_cases: "简单零点 (m = 1); m 阶零点 ⟹ ∮ = 2πi·m (留数推广, 后续)"
+
+closest_known_results:
+  - "幅角原理/留数定理 (经典, Whittaker-Watson)"
+  - "观测 AR (零点阶翻转), C031 (整数层)"
+  - "pat 对消法 (用户 2026-08-19): 对消的积分形式"
+literature_queries:
+  - "argument principle single zero contour integral"
+
+counterexample_search:
+  status: done
+  search_space: "zeta_argument_iso.lean 0 error 0 warning (Lean 验收)"
+  smallest_checked_size: null
+  result: "全部声明机证 (无 sorry)"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/ZetaRiemannUnified.lean"
+  file_note: "隔离文件 zeta_argument_iso.lean (mathlib-only), 已发布双仓"
+  theorem_name: "circle_argument_principle_simple_zero / zero_count_formula"
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: 参数原理是经典定理"
+  - "仅单零点; 多零点/极点需留数求和"
+  - "矩形闭合 (N(T) = (1/π)θ_χ + S(T) + 1) 拼装: 竖直边相位 = 2θ_ζ (共轭加倍), 实轴边 = 0 (ξ 实值), 水平边渐近 — 后续"
+
+evidence_for:
+  - "Lean: zeta_argument_iso.lean 0 error 0 warning"
+evidence_against: []
+
+next_action: "矩形闭合拼装 (竖直边/实轴边/水平边相位分解) + Stirling 主项 + S(T) 增长控制"
+
+notes: "用户方向落地: '对消的积分形式 — 绕闭合路径一圈, 连续相位全消, 剩整数 2πN'。L 闭合对称: 正反绕互消 (路径方向对合)。"
