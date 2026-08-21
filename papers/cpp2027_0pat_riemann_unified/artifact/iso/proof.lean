@@ -31,6 +31,7 @@ import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Data.Real.Basic
+import Mathlib.MeasureTheory.VectorMeasure.Integral
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.FieldSimp
@@ -5477,5 +5478,126 @@ theorem completedZeta₀_zero_iff_zeta_zero {s : ℂ} (hs0 : s ≠ 0) (hs1 : s �
   · intro hz
     rw [hzeq, hz]
     simp
+
+
+/-- **矩形右边 O(1) 卷已知曲线**: ζ(2+it) 有界 (‖ζ(2+it)‖ ≤ Σ n⁻² = ζ(2))。
+    Re>1 级数 (zeta_eq_tsum_one_div_nat_cpow) 直接卷: 模和 Σ n^{-2}
+    收敛 (Real.summable_nat_rpow, p = -2 < -1), norm_tsum_le_tsum_norm。
+    矩形闭合的右边边界 (σ=2) 相位变化 O(1) 的已知曲线依据。 -/
+theorem zeta_line_two_bounded (t : ℝ) :
+    ‖riemannZeta ((2 : ℂ) + (t : ℂ) * Complex.I)‖ ≤ ∑' n : ℕ, (n : ℝ) ^ (-2 : ℝ) := by
+  -- ζ(2+it) = Σ n^{-2-it} (Re = 2 > 1 级数)
+  rw [zeta_eq_tsum_one_div_nat_cpow (s := (2 : ℂ) + (t : ℂ) * Complex.I) (by norm_num)]
+  -- ‖Σ‖ ≤ Σ‖·‖ (norm_tsum_le_tsum_norm): 需绝对收敛
+  have hterm : ∀ n : ℕ, ‖(n : ℂ) ^ (-(2 : ℂ) - (t : ℂ) * Complex.I)‖ = (n : ℝ) ^ (-2 : ℝ) := by
+    intro n
+    by_cases hn : n = 0
+    · subst hn
+      -- 0^{-2-it} = 0, ‖0‖ = 0 = 0^{-2}
+      have hz : -(2 : ℂ) - (t : ℂ) * Complex.I ≠ 0 := by
+        intro h
+        have hre : (-(2 : ℂ) - (t : ℂ) * Complex.I).re = 0 := by rw [h]; simp
+        simp at hre
+      rw [Complex.zero_cpow hz]
+      -- (0:ℝ)^{-2} = 0
+      norm_num [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 0)]
+    · have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+      have hpos : 0 < (n : ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
+      rw [Complex.cpow_def_of_ne_zero hn0]
+      rw [Complex.norm_exp]
+      -- log(↑n) = ↑(log n) (正实数)
+      have hlog : Complex.log (n : ℂ) = (Real.log (n : ℝ) : ℂ) := by
+        rw [← Complex.ofReal_log (Nat.cast_nonneg n)]
+        rfl
+      -- (-2 - i·t)·log(↑n) 的实部 = -2·log n
+      have hre : (((-(2 : ℂ) - (t : ℂ) * Complex.I) * Complex.log (n : ℂ)).re)
+          = -2 * Real.log (n : ℝ) := by
+        rw [hlog]
+        -- ((-2:ℂ) - i·t)·(log n : ℝ): 实部 = -2·log n
+        rw [Complex.ofReal_mul, Complex.sub_re, Complex.mul_re]
+        simp [Complex.mul_I_re]
+        ring
+      rw [hre]
+      -- exp(-2·log n) = n^{-2} (rpow 定义)
+      rw [Real.rpow_def_of_pos hpos]
+      congr 1
+      ring
+  have hsum_norm : Summable (fun n : ℕ => ‖(n : ℂ) ^ (-(2 : ℂ) - (t : ℂ) * Complex.I)‖) := by
+    -- ‖n^{-2-it}‖ = n^{-2}, Σ n^{-2} 收敛 (p = -2 < -1)
+    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ (-2 : ℝ)) :=
+      (Real.summable_nat_rpow (p := (-2 : ℝ))).2 (by norm_num)
+    exact hsum.congr (fun n => (hterm n).symm)
+  exact norm_tsum_le_tsum_norm hsum_norm
+
+
+/-- **Γ 竖线有界 (卷积分表示)**: ‖Γ(1+it)‖ ≤ 1。
+    Γ(1+it) = ∫₀^∞ e^{-x}·x^{it}dx (mathlib Gamma_eq_integral, Re=1>0),
+    ‖∫‖ ≤ ∫‖·‖ (norm_integral_le_integral_norm), 逐项模 = e^{-x},
+    ∫₀^∞ e^{-x}dx = 1 (integral_exp_neg_Ioi_zero)。免 Stirling。 -/
+theorem Gamma_one_add_it_norm_le_one (t : ℝ) :
+    ‖Complex.Gamma ((1 : ℂ) + (t : ℂ) * Complex.I)‖ ≤ 1 := by
+  -- Γ(1+it) = ∫₀^∞ e^{-x}·x^{it} dx (积分表示)
+  have hg := Complex.Gamma_eq_integral (s := (1 : ℂ) + (t : ℂ) * Complex.I)
+    (by simp : 0 < ((1 : ℂ) + (t : ℂ) * Complex.I).re)
+  -- ‖∫ f‖ ≤ ∫ ‖f‖
+  have hni := norm_integral_le_integral_norm
+    (f := fun x : ℝ => ↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1))
+  -- 逐项模: ‖e^{-x}·x^{it}‖ = e^{-x} (|x^{it}| = 1, x > 0)
+  have hterm : ∀ᵐ x ∂volume, x ∈ Ioi (0 : ℝ) →
+      ‖↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖ = Real.exp (-x) := by
+    filter_upwards with x hx
+    have hx0 : 0 < x := hx
+    have hxn : (x : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hx0)
+    have hpow : ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1) = ↑x ^ ((t : ℂ) * Complex.I) := by
+      congr 1
+      ring
+    rw [hpow]
+    -- ‖e^{-x}‖ = e^{-x} (正实数), ‖x^{it}‖ = 1
+    have hnorm1 : ‖↑(Real.exp (-x))‖ = Real.exp (-x) := by
+      rw [Complex.norm_ofReal, Real.norm_eq_abs, abs_of_nonneg (Real.exp_pos (-x)).le]
+    have hnorm2 : ‖↑x ^ ((t : ℂ) * Complex.I)‖ = 1 := by
+      -- x^{it} = exp(it·log x): 模 = exp(re(it·log x)) = exp 0 = 1
+      rw [Complex.cpow_def_of_ne_zero hxn]
+      rw [Complex.norm_exp]
+      have hlog : Complex.log (x : ℂ) = (Real.log x : ℂ) := by
+        rw [← Complex.ofReal_log hx0.le]
+        rfl
+      rw [hlog]
+      -- ((t:ℂ)·I)·(log x : ℝ) 的实部 = 0
+      have hre : (((t : ℂ) * Complex.I) * (Real.log x : ℂ)).re = 0 := by
+        rw [Complex.ofReal_mul, Complex.mul_re]
+        simp [Complex.mul_I_re]
+      rw [hre]
+      rw [Real.exp_zero]
+    calc
+      ‖↑(-x).exp * ↑x ^ ((t : ℂ) * Complex.I)‖
+          = ‖↑(Real.exp (-x))‖ * ‖↑x ^ ((t : ℂ) * Complex.I)‖ := by
+            -- ↑(-x).exp = ↑(exp(-x)) (ofReal_exp)
+            have hce : (-x).exp = ↑(Real.exp (-x)) := by
+              rw [Complex.ofReal_exp]
+              rfl
+            rw [hce]
+            exact Complex.norm_mul _ _
+      _ = Real.exp (-x) * 1 := by rw [hnorm1, hnorm2]
+      _ = Real.exp (-x) := by ring
+  -- ∫‖f‖ = ∫ e^{-x} = 1 (hterm 逐项代入 + integral_exp_neg_Ioi_zero)
+  have hsum : ∫ x in Ioi (0 : ℝ), ‖↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖
+      = 1 := by
+    rw [← integral_exp_neg_Ioi_zero]
+    -- 逐项替换: ‖·‖ = e^{-x} a.e. (hterm)
+    refine setIntegral_congr_ae (measureIcc_ae_eq_Ioc _ _) ?_  -- hmm 简化
+    · -- 直接: ae 相等 (hterm)
+      exact hterm
+  -- 拼装: ‖Γ(1+it)‖ = ‖∫‖ ≤ ∫‖·‖ = 1
+  calc
+    ‖Complex.Gamma ((1 : ℂ) + (t : ℂ) * Complex.I)‖
+        = ‖∫ x in Ioi (0 : ℝ), ↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖ := by
+          rw [hg]
+    _ ≤ ∫ x in Ioi (0 : ℝ), ‖↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖ := by
+          -- setIntegral 版本的 norm 不等式 (全空间 norm_integral_le_integral_norm 在 Ioi 上)
+          simpa using (norm_integral_le_integral_norm
+            (f := fun x : ℝ => (if x ∈ Ioi (0 : ℝ) then
+              ↑(-x).exp * ↑x ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1) else 0)))
+    _ = 1 := hsum
 
 end RiemannUnifiedObservation
