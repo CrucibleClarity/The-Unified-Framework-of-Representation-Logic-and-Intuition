@@ -148,7 +148,7 @@ cd artifact/evidence && python3 run_all.py
 ## 7. 双盲检查 (发布前必检)
 
 - [ ] 论文 + artifact 无作者 / 邮箱 / 机构
-- [ ] 无 DOI / 仓库标识 / 本地路径 (`/home/anonymous`, `repo`)
+- [ ] 无 DOI / 仓库标识 / 本地路径
 - [ ] 无 hash 相关内容
 - [ ] 论文中不出现 "logical completeness theorem / intuition theorem /
       symbol theorem / presentation theorem" 字样 (写作四要求不引用为定理名)
@@ -162,7 +162,9 @@ cd artifact/evidence && python3 run_all.py
 - 相关提交: `cpp_submission_pat_trail/` (完整研究轨迹版, 含时间线与
   证据链; 本包为聚焦"实证证明 Pat 过程"的独立论文)
 
-### 原创性说明
+### Originality statement
 
-本研究经由 API 进行, 模型能力已被蒸馏, 无法确认冲突范围;
-原创性仅能凭借 session log 与 git 备份时间戳证明。
+This research was conducted through an API, and the model capability
+has been distilled; the conflict scope cannot be confirmed.
+Originality is evidenced only by session logs and git backup
+timestamps.
