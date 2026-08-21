@@ -1011,3 +1011,65 @@ rpow 保序 + 复合, 无迭代逼近)。预言学 (RulerErrorSeq) 的残差方�
 
 状态: 215 声明 0 sorry。剩余缺口: 跨零点跳变的方向显式化 (每零点 ±1 的
 局部论证, 需零点阶) + Backlund 拼装 (χ 圈数渐近) + S(T) 增长控制最终拼装。
+
+
+## 观测 AR: 零点阶翻转方向 — 反射对称 + 乘除法对消 (2026-08-21)
+
+用户方向: "找到一组对称性, 双向证明, 两个对称方向的相位对消, 不要单向的
+力迫" + "利用共轭, 通过乘除法而不是加减法对消相位"。
+
+zeta_zero_order_iso.lean (mathlib-only, 0 error 0 warning):
+
+**零点局部展开** (mathlib IsolatedZeros):
+- zeta_local_expansion: ζ(s) = (s-s₀)^m·g(s), g(s₀) ≠ 0 且 g 连续
+  (m = p.order, g = dslope 迭代; p ≠ 0 由解析延拓: ζ 局部恒零 ⟹ ζ 在
+  {1}ᶜ 全零 (连通性 isConnected_compl_singleton_of_one_lt_rank), 与 ζ(2)≠0
+  矛盾)
+- u 的左右极限公式: u(t₀⁺) = i^m·g/|g|, u(t₀⁻) = (-i)^m·g/|g|
+
+**★ 翻转比值 (乘除法对消核心)**:
+- flip_ratio_reflection: 反射对称 σ(t) = 2t₀-t (对合, 右侧↔左侧),
+  u(σ(t))/u(t) → (-1)^m (t → t₀⁺)
+  — **比值消掉 (t-t₀)^m 因子 (模与自身对消)、i^m (分子分母对消)、
+  g/|g| 相位因子 (g 连续极限自消), 只剩符号 (-1)^m**
+- flip_ratio_iff_odd: 翻转 ⟺ 比值 = -1 ⟺ (-1)^m = -1 ⟺ m 奇
+- flip_of_odd_order / pass_of_even_order: m 奇翻转, m 偶连续通过
+
+方法论落地: 双向对称 (σ 对合) + 乘除法对消 (比值) 替代"分别算左右极限再
+比较"的单向力迫 — 两个对称方向的相位贡献相消, 留下符号 (-1)^m。
+m = 1 (单零点, RH 预期) 时翻转 = -1 = i² (pat ±1 最小步)。
+
+## 观测 AS: Stirling 第一层 — χ 乘子自反 + 临界线模恒 1 (2026-08-21)
+
+zeta_stirling_iso.lean (mathlib-only, 0 error 0 warning):
+
+- chi_conj: χ 共轭对称 χ(s̄) = conj χ(s) (系数逐项共轭)
+- **chi_mul_chi_one_sub**: χ(s)·χ(1-s) = 1 (s ∉ ℤ) — 乘子自反
+  = 4(2π)^{-1}·Γ(1-s)Γ(s)·sin(πs/2)sin(π(1-s)/2)
+  = 4(2π)^{-1}·(π/sin πs)·(1/2)sin πs = 1 (反射公式 Gamma_mul_Gamma_one_sub
+  + 积化和差; sin 零点 sin(πs)=0 ⟺ s ∈ ℤ 由 sin_eq_zero_iff)
+- **chi_modulus_one**: |χ(1/2+it)| = 1 — χ 沿临界线是单位圆路径
+  (χ(s)·χ(1-s) = 1 + 共轭对称 ⟹ |χ|² = 1)
+- thetaChi / chiTurnNumber: θ_χ(T) = arg χ(1/2+iT), 圈数 = θ_χ/2π
+
+方法论落地: 乘除法对消 — χ 的共轭 = 倒数 (模恒 1), 函数方程对称
+(s → 1-s) 的相位贡献相乘得 1。Stirling 主项 (θ_χ(T) = (T/2)log(T/2πe) -
+π/8 + O(1/T)) 第二层待续。
+
+## 观测 AT: 参数原理 — 单零点闭合对消 (2026-08-21)
+
+zeta_argument_iso.lean (mathlib-only, 0 error 0 warning):
+
+- logDeriv_decomposition: f = (z-z₀)·g ⟹ f'/f = 1/(z-z₀) + g'/g
+  (乘积求导 + 除)
+- **circle_argument_principle_simple_zero**: f 在开球可导, 唯一简单零点
+  z₀, 去心非零 ⟹ ∮_{C(z₀,R/2)} f'/f = 2πi
+  (g := dslope f z₀ 解析延拓: f = (z-z₀)·g, g(z₀) = f'(z₀) ≠ 0;
+  ∮ 1/(z-z₀) = 2πi (柯西积分公式 integral_sub_inv_of_mem_ball);
+  ∮ g'/g = 0 (Goursat: g 解析 + g ≠ 0 ⟹ g'/g 解析于闭圆盘))
+- **zero_count_formula**: (∮ f'/f)/(2πi) = 1 — 相位-计数恒等式:
+  绕闭合路径一圈, 连续相位完全对消, 剩整数 = 内部零点数
+
+方法论落地: L 闭合对称 — 对消法的积分形式: 闭合路径的连续相位全消,
+剩整数 2πi·N。矩形闭合 (N(T) = (1/π)θ_χ + S(T) + 1) 的拼装:
+竖直边 (临界线) 相位 = 2θ_ζ (共轭加倍), 实轴边 = 0 (ξ 实值), 待后续。
