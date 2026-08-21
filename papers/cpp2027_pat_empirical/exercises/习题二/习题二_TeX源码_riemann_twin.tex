@@ -1,0 +1,442 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 III：pat
+视角回顾黎曼猜想与孪生素数}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-iiipat-ux89c6ux89d2ux56deux987eux9eceux66fcux731cux60f3ux4e0eux5b6aux751fux7d20ux6570}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_2 & pat 视角回顾黎曼猜想与孪生素数（R159） &
+PatRiemannTwinPrimes.lean & DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise III for the Foundation-Building Chapter: Riemann
+Hypothesis and Twin Primes Revisited from the PAT Perspective}
+
+\begin{quote}
+习题定位：课后习题系列第三题。用的几何/互锁结构（素数圆/临界线圆/反演/log
+对偶/基点漂移）重述黎曼猜想与孪生素数的经典结构。全部新定理只锚框架定理与框架
+C011--C025，不用外部引理。诚实边界延续：\textbf{不证明黎曼猜想或孪生素数猜想}（与
+C011--C025 一致，DeepSeek 坚持的边界）。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 7 new theorems PROVED no sorry · 课后习题 III }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+站在 pat 视角下回顾黎曼猜想与孪生素数：用框架已证定理（R142/R144/R145
++ C011--C025）把黎曼猜想的临界线结构与孪生素数的间隔结构重述为 pat
+几何。唯一论点：\textbf{两个还原点（0 与
+1）圆化出素数圆与临界线圆（R144/R145），黎曼与孪生的结构都在这两个圆上。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、总论：为什么黎曼与孪生在 pat
+视角下是同一个故事}\label{ux96f6ux603bux8bbaux4e3aux4ec0ux4e48ux9eceux66fcux4e0eux5b6aux751fux5728-pat-ux89c6ux89d2ux4e0bux662fux540cux4e00ux4e2aux6545ux4e8b}
+
+ R144 钉死两个还原点：0 = 加法还原点（折叠类），1 =
+乘法/相位还原点。R145 把这两个还原点圆化：
+
+\begin{itemize}
+\tightlist
+\item
+ \textbf{素数圆}（圆心 0，半径 √p）= 加法还原点 0 的圆化；
+\item
+ \textbf{临界线圆}（圆心 1，半径 1，过 0 和 2）= 乘法还原点 1 的圆化。
+\end{itemize}
+
+黎曼猜想与孪生素数在 pat 视角下是\textbf{这两个圆的孪生结构}：
+
+\begin{itemize}
+\tightlist
+\item
+ \textbf{黎曼}：非平凡零点的临界线（Re(s) = 1/2）在反演下 =
+ 临界线圆（C019/C022）------黎曼猜想的几何重述 = ``零点在乘法还原点 1
+ 的圆上''。
+\item
+ \textbf{孪生}：间隔 2 = 临界线圆直径端点 0 与 2 的距离；反演 2 ↔ 1/2 =
+ 乘法对称对（R109/R145）------孪生素数的间隔 2 与临界线位置 1/2
+ 反演对称。
+\end{itemize}
+
+用户洞察（docs/关于黎曼猜想的思考.md）：素数 =
+平移的真实后继迭代丢失结构后的投影；黎曼函数有反演结构（1 ↔ 1/a+1/b
+对称对）。本题把这些洞察锚到框架定理。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、黎曼猜想 = 临界线圆的 pat 几何重述（C019/C022 +
+R144/R145）}\label{ux4e00ux9eceux66fcux731cux60f3-ux4e34ux754cux7ebfux5706ux7684-pat-ux51e0ux4f55ux91cdux8ff0c019c022-r144r145}
+
+\textbf{★核心：临界线（Re(s) = 1/2）⟺ 共轭对称（1-s = conj
+s）；反演下临界线 = 临界线圆（圆心 1，半径 1）------黎曼猜想的几何重述 =
+``非平凡零点在乘法还原点 1 的圆上''（结构重述，非零点存在性断言）。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{临界线 = 共轭对称轴}（C019
+ critical\_line\_iff\_conj\_complex）：s.re = 1/2 ⟺ 1 - s = star
+ s------临界线是乘法还原点 1 的对称轴（R144：1 = 乘法还原点）。
+\item
+ \textbf{反演下临界线 = 临界线圆}（C022 zeta\_zero\_on\_circle）：Re(s)
+ = 1/2 的 ζ 零点满足 ‖1/s - 1‖ = 1------零点落在临界线圆（圆心 1，半径
+ 1；R145 critical\_circle\_points：过 0 和 2，直径端点）。
+\item
+ \textbf{pat 视角}：临界线圆 = R144 乘法还原点 1 的圆化；黎曼猜想 =
+ ``非平凡零点都在乘法还原点 1
+ 的圆上''------\textbf{结构重述，非零点存在性断言}（诚实边界：零点的存在性/位置是开放
+ 160 年的解析断言，C011--C025 同样不触及）。
+\item
+ \textbf{与用户洞察对应}：黎曼函数有反演结构（1 ↔ 1/a+1/b
+ 对称对，docs/关于黎曼猜想的思考.md）------反演对还原到乘法还原点
+ 1（R143/R144），临界线圆正是反演结构的圆化。
+\end{enumerate}
+
+\subsubsection{形式化（PatRiemannTwinPrimes.lean，2
+定理）}\label{ux5f62ux5f0fux5316patriemanntwinprimes.lean2-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{critical\_line\_pat\_circle}：s.re = 1/2 ⟺ 1 - s = star
+ s------临界线 = 共轭对称轴（C019）。
+\item
+ \texttt{zero\_on\_pat\_circle}：Re(s) = 1/2 的 ζ 零点 ⟹ ‖1/s - 1‖ =
+ 1------零点落在临界线圆上（C022）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定
+ZetaEulerProduct.critical\_line\_iff\_conj\_complex /
+zeta\_zero\_on\_circle。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、素数 = pat 基点漂移的后继（R142/R145 +
+C014）}\label{ux4e8cux7d20ux6570-pat-ux57faux70b9ux6f02ux79fbux7684ux540eux7ee7r142r145-c014}
+
+\textbf{★核心：素数在素数圆（圆心 0 = 折叠类，半径 √p）；素数幂链 =
+单相位（log p 视角）；素数 p ≡ 1 (mod 4)
+可表为两平方和------素数圆上的格点。用户洞察：素数 =
+平移的真实后继迭代丢失结构后的投影。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{素数圆}（R145 prime\_circle\_center\_zero）：素数 p
+ 在素数圆（圆心 0 = 加法还原点/折叠类，半径
+ √p）上------素数是加法还原点 0 的圆化格点。
+\item
+ \textbf{素数幂链 = 单相位}（R142
+ prime\_power\_log\_layer）：log(p\^{}k) = k·log p------素数幂链沿 log
+ 方向 = 单相位等差链（R146：素数 = 方向 log p 的幂链）。
+\item
+ \textbf{两平方和}（C014 prime\_two\_axis）：素数 p ≡ 1 (mod 4) ⟹ p =
+ a² + b²------素数圆上的格点（8 点单轨道，C017）。
+\item
+ \textbf{用户洞察}（docs/关于黎曼猜想的思考.md）：素数 =
+ 平移的真实后继迭代丢失结构后的投影（``素数会不会也是平移的真实后继迭代，只是丢失了某些结构''）------pat
+ 视角：素数的 log 单相位 =
+ 平移链的相位形式，丢失的是数值链的''层''结构（素数幂链每层 =
+ 一个相位点）。
+\end{enumerate}
+
+\subsubsection{形式化（PatRiemannTwinPrimes.lean，2
+定理）}\label{ux5f62ux5f0fux5316patriemanntwinprimes.lean2-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{prime\_on\_pat\_circle}：‖√p·exp(θ·I) - 0‖ =
+ √p------素数在素数圆上（R145）。
+\item
+ \texttt{prime\_log\_monophase}：log(p\^{}k) = k·log p------素数幂链 =
+ 单相位（R142）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。锚定
+CriticalPrimeCircles.prime\_circle\_center\_zero / Real.log\_pow。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、孪生素数 = 间隔 2
+的框架几何对应（R109/R145）}\label{ux4e09ux5b6aux751fux7d20ux6570-ux95f4ux9694-2-ux7684ux6846ux67b6ux51e0ux4f55ux5bf9ux5e94r109r145}
+
+\textbf{★核心：间隔 2 = 临界线圆直径端点 0 与 2 的距离；反演 2 ↔ 1/2 =
+乘法对称对（还原到圆心 1）------孪生素数的间隔 2 在 pat
+中是临界线圆的直径，与 1/2 反演对称。诚实边界：孪生素数无穷性未证明。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{间隔 2 = 临界线圆直径}（R145
+ critical\_circle\_points）：临界线圆过 0 和 2，0 与 2
+ 是直径端点------‖2 - 0‖ = 2。\textbf{孪生素数对 (p, p+2) 的间隔 2 =
+ 临界线圆直径的实数对应}。
+\item
+ \textbf{反演 2 ↔ 1/2}（R109/R145 reciprocal\_pair\_reduces）：2·(1/2)
+ = 1------间隔 2 与 1/2（临界线位置）是乘法对称对，还原到临界线圆圆心
+ 1（R144：1 = 乘法还原点）。
+\item
+ \textbf{pat 视角}：孪生素数间隔 2 与临界线位置 1/2
+ 反演对称------\textbf{同一互锁对的两端}（R147 互锁对）；黎曼（临界线
+ 1/2）与孪生（间隔 2）经反演互锁。
+\item
+ \textbf{诚实边界}：孪生素数无穷性未证明------本题只给出间隔 2
+ 的几何对应（临界线圆直径），非无穷性断言（与 C011--C025 一致）。
+\end{enumerate}
+
+\subsubsection{形式化（PatRiemannTwinPrimes.lean，2
+定理）}\label{ux5f62ux5f0fux5316patriemanntwinprimes.lean2-ux5b9aux7406-2}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{twin\_gap\_is\_circle\_diameter}：‖2 - 0‖ = 2------间隔 2 =
+ 临界线圆直径（R145）。
+\item
+ \texttt{twin\_gap\_inversion\_symmetry}：2·(1/2) = 1------间隔 2 与
+ 1/2 反演对称（R109/R145）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。教训：\texttt{2*(1/2)} 在 ℝ
+上需显式类型注解（否则被推断为 ℕ）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、全景：黎曼 ∧ 素数 ∧
+孪生（组合定理）}\label{ux56dbux5168ux666fux9eceux66fc-ux7d20ux6570-ux5b6aux751fux7ec4ux5408ux5b9aux7406}
+
+\textbf{★核心：临界线 ⟺ 共轭对称（黎曼）∧ 素数在素数圆上（R145）∧
+素数幂链单相位（R142）∧ 间隔 2 = 临界线圆直径 ∧ 2·(1/2) =
+1（孪生反演对称）------两个还原点（0,
+1）圆化出素数圆与临界线圆，黎曼/孪生的结构都在这两个圆上。}
+
+\subsubsection{形式化（PatRiemannTwinPrimes.lean，1
+定理）}\label{ux5f62ux5f0fux5316patriemanntwinprimes.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{pat\_riemann\_twin\_perspective}：全景------(∀s, 临界线 ⟺
+ 共轭) ∧ (∀p, 素数圆) ∧ (间隔 2 = 直径) ∧ (2·(1/2) = 1)。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚 C019 / R145 / R145 / R109。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、习题解答总结}\label{ux4e94ux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+论点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+锚到
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定理
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+黎曼 = 临界线圆 & 临界线 ⟺ 共轭对称；零点落在临界线圆（圆心 1） &
+C019/C022 + R144/R145 & critical\_line\_pat\_circle /
+zero\_on\_pat\_circle \\
+素数 = 基点漂移后继 & 素数圆（圆心 0）；素数幂链单相位（log p） &
+R142/R145 + C014 & prime\_on\_pat\_circle / prime\_log\_monophase \\
+孪生 = 间隔 2 直径 & 间隔 2 = 临界线圆直径；2 ↔ 1/2 反演对称 & R109/R145
+& twin\_gap\_is\_circle\_diameter / twin\_gap\_inversion\_symmetry \\
+★全景 & 两个还原点圆化出两个圆；黎曼/孪生都在圆上 & R144/R145 +
+C019/C022 & pat\_riemann\_twin\_perspective \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{pat
+视角下黎曼与孪生素数是同一个故事------两个还原点（0 与
+1）圆化出素数圆与临界线圆；黎曼猜想的临界线（1/2）在反演下是乘法还原点 1
+的圆，孪生素数的间隔 2 是该圆的直径（与 1/2
+反演对称）。这是结构重述，不是猜想证明。}
+
+\textbf{诚实边界}（延续 C011--C025）：黎曼猜想（非平凡零点全在 Re(s) =
+1/2）与孪生素数猜想（无穷多间隔 2
+素数对）\textbf{均未证明}------本题交付的是 pat
+几何重述（临界线圆/素数圆/直径对应），全部 7 个新定理是结构事实的 Lean
+验收，非零点存在性/素数对无穷性断言。
+
+\subsection{六、相关对照}\label{ux516dux76f8ux5173ux5bf9ux7167}
+
+\begin{quote}
+完整书目见习题 I
+\texttt{../shared/pat\_pnp\_shared\_references\_ZH.md}（共享引用清单）（全字段
++ 验证记录）。本条习题新增对照：
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Riemann, B.} 1859. \emph{Ueber die Anzahl der Primzahlen unter
+einer gegebenen Grösse} & 黎曼猜想原始陈述（零点分布） & pat
+视角重述对象 \\
+\textbf{Hardy, G. H., Littlewood, J. E.} 1922. \emph{Partitio Numerorum
+III}（孪生素数猜想经典形式） & 孪生素数无穷性猜想 & 诚实边界：未证明 \\
+\textbf{C011--C025}（本框架 riemann\_direction\_formalization） &
+临界线几何/欧拉乘积/无零点区 & 全部 KNOWN，DeepSeek 坚持诚实边界 \\
+\textbf{R144/R145}（） & 两个还原点圆化 → 素数圆/临界线圆 &
+本框架定理，非外部引理 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 III · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 7
+theorems PROVED no sorry（PatRiemannTwinPrimes.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatRiemannTwinPrimes.lean（快照见
+../lean/PatRiemannTwinPrimes.lean）}
+
+\end{document}
