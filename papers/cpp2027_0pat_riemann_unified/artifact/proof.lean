@@ -29,6 +29,7 @@ import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
@@ -39,8 +40,12 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+import Mathlib.NumberTheory.Harmonic.ZetaAsymp
+import Mathlib.Analysis.Complex.Trigonometric
 
 
 
@@ -2409,6 +2414,458 @@ theorem zeta_conj_of_critical_strip {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) 
   rw [riemannZeta_eq_mul_completedRiemannZeta₀ (starRingEnd ℂ s)]
   exact hc
 
+/- ============ ζ 的实部/虚部拆分 (共轭投影) ============ -/
+
+/-- 实部共轭对称: Re ζ(s) = Re ζ(conj s) (临界带, 假实轴部分偶). -/
+theorem zeta_re_conj_symm {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    (riemannZeta s).re = (riemannZeta (starRingEnd ℂ s)).re := by
+  have hz := zeta_conj_of_critical_strip (s := s) hs0 hs1
+  have hr := congrArg Complex.re hz
+  simpa using hr
+
+/-- 虚部共轭反对称: Im ζ(s) = -Im ζ(conj s) (临界带, y 轴泄漏奇). -/
+theorem zeta_im_conj_antisymm {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    (riemannZeta s).im = -(riemannZeta (starRingEnd ℂ s)).im := by
+  have hz := zeta_conj_of_critical_strip (s := s) hs0 hs1
+  have hi := congrArg Complex.im hz
+  have hi' : -(riemannZeta s).im = (riemannZeta (starRingEnd ℂ s)).im := by
+    simpa using hi
+  linarith
+
+/-- 临界线实部偶: Re ζ(1/2+it) = Re ζ(1/2-it). -/
+theorem zeta_re_even_on_line (t : ℝ) :
+    (riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).re
+      = (riemannZeta ((1 / 2 : ℂ) - (t : ℂ) * Complex.I)).re := by
+  -- s = 1/2+it: conj s = 1/2-it
+  have hs0 : 0 < ((1 / 2 : ℂ) + (t : ℂ) * Complex.I).re := by simp
+  have hs1 : ((1 / 2 : ℂ) + (t : ℂ) * Complex.I).re < 1 := by
+    simp
+    norm_num
+  have hsym := zeta_re_conj_symm (s := (1 / 2 : ℂ) + (t : ℂ) * Complex.I) hs0 hs1
+  -- hsym : re(ζ(1/2+it)) = re(ζ(conj(1/2+it)));conj(1/2+it) = 1/2-it:simpa
+  -- conj 对加法分配得 `+ -(↑t*I)`, goal 是 `- ↑t*I`: sub_eq_add_neg 对齐
+  simpa [Complex.conj_ofReal, Complex.conj_I, map_add, map_mul, map_inv₀, map_ofNat,
+    sub_eq_add_neg] using hsym
+
+/-- 临界线虚部奇: Im ζ(1/2+it) = -Im ζ(1/2-it). -/
+theorem zeta_im_odd_on_line (t : ℝ) :
+    (riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).im
+      = -((riemannZeta ((1 / 2 : ℂ) - (t : ℂ) * Complex.I)).im) := by
+  have hs0 : 0 < ((1 / 2 : ℂ) + (t : ℂ) * Complex.I).re := by simp
+  have hs1 : ((1 / 2 : ℂ) + (t : ℂ) * Complex.I).re < 1 := by
+    simp
+    norm_num
+  have hsym := zeta_im_conj_antisymm (s := (1 / 2 : ℂ) + (t : ℂ) * Complex.I) hs0 hs1
+  simpa [Complex.conj_ofReal, Complex.conj_I, map_add, map_mul, map_inv₀, map_ofNat,
+    sub_eq_add_neg] using hsym
+
+/-- 零点判定: ζ(z) = 0 ⟺ Re ζ(z) = 0 ∧ Im ζ(z) = 0 (两部分公共零点). -/
+theorem zeta_eq_zero_iff_re_im (z : ℂ) :
+    riemannZeta z = 0 ↔ (riemannZeta z).re = 0 ∧ (riemannZeta z).im = 0 := by
+  constructor
+  · intro h
+    constructor <;> simp [h]
+  · intro h
+    apply Complex.ext
+    · exact h.1
+    · exact h.2
+
+theorem riemannZeta_ne_zero_of_re_lt_zero (s : ℂ) (hs : s.re < 0)
+    (hs_int : ∀ n : ℕ, s ≠ -n) : riemannZeta s ≠ 0 := by
+  intro hz
+  have hs_ne_one : s ≠ 1 := by
+    intro h
+    rw [h] at hs
+    norm_num at hs
+  have hfe := riemannZeta_one_sub (s := s) hs_int hs_ne_one
+  have hzsub : riemannZeta (1 - s) = 0 := by
+    rw [hfe, hz]
+    simp
+  -- 1-s.re = 1 - s.re > 1 ⟹ ζ(1-s) ≠ 0
+  have hgeom : 1 ≤ (1 - s).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith [hs]
+  exact (riemannZeta_ne_zero_of_one_le_re (s := 1 - s) hgeom) hzsub
+
+/-- Re s = 0 无零点 (s ≠ 0): 函数方程在 1-s 处镜像. -/
+theorem riemannZeta_ne_zero_of_re_eq_zero (s : ℂ) (hs : s.re = 0) (hs0 : s ≠ 0) :
+    riemannZeta s ≠ 0 := by
+  intro hz
+  -- 函数方程在 1-s 处: ζ(s) = F(1-s)·ζ(1-s); F 因子全非零 ⟹ ζ(1-s) = 0
+  have hs_int : ∀ n : ℕ, 1 - s ≠ -n := by
+    intro n h
+    have hre : (1 - s).re = (-(n : ℂ)).re := by rw [h]
+    rw [Complex.sub_re, Complex.one_re, hs] at hre
+    have : ((-(n : ℂ)).re) ≤ 0 := by simp
+    linarith
+  have hsub_ne_one : 1 - s ≠ 1 := by
+    intro h
+    apply hs0
+    calc
+      s = 1 - (1 - s) := by ring
+      _ = 1 - 1 := by rw [h]
+      _ = 0 := by norm_num
+  have hfe := riemannZeta_one_sub (s := 1 - s) hs_int hsub_ne_one
+  -- hfe : ζ(s) = 2·(2π)^(-(1-s))·Γ(1-s)·cos(π(1-s)/2)·ζ(1-s)
+  -- 因子分解: 2 ≠ 0, (2π)^(-(1-s)) ≠ 0, Γ(1-s) ≠ 0, cos(π(1-s)/2) ≠ 0
+  have htwo : (2 : ℂ) ≠ 0 := by norm_num
+  have htwo_pi : (2 * ↑Real.pi : ℂ) ≠ 0 :=
+    mul_ne_zero htwo (by exact_mod_cast Real.pi_ne_zero)
+  have hcpow : (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ) ≠ 0 := by
+    exact (Complex.cpow_ne_zero_iff).mpr (Or.inl htwo_pi)
+  have hgamma : Complex.Gamma (1 - s) ≠ 0 := by
+    exact Complex.Gamma_ne_zero hs_int
+  -- cos(π(1-s)/2) ≠ 0: s.re = 0 且 s ≠ 0 ⟹ s ∉ 2ℤ ⟹ 1-s ∉ 2ℤ+1 ⟹ cos ≠ 0
+  have hs_not_int : ∀ k : ℤ, s ≠ 2 * (k : ℂ) := by
+    intro k h
+    have hre : s.re = (2 * (k : ℝ) : ℝ) := by
+      rw [h]
+      simp
+    have hk0 : (k : ℝ) = 0 := by
+      rw [hs] at hre
+      nlinarith
+    have hk0' : k = 0 := by exact_mod_cast hk0
+    apply hs0
+    rw [h, hk0']
+    norm_num
+  have hcos : Complex.cos (↑Real.pi * (1 - s) / 2) ≠ 0 := by
+    rw [Complex.cos_ne_zero_iff]
+    intro k hk
+    -- π(1-s)/2 = (2k+1)π/2 ⟹ 1-s = 2k+1 ⟹ s = -2k ∈ 2ℤ, 矛盾
+    have hpi : (↑Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    have h2 : (2 : ℂ) ≠ 0 := by norm_num
+    have hmul : ↑Real.pi * (1 - s) = (2 * (k : ℂ) + 1) * ↑Real.pi := by
+      calc
+        ↑Real.pi * (1 - s) = (↑Real.pi * (1 - s) / 2) * 2 := by field_simp [h2]
+        _ = ((2 * (k : ℂ) + 1) * ↑Real.pi / 2) * 2 := by rw [hk]
+        _ = (2 * (k : ℂ) + 1) * ↑Real.pi := by field_simp [h2]
+    have hk' : 1 - s = ↑(2 * k + 1) := by
+      have hc : 1 - s = 2 * (k : ℂ) + 1 := by
+        exact mul_right_cancel₀ hpi (by simpa [mul_comm] using hmul)
+      simpa [Int.cast_add, Int.cast_mul, Int.cast_ofNat, Int.cast_one] using hc
+    have hs2 : s = 2 * ((-k : ℤ) : ℂ) := by
+      calc
+        s = 1 - (1 - s) := by ring
+        _ = 1 - ↑(2 * k + 1) := by rw [hk']
+        _ = (2 : ℂ) * ↑(-k) := by
+          rw [Int.cast_add, Int.cast_mul, Int.cast_ofNat, Int.cast_one, Int.cast_neg]
+          ring
+    exact (hs_not_int (-k)) hs2
+  have hF : (2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ)
+      * Complex.Gamma (1 - s) * Complex.cos (↑Real.pi * (1 - s) / 2) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (mul_ne_zero htwo hcpow) hgamma) hcos
+  -- ζ(s) = F·ζ(1-s) = 0 且 F ≠ 0 ⟹ ζ(1-s) = 0 ⟹ 矛盾 (1 ≤ Re(1-s), 1-s ≠ 1)
+  have hzsub : riemannZeta (1 - s) = 0 := by
+    have hFz : (2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (-(1 - s) : ℂ)
+        * Complex.Gamma (1 - s) * Complex.cos (↑Real.pi * (1 - s) / 2) * riemannZeta (1 - s) = 0 := by
+      rw [← hfe]
+      simpa using hz
+    exact (mul_eq_zero.mp hFz).resolve_left hF
+  have hgeom : 1 ≤ (1 - s).re := by
+    rw [Complex.sub_re, Complex.one_re, hs]
+    norm_num
+  have hsub_ne_one' : 1 - s ≠ 1 := hsub_ne_one
+  exact (riemannZeta_ne_zero_of_one_le_re (s := 1 - s) hgeom) hzsub
+
+/-- 非平凡零点全在临界带: ζ(s) = 0 (排除平凡零点与极点, 排除负整数) ⟹ 0 < Re s < 1. -/
+theorem nontrivial_zero_in_critical_strip {s : ℂ} (hz : riemannZeta s = 0)
+    (h_triv : ¬∃ n : ℕ, s = -2 * (n + 1)) (hs1 : s ≠ 1)
+    (hs_int : ∀ n : ℕ, s ≠ -n) : 0 < s.re ∧ s.re < 1 := by
+  constructor
+  · -- 0 < s.re: 反证, s.re ≤ 0
+    by_contra h
+    have hle : s.re ≤ 0 := le_of_not_gt h
+    rcases lt_or_eq_of_le hle with hs_neg | hs_zero
+    · exact (riemannZeta_ne_zero_of_re_lt_zero s hs_neg hs_int) hz
+    · have hs0 : s ≠ 0 := by
+        intro h
+        rw [h, riemannZeta_zero] at hz
+        norm_num at hz
+      exact (riemannZeta_ne_zero_of_re_eq_zero s hs_zero hs0) hz
+  · -- s.re < 1: 反证, 1 ≤ s.re ⟹ ζ ≠ 0
+    by_contra h
+    have hge : 1 ≤ s.re := le_of_not_gt h
+    exact (riemannZeta_ne_zero_of_one_le_re (s := s) hge) hz
+
+theorem zeta_eq_odd_add_even (p : ℂ) (s : ℂ) :
+    riemannZeta s = (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s
+      + (p : ℂ) ^ (-s : ℂ) * riemannZeta s := by
+  ring
+
+/-- 零点 = 奇偶公共零点: ζ(s) = 0 ⟺ O_p(s) = 0 ∧ E_p(s) = 0 (任意基点 p ≠ 0).
+    奇侧偶侧同时为 0 (用户: "奇偶同时为 0") 的精确形式. -/
+theorem zeta_eq_zero_iff_p_split {p : ℂ} (hp : p ≠ 0) (s : ℂ) :
+    riemannZeta s = 0 ↔
+      (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 ∧
+        (p : ℂ) ^ (-s : ℂ) * riemannZeta s = 0 := by
+  constructor
+  · intro hz
+    constructor <;> simp [hz]
+  · intro h
+    have hpz : (p : ℂ) ^ (-s : ℂ) ≠ 0 := by
+      exact (Complex.cpow_ne_zero_iff).mpr (Or.inl hp)
+    -- 偶部分 E_p = p⁻ˢ·ζ = 0 且 p⁻ˢ ≠ 0 ⟹ ζ = 0 (ℂ 是域)
+    exact (mul_eq_zero.mp h.2).resolve_left hpz
+
+/-- 奇部分零点分解: O_p = 0 ⟺ ζ = 0 ∨ p⁻ˢ = 1 (ℂ 域乘法为零).
+    奇部分的零点 = ζ 零点 ∪ 素数因子零点. -/
+theorem p_split_mul_zero_iff {p : ℂ} (hp : p ≠ 0) (s : ℂ) :
+    (1 - (p : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 ↔
+      riemannZeta s = 0 ∨ (p : ℂ) ^ (-s : ℂ) = 1 := by
+  rw [mul_eq_zero, sub_eq_zero]
+  tauto
+
+/-- 奇部分独有零点全在虚轴 (p = 2 奇偶拆分):
+    若 O₂(s) = 0 且 ζ(s) ≠ 0, 则 2⁻ˢ = 1 ⟹ s·ln 2 ∈ 2πiℤ ⟹ Re s = 0.
+    即奇偶拆分的非公共零点不进入临界带 — 交点只能来自 ζ 本身. -/
+theorem odd_part_extra_zero_on_imag_axis (s : ℂ) :
+    (1 - (2 : ℂ) ^ (-s : ℂ)) * riemannZeta s = 0 → riemannZeta s ≠ 0 → s.re = 0 := by
+  intro h hz
+  have hcases := (p_split_mul_zero_iff (p := (2 : ℂ)) (by norm_num) s).mp h
+  rcases hcases with hz' | hone
+  · exact False.elim (hz hz')
+  · -- 2⁻ˢ = 1 ⟹ 1 - 2⁻ˢ = 0 ⟹ (prime_factor_zero 2) ∃k, s·log 2 = 2πik
+    have hsub : 1 - (2 : ℂ) ^ (-s : ℂ) = 0 := sub_eq_zero.mpr hone.symm
+    have hp2 : Nat.Prime 2 := Nat.prime_two
+    have hpf := (prime_factor_zero 2 hp2 s).mp hsub
+    rcases hpf with ⟨k, hk⟩
+    -- Re(s·log 2) = Re(k·2πi) = 0; log 2 是实数且非零 ⟹ s.re = 0
+    have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+      exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+    have hre0 : (s * Complex.log (2 : ℂ)).re = 0 := by
+      have hk' : s * Complex.log ((2 : ℂ)) = (k : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+        simpa using hk
+      rw [hk']
+      simp
+    have hre' : s.re * Real.log 2 = 0 := by
+      calc
+        s.re * Real.log 2 = (s * (Real.log 2 : ℂ)).re := by
+          rw [Complex.mul_re, Complex.ofReal_im, Complex.ofReal_re, mul_zero, sub_zero]
+        _ = 0 := by rw [← hlog, hre0]
+    have hl2 : Real.log 2 ≠ 0 := by
+      exact (Real.log_ne_zero).mpr (by norm_num)
+    exact (mul_eq_zero.mp hre').resolve_right hl2
+
+theorem zero_split_normSq (z : ℂ) (hz : riemannZeta z = 0) :
+    (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 = 0 := by
+  have hri := (zeta_eq_zero_iff_re_im z).mp hz
+  rw [hri.1, hri.2]
+  norm_num
+
+/-- 零点避开两个正交欧拉圆: normSq(ζ(z)) = 0 ≠ ±1
+    (半径 1 圆 normSq=1 与半径 i 圆 normSq=-1 均不含零点). -/
+theorem zero_not_on_euler_circles (z : ℂ) (hz : riemannZeta z = 0) :
+    (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 ≠ 1 ∧
+      (riemannZeta z).re ^ 2 - (riemannZeta z).im ^ 2 ≠ -1 := by
+  have h0 := zero_split_normSq z hz
+  constructor <;> linarith
+
+theorem affine_image_critical_line_is_line (a c : ℂ) (ha : a ≠ 0) :
+    ∃ (p : ℂ) (d : ℂ), d ≠ 0 ∧
+      {z : ℂ | (a * z + c).re = 1 / 2} = {p + s • d | s : ℝ} := by
+  let d : ℂ := Complex.I * (starRingEnd ℂ a)
+  let p : ℂ := ((1 / 2 : ℝ) - c.re) * (starRingEnd ℂ a) / (‖a‖ : ℂ) ^ 2
+  have hnorm : ‖a‖ ≠ 0 := norm_ne_zero_iff.mpr ha
+  have hn_c : (‖a‖ : ℂ) ≠ 0 := by exact_mod_cast hnorm
+  have hnorm_c : (‖a‖ : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 hn_c
+  -- a·p = (1/2 - Re c) 是实数 (a·ā = |a|² 对消)
+  have hapeq : a * (((1 / 2 : ℝ) - c.re) * (starRingEnd ℂ a) / (‖a‖ : ℂ) ^ 2)
+      = ((1 / 2 : ℝ) - c.re : ℂ) := by
+    calc
+      a * (((1 / 2 : ℝ) - c.re) * (starRingEnd ℂ a) / (‖a‖ : ℂ) ^ 2)
+          = ((1 / 2 : ℝ) - c.re) * (a * starRingEnd ℂ a) / (‖a‖ : ℂ) ^ 2 := by ring
+      _ = ((1 / 2 : ℝ) - c.re) * (Complex.normSq a : ℂ) / (‖a‖ : ℂ) ^ 2 := by
+        rw [Complex.mul_conj]
+      _ = ((1 / 2 : ℝ) - c.re) * ((‖a‖ : ℂ) ^ 2) / ((‖a‖ : ℂ) ^ 2) := by
+        rw [Complex.normSq_eq_norm_sq]
+        norm_num
+      _ = ((1 / 2 : ℝ) - c.re : ℂ) := by
+        field_simp [hnorm_c, hn_c]
+  -- a⁻¹ = ā / |a|²
+  have hinv : a⁻¹ = starRingEnd ℂ a / (‖a‖ : ℂ) ^ 2 := by
+    have hmul : a * (starRingEnd ℂ a / (‖a‖ : ℂ) ^ 2) = 1 := by
+      calc
+        a * (starRingEnd ℂ a / (‖a‖ : ℂ) ^ 2) = (a * starRingEnd ℂ a) / (‖a‖ : ℂ) ^ 2 := by ring
+        _ = (Complex.normSq a : ℂ) / (‖a‖ : ℂ) ^ 2 := by rw [Complex.mul_conj]
+        _ = (‖a‖ : ℂ) ^ 2 / (‖a‖ : ℂ) ^ 2 := by
+          rw [Complex.normSq_eq_norm_sq]
+          norm_num
+        _ = 1 := by
+          field_simp [hnorm_c, hn_c]
+    exact (eq_inv_of_mul_eq_one_right hmul).symm
+  refine ⟨p, d, ?_, ?_⟩
+  · -- d ≠ 0: I·ā ≠ 0 (I ≠ 0, ā ≠ 0)
+    have hconj : starRingEnd ℂ a ≠ 0 := by
+      intro h
+      have h' := congrArg (starRingEnd ℂ) h
+      have : a = 0 := by simpa using h'
+      exact ha this
+    exact mul_ne_zero (by norm_num : Complex.I ≠ 0) hconj
+  · ext z
+    constructor
+    · -- Re(az+c) = 1/2 ⟹ z = p + s·d (w = a(z-p) 纯虚 ⟹ z-p = (w.im/|a|²)·d)
+      intro hz
+      let w : ℂ := a * (z - p)
+      have haz_re : (a * z).re = 1 / 2 - c.re := by
+        have hz' : (a * z).re + c.re = 1 / 2 := by
+          simpa [Complex.add_re, Complex.ofReal_re] using hz
+        linarith
+      have hap_re : (a * p).re = 1 / 2 - c.re := by
+        have hpeq : a * p = ((1 / 2 : ℝ) - c.re : ℂ) := by
+          dsimp [p]
+          exact hapeq
+        rw [hpeq]
+        simp [Complex.ofReal_re]
+      have hwre : w.re = 0 := by
+        dsimp [w]
+        have hsub : a * (z - p) = a * z - a * p := by ring
+        rw [hsub, Complex.sub_re, haz_re, hap_re]
+        ring
+      have hw_pure : w = w.im * Complex.I := by
+        apply Complex.ext <;> simp [hwre]
+      have hzpe : z - p = a⁻¹ * w := by
+        calc
+          z - p = 1 * (z - p) := by simp
+          _ = (a⁻¹ * a) * (z - p) := by rw [inv_mul_cancel₀ ha]
+          _ = a⁻¹ * (a * (z - p)) := by ring
+      -- wim = w.im (避免 rw 污染投影)
+      let wim : ℝ := w.im
+      have hw_pure' : w = wim * Complex.I := by
+        dsimp [wim]
+        exact hw_pure
+      have hzpd : z - p = (wim / ‖a‖ ^ 2) • (Complex.I * starRingEnd ℂ a) := by
+        rw [hzpe, hw_pure']
+        -- 乘法形式: a⁻¹·(wim·I) = (wim:ℂ)/|a|²·(I·ā)
+        have hm : a⁻¹ * (wim * Complex.I)
+            = (wim : ℂ) / (‖a‖ : ℂ) ^ 2 * (Complex.I * starRingEnd ℂ a) := by
+          calc
+            a⁻¹ * (wim * Complex.I) = wim * (a⁻¹ * Complex.I) := by ring
+            _ = wim * (Complex.I * starRingEnd ℂ a / (‖a‖ : ℂ) ^ 2) := by
+              rw [hinv]
+              ring
+            _ = (wim : ℂ) / (‖a‖ : ℂ) ^ 2 * (Complex.I * starRingEnd ℂ a) := by
+              ring
+        -- 转成标量形式: (wim:ℂ)/|a|²·x = (wim/|a|² : ℝ) • x
+        have hm' : (wim : ℂ) / (‖a‖ : ℂ) ^ 2 * (Complex.I * starRingEnd ℂ a)
+            = (wim / ‖a‖ ^ 2) • (Complex.I * starRingEnd ℂ a) := by
+          calc
+            (wim : ℂ) / (‖a‖ : ℂ) ^ 2 * (Complex.I * starRingEnd ℂ a)
+                = ((wim / ‖a‖ ^ 2 : ℝ) : ℂ) * (Complex.I * starRingEnd ℂ a) := by
+                  have hden : (‖a‖ : ℂ) ^ 2 = ((‖a‖ ^ 2 : ℝ) : ℂ) := by norm_num
+                  rw [hden]
+                  -- ↑wim / ↑(‖a‖²) · x = ↑(wim/‖a‖²) · x: 先分离共同因子 x
+                  congr 1
+                  norm_num
+            _ = (wim / ‖a‖ ^ 2) • (Complex.I * starRingEnd ℂ a) := by
+                  simp [smul_eq_mul]
+        exact hm.trans hm'
+      refine ⟨wim / ‖a‖ ^ 2, ?_⟩
+      rw [← hzpd]
+      ring
+    · -- z = p + s·d ⟹ Re(az+c) = 1/2 (s·d 纯虚 + ap 实)
+      rintro ⟨s, rfl⟩
+      have hsd : (a * (s • (Complex.I * starRingEnd ℂ a))).re = 0 := by
+        -- a·(s·(I·ā)) = s·(I·(a·ā)) = s·(I·|a|²) 纯虚
+        calc
+          (a * (s • (Complex.I * starRingEnd ℂ a))).re
+              = (a * ((s : ℂ) * (Complex.I * starRingEnd ℂ a))).re := by
+                simp
+          _ = ((s : ℂ) * (Complex.I * (a * starRingEnd ℂ a))).re := by
+                congr 1
+                ring
+          _ = ((s : ℂ) * (Complex.I * (Complex.normSq a : ℂ))).re := by
+                rw [Complex.mul_conj]
+          _ = 0 := by
+                simp [Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im]
+      calc
+        (a * (p + s • (Complex.I * starRingEnd ℂ a)) + c).re
+            = (a * p + a * (s • (Complex.I * starRingEnd ℂ a)) + c).re := by
+              rw [mul_add]
+        _ = (a * p + c).re := by
+              -- (a·(s•d)).re = 0 (hsd): 展开 re 后替换
+              calc
+                (a * p + a * (s • (Complex.I * starRingEnd ℂ a)) + c).re
+                    = (a * p).re + (a * (s • (Complex.I * starRingEnd ℂ a))).re + c.re := by
+                      simp [Complex.add_re]
+                _ = (a * p).re + 0 + c.re := by rw [hsd]
+                _ = (a * p + c).re := by
+                      simp [Complex.add_re]
+        _ = 1 / 2 := by
+          have hpeq : a * p = ((1 / 2 : ℝ) - c.re : ℂ) := by
+            dsimp [p]
+            exact hapeq
+          rw [hpeq]
+          simp [Complex.add_re, Complex.ofReal_re]
+
+theorem on_line_iff_equidistant_base_one (w : ℂ) :
+    (1 + w).re = 1 / 2 ↔ ‖w‖ = ‖1 + w‖ := by
+  constructor
+  · intro h
+    have hre : w.re = -1 / 2 := by
+      have : (1 + w).re = 1 + w.re := by simp [Complex.add_re, Complex.ofReal_re]
+      linarith
+    -- ‖w‖² = ‖1+w‖² (normSq 展开 + hre)
+    have hsq : ‖w‖ ^ 2 = ‖1 + w‖ ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+      rw [Complex.normSq_apply, Complex.normSq_apply]
+      rw [Complex.add_re, Complex.one_re, Complex.add_im, Complex.one_im]
+      rw [hre]
+      ring
+    -- 非负 ⟹ 从平方等式到等式
+    have habs : |‖w‖| = |‖1 + w‖| :=
+      (sq_eq_sq_iff_abs_eq_abs ‖w‖ ‖1 + w‖).mp hsq
+    simpa [abs_of_nonneg (norm_nonneg _)] using habs
+  · intro h
+    have hsq : ‖w‖ ^ 2 = ‖1 + w‖ ^ 2 := by rw [h]
+    have hns : Complex.normSq w = Complex.normSq (1 + w) := by
+      simpa [Complex.normSq_eq_norm_sq] using hsq
+    have hre : w.re = -1 / 2 := by
+      rw [Complex.normSq_apply, Complex.normSq_apply,
+        Complex.add_re, Complex.one_re, Complex.add_im, Complex.one_im] at hns
+      nlinarith
+    have : (1 + w).re = 1 + w.re := by simp [Complex.add_re, Complex.ofReal_re]
+    linarith
+
+theorem critical_line_equidistant_basepoint_i (z : ℂ) :
+    z.re = 1 / 2 ↔ ‖z - Complex.I‖ = ‖z - (1 + Complex.I)‖ := by
+  constructor
+  · intro hre
+    -- 平方相等 (normSq 展开 + hre)
+    have hsq : ‖z - Complex.I‖ ^ 2 = ‖z - (1 + Complex.I)‖ ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+      simp [Complex.normSq_apply]
+      rw [hre]
+      ring
+    -- 非负 ⟹ 平方等式到等式
+    have habs : |‖z - Complex.I‖| = |‖z - (1 + Complex.I)‖| :=
+      (sq_eq_sq_iff_abs_eq_abs ‖z - Complex.I‖ ‖z - (1 + Complex.I)‖).mp hsq
+    simpa [abs_of_nonneg (norm_nonneg _)] using habs
+  · intro h
+    -- 平方相等
+    have hsq : ‖z - Complex.I‖ ^ 2 = ‖z - (1 + Complex.I)‖ ^ 2 := by rw [h]
+    have hns : Complex.normSq (z - Complex.I) = Complex.normSq (z - (1 + Complex.I)) := by
+      simpa [Complex.normSq_eq_norm_sq] using hsq
+    -- 展开 re/im ⟹ (z.re-1)² = z.re² ⟹ z.re = 1/2
+    rw [Complex.normSq_apply, Complex.normSq_apply] at hns
+    simp at hns
+    nlinarith
+
+/-- T 坐标 (基点 i): 临界线 = 单位圆。T(z) = 1/(z-i) - 1
+    (recip 中心 = 复平面基点 i, 平移 -1 消圆心):
+    Re z = 1/2 ⟺ ‖1/(z-i) - 1‖ = 1。 -/
+theorem recip_basepoint_i_on_unit_circle (z : ℂ) (hz : z ≠ Complex.I) :
+    ‖1 / (z - Complex.I) - 1‖ = 1 ↔ z.re = 1 / 2 := by
+  -- 1/(z-i) - 1 = -(z-(1+i))/(z-i) (代数)
+  have hrewrite : 1 / (z - Complex.I) - 1 = -((z - (1 + Complex.I)) / (z - Complex.I)) := by
+    field_simp [sub_ne_zero.mpr hz]
+    ring
+  have hne : ‖z - Complex.I‖ ≠ 0 := norm_ne_zero_iff.mpr (sub_ne_zero.mpr hz)
+  -- |1/(z-i)-1| = |z-(1+i)|/|z-i| = 1 ⟺ |z-(1+i)| = |z-i| (等距)
+  rw [hrewrite, norm_neg, norm_div, div_eq_one_iff_eq hne]
+  rw [eq_comm]
+  exact (critical_line_equidistant_basepoint_i z).symm
+
+
 /-- χ(s)·χ(1-s) = 1 对非整数 s (函数方程乘子对合: Γ 反射 + sin 双角). -/
 lemma chi_mul_chi_one_sub {s : ℂ} (hs_int : ∀ n : ℤ, s ≠ n) :
     ((2 : ℂ) ^ (s : ℂ) * (↑Real.pi : ℂ) ^ (s - 1 : ℂ) * Complex.sin (↑Real.pi * s / 2) * Complex.Gamma (1 - s))
@@ -2992,5 +3449,1194 @@ theorem zero_orbit_counting {z : ℂ} (hz : riemannZeta z = 0)
     · exact zero_orbit_distinct_of_offline hre him
     · exact ⟨horbit.1, horbit.2.1, horbit.2.2⟩
 end
+
+/-- 消边: 离线零点左右镜像双射 — 左半 (Re<1/2) 与右半 (Re>1/2) 的零点
+    通过 ρ ↦ 1-ρ̄ 一一对应 (共轭保持虚部, 反射镜像实部)。
+    零点总数守恒的代数骨架: 离线零点成对出现 (函数方程 + 共轭),
+    临界线把计数区域分成镜像两半 — 消边是 N(T) 矩形绕转 → 临界线段
+    的零点层面版本。 -/
+noncomputable def zero_left_right_bijection (T : ℝ) :
+    {ρ : ℂ | riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 / 2 ∧ 0 < ρ.im ∧ ρ.im < T}
+      ≃ {ρ : ℂ | riemannZeta ρ = 0 ∧ 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ ρ.im < T} := by
+  refine ⟨fun ρ => ⟨1 - (starRingEnd ℂ) (ρ : ℂ), ?_⟩,
+          fun ρ => ⟨1 - (starRingEnd ℂ) (ρ : ℂ), ?_⟩, ?_, ?_⟩
+  · -- toFun: 左半 ⟹ 右半 (4 点轨道 + 实部镜像)
+    rcases ρ with ⟨ρ, hz, hre0, hre1, him0, himT⟩
+    have hstrip : 0 < ρ.re ∧ ρ.re < 1 := ⟨hre0, lt_trans hre1 (by norm_num)⟩
+    have htriv : ∀ n : ℕ, ρ ≠ -↑n := by
+      intro n h
+      have hre' : ρ.re = (-(n : ℂ)).re := by rw [h]
+      have hneg : (-(n : ℂ)).re = -((n : ℂ).re) := Complex.neg_re (n : ℂ)
+      rw [hneg] at hre'
+      have hnre : ((n : ℂ).re) = (n : ℝ) := by simp
+      rw [hnre] at hre'
+      linarith
+    have hone : ρ ≠ 1 := by
+      intro h
+      have hre' : ρ.re = (1 : ℂ).re := by rw [h]
+      rw [Complex.one_re] at hre'
+      linarith
+    have horbit := zero_orbit_four hz hstrip htriv hone
+    refine ⟨horbit.2.2, ?_, ?_, ?_, ?_⟩
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [him0]
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [himT]
+  · -- invFun: 右半 ⟹ 左半 (对称)
+    rcases ρ with ⟨ρ, hz, hre0, hre1, him0, himT⟩
+    have hstrip : 0 < ρ.re ∧ ρ.re < 1 := ⟨lt_trans (by norm_num) hre0, hre1⟩
+    have htriv : ∀ n : ℕ, ρ ≠ -↑n := by
+      intro n h
+      have hre' : ρ.re = (-(n : ℂ)).re := by rw [h]
+      have hneg : (-(n : ℂ)).re = -((n : ℂ).re) := Complex.neg_re (n : ℂ)
+      rw [hneg] at hre'
+      have hnre : ((n : ℂ).re) = (n : ℝ) := by simp
+      rw [hnre] at hre'
+      linarith
+    have hone : ρ ≠ 1 := by
+      intro h
+      have hre' : ρ.re = (1 : ℂ).re := by rw [h]
+      rw [Complex.one_re] at hre'
+      linarith
+    have horbit := zero_orbit_four hz hstrip htriv hone
+    refine ⟨horbit.2.2, ?_, ?_, ?_, ?_⟩
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re]
+      linarith
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [him0]
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      linarith [himT]
+  · -- left_inv: ρ ↦ 1-ρ̄ 对合
+    intro ρ
+    ext <;> simp
+  · -- right_inv
+    intro ρ
+    ext <;> simp
+
+theorem cpow_two_on_line_explicit (t : ℝ) :
+    (2 : ℂ) ^ ((1 / 2 : ℂ) + (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (Real.log 2 / 2) : ℂ) * (Real.cos (t * Real.log 2) : ℂ)
+        + (Real.exp (Real.log 2 / 2) : ℂ) * (Real.sin (t * Real.log 2) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by norm_num : (2 : ℂ) ≠ 0)]
+  have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+  rw [hlog]
+  have hdecomp : (Real.log 2 : ℂ) * ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)
+      = ((Real.log 2 / 2 : ℝ) : ℂ) + ((t * Real.log 2 : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+/-- π^(s-1) 沿临界线显式: π^(-1/2+it) = exp(-ln π / 2) · (cos(t·ln π) + i·sin(t·ln π))。
+    相位 = t·ln π (线性), 模 = π^(-1/2)。 -/
+theorem cpow_pi_on_line_explicit (t : ℝ) :
+    (↑Real.pi : ℂ) ^ (-(1 / 2 : ℂ) + (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (-Real.log Real.pi / 2) : ℂ) * (Real.cos (t * Real.log Real.pi) : ℂ)
+        + (Real.exp (-Real.log Real.pi / 2) : ℂ) * (Real.sin (t * Real.log Real.pi) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Real.pi_ne_zero)]
+  have hlog : Complex.log (↑Real.pi : ℂ) = (Real.log Real.pi : ℂ) := by
+    exact (Complex.ofReal_log (le_of_lt Real.pi_pos)).symm
+  rw [hlog]
+  have hdecomp : (Real.log Real.pi : ℂ) * (-(1 / 2 : ℂ) + (t : ℂ) * Complex.I)
+      = ((-Real.log Real.pi / 2 : ℝ) : ℂ) + ((t * Real.log Real.pi : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+/-- sin(πs/2) 沿临界线显式 (s = 1/2+it):
+    sin(π/4 + iπt/2) = sin(π/4)·cosh(πt/2) + i·cos(π/4)·sinh(πt/2)。
+    实部 = sin(π/4)·cosh(πt/2) > 0 恒正 ⟹ arg = arctan(tanh(πt/2))。 -/
+theorem sin_pi_quarter_add_mul_I (t : ℝ) :
+    Complex.sin (↑Real.pi / 4 + (t : ℂ) * ↑Real.pi / 2 * Complex.I)
+      = Complex.sin (↑Real.pi / 4) * Complex.cosh ((Real.pi / 2 * t : ℝ) : ℂ)
+        + Complex.cos (↑Real.pi / 4) * Complex.sinh ((Real.pi / 2 * t : ℝ) : ℂ) * Complex.I := by
+  have h := Complex.sin_add_mul_I (↑(Real.pi / 4) : ℂ) ((Real.pi / 2 * t : ℝ) : ℂ)
+  have hL : ↑Real.pi / 4 + (t : ℂ) * ↑Real.pi / 2 * Complex.I
+      = ↑(Real.pi / 4) + ↑(Real.pi / 2 * t) * Complex.I := by
+    norm_num [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_add]
+    ring
+  rw [hL]
+  simpa using h
+
+theorem sin_pi_half_add_mul_I (t : ℝ) :
+    Complex.sin (↑Real.pi / 2 + (t : ℂ) * ↑Real.pi * Complex.I)
+      = (Real.cosh (Real.pi * t) : ℂ) := by
+  have h := Complex.sin_add_mul_I (↑Real.pi / 2) ((Real.pi * t : ℝ) : ℂ)
+  -- h: sin(↑(π/2) + ↑(π·t)·I) = sin(↑(π/2))·cosh(↑(π·t)) + cos(↑(π/2))·sinh(↑(π·t))·I
+  -- 匹配 LHS: (t:ℂ)·(↑π:ℂ) = ↑(π·t)(ofReal_mul)
+  have hL : ↑Real.pi / 2 + (t : ℂ) * ↑Real.pi * Complex.I
+      = ↑(Real.pi / 2) + ↑(Real.pi * t) * Complex.I := by
+    norm_num [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_add]
+    ring
+  rw [hL]
+  -- sin(π/2) = 1, cos(π/2) = 0:simp 化简
+  simpa using h
+
+/-- Γ 在临界线上的模 (对称操作的产物): |Γ(1/2+it)|² = π/cosh(πt) 精确。
+    反射对称 (Γ(s)Γ(1-s) = π/sin(πs)) + 共轭 (Γ(conj s) = conj Γ(s))
+    + sin 显式 (sin(π/2+iπt) = cosh(πt)) — Stirling 的模部分被对称性替代。 -/
+theorem gamma_abs_sq_on_line (t : ℝ) :
+    ‖Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ ^ 2
+      = Real.pi / Real.cosh (Real.pi * t) := by
+  let s : ℂ := (1 / 2 : ℂ) + (t : ℂ) * Complex.I
+  have hconj : 1 - s = (starRingEnd ℂ) s := by
+    dsimp [s]
+    apply Complex.ext <;> simp <;> ring
+  -- 反射: Γ(s)·Γ(1-s) = π/sin(πs)
+  have hrefl := Complex.Gamma_mul_Gamma_one_sub s
+  -- 1-s = conj s, Γ(conj s) = conj Γ(s)
+  rw [hconj] at hrefl
+  rw [Complex.Gamma_conj] at hrefl
+  -- sin(πs) = cosh(πt) (π·s = π/2 + iπt)
+  have harg : ↑Real.pi * s = ↑Real.pi / 2 + (t : ℂ) * ↑Real.pi * Complex.I := by
+    dsimp [s]
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im] <;> ring
+  rw [harg] at hrefl
+  rw [sin_pi_half_add_mul_I] at hrefl
+  -- Γ(s)·conj Γ(s) = ↑‖Γ(s)‖² (normSq)
+  have hns := Complex.mul_conj (Complex.Gamma s)
+  rw [hns] at hrefl
+  -- hrefl: ↑(normSq Γ(s)) = ↑π / ↑cosh(πt) = ↑(π/cosh(πt)):取 re
+  have hfin : Complex.normSq (Complex.Gamma s) = Real.pi / Real.cosh (Real.pi * t) := by
+    have hre := congrArg Complex.re hrefl
+    -- hre: normSq = (↑π/↑cosh).re ⟹ 合并 cast 除法 + re 穿透
+    have hdiv : (↑Real.pi : ℂ) / (Real.cosh (Real.pi * t) : ℂ)
+        = (↑(Real.pi / Real.cosh (Real.pi * t)) : ℂ) := by
+      exact (Complex.ofReal_div Real.pi (Real.cosh (Real.pi * t))).symm
+    rw [hdiv] at hre
+    -- hre: normSq = (↑(π/cosh)).re ⟹ 只展开 re (不展开 cast 内部)
+    rw [Complex.ofReal_re] at hre
+    exact hre
+  -- 目标 ‖Γ(s)‖² = π/cosh(πt): normSq = ‖·‖²
+  simpa [s, Complex.normSq_eq_norm_sq] using hfin
+
+theorem term_on_line_explicit (n : ℕ) (hn : n ≠ 0) (t : ℝ) :
+    (n : ℂ) ^ (-((1 / 2 : ℂ) + (t : ℂ) * Complex.I) : ℂ)
+      = (Real.exp (-Real.log n / 2) : ℂ) * (Real.cos (t * Real.log n) : ℂ)
+        - (Real.exp (-Real.log n / 2) : ℂ) * (Real.sin (t * Real.log n) : ℂ) * Complex.I := by
+  have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+  rw [Complex.cpow_def_of_ne_zero hn0]
+  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) := by
+    exact (Complex.ofReal_log (Nat.cast_nonneg n)).symm
+  rw [hlog]
+  have hdecomp : (Real.log n : ℂ) * (-((1 / 2 : ℂ) + (t : ℂ) * Complex.I))
+      = ((-Real.log n / 2 : ℝ) : ℂ) + ((-(t * Real.log n) : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re,
+      Complex.neg_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  -- exp((-(t·ln n))·I) = cos(t·ln n) - i·sin(t·ln n)
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+theorem cpow_two_half_minus_im (t : ℝ) :
+    (2 : ℂ) ^ ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ)
+      = (Real.exp (Real.log 2 / 2) : ℂ) * (Real.cos (t * Real.log 2) : ℂ)
+        - (Real.exp (Real.log 2 / 2) : ℂ) * (Real.sin (t * Real.log 2) : ℂ) * Complex.I := by
+  rw [Complex.cpow_def_of_ne_zero (by norm_num : (2 : ℂ) ≠ 0)]
+  have hlog : Complex.log (2 : ℂ) = (Real.log 2 : ℂ) := by
+    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+  rw [hlog]
+  have hdecomp : (Real.log 2 : ℂ) * ((1 / 2 : ℂ) - (t : ℂ) * Complex.I)
+      = ((Real.log 2 / 2 : ℝ) : ℂ) + ((-(t * Real.log 2) : ℝ) : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.sub_re,
+      Complex.sub_im, Complex.neg_re, Complex.neg_im] <;> ring
+  rw [hdecomp, Complex.exp_add, ← Complex.ofReal_exp]
+  rw [Complex.exp_mul_I]
+  simp
+  ring
+
+/-- A: 共轭相位 (模 2π): arg Γ(conj s) = -arg Γ(s)。
+    无条件: arg_conj_coe_angle 是 Angle 层恒等式, 分支在模 2π 下消失。 -/
+theorem gamma_conj_arg_angle (s : ℂ) :
+    ((Complex.Gamma ((starRingEnd ℂ) s)).arg : Real.Angle)
+      = -((Complex.Gamma s).arg : Real.Angle) := by
+  rw [Complex.Gamma_conj]
+  exact Complex.arg_conj_coe_angle (Complex.Gamma s)
+
+/-- B: 倍增相位 (模 2π, s = 1/4+it/2): Legendre 倍增公式的 arg 版本。
+    arg Γ(1/4+) + arg Γ(3/4+) = arg Γ(1/2+) + (log 2^{1/2-it}).im。 -/
+theorem gamma_doubling_arg_angle (t : ℝ) :
+    ((Complex.Gamma ((1 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)).arg : Real.Angle)
+        + ((Complex.Gamma ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)).arg : Real.Angle)
+      = ((Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).arg : Real.Angle)
+        + ((Complex.log ((2 : ℂ) ^ ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ))).im : Real.Angle) := by
+  let s : ℂ := (1 / 4 : ℂ) + (t : ℂ) * Complex.I / 2
+  have hs_pos : 0 < s.re := by dsimp [s]; simp
+  have hs2_pos : 0 < (s + 1 / 2).re := by dsimp [s]; simp; norm_num
+  have h2s_pos : 0 < (2 * s).re := by dsimp [s]; simp
+  have hs_ne : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hs_pos
+  have hs2_ne : Complex.Gamma (s + 1 / 2) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hs2_pos
+  have h2s_ne : Complex.Gamma (2 * s) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos h2s_pos
+  have hpow_ne : (2 : ℂ) ^ (1 - 2 * s) ≠ 0 := by
+    exact (Complex.cpow_ne_zero_iff).mpr (Or.inl (by norm_num : (2 : ℂ) ≠ 0))
+  have hsqrt_ne : (↑(Real.sqrt Real.pi) : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sqrt_pos.mpr Real.pi_pos).ne'
+  -- Legendre 倍增公式 (无条件)
+  have h := Complex.Gamma_mul_Gamma_add_half s
+  -- 取 arg 进 Real.Angle
+  have harg := congrArg (fun x : ℂ => (x.arg : Real.Angle)) h
+  -- 左侧: Γ(s)·Γ(s+1/2)
+  rw [Complex.arg_mul_coe_angle hs_ne hs2_ne] at harg
+  -- 右侧: (Γ(2s)·2^{1-2s})·√π
+  rw [Complex.arg_mul_coe_angle (mul_ne_zero h2s_ne hpow_ne) hsqrt_ne] at harg
+  rw [Complex.arg_mul_coe_angle h2s_ne hpow_ne] at harg
+  -- arg √π = 0
+  have harg_sqrt : (↑(Real.sqrt Real.pi) : ℂ).arg = 0 :=
+    Complex.arg_ofReal_of_nonneg (Real.sqrt_nonneg _)
+  simp [harg_sqrt] at harg
+  -- arg(2^{1-2s}) = (log 2^{1-2s}).im (log_im 反向)
+  have hlog : (Complex.log ((2 : ℂ) ^ (1 - 2 * s))).im = ((2 : ℂ) ^ (1 - 2 * s)).arg := by
+    rw [Complex.log_im]
+  rw [← hlog] at harg
+  -- 替换 s 的具体值: s+1/2 = 3/4+it/2, 2s = 1/2+it, 1-2s = 1/2-it
+  have hs12 : s + (2 : ℂ)⁻¹ = (3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2 := by
+    dsimp [s]; ring
+  have h2s : 2 * s = (1 / 2 : ℂ) + (t : ℂ) * Complex.I := by
+    dsimp [s]; ring
+  have h12s : 1 - 2 * s = ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ) := by
+    dsimp [s]; ring
+  -- h12s 需在 h2s 前: h2s 会先替换掉 harg 中的 2*s
+  rw [hs12, h12s, h2s] at harg
+  dsimp [s] at harg
+  exact harg
+
+/-- C: 反射相位 (模 2π, z = 3/4+it/2):
+    arg Γ(3/4+) + arg Γ(1/4-) = -(log sin(π(3/4+it/2))).im。
+    Euler 反射公式 Γ(z)Γ(1-z) = π/sin(πz) 的 arg 版本; sin 非零由左侧
+    Γ 非零 (re > 0) 自动推出, 无整数/无理数论证。 -/
+theorem gamma_reflection_arg_angle (t : ℝ) :
+    ((Complex.Gamma ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)).arg : Real.Angle)
+        + ((Complex.Gamma ((1 / 4 : ℂ) - (t : ℂ) * Complex.I / 2)).arg : Real.Angle)
+      = -((Complex.log (Complex.sin (↑Real.pi * ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)))).im : Real.Angle) := by
+  let z : ℂ := (3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2
+  have hz_pos : 0 < z.re := by dsimp [z]; simp
+  have h1z_pos : 0 < (1 - z).re := by dsimp [z]; simp; norm_num
+  have hz_ne : Complex.Gamma z ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hz_pos
+  have h1z_ne : Complex.Gamma (1 - z) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos h1z_pos
+  have hrefl := Complex.Gamma_mul_Gamma_one_sub z
+  -- sin(πz) ≠ 0: 由 Γ(z)Γ(1-z) = π/sin(πz) ≠ 0 推出
+  have hleft_ne : Complex.Gamma z * Complex.Gamma (1 - z) ≠ 0 := mul_ne_zero hz_ne h1z_ne
+  have hsin_ne : Complex.sin (↑Real.pi * z) ≠ 0 := by
+    intro hs
+    have hzero : Complex.Gamma z * Complex.Gamma (1 - z) = 0 := by
+      rw [hrefl, hs]
+      simp
+    exact hleft_ne hzero
+  -- 取 arg 进 Real.Angle
+  have harg := congrArg (fun x : ℂ => (x.arg : Real.Angle)) hrefl
+  -- 左侧: Γ(z)·Γ(1-z)
+  rw [Complex.arg_mul_coe_angle hz_ne h1z_ne] at harg
+  -- 右侧: arg(π/sin(πz)) = arg π - arg sin(πz)
+  rw [Complex.arg_div_coe_angle (by exact_mod_cast Real.pi_ne_zero) hsin_ne] at harg
+  -- arg π = 0
+  have harg_pi : (↑Real.pi : ℂ).arg = 0 :=
+    Complex.arg_ofReal_of_nonneg (le_of_lt Real.pi_pos)
+  rw [harg_pi] at harg
+  simp at harg
+  -- arg(sin(πz)) = (log sin(πz)).im (log_im 反向)
+  have hlog : (Complex.log (Complex.sin (↑Real.pi * z))).im =
+      (Complex.sin (↑Real.pi * z)).arg := by
+    rw [Complex.log_im]
+  rw [← hlog] at harg
+  -- 替换 z 的具体值: 1-z = 1/4-it/2
+  have h1z : 1 - z = (1 / 4 : ℂ) - (t : ℂ) * Complex.I / 2 := by
+    dsimp [z]; ring
+  rw [h1z] at harg
+  dsimp [z] at harg
+  exact harg
+
+/-- D: 组合 (模 2π): 2·arg Γ(1/4+it/2) = arg Γ(1/2+it) + (log 2^{1/2-it}).im
+    + (log sin(π(3/4+it/2))).im。
+    代数: B + C + A ⟹ 2a = d + e + f (Γ 完全消去)。 -/
+theorem gamma_quarter_phase_combine (t : ℝ) :
+    (((2 : ℝ) * (Complex.Gamma ((1 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)).arg) : Real.Angle)
+      = ((Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).arg : Real.Angle)
+        + ((Complex.log ((2 : ℂ) ^ ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ))).im : Real.Angle)
+        + ((Complex.log (Complex.sin (↑Real.pi * ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)))).im : Real.Angle) := by
+  let s : ℂ := (1 / 4 : ℂ) + (t : ℂ) * Complex.I / 2
+  let a : ℝ := (Complex.Gamma s).arg
+  let b : ℝ := (Complex.Gamma ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)).arg
+  let d : ℝ := (Complex.Gamma ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).arg
+  let e : ℝ := (Complex.log ((2 : ℂ) ^ ((1 / 2 : ℂ) - (t : ℂ) * Complex.I : ℂ))).im
+  let f : ℝ := (Complex.log (Complex.sin (↑Real.pi * ((3 / 4 : ℂ) + (t : ℂ) * Complex.I / 2)))).im
+  have hA := gamma_conj_arg_angle s
+  have hB := gamma_doubling_arg_angle t
+  have hC := gamma_reflection_arg_angle t
+  -- hA 里 conj s = 1/4-it/2, 用于消 hC 中的 Γ(1/4-)
+  have hconj : (starRingEnd ℂ) s = (1 / 4 : ℂ) - (t : ℂ) * Complex.I / 2 := by
+    apply Complex.ext <;> dsimp [s] <;> simp
+  rw [hconj] at hA
+  -- hA: ↑arg Γ(1/4-) = -↑arg Γ(s) = -↑a
+  rw [hA] at hC
+  -- hC: ↑b + (-↑a) = -↑f ⟹ ↑b = ↑a - ↑f
+  have hb : (↑b : Real.Angle) = (↑a : Real.Angle) - (↑f : Real.Angle) := by
+    calc
+      (↑b : Real.Angle) = (↑b + (-↑a)) + ↑a := by abel
+      _ = (-↑f) + (↑a : Real.Angle) := by rw [hC]
+      _ = (↑a : Real.Angle) - (↑f : Real.Angle) := by abel
+  -- hB: ↑a + ↑b = ↑d + ↑e
+  rw [hb] at hB
+  -- ↑a + (↑a - ↑f) = ↑d + ↑e ⟹ ↑a + ↑a = ↑d + ↑e + ↑f
+  have hsum : (↑a : Real.Angle) + (↑a : Real.Angle)
+      = (↑d : Real.Angle) + (↑e : Real.Angle) + (↑f : Real.Angle) := by
+    calc
+      (↑a : Real.Angle) + (↑a : Real.Angle) = (↑a + (↑a - ↑f)) + (↑f : Real.Angle) := by abel
+      _ = (↑d + ↑e) + (↑f : Real.Angle) := by rw [hB]
+      _ = (↑d : Real.Angle) + (↑e : Real.Angle) + (↑f : Real.Angle) := by abel
+  -- 目标左侧: ↑(2·a) = ↑a + ↑a
+  have htwo : (↑(2 * a) : Real.Angle) = (↑a : Real.Angle) + (↑a : Real.Angle) := by
+    rw [two_mul]; simp
+  rw [htwo]
+  dsimp [a, d, e, f]
+  exact hsum
+
+
+/- ===== N₀(T) = N(T) 等价框架 + 对称延拓 (0pat, 2026-08-19) =====
+用户方向: "连续幅角本质上就是相位"; "有限向无限的映射过程, 之前的对称延拓
+能不能用"。落地:
+- T0: ζ(-奇数) ≠ 0 — Re ≤ 0 无零点定理的 hs_int 补丁 (函数方程 + cos 偶倍 π)
+- T1: 等价框架 — RH ⟺ ∀T, 全带 [0,1]×[0,T] 零点都在临界线上 (N₀=N 的命题形式,
+      mathlib riemannZetaZeros + IsCompact 有限性支撑计数良定义)
+- T2: 轨道 — 离线零点 ⟹ 左半带同高度零点 (反射 + 共轭, 轨道 4 点)
+- T3: 对称延拓 — 2·arg ζ(1/2+it) = arg χ(1/2+it) (连续幅角 = 相位)
+      ζ(s) = χ(s)·conj ζ(s) (函数方程 + 共轭穿透, s = 1/2+it 时 1-s = conj s)
+      ⟹ 2·arg ζ = arg χ (模 2π)。逐点成立, 无无限过程 -/
+
+/-- T0: 奇数负整数非零点 — ζ(-n) ≠ 0 (n 奇, n ≥ 1)。
+    函数方程 s = n+1: ζ(-n) = 2(2π)^{-(n+1)}·Γ(n+1)·cos(π(n+1)/2)·ζ(n+1);
+    n 奇 ⟹ n+1 偶 ⟹ cos(π(n+1)/2) = ±1 ≠ 0; Γ(n+1) 无零点; ζ(n+1) ≠ 0 (Re > 1)。 -/
+theorem zeta_neg_nat_ne_zero_of_odd {n : ℕ} (hn0 : n ≠ 0) (hodd : ¬Even n) :
+    riemannZeta (-(n : ℂ)) ≠ 0 := by
+  intro hz
+  have hne : Even (n + 1) := Nat.even_add_one.mpr hodd
+  rcases hne with ⟨k, hk⟩
+  have hs_int : ∀ m : ℕ, (n : ℂ) + 1 ≠ -↑m := by
+    intro m hm
+    have hre : ((n : ℂ) + 1).re = (n : ℝ) + 1 := by simp
+    have : ((n : ℂ) + 1).re = (-(m : ℂ)).re := by rw [hm]
+    rw [hre] at this
+    have hmre : (-(m : ℂ)).re = -(m : ℝ) := by simp
+    rw [hmre] at this
+    nlinarith
+  have hone : (n : ℂ) + 1 ≠ 1 := by
+    intro h
+    have : ((n : ℂ) + 1).re = 1 := by rw [h]; simp
+    simp at this
+    exact hn0 this
+  have hfe := riemannZeta_one_sub (s := (n : ℂ) + 1) hs_int hone
+  -- cos(π(n+1)/2) ≠ 0: n+1 = 2k → π(n+1)/2 = kπ → cos = ±1
+  have hn1c : ((n : ℂ) + 1) = 2 * (k : ℂ) := by
+    have hc : ((n + 1 : ℕ) : ℂ) = ((k + k : ℕ) : ℂ) := by exact_mod_cast hk
+    calc
+      ((n : ℂ) + 1) = ((n + 1 : ℕ) : ℂ) := by norm_num [Nat.cast_add]
+      _ = ((k + k : ℕ) : ℂ) := hc
+      _ = (k : ℂ) + (k : ℂ) := by norm_num [Nat.cast_add]
+      _ = 2 * (k : ℂ) := by ring
+  have hcos : Complex.cos (↑Real.pi * ((n : ℂ) + 1) / 2) ≠ 0 := by
+    have harg : ↑Real.pi * ((n : ℂ) + 1) / 2 = (k : ℂ) * ↑Real.pi := by
+      rw [hn1c]
+      ring_nf
+    have hpowcast_aux : ∀ k : ℕ, (↑((-1 : ℝ) ^ k) : ℂ) = (-1 : ℂ) ^ k := by
+      intro k
+      induction k with
+      | zero => simp
+      | succ k ih =>
+          calc
+            (↑((-1 : ℝ) ^ (k + 1)) : ℂ) = ↑((-1 : ℝ) ^ k * (-1 : ℝ)) := by rw [pow_succ]
+            _ = (↑((-1 : ℝ) ^ k) : ℂ) * ↑(-1 : ℝ) := by rw [Complex.ofReal_mul]
+            _ = (-1 : ℂ) ^ k * ↑(-1 : ℝ) := by rw [ih]
+            _ = (-1 : ℂ) ^ k * (-1 : ℂ) := by rw [Complex.ofReal_neg, ← Complex.ofReal_one]
+            _ = (-1 : ℂ) ^ (k + 1) := by rw [← pow_succ]
+    have hcosk : Complex.cos ((k : ℂ) * ↑Real.pi) = (-1 : ℂ) ^ k := by
+      have hcosr : Real.cos (k * Real.pi) = (-1) ^ k := Real.cos_nat_mul_pi k
+      have hc0 : (k : ℂ) * ↑Real.pi = (↑((k : ℝ) * Real.pi) : ℂ) := by
+        apply Complex.ext <;> simp <;> ring
+      have hc1 : Complex.cos (↑((k : ℝ) * Real.pi) : ℂ) = (↑((-1 : ℝ) ^ k) : ℂ) := by
+        rw [← Complex.ofReal_cos, hcosr]
+      have hpowcast : (↑((-1 : ℝ) ^ k) : ℂ) = (-1 : ℂ) ^ k := hpowcast_aux k
+      rw [hc0, hc1]
+      exact hpowcast
+    rw [harg, hcosk]
+    exact pow_ne_zero k (by norm_num)
+  have hG : Complex.Gamma ((n : ℂ) + 1) ≠ 0 :=
+    Complex.Gamma_ne_zero_of_re_pos (by
+      rw [Complex.add_re, Complex.one_re]
+      simp
+      positivity)
+  have hzeta : riemannZeta ((n : ℂ) + 1) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_le_re (s := (n : ℂ) + 1) (by simp)
+  have hpow : (2 * (2 * ↑Real.pi) ^ (-((n : ℂ) + 1)) : ℂ) ≠ 0 := by
+    refine mul_ne_zero (by norm_num : (2 : ℂ) ≠ 0) ?_
+    exact (Complex.cpow_ne_zero_iff).mpr
+      (Or.inl (by exact_mod_cast (mul_pos (by norm_num) Real.pi_pos).ne'))
+  have hprod : (2 * (2 * ↑Real.pi) ^ (-((n : ℂ) + 1)) * Complex.Gamma ((n : ℂ) + 1) *
+      Complex.cos (↑Real.pi * ((n : ℂ) + 1) / 2) * riemannZeta ((n : ℂ) + 1)) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (mul_ne_zero hpow hG) hcos) hzeta
+  have hfe' : riemannZeta (-(n : ℂ)) = 2 * (2 * ↑Real.pi) ^ (-((n : ℂ) + 1)) *
+      Complex.Gamma ((n : ℂ) + 1) * Complex.cos (↑Real.pi * ((n : ℂ) + 1) / 2) *
+      riemannZeta ((n : ℂ) + 1) := by
+    have h1 : 1 - ((n : ℂ) + 1) = -(n : ℂ) := by ring
+    rw [h1] at hfe
+    simpa using hfe
+  exact hprod (by rw [← hfe', hz])
+
+/-- T1: 等价框架 — RH ⟺ ∀T, 全带 [0,1]×[0,T] 内零点都在临界线上。
+    N₀(T) = N(T) 的命题形式 (带内离线零点不存在)。
+    方向 1: RH ⟹ 零点全在线上 ⟹ 带内当然全在线上;
+    方向 2: 反证 — 离线零点 z (re ≠ 1/2) 必在临界带 (Re ≤ 0 无零点、Re ≥ 1
+      无零点, 均 0pat 已证; 负整数非零点由 T0), 取 T = |z.im|, 带内离线
+      零点存在, 与假设矛盾。 "有限→无限": 每个零点落在有限带内。 -/
+theorem rh_iff_all_zeros_on_line_in_strips :
+    RiemannHypothesis ↔
+      ∀ T : ℝ, 0 ≤ T → ∀ z : ℂ, riemannZeta z = 0 → 0 ≤ z.re → z.re ≤ 1 →
+        |z.im| ≤ T → z.re = 1 / 2 := by
+  constructor
+  · intro hRH T hT0 z hz hre0 hre1 him
+    have hne1 : z ≠ 1 := by
+      intro h
+      subst h
+      exact (riemannZeta_ne_zero_of_one_le_re (s := (1 : ℂ)) (by norm_num)) hz
+    have htriv : ¬∃ n : ℕ, z = -2 * (n + 1) := by
+      intro h
+      rcases h with ⟨n, hn⟩
+      have hrz : z.re = (-2 * (n + 1) : ℂ).re := by rw [hn]
+      rw [hrz] at hre0
+      simp at hre0
+      nlinarith
+    exact hRH z hz htriv hne1
+  · intro hno
+    by_contra hRH
+    simp only [RiemannHypothesis] at hRH
+    push_neg at hRH
+    rcases hRH with ⟨z, hz, htriv', hne1, hre_off⟩
+    have htriv : ¬∃ n : ℕ, z = -2 * (n + 1) := by
+      intro h
+      rcases h with ⟨n, hn⟩
+      exact htriv' n (by rw [hn])
+    -- z ≠ -n ∀n: 偶 → htriv; 奇 → T0; 0 → ζ(0) ≠ 0
+    have hs_int : ∀ n : ℕ, z ≠ -↑n := by
+      intro n hn
+      by_cases hn0 : n = 0
+      · subst n
+        have hz0 : z = 0 := by simpa using hn
+        subst hz0
+        have hz0ne : riemannZeta 0 ≠ 0 := by
+          rw [riemannZeta_zero]
+          norm_num
+        exact hz0ne hz
+      · rcases Nat.even_or_odd n with he | ho
+        · rcases he with ⟨k, hk⟩
+          have hk0 : k ≠ 0 := by
+            intro hk0
+            subst k
+            simp [hk] at hn0
+          rcases Nat.exists_eq_succ_of_ne_zero hk0 with ⟨m, hm⟩
+          have hz2 : z = -2 * ((m : ℕ) + 1 : ℂ) := by
+            calc
+              z = -(n : ℂ) := hn
+              _ = -((2 * (m + 1) : ℕ) : ℂ) := by
+                rw [hk, hm]
+                congr 1
+                exact_mod_cast (by omega : (m.succ + m.succ : ℕ) = 2 * (m + 1))
+              _ = -2 * ((m : ℕ) + 1 : ℂ) := by
+                norm_num [Nat.cast_add, Nat.cast_mul]
+          exact htriv ⟨m, hz2⟩
+        · have hoddn : ¬Even n := Nat.not_even_iff_odd.mpr ho
+          have hneg : riemannZeta (-(n : ℂ)) ≠ 0 := zeta_neg_nat_ne_zero_of_odd hn0 hoddn
+          exact hneg (by rw [← hn, hz])
+    -- Re ≥ 1 无零点
+    have hlt1 : z.re < 1 := by
+      by_contra h
+      have hge : 1 ≤ z.re := le_of_not_gt h
+      exact (riemannZeta_ne_zero_of_one_le_re (s := z) hge) hz
+    -- Re ≤ 0 无零点
+    have hgt0 : 0 < z.re := by
+      by_contra h
+      have hle : z.re ≤ 0 := le_of_not_gt h
+      by_cases hz0 : z.re = 0
+      · have hzne0 : z ≠ 0 := by
+          intro hz0'
+          subst hz0'
+          have hz0ne : riemannZeta 0 ≠ 0 := by
+            rw [riemannZeta_zero]
+            norm_num
+          exact hz0ne hz
+        exact (riemannZeta_ne_zero_of_re_eq_zero z hz0 hzne0) hz
+      · have hlt : z.re < 0 := lt_of_le_of_ne hle hz0
+        exact (riemannZeta_ne_zero_of_re_lt_zero z hlt hs_int) hz
+    -- 现在 z 在临界带: 取 T = |z.im|
+    exact hre_off (hno |z.im| (abs_nonneg _) z hz (le_of_lt hgt0) (le_of_lt hlt1) le_rfl)
+
+
+/-- T2: 轨道 — 离线零点 ⟹ 左半带同高度零点。
+    轨道 {z, conj z, 1-z, 1-conj z}: 若 z.re > 1/2, 则 1-conj z (零点, 同高度)
+    落在左半带 (re < 1/2); 若 z.re < 1/2, 直接取 z。 -/
+theorem offline_zero_gives_half_strip {z : ℂ} (hz : riemannZeta z = 0)
+    (hre0 : 0 < z.re) (hre1 : z.re < 1) (hline : z.re ≠ 1 / 2) :
+    ∃ w : ℂ, riemannZeta w = 0 ∧ 0 < w.re ∧ w.re < 1 ∧
+      |w.im| = |z.im| ∧ w.re < 1 / 2 := by
+  rcases lt_or_gt_of_ne hline with hlt | hgt
+  · exact ⟨z, hz, hre0, hre1, rfl, hlt⟩
+  · -- z.re > 1/2: w = 1 - conj z
+    have hcz := zeta_conj_of_critical_strip (s := z) hre0 hre1
+    have hcz0 : riemannZeta ((starRingEnd ℂ) z) = 0 := by
+      rw [← hcz, hz]
+      simp
+    have hrefl := ZetaZeroReflection.zeta_zero_strip_reflection (s := (starRingEnd ℂ) z) hcz0
+      (by
+        constructor <;> rw [show ((starRingEnd ℂ) z).re = z.re by simp] <;> linarith [hre0, hre1])
+      (by
+        intro m hm
+        have hre : ((starRingEnd ℂ) z).re = z.re := by simp
+        have hzr : ((starRingEnd ℂ) z).re = (-(m : ℂ)).re := by rw [hm]
+        rw [hre] at hzr
+        have hmre : (-(m : ℂ)).re = -(m : ℝ) := by simp
+        rw [hmre] at hzr
+        nlinarith [hre0])
+      (by
+        intro h
+        have hre : ((starRingEnd ℂ) z).re = z.re := by simp
+        have h1 : ((starRingEnd ℂ) z).re = 1 := by rw [h]; simp
+        rw [hre] at h1
+        linarith [hre1])
+    refine ⟨1 - (starRingEnd ℂ) z, hrefl.1, ?_, ?_, ?_, ?_⟩
+    · rw [Complex.sub_re, Complex.one_re]
+      rw [show ((starRingEnd ℂ) z).re = z.re by simp]
+      linarith [hre1]
+    · rw [Complex.sub_re, Complex.one_re]
+      rw [show ((starRingEnd ℂ) z).re = z.re by simp]
+      linarith [hre0]
+    · rw [Complex.sub_im, Complex.one_im]
+      rw [show ((starRingEnd ℂ) z).im = -z.im by simp]
+      simp
+    · rw [Complex.sub_re, Complex.one_re]
+      rw [show ((starRingEnd ℂ) z).re = z.re by simp]
+      linarith [hgt]
+
+/-- T3: 对称延拓 — 2·arg ζ(1/2+it) = arg χ(1/2+it) (模 2π, ζ ≠ 0 处)。
+    s = 1/2+it 时 1-s = conj s, 函数方程 + 共轭穿透 ⟹ ζ(s) = χ(s)·conj ζ(s),
+    χ(s) = 2·(2π)^{s-1}·Γ(1-s)·sin(πs/2)。
+    连续幅角 = 相位: arg ζ(1/2+it) 由 χ 的显式相位确定 (模 π, 分支选择 =
+    零点计数)。逐点成立, 无无限过程 — "有限→无限"的对称延拓。 -/
+theorem zeta_two_arg_eq_arg_chi (t : ℝ)
+    (hz : riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) ≠ 0) :
+    ((riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).arg : Real.Angle)
+        + ((riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)).arg : Real.Angle)
+      = (((2 : ℂ) * (2 * ↑Real.pi) ^ (((1 / 2 : ℂ) + (t : ℂ) * Complex.I) - 1 : ℂ)).arg : Real.Angle)
+        + ((Complex.Gamma ((1 / 2 : ℂ) - (t : ℂ) * Complex.I)).arg : Real.Angle)
+        + ((Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) / 2)).arg : Real.Angle) := by
+  let s : ℂ := (1 / 2 : ℂ) + (t : ℂ) * Complex.I
+  -- 函数方程在 1-s (1-(1-s) = s)
+  have hs_int : ∀ m : ℕ, 1 - s ≠ -↑m := by
+    intro m hm
+    have hre : (1 - s).re = 1 / 2 := by dsimp [s]; simp; norm_num
+    have : (1 - s).re = (-(m : ℂ)).re := by rw [hm]
+    rw [hre] at this
+    have hmre : (-(m : ℂ)).re = -(m : ℝ) := by simp
+    rw [hmre] at this
+    nlinarith
+  have hs1 : 1 - s ≠ 1 := by
+    intro h
+    have hre : (1 - s).re = 1 / 2 := by dsimp [s]; simp; norm_num
+    have : (1 - s).re = 1 := by rw [h]; simp
+    rw [hre] at this
+    norm_num at this
+  have hfe := riemannZeta_one_sub (s := 1 - s) hs_int hs1
+  -- cos(π(1-s)/2) = sin(πs/2)
+  have hcos : Complex.cos (↑Real.pi * (1 - s) / 2) = Complex.sin (↑Real.pi * s / 2) := by
+    -- cos(π(1-s)/2) = cos(π/2 - πs/2) = cos(πs/2 - π/2) = sin(πs/2)
+    rw [← Complex.cos_sub_pi_div_two]
+    have harg : ↑Real.pi * (1 - s) / 2 = -((↑Real.pi * s / 2) - ↑Real.pi / 2) := by
+      dsimp [s]; ring
+    rw [harg, Complex.cos_neg]
+  -- 共轭: ζ(1-s) = conj ζ(s)
+  have hconj := zeta_conj_of_critical_strip (s := 1 - s) (by dsimp [s]; simp; norm_num) (by dsimp [s]; simp)
+  have hstar : (starRingEnd ℂ) (1 - s) = s := by
+    dsimp [s]
+    apply Complex.ext <;> simp <;> ring
+  -- 重组 hfe
+  have hfe1 : riemannZeta s = 2 * (2 * ↑Real.pi) ^ (-(1 - s)) *
+      Complex.Gamma (1 - s) * Complex.sin (↑Real.pi * s / 2) * riemannZeta (1 - s) := by
+    have hleft : 1 - (1 - s) = s := by ring
+    rw [hleft] at hfe
+    rw [hcos] at hfe
+    simpa using hfe
+  -- ζ(1-s) = star(ζ(s))
+  have hconj' : riemannZeta (1 - s) = (starRingEnd ℂ) (riemannZeta s) := by
+    have h1 := hconj
+    rw [hstar] at h1
+    have h2 := congrArg (starRingEnd ℂ) h1
+    simpa using h2
+  rw [hconj'] at hfe1
+  -- 幂项形式: -(1-s) = s-1
+  have hneg : -(1 - s) = (s - 1 : ℂ) := by ring
+  rw [hneg] at hfe1
+  -- 非零 (arg 拆分条件)
+  have hpow_ne : ((2 : ℂ) * (2 * ↑Real.pi) ^ (s - 1 : ℂ)) ≠ 0 := by
+    refine mul_ne_zero (by norm_num : (2 : ℂ) ≠ 0) ?_
+    exact (Complex.cpow_ne_zero_iff).mpr
+      (Or.inl (by exact_mod_cast (mul_pos (by norm_num : (0 : ℝ) < 2) Real.pi_pos).ne'))
+  have hG_ne : Complex.Gamma (1 - s) ≠ 0 :=
+    Complex.Gamma_ne_zero_of_re_pos (by dsimp [s]; simp; norm_num)
+  have hsin_ne : Complex.sin (↑Real.pi * s / 2) ≠ 0 := by
+    rw [Complex.sin_ne_zero_iff]
+    intro k hk
+    have hpi : (↑Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    have hw : s / 2 = (k : ℂ) := by
+      -- hk : π·(s/2) = k·π ⟹ 重排成 π·(s/2) = π·k ⟹ 消 π (左消)
+      exact mul_left_cancel₀ hpi (by simpa [div_eq_mul_inv, mul_assoc, mul_comm] using hk)
+    have hre : (s / 2).re = (k : ℂ).re := by rw [hw]
+    have hre2 : (s / 2).re = 1 / 4 := by dsimp [s]; simp; norm_num
+    have hkre : (k : ℂ).re = (k : ℝ) := by simp
+    rw [hre2, hkre] at hre
+    have h4 : (4 * (k : ℝ)) = 1 := by nlinarith
+    have h4z : (4 * k : ℤ) = 1 := by exact_mod_cast h4
+    omega
+  have hzconj_ne : (starRingEnd ℂ) (riemannZeta s) ≠ 0 := by
+    exact (map_ne_zero (starRingEnd ℂ)).mpr hz
+  -- 取 arg (Angle)
+  have harg := congrArg (fun x : ℂ => (x.arg : Real.Angle)) hfe1
+  -- 乘积拆 arg: 2(2π)^{s-1} · Γ(1-s) · sin · star(ζ s)
+  rw [Complex.arg_mul_coe_angle (mul_ne_zero (mul_ne_zero hpow_ne hG_ne) hsin_ne) hzconj_ne]
+      at harg
+  rw [Complex.arg_mul_coe_angle (mul_ne_zero hpow_ne hG_ne) hsin_ne] at harg
+  rw [Complex.arg_mul_coe_angle hpow_ne hG_ne] at harg
+  -- arg(star ζ(s)) = -arg ζ(s)
+  have harg_conj : (((starRingEnd ℂ) (riemannZeta s)).arg : Real.Angle) =
+      -((riemannZeta s).arg : Real.Angle) :=
+    Complex.arg_conj_coe_angle (riemannZeta s)
+  rw [harg_conj] at harg
+  -- harg: x = A + B + C - x ⟹ x + x = A + B + C
+  have hmain : ((riemannZeta s).arg : Real.Angle) + ((riemannZeta s).arg : Real.Angle)
+      = (((2 : ℂ) * (2 * ↑Real.pi) ^ (s - 1 : ℂ)).arg : Real.Angle)
+        + ((Complex.Gamma (1 - s)).arg : Real.Angle)
+        + ((Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle) := by
+    let A : Real.Angle := (((2 : ℂ) * (2 * ↑Real.pi) ^ (s - 1 : ℂ)).arg : Real.Angle)
+    let B : Real.Angle := ((Complex.Gamma (1 - s)).arg : Real.Angle)
+    let C : Real.Angle := ((Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+    let x : Real.Angle := ((riemannZeta s).arg : Real.Angle)
+    have harg' : A + B + C = x + x := by
+      calc
+        A + B + C = ((A + B + C) - x) + x := by abel
+        _ = x + x := by
+          -- harg: x = A+B+C-x ⟹ (A+B+C-x)+x = x+x
+          exact congrArg (fun y : Real.Angle => y + x) harg.symm
+    dsimp [A, B, C, x] at harg'
+    exact harg'.symm
+  -- 替换 s 的具体值
+  dsimp [s] at hmain
+  have h1s : 1 - ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) = (1 / 2 : ℂ) - (t : ℂ) * Complex.I := by
+    ring
+  rw [h1s] at hmain
+  exact hmain
+
+/-!
+# T4: χ 的平移递推 — 单方向延拓的差分 (模 2π)
+
+χ(s) = 2·(2π)^{s-1}·Γ(1-s)·sin(πs/2) (函数方程乘子)。沿实轴平移 2:
+
+  χ(s+2) = -4π²/(s(s+1))·χ(s)
+
+构件: sin(π(s+2)/2) = -sin(πs/2) (sin 周期 π),
+        Γ(-1-s) = Γ(1-s)/(s(s+1)) (Γ 递推两次, mathlib Gamma_add_one),
+        (2π)^{s+1} = (2π)^{s-1}·(2π)² (cpow_add)。
+取相位 (Real.Angle):
+
+  arg χ(s+2) - arg χ(s) = π - arg(s(s+1))   (模 2π; arg(-4π²) = π)
+
+这就是"单方向延拓" (用户例子: 交替中心反射 → 两步复合 = 平移) 在
+χ 相位上的落地: 沿实轴每步平移 2 的相位差分全显式。连续幅角的步进:
+T3 (2·arg ζ = arg χ) + 本定理 ⟹ arg ζ(1/2+i(t+2)) - arg ζ(1/2+it)
+= -(1/2)arg((1/2+it)(3/2+it)) + π·(t,t+2] 零点数。
+
+隔离文件 (mathlib-only, 不依赖 37 项目), 编译通过后再合并。
+-/
+
+noncomputable section
+
+open Complex
+
+namespace RiemannUnifiedObservation
+
+/-- χ 的平移递推 (数字层): χ(s+2) = -4π²/(s(s+1))·χ(s)。
+    χ(s) = 2·(2π)^{s-1}·Γ(1-s)·sin(πs/2)。s ≠ 0, -1 (Γ 递推与分母)。 -/
+theorem chi_translation_two (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ -1) :
+    2 * (2 * ↑Real.pi : ℂ) ^ (s + 1) * Complex.Gamma (-1 - s) * Complex.sin (↑Real.pi * (s + 2) / 2)
+      = -4 * (↑Real.pi) ^ 2 / (s * (s + 1)) * (2 * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2)) := by
+  -- (2π)^{s+1} = (2π)^{s-1}·(2π)²
+  have hpow : (2 * ↑Real.pi : ℂ) ^ (s + 1) = (2 * ↑Real.pi : ℂ) ^ (s - 1) * (2 * ↑Real.pi : ℂ) ^ (2 : ℂ) := by
+    rw [← Complex.cpow_add (s - 1) 2 (by exact_mod_cast (mul_pos (by norm_num) Real.pi_pos).ne')]
+    congr 1
+    ring
+  have hpow2 : (2 * ↑Real.pi : ℂ) ^ (2 : ℂ) = 4 * (↑Real.pi) ^ 2 := by
+    have hc2 : (2 : ℂ) = ((2 : ℕ) : ℂ) := by norm_num
+    rw [hc2, Complex.cpow_natCast]
+    ring
+  -- sin(π(s+2)/2) = -sin(πs/2)
+  have hsin : Complex.sin (↑Real.pi * (s + 2) / 2) = -Complex.sin (↑Real.pi * s / 2) := by
+    have harg : ↑Real.pi * (s + 2) / 2 = ↑Real.pi * s / 2 + ↑Real.pi := by ring
+    rw [harg, Complex.sin_add_pi]
+  -- Γ(-1-s) = Γ(1-s)/(s(s+1)): Gamma_add_one 两次 (需 -s ≠ 0, -1-s ≠ 0)
+  have hG1 : Complex.Gamma (1 - s) = (-s) * Complex.Gamma (-s) := by
+    have hne : -s ≠ 0 := by
+      intro h
+      apply hs0
+      exact neg_eq_zero.mp h
+    simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+      (Complex.Gamma_add_one (-s) hne)
+  have hG2 : Complex.Gamma (-s) = (-1 - s) * Complex.Gamma (-1 - s) := by
+    have hne : -1 - s ≠ 0 := by
+      intro h
+      apply hs1
+      -- -1 - s = 0 ⟹ s = -1
+      have h' : (s + 1 : ℂ) = 0 := by
+        have : s + 1 = -(-1 - s) := by ring
+        rw [this, h]
+        norm_num
+      calc
+        s = (s + 1) - 1 := by ring
+        _ = 0 - 1 := by rw [h']
+        _ = -1 := by norm_num
+    have hg := Complex.Gamma_add_one (-1 - s) hne
+    have harg : (-1 - s) + 1 = -s := by ring
+    rw [harg] at hg
+    exact hg
+  have hrel : Complex.Gamma (1 - s) = s * (s + 1) * Complex.Gamma (-1 - s) := by
+    calc
+      Complex.Gamma (1 - s) = (-s) * Complex.Gamma (-s) := hG1
+      _ = (-s) * ((-1 - s) * Complex.Gamma (-1 - s)) := by rw [hG2]
+      _ = s * (s + 1) * Complex.Gamma (-1 - s) := by ring
+  have hs' : s * (s + 1) ≠ 0 := by
+    exact mul_ne_zero hs0 (by
+      intro h
+      apply hs1
+      calc
+        s = (s + 1) - 1 := by ring
+        _ = 0 - 1 := by rw [h]
+        _ = -1 := by norm_num)
+  have hG : Complex.Gamma (-1 - s) = Complex.Gamma (1 - s) / (s * (s + 1)) := by
+    calc
+      Complex.Gamma (-1 - s) = (s * (s + 1) * Complex.Gamma (-1 - s)) / (s * (s + 1)) := by
+        rw [mul_comm (s * (s + 1)) (Complex.Gamma (-1 - s))]
+        rw [mul_div_cancel_right₀ _ hs']
+      _ = Complex.Gamma (1 - s) / (s * (s + 1)) := by
+        rw [← hrel]
+  -- 组装
+  calc
+    2 * (2 * ↑Real.pi : ℂ) ^ (s + 1) * Complex.Gamma (-1 - s) * Complex.sin (↑Real.pi * (s + 2) / 2)
+        = 2 * ((2 * ↑Real.pi : ℂ) ^ (s - 1) * (2 * ↑Real.pi : ℂ) ^ (2 : ℂ)) * Complex.Gamma (-1 - s) *
+            (-Complex.sin (↑Real.pi * s / 2)) := by
+            rw [hpow, hsin]
+      _ = 2 * ((2 * ↑Real.pi : ℂ) ^ (s - 1) * (4 * (↑Real.pi) ^ 2)) * (Complex.Gamma (1 - s) / (s * (s + 1))) *
+            (-Complex.sin (↑Real.pi * s / 2)) := by
+            rw [hpow2, hG]
+      _ = -4 * (↑Real.pi) ^ 2 / (s * (s + 1)) * (2 * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2)) := by
+            ring
+
+/-- χ 的平移递推 (相位层, 模 2π):
+    arg χ(s+2) - arg χ(s) = π - arg(s(s+1))。arg(-4π²) = π (模 2π)。 -/
+theorem chi_arg_translation_two (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ -1)
+    (hχ : 2 * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+      Complex.sin (↑Real.pi * s / 2) ≠ 0) :
+    (((2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (s + 1) * Complex.Gamma (-1 - s) *
+      Complex.sin (↑Real.pi * (s + 2) / 2)).arg : Real.Angle)
+      = (((2 : ℂ) * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+        + (↑Real.pi : Real.Angle)
+        - ((s * (s + 1)).arg : Real.Angle) := by
+  have h := chi_translation_two s hs0 hs1
+  have harg := congrArg (fun x : ℂ => (x.arg : Real.Angle)) h
+  -- 右侧拆: -4π²/(s(s+1)) · χ(s)
+  have hs' : s * (s + 1) ≠ 0 := by
+    exact mul_ne_zero hs0 (by
+      intro h
+      apply hs1
+      calc
+        s = (s + 1) - 1 := by ring
+        _ = 0 - 1 := by rw [h]
+        _ = -1 := by norm_num)
+  have hπ2 : (-4 * (↑Real.pi) ^ 2 : ℂ) ≠ 0 := by
+    have hπ : (↑Real.pi : ℂ) ≠ 0 := by
+      intro h
+      apply Real.pi_ne_zero
+      have : ((↑Real.pi : ℂ).re) = (0 : ℂ).re := by rw [h]
+      simpa using this
+    exact mul_ne_zero (by norm_num : (-4 : ℂ) ≠ 0) (pow_ne_zero 2 hπ)
+  have hfac : (-4 * (↑Real.pi) ^ 2 / (s * (s + 1)) : ℂ) ≠ 0 :=
+    div_ne_zero hπ2 hs'
+  rw [Complex.arg_mul_coe_angle hfac hχ] at harg
+  rw [Complex.arg_div_coe_angle hπ2 hs'] at harg
+  -- arg(-4π²) = π (模 2π)
+  have harg_neg : ((-4 * (↑Real.pi) ^ 2 : ℂ).arg : Real.Angle) = (↑Real.pi : Real.Angle) := by
+    have h1 : (-4 * (↑Real.pi) ^ 2 : ℂ) = (-1 : ℂ) * (4 * (↑Real.pi) ^ 2 : ℂ) := by ring
+    rw [h1]
+    have hπ' : (↑Real.pi : ℂ) ≠ 0 := by
+      intro h
+      apply Real.pi_ne_zero
+      have : ((↑Real.pi : ℂ).re) = (0 : ℂ).re := by rw [h]
+      simpa using this
+    have hm := Complex.arg_mul_coe_angle (by norm_num : (-1 : ℂ) ≠ 0)
+      (mul_ne_zero (by norm_num : (4 : ℂ) ≠ 0) (pow_ne_zero 2 hπ'))
+    rw [hm]
+    rw [Complex.arg_neg_one]
+    have harg4 : (4 * (↑Real.pi) ^ 2 : ℂ).arg = 0 := by
+      have hc : (4 * (↑Real.pi) ^ 2 : ℂ) = (↑(4 * Real.pi ^ 2 : ℝ) : ℂ) := by norm_num
+      rw [hc]
+      exact Complex.arg_ofReal_of_nonneg (by positivity : 0 ≤ (4 * Real.pi ^ 2 : ℝ))
+    rw [harg4]
+    simp
+  rw [harg_neg] at harg
+  -- harg: ↑arg χ(s+2) = (π - ↑arg(s(s+1))) + ↑arg χ(s)
+  -- 目标: ↑arg χ(s+2) = ↑arg χ(s) + π - ↑arg(s(s+1))
+  have h1 : (↑Real.pi - ((s * (s + 1)).arg : Real.Angle))
+        + ((2 * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+      = ((2 * (2 * ↑Real.pi : ℂ) ^ (s - 1) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+        + ↑Real.pi - ((s * (s + 1)).arg : Real.Angle) := by
+    abel
+  rw [← h1]
+  exact harg
+
+
+
+/-- 辅助: s + k = 0 ⟹ s = -k (ℂ 上, k : ℕ)。 -/
+private lemma eq_neg_of_add_eq_zero (s : ℂ) (k : ℕ) (h : s + (k : ℂ) = 0) :
+    s = -(k : ℂ) := by
+  calc
+    s = (s + (k : ℂ)) - (k : ℂ) := by ring
+    _ = 0 - (k : ℂ) := by rw [h]
+    _ = -(k : ℂ) := by norm_num
+
+/-- χ 的两步平移递推 (数字层): χ(s+4) = 16π⁴/(s(s+1)(s+2)(s+3))·χ(s)。
+    对称点与延拓点交换: 每一步以上一步的结果为对称点, 无固定中心。
+    由 chi_translation_two 迭代两次 (χ(s+4) = χ((s+2)+2))。 -/
+theorem chi_translation_four (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ -1)
+    (hs2 : s ≠ -2) (hs3 : s ≠ -3) :
+    2 * (2 * ↑Real.pi) ^ (s + 3) * Complex.Gamma (-3 - s) * Complex.sin (↑Real.pi * (s + 4) / 2)
+      = 16 * (↑Real.pi) ^ 4 / (s * (s + 1) * (s + 2) * (s + 3)) * (2 * (2 * ↑Real.pi) ^ (s - 1) *
+          Complex.Gamma (1 - s) * Complex.sin (↑Real.pi * s / 2)) := by
+  have h1 := chi_translation_two s hs0 hs1
+  have hs1' : s + 1 ≠ 0 := by
+    intro h
+    apply hs1
+    have h' : s + ((1 : ℕ) : ℂ) = 0 := by simpa using h
+    simpa using (eq_neg_of_add_eq_zero s 1 h')
+  have hs2' : s + 2 ≠ 0 := by
+    intro h
+    apply hs2
+    have h' : s + ((2 : ℕ) : ℂ) = 0 := by simpa using h
+    simpa using (eq_neg_of_add_eq_zero s 2 h')
+  have hs3' : s + 2 ≠ -1 := by
+    intro h
+    apply hs3
+    -- s + 2 = -1 ⟹ s = -3
+    have : s = -3 := by
+      have h' : s + 3 = 0 := by
+        have : s + 3 = (s + 2) + 1 := by ring
+        rw [this, h]
+        norm_num
+      simpa using (eq_neg_of_add_eq_zero s 3 h')
+    exact this
+  have h2 := chi_translation_two (s + 2) hs2' hs3'
+  -- 归一 h2 的参数
+  have hg1 : (s + 2) + 1 = s + 3 := by ring
+  have hg2 : -1 - (s + 2) = -3 - s := by ring
+  have hg3 : (s + 2) + 2 = s + 4 := by ring
+  have hg4 : 1 - (s + 2) = -1 - s := by ring
+  have hg5 : (s + 2) - 1 = s + 1 := by ring
+  rw [hg1, hg2, hg3, hg4, hg5] at h2
+  -- 组装
+  calc
+    2 * (2 * ↑Real.pi) ^ (s + 3) * Complex.Gamma (-3 - s) * Complex.sin (↑Real.pi * (s + 4) / 2)
+        = -4 * (↑Real.pi) ^ 2 / ((s + 2) * (s + 3)) * (2 * (2 * ↑Real.pi) ^ (s + 1) * Complex.Gamma (-1 - s) *
+            Complex.sin (↑Real.pi * (s + 2) / 2)) := by
+            exact h2
+      _ = 16 * (↑Real.pi) ^ 4 / (s * (s + 1) * (s + 2) * (s + 3)) * (2 * (2 * ↑Real.pi) ^ (s - 1) *
+            Complex.Gamma (1 - s) * Complex.sin (↑Real.pi * s / 2)) := by
+            rw [h1]
+            field_simp [hs0, hs1', hs2', hs3']
+            ring
+
+/-- χ 的两步平移递推 (相位层, 模 2π): "交换延拓"的迭代 —
+    arg χ(s+4) = arg χ(s) - arg(s(s+1)) - arg((s+2)(s+3))。
+    arg(16π⁴) = 0 (正实数), 两步的 π 常数抵消 (π + π = 2π)。 -/
+theorem chi_arg_translation_four (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ -1)
+    (hs2 : s ≠ -2) (hs3 : s ≠ -3)
+    (hχ : 2 * (2 * ↑Real.pi) ^ (s - 1) * Complex.Gamma (1 - s) *
+      Complex.sin (↑Real.pi * s / 2) ≠ 0) :
+    (((2 : ℂ) * (2 * ↑Real.pi) ^ (s + 3) * Complex.Gamma (-3 - s) *
+      Complex.sin (↑Real.pi * (s + 4) / 2)).arg : Real.Angle)
+      = (((2 : ℂ) * (2 * ↑Real.pi) ^ (s - 1) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+        - ((s * (s + 1) * (s + 2) * (s + 3)).arg : Real.Angle) := by
+  have h := chi_translation_four s hs0 hs1 hs2 hs3
+  have harg := congrArg (fun x : ℂ => (x.arg : Real.Angle)) h
+  -- 右侧拆: 16π⁴/(s(s+1)(s+2)(s+3)) · χ(s)
+  have hs1' : s + 1 ≠ 0 := by
+    intro h
+    apply hs1
+    have h' : s + ((1 : ℕ) : ℂ) = 0 := by simpa using h
+    simpa using (eq_neg_of_add_eq_zero s 1 h')
+  have hs2' : s + 2 ≠ 0 := by
+    intro h
+    apply hs2
+    have h' : s + ((2 : ℕ) : ℂ) = 0 := by simpa using h
+    simpa using (eq_neg_of_add_eq_zero s 2 h')
+  have hs3' : s + 3 ≠ 0 := by
+    intro h
+    apply hs3
+    have h' : s + ((3 : ℕ) : ℂ) = 0 := by simpa using h
+    simpa using (eq_neg_of_add_eq_zero s 3 h')
+  have hsden : (s * (s + 1) * (s + 2) * (s + 3)) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (mul_ne_zero hs0 hs1') hs2') hs3'
+  have hπ : (↑Real.pi : ℂ) ≠ 0 := by
+    intro h
+    apply Real.pi_ne_zero
+    have : ((↑Real.pi : ℂ).re) = (0 : ℂ).re := by rw [h]
+    simpa using this
+  have h16 : (16 * (↑Real.pi) ^ 4 : ℂ) ≠ 0 :=
+    mul_ne_zero (by norm_num : (16 : ℂ) ≠ 0) (pow_ne_zero 4 hπ)
+  have hfac : (16 * (↑Real.pi) ^ 4 / (s * (s + 1) * (s + 2) * (s + 3)) : ℂ) ≠ 0 :=
+    div_ne_zero h16 hsden
+  rw [Complex.arg_mul_coe_angle hfac hχ] at harg
+  rw [Complex.arg_div_coe_angle h16 hsden] at harg
+  -- arg(16π⁴) = 0 (正实数)
+  have harg16 : ((16 * (↑Real.pi) ^ 4 : ℂ).arg : Real.Angle) = 0 := by
+    have hc : (16 * (↑Real.pi) ^ 4 : ℂ) = (↑(16 * Real.pi ^ 4 : ℝ) : ℂ) := by norm_num
+    rw [hc]
+    exact congrArg (fun x : ℝ => (x : Real.Angle))
+      (Complex.arg_ofReal_of_nonneg (by positivity : 0 ≤ (16 * Real.pi ^ 4 : ℝ)))
+  rw [harg16] at harg
+  -- harg: ↑arg χ(s+4) = 0 - ↑arg(s(s+1)) - ↑arg((s+2)(s+3)) + ↑arg χ(s)
+  -- 目标: ↑arg χ(s+4) = ↑arg χ(s) - ↑arg(s(s+1)) - ↑arg((s+2)(s+3))
+  have h1 : (0 : Real.Angle) - ((s * (s + 1) * (s + 2) * (s + 3)).arg : Real.Angle)
+        + ((2 * (2 * ↑Real.pi) ^ (s - 1) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+      = ((2 * (2 * ↑Real.pi) ^ (s - 1) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2)).arg : Real.Angle)
+        - ((s * (s + 1) * (s + 2) * (s + 3)).arg : Real.Angle) := by
+    abel
+  rw [← h1]
+  exact harg
+/-!
+# T5: u² = χ — 无分支的相位恒等式 (三角函数累积延拓)
+
+u(t) = ζ(1/2+it)/|ζ(1/2+it)| = e^{i·arg ζ}: 良定义连续 (ζ ≠ 0 处), 无分支。
+由函数方程 (s = 1/2+it 时 1-s = conj s) + mathlib 全域共轭 riemannZeta_conj:
+
+  ζ(s) = χ(s)·conj ζ(s)  ⟹  u(t)² = χ(1/2+it)
+
+u 是 χ 的连续平方根: 沿 t 累积延拓, 每跨一个零点 u → -u (符号翻转 =
+arg 跳 π = 一个零点), 翻转次数 = N₀(T)。整数计数由累积自动给出
+(傅里叶相位校准) — 不需要解析地维护 arg 的分支。
+
+χ(s) = 2·(2π)^{s-1}·Γ(1-s)·sin(πs/2) (临界线全显式)。
+
+隔离文件 (mathlib-only: riemannZeta_conj 来自 ZetaAsymp, olean 可用)。
+-/
+
+noncomputable section
+
+open Complex
+
+namespace RiemannUnifiedObservation
+
+-- arg(2π) ≠ π (conj_cpow 的条件: 底数不在负实轴)
+private lemma arg_two_pi_ne_pi : ((2 * ↑Real.pi : ℂ).arg) ≠ Real.pi := by
+  have h0 : (2 * ↑Real.pi : ℂ).arg = 0 := by
+    have h0' : ((2 * Real.pi : ℝ) : ℂ).arg = 0 := Complex.arg_ofReal_of_nonneg (by positivity)
+    simpa using h0'
+  rw [h0]
+  exact Real.pi_ne_zero.symm
+
+-- conj 穿透 cpow (2π 底数, 正实数)
+private lemma conj_two_pi_cpow (z : ℂ) :
+    (starRingEnd ℂ) ((2 * ↑Real.pi : ℂ) ^ z) = (2 * ↑Real.pi : ℂ) ^ ((starRingEnd ℂ) z : ℂ) := by
+  have h := Complex.conj_cpow (2 * ↑Real.pi : ℂ) z arg_two_pi_ne_pi
+  have hc : (starRingEnd ℂ) (2 * ↑Real.pi : ℂ) = 2 * ↑Real.pi := by
+    have hcast : (2 * ↑Real.pi : ℂ) = (↑(2 * Real.pi : ℝ) : ℂ) := by norm_num
+    rw [hcast]
+    exact Complex.conj_ofReal (2 * Real.pi)
+  rw [hc] at h
+  have h' := congrArg (starRingEnd ℂ) h
+  simpa using h'
+
+/-- 临界线闭合: ζ(s) = χ(s)·conj ζ(s), s = 1/2+it。
+    函数方程 (1-s = conj s) + riemannZeta_conj (mathlib 全域共轭)。
+    χ(s) = 2·(2π)^{s-1}·Γ(1-s)·sin(πs/2)。 -/
+theorem zeta_eq_chi_mul_conj_on_line (t : ℝ) :
+    riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)
+      = 2 * (2 * ↑Real.pi) ^ (((1 / 2 : ℂ) + (t : ℂ) * Complex.I) - 1 : ℂ) *
+          Complex.Gamma (1 - ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)) *
+          Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) / 2) *
+          (starRingEnd ℂ) (riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)) := by
+  let s : ℂ := (1 / 2 : ℂ) + (t : ℂ) * Complex.I
+  have h1s : 1 - s = (starRingEnd ℂ) s := by
+    dsimp [s]
+    apply Complex.ext <;> simp <;> ring
+  have hs_int : ∀ n : ℕ, s ≠ -↑n := by
+    intro n hn
+    have hre : s.re = 1 / 2 := by dsimp [s]; simp
+    have : s.re = (-(n : ℂ)).re := by rw [hn]
+    rw [hre] at this
+    have hnre : (-(n : ℂ)).re = -(n : ℝ) := by simp
+    rw [hnre] at this
+    nlinarith
+  have hs1 : s ≠ 1 := by
+    intro h
+    have hre : s.re = 1 / 2 := by dsimp [s]; simp
+    have : s.re = 1 := by rw [h]; simp
+    rw [hre] at this
+    norm_num at this
+  have hfe := riemannZeta_one_sub (s := s) hs_int hs1
+  -- hfe : ζ(1-s) = 2(2π)^{-s}Γ(s)cos(πs/2)ζ(s)
+  rw [h1s] at hfe
+  -- hfe : ζ(conj s) = 2(2π)^{-s}Γ(s)cos(πs/2)ζ(s)
+  rw [riemannZeta_conj s] at hfe
+  -- hfe : conj ζ(s) = 2(2π)^{-s}Γ(s)cos(πs/2)ζ(s)
+  have hfe' := congrArg (starRingEnd ℂ) hfe
+  -- hfe' : ζ(s) = conj(2(2π)^{-s}Γ(s)cos(πs/2)ζ(s))
+  have hfe'' : riemannZeta s = 2 * (2 * ↑Real.pi) ^ (-(starRingEnd ℂ) s) *
+      Complex.Gamma ((starRingEnd ℂ) s) * Complex.cos (↑Real.pi * (starRingEnd ℂ) s / 2) *
+      riemannZeta ((starRingEnd ℂ) s) := by
+    -- conj 穿透: star 保环运算 + 各 conj 定理 (← 方向: conj(cos x) → cos(conj x))
+    have h2c : (starRingEnd ℂ) 2 = 2 := by exact Complex.conj_ofReal 2
+    simpa [h2c, ← Complex.Gamma_conj, ← Complex.cos_conj, ← riemannZeta_conj, conj_two_pi_cpow]
+      using hfe'
+  -- 替换 conj s = 1-s
+  rw [← h1s] at hfe''
+  -- -(1-s) = s-1
+  have hneg : -(1 - s) = (s - 1 : ℂ) := by ring
+  rw [hneg] at hfe''
+  -- cos(π(1-s)/2) = sin(πs/2)
+  have hcos : Complex.cos (↑Real.pi * (1 - s) / 2) = Complex.sin (↑Real.pi * s / 2) := by
+    rw [← Complex.cos_sub_pi_div_two]
+    have harg : ↑Real.pi * (1 - s) / 2 = -((↑Real.pi * s / 2) - ↑Real.pi / 2) := by
+      dsimp [s]; ring
+    rw [harg, Complex.cos_neg]
+  rw [hcos] at hfe''
+  -- ζ(1-s) → conj ζ(s): 只替换 ζ 的参数 (Γ(1-s) 保持)
+  have hzeta_arg : riemannZeta (1 - s) = riemannZeta ((starRingEnd ℂ) s) := by rw [h1s]
+  rw [hzeta_arg] at hfe''
+  rw [riemannZeta_conj s] at hfe''
+  -- hfe'' : ζ(s) = 2(2π)^{s-1}·Γ(1-s)·sin(πs/2)·conj ζ(s)
+  dsimp [s] at hfe''
+  exact hfe''
+
+/-- u² = χ: u(t) = ζ(s)/|ζ(s)| 满足 u² = χ(s) (s = 1/2+it)。
+    ζ = χ·conj ζ ⟹ |ζ|² = χ·(conj ζ)² ⟹ 1 = χ·(conj u)² ⟹ u² = χ (u·conj u = 1)。
+    u 是 χ 的连续平方根 — 累积延拓的基元。 -/
+theorem zeta_unit_sq_eq_chi (t : ℝ)
+    (hz : riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) ≠ 0) :
+    (riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) /
+        ‖riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)‖ : ℂ) ^ 2
+      = 2 * (2 * ↑Real.pi) ^ (((1 / 2 : ℂ) + (t : ℂ) * Complex.I) - 1 : ℂ) *
+          Complex.Gamma (1 - ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)) *
+          Complex.sin (↑Real.pi * ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) / 2) := by
+  let s : ℂ := (1 / 2 : ℂ) + (t : ℂ) * Complex.I
+  let u : ℂ := riemannZeta s / ‖riemannZeta s‖
+  have hmain := zeta_eq_chi_mul_conj_on_line t
+  -- |ζ|² = χ·(conj ζ)² (hmain 乘 conj ζ)
+  have h2 : (‖riemannZeta s‖ : ℂ) ^ 2 =
+      2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+        Complex.sin (↑Real.pi * s / 2) * (starRingEnd ℂ) (riemannZeta s) *
+        (starRingEnd ℂ) (riemannZeta s) := by
+    calc
+      (‖riemannZeta s‖ : ℂ) ^ 2 = (↑(‖riemannZeta s‖ ^ 2) : ℂ) := by
+        exact (map_pow Complex.ofRealHom (‖riemannZeta s‖) 2).symm
+      _ = (Complex.normSq (riemannZeta s) : ℂ) := by
+        rw [← Complex.normSq_eq_norm_sq]
+      _ = riemannZeta s * (starRingEnd ℂ) (riemannZeta s) := by
+        rw [← Complex.mul_conj]
+      _ = (2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2) * (starRingEnd ℂ) (riemannZeta s)) *
+          (starRingEnd ℂ) (riemannZeta s) := by
+        -- hmain 两边乘 star ζ (s = (1/2:ℂ)+... 是 let, defeq)
+        exact congrArg (fun x : ℂ => x * (starRingEnd ℂ) (riemannZeta s)) hmain
+  have hz_norm : (‖riemannZeta s‖ : ℂ) ≠ 0 := by
+    exact_mod_cast (norm_ne_zero_iff.mpr hz)
+  -- 1 = χ·(conj u)² (h2 除以 ‖ζ‖²)
+  have h1 : (1 : ℂ) = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+      Complex.sin (↑Real.pi * s / 2) * ((starRingEnd ℂ) u) ^ 2 := by
+    calc
+      1 = (‖riemannZeta s‖ : ℂ) ^ 2 / (‖riemannZeta s‖ : ℂ) ^ 2 := by
+        field_simp [hz_norm]
+      _ = (2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2) * (starRingEnd ℂ) (riemannZeta s) *
+            (starRingEnd ℂ) (riemannZeta s)) / (‖riemannZeta s‖ : ℂ) ^ 2 := by
+        rw [h2]
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) * ((starRingEnd ℂ) (riemannZeta s) / (‖riemannZeta s‖ : ℂ)) ^ 2 := by
+        ring
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) * ((starRingEnd ℂ) u) ^ 2 := by
+        -- star(ζ/‖ζ‖) = star ζ/‖ζ‖ (‖ζ‖ 实)
+        congr 1
+        have hu : (starRingEnd ℂ) (riemannZeta s / (‖riemannZeta s‖ : ℂ)) =
+            (starRingEnd ℂ) (riemannZeta s) / (‖riemannZeta s‖ : ℂ) := by
+          rw [map_div₀]
+          simp
+        simpa [u] using hu
+  -- u·conj u = 1
+  have hu1 : u * (starRingEnd ℂ) u = 1 := by
+    have hnorm : ‖u‖ = 1 := by
+      dsimp [u]
+      rw [norm_div]
+      have hn : ‖(‖riemannZeta s‖ : ℂ)‖ = ‖riemannZeta s‖ := by
+        calc
+          ‖(‖riemannZeta s‖ : ℂ)‖ = |‖riemannZeta s‖| :=
+            RCLike.norm_ofReal (‖riemannZeta s‖)
+          _ = ‖riemannZeta s‖ := abs_of_nonneg (norm_nonneg _)
+      rw [hn]
+      have hz_norm_r : ‖riemannZeta s‖ ≠ 0 := norm_ne_zero_iff.mpr hz
+      field_simp [hz_norm_r]
+    rw [Complex.mul_conj]
+    -- (normSq u : ℂ) = 1: normSq u = ‖u‖², ‖u‖ = 1
+    have hnsq : Complex.normSq u = ‖u‖ ^ 2 := Complex.normSq_eq_norm_sq u
+    rw [hnsq, hnorm]
+    norm_num
+  -- u² = χ (1 = χ·(conj u)² 两边乘 u²)
+  have hu2 : u ^ 2 = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+      Complex.sin (↑Real.pi * s / 2) := by
+    calc
+      u ^ 2 = (2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+            Complex.sin (↑Real.pi * s / 2) * ((starRingEnd ℂ) u) ^ 2) * u ^ 2 := by
+            rw [← h1]
+            simp
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) * (((starRingEnd ℂ) u) * u) ^ 2 := by
+          ring
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) * (u * (starRingEnd ℂ) u) ^ 2 := by
+          ring
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) * 1 := by
+          rw [hu1]
+          ring
+      _ = 2 * (2 * ↑Real.pi) ^ (s - 1 : ℂ) * Complex.Gamma (1 - s) *
+          Complex.sin (↑Real.pi * s / 2) := by
+          ring
+  -- 替换 s, u
+  dsimp [u, s] at hu2
+  exact hu2
 
 end RiemannUnifiedObservation
