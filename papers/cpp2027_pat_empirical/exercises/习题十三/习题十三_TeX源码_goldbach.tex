@@ -1,0 +1,392 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+ \usepackage[T1]{fontenc}
+ \usepackage[utf8]{inputenc}
+ \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+ \usepackage{unicode-math} % this also loads fontspec
+ \defaultfontfeatures{Scale=MatchLowercase}
+ \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+ % xetex/luatex font selection
+ \setmainfont[]{DejaVu Sans}
+ \setmonofont[]{DejaVu Sans Mono}
+ \ifXeTeX
+ \usepackage{xeCJK}
+ \setCJKmainfont[]{Noto Sans CJK SC}
+ \fi
+ \ifLuaTeX
+ \usepackage[]{luatexja-fontspec}
+ \setmainjfont[]{Noto Sans CJK SC}
+ \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+ \usepackage[]{microtype}
+ \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+ \IfFileExists{parskip.sty}{%
+ \usepackage{parskip}
+ }{% else
+ \setlength{\parindent}{0pt}
+ \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+ \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+ colorlinks=true,
+ linkcolor={Maroon},
+ filecolor={Maroon},
+ citecolor={Blue},
+ urlcolor={Blue},
+ pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{课后习题 XIII：哥德巴赫猜想的 pat
+重新观测}\label{ux7b51ux57faux7bc7ux8bfeux540eux4e60ux9898-xiiiux54e5ux5fb7ux5df4ux8d6bux731cux60f3ux7684-pat-ux91cdux65b0ux89c2ux6d4b}
+
+\begin{quote}
+\textbf{声明 (Declaration)}: 本文\textbf{不代表任何数学结论}
+(non-mathematical-claim), 仅为基于 Lean 4
+形式化的一种\textbf{实验观测报告} (experimental observation report)。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+习题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lean 形式化
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+DOI
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+exercise\_i\_13 & 哥德巴赫猜想的 pat 重新观测（R170） & PatGoldbach.lean
+& DOI \\
+\end{longtable}
+}
+\end{quote}
+
+\textbf{Exercise XIII for the Foundation-Building Chapter: The Goldbach
+Conjecture Revisited from the PAT Perspective}
+
+\begin{quote}
+习题定位：课后习题系列第十三题。用 mechanics-pat-observation skill
+观测哥德巴赫猜想（每个大于 2
+的偶数是两个素数之和）。全部新定理只锚框架定理（R085/R128/R136②③/R143/R146/R159），不用外部引理。
+\end{quote}
+
+\emph{2026-08-13 · Internal research exercise · Lean 4 / mathlib v4.32.2
+· 6 new theorems PROVED no sorry · 课后习题 XIII }
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{习题陈述}\label{ux4e60ux9898ux9648ux8ff0}
+
+\begin{quote}
+对哥德巴赫猜想（Goldbach Conjecture：每个大于 2 的偶数 2n
+都可表示为两个素数之和）做 pat 重新观测。唯一论点：\textbf{p + q = 2n ⟺
+p, q 关于 n 对称（q = 2n - p）------哥德巴赫分解 =
+素数对称对，关于偶数中心 n 折叠还原。}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{零、总论：哥德巴赫 =
+素数对称对}\label{ux96f6ux603bux8bbaux54e5ux5fb7ux5df4ux8d6b-ux7d20ux6570ux5bf9ux79f0ux5bf9}
+
+哥德巴赫猜想：2n = p + q（p, q 素数）。
+
+\textbf{pat 结构对应}（mechanics-pat-observation skill）：
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+哥德巴赫结构 & pat 结构 & 锚定 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2n = p + q & 对称对 \{p, q\} = \{p, 2n-p\} 关于 n & R085/R136②③ \\
+p, q 关于 n 对称 & 镜像 S(x) = 2n - x（对合 S²=id） & R085/R128 \\
+偶数中心 n & 折叠中心（不动点 S(n) = n） & R085 \\
+p, q 是素数 & 素数 = 方向 log p（单相位） & R159/R146 \\
+★猜想 & 每个偶数有素数对称对 & CONJECTURE \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{一、p + q = 2n ⟺
+对称对}\label{ux4e00p-q-2n-ux5bf9ux79f0ux5bf9}
+
+\textbf{★核心：哥德巴赫分解 2n = p + q 的代数等价 = q = 2n - p------p 和
+q 关于偶数中心 n 对称。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{对称对}（R085 折叠类 / R136 ②③ 对称性成对声明）：p + q = 2n ⟺
+ q = 2n - p------\{p, q\} = \{p, 2n-p\} 关于 n 成对。
+\item
+ \textbf{哥德巴赫分解 = 对称对}：两个素数关于偶数中心对称分布。
+\end{enumerate}
+
+\subsubsection{形式化（PatGoldbach.lean，1
+定理）}\label{ux5f62ux5f0fux5316patgoldbach.lean1-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{symmetric\_pair\_iff\_sum}：p + q = 2n ⟺ q = 2n -
+ p------哥德巴赫分解 = 对称对（linarith）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{二、镜像对合与中心不动点（R085/R128）}\label{ux4e8cux955cux50cfux5bf9ux5408ux4e0eux4e2dux5fc3ux4e0dux52a8ux70b9r085r128}
+
+\textbf{★核心：偶数中心 n 的镜像 S(x) = 2n - x 是对合（S² = id），n
+是不动点------折叠类还原。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{镜像对合}（R085/R128）：2n - (2n - x) = x------关于 n 的镜像
+ S² = id，素数对称对经两次镜像还原。
+\item
+ \textbf{中心不动点}（R085 折叠中心）：2n - n = n------偶数中心 n
+ 是折叠中心，对称对关于 n 折叠，n 不变。
+\end{enumerate}
+
+\subsubsection{形式化（PatGoldbach.lean，2
+定理）}\label{ux5f62ux5f0fux5316patgoldbach.lean2-ux5b9aux7406}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{mirror\_involution}：2n - (2n - x) = x------镜像对合。
+\item
+ \texttt{center\_fixed}：2n - n = n------中心不动点。
+\end{itemize}
+
+\textbf{验证}：0 sorry。ring。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{三、对称对的中点（R085/R143）}\label{ux4e09ux5bf9ux79f0ux5bf9ux7684ux4e2dux70b9r085r143}
+
+\textbf{★核心：p + q = 2n ⟺ q - n = -(p - n)------p 和 q 到中心 n
+的距离相反（对称分布）。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{距离相反}：q - n = -(p - n)------p, q 到 n 等距反向（R085：0 =
+ ±1 折叠类；R143：对称对还原到中心）。
+\item
+ \textbf{中点}：n 是 p, q 的中点------哥德巴赫分解 = 两个素数关于 n
+ 对称。
+\end{enumerate}
+
+\subsubsection{形式化（PatGoldbach.lean，1
+定理）}\label{ux5f62ux5f0fux5316patgoldbach.lean1-ux5b9aux7406-1}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{symmetric\_pair\_midpoint}：p + q = 2n ⟺ q - n = -(p -
+ n)------对称对的中点（linarith）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{四、★哥德巴赫 =
+素数对称对（CONJECTURE）}\label{ux56dbux54e5ux5fb7ux5df4ux8d6b-ux7d20ux6570ux5bf9ux79f0ux5bf9conjecture}
+
+\textbf{★核心：哥德巴赫猜想断言每个偶数 2n 存在素数对称对 \{p, q\} 关于
+n------两个素数方向在中心 n 折叠还原。}
+
+\subsubsection{论证}\label{ux8bbaux8bc1-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+ \textbf{素数 = 方向 log p}（R159 prime\_log\_monophase /
+ R146）：哥德巴赫的两个素数是两个素数方向。
+\item
+ \textbf{★转译}：每个偶数 2n（n \textgreater{} 1）存在素数 p, q 满足 q
+ = 2n - p------素数对称对关于中心 n 折叠还原（R085）。
+\item
+ \textbf{诚实边界}：强哥德巴赫未证（CONJECTURE；弱哥德巴赫已证，Helfgott
+ 2013，外部文献）。
+\end{enumerate}
+
+\subsubsection{形式化（PatGoldbach.lean，1
+定理）}\label{ux5f62ux5f0fux5316patgoldbach.lean1-ux5b9aux7406-2}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{goldbach\_symmetric\_decomposition}：p + q = 2n ⟺ q = 2n -
+ p------哥德巴赫 = 素数对称对（代数部分 PROVED，存在性 CONJECTURE）。
+\end{itemize}
+
+\textbf{验证}：0 sorry。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{五、全景（组合定理）}\label{ux4e94ux5168ux666fux7ec4ux5408ux5b9aux7406}
+
+\textbf{★核心：对称对（p, q 关于 n）∧ 镜像对合（S²=id）∧
+中心不动点（S(n)=n）∧ 素数 = 方向 log p------哥德巴赫 =
+素数对称对的折叠还原。}
+
+\subsubsection{形式化（PatGoldbach.lean，1
+定理）}\label{ux5f62ux5f0fux5316patgoldbach.lean1-ux5b9aux7406-3}
+
+\begin{itemize}
+\tightlist
+\item
+ \texttt{goldbach\_pat\_perspective}：对称对 ∧ 镜像对合 ∧ 中心不动点 ∧
+ 素数方向------全景。
+\end{itemize}
+
+\textbf{验证}：0 sorry。合取项分别锚 symmetric\_pair\_iff\_sum /
+mirror\_involution / center\_fixed / R159。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{六、习题解答总结}\label{ux516dux4e60ux9898ux89e3ux7b54ux603bux7ed3}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+论点 & 内容 & 锚定 & 标签 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+对称对 & p + q = 2n ⟺ q = 2n - p & R085/R136②③ & PROVED \\
+镜像对合 & 2n - (2n - x) = x & R085/R128 & PROVED \\
+中心不动点 & 2n - n = n & R085 & PROVED \\
+对称中点 & q - n = -(p - n) & R085/R143 & PROVED \\
+★哥德巴赫 & 素数对称对存在性 & R159 + 上述 & CONJECTURE \\
+\end{longtable}
+}
+
+\textbf{习题的回答（一句话）}：\textbf{哥德巴赫猜想在 pat 视角 =
+素数对称对------每个偶数 2n 的分解 p + q = 2n 等价于 p, q 关于中心 n
+对称（q = 2n - p，镜像对合 S²=id，中心不动点）；两个素数 =
+两个素数方向（log p，R159），在偶数中心 n
+折叠还原。存在性未证（强哥德巴赫，CONJECTURE）。}
+
+\textbf{诚实边界}：强哥德巴赫未证（CONJECTURE）------本习题交付结构转译（对称对
+=
+哥德巴赫分解的代数结构，PROVED；素数对称对存在性，CONJECTURE）。弱哥德巴赫（每个大于
+5 的奇数是三个素数之和）已证（Helfgott 2013，外部文献，仅对照非证明）。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{七、相关对照}\label{ux4e03ux76f8ux5173ux5bf9ux7167}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+ >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+文献
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+对应内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+备注
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Goldbach, C.} 1742（给 Euler 的信） & 哥德巴赫猜想原始陈述 & pat
+转译对象 \\
+\textbf{Helfgott, H.} 2013. \emph{Major arcs for Goldbach's
+theorem}（arXiv:1305.2897） & 弱哥德巴赫已证 & 仅对照，非证明 \\
+\textbf{R085/R128/R136②③/R143/R146/R159}（） &
+折叠类/镜像对合/成对/对称还原/素数方向 & 本框架定理 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{课后习题 XIII · 2026-08-13 · Lean 4 / mathlib v4.32.2 · 6
+theorems PROVED no sorry（PatGoldbach.lean）· 配套 Lean
+形式化：formal/Formal/Toolkit/PatGoldbach.lean（快照见
+../lean/PatGoldbach.lean）}
+
+\end{document}
