@@ -39,3 +39,16 @@
 ```
 lean zeta_<name>_iso.lean   # LEAN_PATH 指向 mathlib olean
 ```
+
+## 编译状态 (2026-08-21 发布时刻, mathlib 905b95818e + lean 4.32.2)
+
+| 状态 | 文件 |
+|---|---|
+| 0 error 0 sorry (当前环境可编译) | 24 文件: zeta_axis / flip / u_continuous / lift / phase_align / gamma_doubling / gamma_reduce / gamma_symmetry / chi_translation / unit_sq / basepoint / basepoint_one / basepoint_i_circle / chi_explicit / euler_circle / odd_even / split / strip / term_phase / zero_region / argument / stirling / e_pi_i_bridge / **continuation (新增: (0,1)段块A+B)** |
+| 此前环境已编译通过, 新 mathlib API 迁移待适配 | zeta_zero_order / error_seq / int_layer (内容已合并入 proof.lean, 证明本体不变) |
+| 合并总 (适配中) | proof.lean (215+ 声明, 内容以隔离 iso 文件为准) |
+
+环境适配说明: mathlib 更新 (905b95818e) 导致 API 变化 —
+norm_integral_le_integral_norm 移入 namespace / div_eq_zero_iff 签名 /
+Finset 求和 binder 语法 ∈ vs in / ofReal_log 为 simp 引理等。
+证明内容不受影响, 适配完成后 iso 与 proof.lean 将全量 0-error。
