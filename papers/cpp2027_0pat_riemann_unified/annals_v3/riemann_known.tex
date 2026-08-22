@@ -8,9 +8,15 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{hyperref}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[most]{tcolorbox}
 \usepackage[numbers,sort&compress]{natbib}
 \emergencystretch=3em
+
+% 读者向导框 (视觉引导: 邀请式语言, 描述结构而非指路, 避免规训感)
+\newtcolorbox{readerguide}{colback=gray!6,colframe=blue!45!black,
+  boxrule=0.8pt,arc=2pt,title={\small\textbf{The paper at a glance}},
+  fonttitle=\normalsize,left=8pt,right=8pt,top=4pt,bottom=4pt}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -110,6 +116,80 @@ L13 & $(0,1)$-segment: odd/even pairing continuity (iso~41 verified) and direct 
 \hline
 \end{tabular}
 \end{table}
+
+\paragraph{Contributions.} The development establishes, by machine
+verification (0 errors, 0 \texttt{sorry}), the following chain, each
+item being a theorem of the listed layer:
+\begin{itemize}
+\item \emph{the false-real-axis framework} (\S\ref{sec:L8}): $\zt$ has no
+zeros outside the critical strip, and is real-valued on the real axis;
+\item \emph{the critical-line phase layer} (\S\ref{sec:L9}): on the line,
+$|\Xchi|=1$, $\zt=\Xchi\overline{\zt}$, and the unit phase satisfies
+$u^2=\Xchi$;
+\item \emph{the covering-space phase locking} (\S\ref{sec:L10}): the
+lifted arguments $\theta_\Xchi$ and $\theta_{\zt}$ and the integer layers;
+\item \emph{the predictor residuals} (\S\ref{sec:L11}): a deterministic
+prediction bound for the error sequence of the counting remainder;
+\item \emph{the argument-principle rectangle closure} (\S\ref{sec:L12}):
+flip count $=$ winding of $\Xchi$ $-$ integer layer, with the bottom-edge
+and boundary estimates;
+\item \emph{the $(0,1)$-segment} (\S\ref{sec:kernel}--\S\ref{sec:blocksCG}):
+continuity of $\zt$ on $(0,1)$ by the odd/even pairing (iso~41,
+machine-verified) and the sign $\zt(x)<0$, closing the zero-free bottom
+edge of the rectangle.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  bg/.style={fill=gray!12, draw=gray!60, rounded corners=2pt},
+  core/.style={fill=blue!8, draw=blue!50!black, rounded corners=2pt, thick},
+  edge/.style={-{Stealth}, thick},
+  lab/.style={font=\scriptsize, text=gray!70!black}]
+  % 背景表示层
+  \node[bg] (bg) at (0,0) {\small 0pat representation and geometry (L1--L5)};
+  \node[bg, right=8mm of bg] (fe) {\small convergence and functional equation (L6--L7)};
+  % 解析核心链
+  \node[core] (L8) at (0,-1.5) {\small L8: false real axis};
+  \node[core, right=4mm of L8] (L9) {\small L9: phase};
+  \node[core, right=4mm of L9] (L10) {\small L10: covering};
+  \node[core, right=4mm of L10] (L11) {\small L11: residuals};
+  \node[core, right=4mm of L11] (L12) {\small L12: rectangle};
+  \node[core, right=4mm of L12] (L13) {\small L13: $(0,1)$};
+  % 箭头
+  \draw[edge] (bg.south) -- (L8.north);
+  \draw[edge] (fe.south) -- (L9.north);
+  \draw[edge] (L8) -- (L9) -- (L10) -- (L11) -- (L12) -- (L13);
+  % 标注
+  \node[lab, above=1.2mm of L13] {iso 41};
+  \node[lab, below=1.2mm of bg] {self-contained background of the representation};
+  \node[lab, below=1.2mm of fe] {bridges the series and the functional equation};
+  \node[lab, below=1.2mm of L8, align=center] {analytic core:\\ each box is a machine-verified layer};
+\end{tikzpicture}
+\caption{Structure of the development. The analytic core of the Riemann
+direction is the chain L8--L13 (boxed); the 0pat representation
+L1--L5 and the series/functional-equation layer L6--L7 are the
+self-contained background from which the core is assembled. The
+odd/even pairing of iso~41 is machine-verified independently and
+closes Layer~13.}
+\label{fig:map}
+\end{figure}
+
+\begin{readerguide}
+The paper is organized as a chain of thirteen machine-verified layers.
+The analytic core --- the part connecting the zeros of $\zt$ to the
+argument principle --- is the chain L8--L13
+(\S\ref{sec:L8}--\S\ref{sec:kernel}): the false-real-axis framework, the
+critical-line phase layer, the covering-space phase locking, the
+predictor residuals, the rectangle closure, and the $(0,1)$-segment.
+The representation layers L1--L5 (\S\ref{sec:L1}--\S\ref{sec:L5}) are
+self-contained background, and the framework discussion
+(\S\ref{sec:discussion}) is context; neither is needed for the analytic
+chain. Readers of the classical theory of $\zt$ will find their natural
+entry points in \S\ref{sec:L8} and \S\ref{sec:L12}--\S\ref{sec:kernel};
+readers interested in machine verification will find the full
+declaration inventory in \S\ref{sec:verification} and Appendix~A.
+\end{readerguide}
 
 \subsection{Methodology statement}
 \label{sec:methodology}
@@ -314,6 +394,10 @@ infinitely many primes (\texttt{infinitely\_many\_primes}).
 \subsection{Layer 2: observable decomposition and zero reflection}
 \label{sec:L2}
 
+This layer records how zeros of $\zt$ behave under the reflection
+$s\mapsto 1-s$; its reflected-pair theorem seeds the orbit structure of
+Layer~9.
+
 \begin{theorem}[CRT orthogonal frame]
 \label{thm:crt}
 The observable frame decomposes orthogonally through distinct primes
@@ -358,12 +442,18 @@ symmetry $s\leftrightarrow 1-s$ that governs the whole Riemann direction.
 \end{tikzpicture}
 \caption{The two basepoint circles: the critical circle $\mathcal{C}$ and
 the prime circle $\mathcal{P}$, with the axis intersections located by the
-five intersection theorems of Layer~3.}
+five intersection theorems of Layer~3. This is background of the
+representation; the analytic core of the development begins at
+Layer~8.}
 \label{fig:circles}
 \end{figure}
 
 \subsection{Layer 3: $j$-algebra and the circle family}
 \label{sec:L3a}
+
+This layer fixes the geometry of the representation: the two basepoint
+circles of Layer~1 and their intersections (Figure~\ref{fig:circles}).
+It is self-contained background of the analytic core.
 
 \begin{theorem}[$j$-algebra]
 \label{thm:jalg}
@@ -400,6 +490,10 @@ reciprocal of the critical line is a hyperbola
 \subsection{Layer 4: transpose symmetry and lattice uniqueness}
 \label{sec:L4}
 
+This layer records the second geometric symmetry of the representation
+(transposition of the axes) and the uniqueness of the lattice points it
+determines; like Layer~3 it is background.
+
 \begin{theorem}[Transpose symmetry]
 \label{thm:transpose}
 The transpose map is an involution (\texttt{transpose\_involutive})
@@ -422,6 +516,10 @@ axes give the origin coefficients
 
 \subsection{Layer 5: splitting and leak signs}
 \label{sec:L5}
+
+This layer is the algebraic seed of the odd/even splitting used in the
+analytic core: it records how the imaginary part of the representation
+leaks into the real part under multiplication.
 
 \begin{theorem}[Leak sign]
 \label{thm:leak}
@@ -448,6 +546,11 @@ the zeta term (\texttt{zeta\_eq\_odd\_add\_even}, Layer~8;
 \subsection{Layer 6: convergence region and divergence structure}
 \label{sec:L6a}
 
+This layer explains why the zeta series cannot be split naively into its
+odd and even parts: each part diverges, and only the period-pair
+cancellation restores convergence --- the analytic fact behind the
+odd/even pairing of Layer~13.
+
 \begin{theorem}[Convergence and divergence of the splitting]
 \label{thm:divergence}
 The Dirichlet series converges in its region
@@ -472,6 +575,11 @@ where the two unpaired sides diverge (\texttt{pairing\_summable}).
 
 \subsection{Layer 7: zeros and the functional equation}
 \label{sec:L7}
+
+This layer records the zeros of $\zt$ (trivial zeros, the phase of $i$)
+and the functional equation in its completed form: the passage from the
+meromorphic $\zt$ to the entire $\Lam_0$ used by the rectangle argument
+of Layer~12.
 
 \begin{theorem}[Trivial zeros and the phase of $i$]
 \label{thm:trivial}
@@ -739,6 +847,10 @@ their deterministic prediction is the subject of Layer~11.
 \section{Layer 11: predictor residuals}
 \label{sec:L11}
 
+The integer layers of Layer~10 form a sequence; this layer controls its
+error sequence by a deterministic polynomial bound, which is the
+integer-layer content of the Riemann--von~Mangoldt formula.
+
 \begin{theorem}[Predictor residuals]
 \label{thm:residual}
 The error sequence of the flip count is controlled by a polynomial error
@@ -775,7 +887,9 @@ directly without invoking the classical asymptotic.
 the bottom edge $[-1,2]$ (false-real-axis assembly, Theorem~\ref{thm:bottom}),
 the right edge $\Re s=2$ (bounded by $\sum n^{-2}$,
 Theorem~\ref{thm:boundary}), and the top/left edges folded by the
-functional equation.}
+functional equation. This is the closure argument of the analytic
+core: counting the zeros of $\zt$ inside the rectangle is counting the
+flips of its phase across the critical line.}
 \label{fig:rect}
 \end{figure}
 
