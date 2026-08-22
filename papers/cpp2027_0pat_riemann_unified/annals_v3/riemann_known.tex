@@ -66,9 +66,9 @@ machine-verified is marked KNOWN as an honest boundary.
 \label{sec:problem}
 
 The Riemann zeta function $\zt(s)$ is positive on $(1,\infty)$ by its
-Dirichlet series and has no zeros for $\Re s<0$ by the functional equation
-(the trivial zeros $-2,-4,\dots$ are the only zeros on the negative real
-axis). On the real interval $(0,1)$ the series diverges, and the classical
+Dirichlet series and has no zeros in $\Re s<0$ by the functional equation,
+apart from the trivial zeros $s=-2,-4,\dots$ (the only zeros on the
+negative real axis). On the real interval $(0,1)$ the series diverges, and the classical
 fact
 \begin{equation}
 \label{eq:main}
@@ -203,9 +203,8 @@ and the GitHub repository listed in the cover letter).
 All theorems of this paper are formalized in Lean~4 (version 4.32.2, mathlib
 revision 905b95818e) and compile with $0$ errors, $0$ warnings, $0$
 \texttt{sorry}, and $0$ axioms beyond those of mathlib. The complete source
-files and the hash ledger (\texttt{iso\_hashes.md}) are archived at DOI
-10.5281/zenodo.22038154 (version 1) and 10.5281/zenodo.22039506 (version 2,
-containing Layer 13 Blocks A--B).
+files and the hash ledger (\texttt{iso\_hashes.md}) are archived at the
+Zenodo records listed in \S\ref{sec:verification}.
 
 AI contribution statement (in compliance with the Annals of Mathematics
 policy on AI and LLM tools): the author (a human) designed the proof
@@ -261,7 +260,9 @@ defined by
 \operatorname{term} n\,s=\int_n^{n+1}\frac{x-n}{x^{s+1}}\,dx,\qquad
 \operatorname{termTSum} s=\tsum_{n\ge 0}\operatorname{term}(n+1)\,s,
 \]
-and the library identity \texttt{zeta\_limit\_aux1} (for $1<s$) is
+where $\tsum$ (the prime is mathlib's notation) denotes the summation
+over $n\ge 0$, and
+the library identity \texttt{zeta\_limit\_aux1} (for $1<s$) is
 \[
 \tsum_{n\ge 0}\frac{1}{(n+1)^s}-\frac{1}{s-1}=1-s\cdot\operatorname{termTSum} s,
 \]
@@ -534,11 +535,15 @@ vanishing of both parts (\texttt{zeta\_eq\_zero\_iff\_re\_im}).
 \label{thm:falseaxis}
 \begin{equation}
 \label{eq:false}
-\zt(s)\neq 0\quad(\Re s<0),\qquad \zt(s)\neq 0\quad(\Re s=0,\ s\neq 0),
+\zt(s)\neq 0\quad(\Re s<0,\ s\notin\{-n:n\in\N\}),\qquad
+\zt(s)\neq 0\quad(\Re s=0,\ s\neq 0),
 \end{equation}
-(\texttt{riemannZeta\_ne\_zero\_of\_re\_lt\_zero},
+\begin{sloppypar}where the negative integers $s=-2,-4,\dots$ are the trivial zeros
+(machine-verified as \texttt{riemannZeta\_ne\_zero\_of\_re\_lt\_zero},
+which requires $s\neq -n$ for all $n\in\N$, and
 \texttt{riemannZeta\_ne\_zero\_of\_re\_eq\_zero}); hence any nontrivial zero
 lies in the critical strip (\texttt{nontrivial\_zero\_in\_critical\_strip}).
+\end{sloppypar}
 \end{theorem}
 
 The name \emph{false real axis} refers to the mechanism of the proof: the
@@ -574,14 +579,15 @@ Euler circles (\texttt{zero\_not\_on\_euler\_circles}).
 
 \begin{theorem}[Position of the critical line]
 \label{thm:position}
-The critical line is affine (\texttt{affine\_image\_critical\_line\_is\_line}),
+\begin{sloppypar}The critical line is affine
+(\texttt{affine\_image\_critical\_line\_is\_line}),
 it is the equidistance locus of the basepoints $1$ and $\pm i$
 (\texttt{on\_line\_iff\_equidistant\_base\_one},
 \texttt{critical\_line\_equidistant\_basepoint\_i}); the reciprocal of the
 basepoint $i$ lies on the unit circle
 (\texttt{recip\_basepoint\_i\_on\_unit\_circle}); the Hardy $Z$-function is
 real (\texttt{hardyZ\_real}); and the positional theorems
-(\begin{sloppypar}\texttt{critical\_line\_positional}, \texttt{orbit\_center\_half},
+(\texttt{critical\_line\_positional}, \texttt{orbit\_center\_half},
 \texttt{orbit\_degenerate\_iff\_on\_line},
 \texttt{recip\_on\_critical\_circle\_iff}, \texttt{zero\_orbit\_four})
 locate the orbit of a zero under reflection.\end{sloppypar}
@@ -882,7 +888,7 @@ shows $\zt>0$. The kernel $R_N(x)=\sum_{n\le N}n^{-x}+N^{1-x}/(x-1)$ (of
 series with its divergent tail replaced by its integral approximation; for
 $0<x<1$ each partial kernel is bounded above by the first term
 $R_1(x)=x/(x-1)<0$ (the Euler--Maclaurin first inequality, machine-verified
-in \S\ref{sec:blockB}), and the limit $R(x)=\lim_N R_N(x)$ is the analytic
+in \S\ref{sec:boundary}), and the limit $R(x)=\lim_N R_N(x)$ is the analytic
 continuation of $\zt$ by the identity theorem. Blocks A--B below record
 the verified closed forms of this classical path.
 
