@@ -252,7 +252,11 @@ Z(t) = χ(1/2+it)^{-1/2}·ζ(1/2+it) ∈ ℝ。零点: 14.1347, 21.0220,
 
 "收敛成一根线"的基点 = 相位基点 χ(s)^{-1/2}; 线的条件 = |χ| = 1 =
 临界线 (χ 的单位圆)。RH ⟺ Z(t) 的所有零点都是实零点 (无复零点)。
-经典结果 (Hardy Z), 0pat 可陈述; mathlib 无 Hardy Z; 仍非证明。
+经典结果 (Hardy Z)。**2026-08-22 落地**: HardyZ.lean (17 声明,
+0pat 自包含, 只 import Mathlib) — Z 实值 (conj(Z)=Z 共轭反射) +
+翻转=零点 (中间值定理: Z(a) < 0 < Z(b) ⟹ ∃t∈(a,b), Z(t)=0)。
+"翻转次数 = N₀(T)" 的缺口 1+1b 闭合 (实值性 + 符号变化⟹零点;
+剩余: 反向计数 = Backlund 拼装, 诚实边界)。
 
 ## 观测 L: 相位基点下零点重观测 (用户问题 2026-08-21)
 
@@ -275,7 +279,11 @@ Z(t) = χ(1/2+it)^{-1/2}·ζ(1/2+it) ∈ ℝ。零点: 14.1347, 21.0220,
 数值证据完整 (12 零点 + 敏感度 10^8 + 网格无离线), 但"证明只在
 这里" = N₀(T) = N(T) 分析论证 (Z 无复零点), 数值不构成证明。
 观测 = 经典数值验证 (RH 已验证到 10^13 高度) 的相位基点框架复现。
-缺口不变: 需要零点计数/Hardy Z 符号变化分析, mathlib 无工具。
+**2026-08-22 缺口进展**: HardyZ.lean (0pat) 闭合缺口 1 (Z 实值,
+conj(Z)=Z 共轭反射对称) + 缺口 1b (翻转=零点: 中间值定理
+hardyZ_zero_between); 剩余缺口 = 反向: 每个临界线零点被翻转计数
+(含重数) + 总数 = N(T) (Backlund 拼装, 37 方向 zero_orbit_counting
+骨架已有, 计数闭合待拼装)。
 
 ## 观测 M: 稳定圆构想 (用户方向 2026-08-21)
 
@@ -1147,3 +1155,23 @@ sin 项精确收敛 π/4; T·log(2π) 项来自 χ 定义 (2π)^{s-1}; Γ 项 Bi
     无现成一致收敛解析定理 — 基础设施缺口, 非手推可绕。
     路径明确: R_N 初等解析 + 一致收敛 (|R_M-R_N| ≤ (M^{1-s₀}-N^{1-s₀})/s₀) + 莫雷拉
     + 恒等定理 (R = ζ on (1,2) ⟹ on (0,1)) + R_N < 0 ⟹ ζ(x) < 0。
+
+## 观测 AX: (0,1) 段块 A+B 已证, 块 C-G 待续 (2026-08-21 发布时刻状态)
+
+用户指令 "停止推进, 先完成发表保护权益"。当前 (0,1) 段 ζ(x)<0 证明状态:
+
+**已证 (0-sorry, zeta_continuation_iso.lean, hash 6367d55a8538ca06)**:
+- 块 A: R_N(s) = Σn^{-s} + N^{1-s}/(s-1) 与 G_N(s) = (s-1)Σ + N^{1-s}
+  在各自开集上初等可导 (cpow 底正实数 + 有理函数)。
+- 块 B: 欧拉-麦克劳林项 term 的 ℂ 版闭式 (分部积分):
+  zetaTermC n s = ((n+1)^{1-s} - n^{1-s})/(s(1-s)) - 1/(s·(n+1)^s),
+  卷 mathlib ZetaAsymptotics 体系 (term/termTSum/zeta_limit_aux1)。
+
+**待续 (KNOWN 诚实边界, 已从主证明隔离)**:
+- 块 C-G: termTSum 解析延拓 (Weierstrass) + 恒等定理 (f̃ = ζ on (0,1))
+  + f̃(x) ≤ x/(x-1) < 0。路径已完全打通 (工具全部验证可用:
+  differentiableOn_tsum_of_summable_norm / eqOn_zero_of_preconnected /
+  Convex.isPreconnected / integral_ofReal 桥), 未来会话继续。
+- proof.lean 环境适配: 新 mathlib 905b95818e API 迁移进行中
+  (norm_integral_le_integral_norm 移至 namespace / div_eq_zero_iff 签名变化 /
+  ∑-binder 语法 ∈ vs in 等), 内容以隔离 iso 文件为准, 各 iso 独立可编译。
