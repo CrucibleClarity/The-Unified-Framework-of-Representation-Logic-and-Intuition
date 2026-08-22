@@ -576,6 +576,9 @@ period-pair cancellation restores convergence
 behind the odd/even splitting used in Layer 8, and it supplies the
 continuity bridge of \S\ref{sec:contbridge}: the paired series converges
 where the two unpaired sides diverge (\texttt{pairing\_summable}).
+What could survive the divergence of both parts --- and what would it
+mean for the interval $(0,1)$, where the series does not converge at
+all?
 
 \subsection{Layer 7: zeros and the functional equation}
 \label{sec:L7}
@@ -849,7 +852,9 @@ differs from the lift of $\Xchi$ by an integer multiple of $\pi$
 
 The integer layers of \eqref{eq:align} are the discrete data carried by the
 phase: they count the winding of $u$ along the rectangle (Layer~12), and
-their deterministic prediction is the subject of Layer~11.
+their deterministic prediction is the subject of Layer~11. They are
+integers --- but which integers, and what exactly do they count? The
+question is answered only when the rectangle is closed.
 
 \section{Layer 11: predictor residuals}
 \label{sec:L11}
@@ -986,6 +991,12 @@ The Euler--Maclaurin first inequality
 \]
 (\texttt{zeta\_partial\_sum\_lt\_integral\_bound}) is the kernel of the
 $(0,1)$-segment (Layer~13).
+
+Every side of the rectangle is now accounted for --- the right edge by
+the series, the top and left edges by the functional equation, and the
+bottom edge by the false-real-axis assembly --- except the segment
+$(0,1)$ itself, where the series diverges and nothing so far applies.
+What can survive there is the question left open by Layer~6.
 
 \section{Layer 13: the $(0,1)$-segment continuation}
 \label{sec:kernel}
