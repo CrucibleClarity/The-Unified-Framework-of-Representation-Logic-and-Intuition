@@ -81,3 +81,12 @@ machine-checked conjugation/orbit development (117 declarations,
 ## Double-blind note
 
 No author / affiliation / email / DOI / repository identifiers.
+
+## 发布 v2 (2026-08-21, Zenodo 新版本)
+
+- 新增 zeta_continuation_iso.lean: (0,1) 段块 A+B (R_N/G_N 初等可导 +
+  欧拉-麦克劳林 term ℂ版闭式, 卷 mathlib ZetaAsymptotics), 0 error 0 sorry。
+- iso 文件 24/27 当前环境 (mathlib 905b95818e + lean 4.32.2) 0 error 0 sorry;
+  zeta_zero_order/error_seq/int_layer 与新 proof.lean 处于 API 迁移适配中
+  (证明内容不变, 详见 artifact/iso/ISO_README.md 编译状态表)。
+- (0,1) 段块 C-G (termTSum 解析延拓 + 恒等定理) 路径已验证打通, 待续。
