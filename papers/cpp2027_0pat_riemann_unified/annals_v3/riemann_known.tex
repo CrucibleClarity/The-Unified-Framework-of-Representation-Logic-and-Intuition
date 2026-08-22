@@ -43,7 +43,7 @@ for the multiplier of the functional equation, the argument-principle
 rectangle closure with its boundary estimates, the logarithmic growth control
 of the error term, and the negativity of the zeta function on the real
 interval $(0,1)$ --- the latter closed in this revision by the odd/even
-pairing (iso~41). The development is a chain of 235 verified Lean~4
+pairing (iso~41). The development is a chain of 237 verified Lean~4
 declarations organized in thirteen layers, from a self-contained algebra of
 complex axes (the basepoint-relative 0pat representation) through the
 geometry of the prime and critical circles, the false-real-axis framework (no
@@ -82,7 +82,7 @@ machine-verified account of the \emph{Riemann direction}: the chain of
 theorems connecting the zeros of $\zt$ to the argument principle, the phase
 of the multiplier $\Xchi$, and the growth of the error term.
 
-The full development is a chain of 235 Lean~4 declarations organized in
+The full development is a chain of 237 Lean~4 declarations organized in
 thirteen layers (Table~\ref{tab:layers}), each layer verified with zero
 errors and zero \texttt{sorry}.
 
@@ -96,7 +96,7 @@ Layer & Content \\
 \hline
 L1 & Complex-axis algebra (0pat representation), prime/critical circles \\
 L2 & Observable decomposition and zero reflection \\
-L3 & $j$-algebra and the circle family (six intersection theorems) \\
+L3 & $j$-algebra and the circle family (five intersection theorems) \\
 L4 & Transpose symmetry and lattice uniqueness \\
 L5 & Splitting and leak signs (phase-locking origin) \\
 L6 & Convergence region and divergence structure of the splitting \\
@@ -138,15 +138,15 @@ the infinitely many phase representatives $\theta+2\pi n$, $n\in\Z$
 The present paper \emph{deliberately proves the Riemann direction from known
 mathematics only}. No internal theorem of the 0pat framework is invoked;
 only mathematics already compiled in the mathlib library of Lean~4 is used:
-algebra over the complex numbers, Dirichlet series, integration by parts, the
-Weierstrass theorem on locally uniform limits of holomorphic functions, and
-the identity theorem. The reason is epistemic calibration: the author does
+algebra over the complex numbers, Dirichlet series, integration by parts,
+and the Weierstrass theorem on locally uniform limits of functions (for the
+odd/even pairing of Layer~13). The reason is epistemic calibration: the author does
 not accept a statement as proved on the authority of ``classical and
 therefore citable''; a conclusion is regarded as proved only when it has been
 verified by the Lean~4 compiler with no \texttt{sorry}. Everything not yet
 machine-verified is explicitly marked KNOWN and listed as an honest boundary
-(in version 1: the Euler--Maclaurin continuation Blocks C--G of
-\S\ref{sec:kernel}). In this revision the boundary is closed: the odd/even
+(in version 1: the Euler--Maclaurin continuation Blocks C--G, see the
+remark in \S\ref{sec:blocksCG}). In this revision the boundary is closed: the odd/even
 pairing of \S\ref{sec:contbridge} is machine-verified (iso~41,
 \texttt{zeta\_odd\_even\_continuity\_iso.lean}, 4 declarations, 0 errors,
 0 \texttt{sorry}), giving the continuity of $\zt$ on $(0,1)$ directly and
@@ -211,7 +211,8 @@ AI contribution statement (in compliance with the Annals of Mathematics
 policy on AI and LLM tools): the author (a human) designed the proof
 architecture, the layer decomposition, and the reduction to known
 mathematics, and takes full responsibility for the content. AI tools (the
-ZCode environment) performed the mechanical proof expansion and the writing
+ZCode environment and the DeepSeek API) performed the
+mechanical proof expansion and the writing
 of the Lean~4 code; every theorem was verified by the Lean~4 compiler. Ideas
 contributed by AI are identified in this statement and in
 \S\ref{sec:methodology}.
@@ -225,7 +226,7 @@ winding counts extracted from the multi-valued phase. The present paper
 supplies the \emph{what}: a machine-verified proof of the Riemann direction
 along known mathematics, in which the locking of arguments (the lifted
 continuous argument $\theta_\Xchi$ and the flip count of
-\S\ref{sec:flip}) is exactly the phase locking of the framework
+\S\ref{sec:bridge}) is exactly the phase locking of the framework
 (\S\ref{sec:discussion}).
 
 Every symbol used in a displayed formula below is defined here first
@@ -237,7 +238,7 @@ function}, defined by
 \Lam_0(s)=\Lam(s)+\frac{1}{s}+\frac{1}{1-s},
 \]
 where $\Lam(s)=\pi^{-s/2}\GG(s/2)\zt(s)$ is the completed zeta function;
-equivalently, for $s\neq 0$,
+equivalently, for $s\neq 0,1$,
 \[
 \zt(s)=\frac{\Lam_0(s)-1/s-1/(1-s)}{\pi^{-s/2}\GG(s/2)}.
 \]
@@ -291,7 +292,7 @@ the development: addition, negation, multiplication, the imaginary unit, the
 lift and the norm are defined on the pair structure
 (\texttt{add}, \texttt{neg}, \texttt{zero}, \texttt{one}, \texttt{J},
 \texttt{mul}, \texttt{sub}, \texttt{lift}, \texttt{norm}), and the two
-basepoint circles are distinguished:
+basepoint circles are distinguished (Figure~\ref{fig:circles}):
 
 \begin{definition}[Prime circle and critical circle]
 The \emph{prime circle} $\mathcal{P}$ and the \emph{critical circle}
@@ -354,7 +355,7 @@ symmetry $s\leftrightarrow 1-s$ that governs the whole Riemann direction.
 \end{tikzpicture}
 \caption{The two basepoint circles: the critical circle $\mathcal{C}$ and
 the prime circle $\mathcal{P}$, with the axis intersections located by the
-six intersection theorems of Layer~3.}
+five intersection theorems of Layer~3.}
 \label{fig:circles}
 \end{figure}
 
@@ -372,13 +373,14 @@ $\operatorname{normSq}(z_1z_2)=\operatorname{normSq}(z_1)\operatorname{normSq}(z
 \label{thm:circles}
 The two basepoint circles have orthogonal radii
 (\texttt{orthogonal\_radii}) and are disjoint (\texttt{circles\_disjoint});
-the intersection points with the axes and with each other are located by the
-six intersection theorems (\texttt{imaginary\_radius\_circle},
-\texttt{real\_radius\_circle}, \texttt{imagAxis\_inter\_criticalCircle},
+the axis and mutual intersections are located by the five intersection
+theorems (\texttt{imagAxis\_inter\_criticalCircle},
 \texttt{realAxis\_inter\_primeCircle},
 \texttt{imagAxis\_inter\_primeCircle},
 \texttt{prime3Circle\_inter\_criticalCircle},
-\texttt{primeCircle\_inter\_criticalCircle\_ge5}).
+\texttt{primeCircle\_inter\_criticalCircle\_ge5}), with the two radius
+circles (\texttt{imaginary\_radius\_circle}, \texttt{real\_radius\_circle})
+recording the radius values used there.
 \end{theorem}
 
 \begin{theorem}[Pseudo-norm threshold]
@@ -483,7 +485,7 @@ not a power (\texttt{prime\_no\_power\_decomposition}).
 \begin{theorem}[Completed zeta and the functional equation]
 \label{thm:xi}
 The completed zeta function $\Lam_0$ is symmetric
-(\texttt{xi\_symmetry\_zero}, \texttt{xi\_symmetry}) and entire
+(\texttt{xi\_symmetry}\(_0\), \texttt{xi\_symmetry}) and entire
 (\texttt{xi\_entire}); the zeta series form and the functional equation
 (\texttt{zeta\_series\_form}, \texttt{zeta\_functional\_equation}) are the
 mathlib reflection $\zt(s)=\Xchi(s)\zt(1-s)$; the alternating series
@@ -505,7 +507,7 @@ This layer is the analytic backbone of the development.
 \begin{theorem}[Conjugation symmetry]
 \label{thm:conj}
 The multiplier and the completed zeta function commute with conjugation
-(\texttt{chi\_conj}, \texttt{conj\_completedRiemannZeta\_zero}), and $\zt$
+(\texttt{chi\_conj}, \texttt{conj\_completedRiemannZeta}\(_0\)), and $\zt$
 is conjugate-symmetric in the region of the series
 (\texttt{zeta\_conj\_of\_one\_lt\_re}), by reflection for $\Re s<0$
 (\texttt{zeta\_conj\_of\_re\_lt\_zero}), and in the critical strip
@@ -643,7 +645,7 @@ On the critical line,
 \begin{equation}
 \label{eq:phase}
 \arg\zt(1/2+it)=\arg\Xchi(1/2+it),\qquad
-|\zt(1/2+it)|^2=\Xchi(1/2+it),
+\zt(1/2+it)=\Xchi(1/2+it)\,\overline{\zt(1/2+it)},
 \end{equation}
 (\texttt{zeta\_two\_arg\_eq\_arg\_chi}, \texttt{zeta\_unit\_sq\_eq\_chi},
 \texttt{zeta\_eq\_chi\_mul\_conj\_on\_line}), and the translation theorems
@@ -653,9 +655,10 @@ quantify the period of the multiplier's argument.
 \end{theorem}
 
 The second identity of \eqref{eq:phase} is the source of the square
-relation $u^2=\Xchi$ used in Layer~10: the unit phase $u$ of $\zt$ squares
-to the multiplier, which is why the flip of $u$ across the line is governed
-by the phase of $\Xchi$.
+relation $u^2=\Xchi$ used in Layer~10: since $|\Xchi|=1$ on the line,
+$\zt=\Xchi\overline{\zt}$ squares to $\zt^2=\Xchi|\zt|^2$, so the unit
+phase $u=\zt/|\zt|$ satisfies $u^2=\Xchi$, which is why the flip of $u$
+across the line is governed by the phase of $\Xchi$.
 
 \section{Layer 10: covering space and phase locking}
 \label{sec:L10}
@@ -756,7 +759,8 @@ functional equation.}
 \label{fig:rect}
 \end{figure}
 
-A \emph{flip} is a sign change of $\Re\zt$ across the critical line; the
+In the rectangle of Figure~\ref{fig:rect}, a \emph{flip} is a sign
+change of $\Re\zt$ across the critical line; the
 \emph{flip count} is the number of flips recorded by the lifted phases of
 Layer~10. The \emph{winding number} of $\Xchi$ along a path is the total
 change of its lifted argument divided by $2\pi$.
@@ -780,11 +784,11 @@ integer-layer bridge
 \[
 \log\Lam_0(1-s)-\log\Lam_0 s\in 2\pi i\Z
 \]
-(\texttt{completedZeta\_zero\_log\_reflection}), and in the strip
+(\texttt{completedZeta}\(_0\)\_log\_reflection), and in the strip
 \[
 \zt(s)=0\iff\Lam_0(s)=\frac{1}{s}+\frac{1}{1-s}
 \]
-(\texttt{zeta\_zero\_iff\_completedZeta\_zero\_one\_over\_sum}).
+(\texttt{zeta\_zero\_iff\_completedZeta}\(_0\)\_one\_over\_sum).
 \end{theorem}
 
 The second statement is the passage from the meromorphic $\zt$ to the
@@ -865,15 +869,16 @@ For every real $x$ with $0<x<1$,
 
 \emph{Proof (short path, this revision).} By \S\ref{sec:contbridge} $\zt$
 is continuous on $(0,1)$ (machine-verified, iso~41). The pairing terms
-$1/(2n+1)^x-1/(2n+2)^x$ are strictly positive
+$1/(2n+1)^x-1/(2n+2)^x$, $n\ge 0$, are strictly positive
 (\texttt{pairing\_term\_pos}), so the alternating series
-$\eta(x)=\sum(2n-1)^{-x}-\sum(2n)^{-x}$ has positive partial sums and
-positive limit: $\eta(x)>0$. The doubling identity
+$\eta(x)=\sum_{n\ge 0}\big((2n+1)^{-x}-(2n+2)^{-x}\big)$ has positive
+partial sums and positive limit: $\eta(x)>0$. The doubling identity
 $\zt(x)=\eta(x)/(1-2^{1-x})$ and $1-2^{1-x}<0$ for $0<x<1$ give
 $\zt(x)<0$. \qed
 
 \emph{Euler--Maclaurin background.} On $(1,\infty)$ the Dirichlet series
-shows $\zt>0$. The kernel $R_N(x)=\sum_{n\le N}n^{-x}-N^{1-x}/(1-x)$ is the
+shows $\zt>0$. The kernel $R_N(x)=\sum_{n\le N}n^{-x}+N^{1-x}/(x-1)$ (of
+\eqref{eq:kernel}) is the
 series with its divergent tail replaced by its integral approximation; for
 $0<x<1$ each partial kernel is bounded above by the first term
 $R_1(x)=x/(x-1)<0$ (the Euler--Maclaurin first inequality, machine-verified
@@ -1011,7 +1016,10 @@ superposition whose individual sums diverge. Pairing adjacent terms gives
 =\sum_{n\ge1}\int_{2n-1}^{2n}\frac{x}{t^{x+1}}\,dt
 \le\sum_{n\ge1}\frac{x}{(2n-1)^{x+1}}<\infty,
 \]
-since $x+1>1$. The paired series therefore converges absolutely, hence
+since $x+1>1$. (Equivalently, pairing from the first odd index,
+$\sum_{n\ge 0}(1/(2n+1)^x-1/(2n+2)^x)$, the form verified as
+\texttt{pairing\_term\_pos} and \texttt{pairing\_summable} in iso~41.)
+The paired series therefore converges absolutely, hence
 locally uniformly, on every compact subinterval of $(0,1)$.
 
 \textbf{(ii) From the pairing to $\zt$.} The alternating series
@@ -1026,6 +1034,14 @@ continuous function by a nonvanishing one: $2^{1-x}\in(1,2)$ for
 $0<x<1$, so $1-2^{1-x}\neq0$. A locally uniformly convergent series of
 continuous functions is continuous; hence $\eta$ is continuous on $(0,1)$,
 and the quotient is continuous. \qed
+
+The machine verification of the conclusion (iso~41,
+\texttt{zeta\_continuous\_zero\_one}) anchors the continuity of $\zt$ on
+$(0,1)$ in mathlib's \texttt{differentiableOn\_riemannZeta}; the three
+pairing theorems of the classical argument above
+(\texttt{pairing\_term\_pos}, \texttt{pairing\_diff\_bound},
+\texttt{pairing\_summable}) are verified independently as its elementary
+ingredients.
 
 Thus the continuity of $\zt$ on $(0,1)$ rests on the same odd/even pairing
 that underlies Layer 5 and the period-pair cancellation of Layer 6: two
@@ -1072,7 +1088,7 @@ Layer~12 --- with the pairing terms and the doubling identity, both of
 which are elementary and the former machine-verified. Blocks A--B
 (verified in version 1) are retained as the closed-form record of the
 Euler--Maclaurin term. The choice of the short path does not affect any
-other layer: the remaining thirteen layers are unchanged and remain
+other layer: the remaining twelve layers are unchanged and remain
 machine-verified as in version 1.
 
 \section{Discussion: polyphase numbers and the necessity of single-phase numbers}
@@ -1105,7 +1121,7 @@ principle would not apply.
 
 The framework's cancellation operations act on phase superpositions. The
 precise content --- machine-verified in the isolation file
-\texttt{symmetry\_cancel\_phase\_iso.lean} (iso~29 of the artifact, 10
+\texttt{symmetry\_cancel\_phase\_iso.lean} (iso~29 of the artifact, 18
 declarations, 0 errors, 0 \texttt{sorry}) --- is the structure of the
 covering map $t\mapsto e^{it}$:
 
@@ -1238,7 +1254,7 @@ representation. No ``path-carrying phase'' is required.
 
 The component that carries the movement is Pat itself: the successor.
 Its essence is phase superposition (machine-verified in
-\texttt{phase\_succ\_iso.lean}, iso~31, 4 declarations, 0 errors, 0
+\texttt{phase\_succ\_iso.lean}, iso~31, 9 declarations, 0 errors, 0
 \texttt{sorry}): the successor is one turn,
 $\mathrm{succ}(\theta)=\theta+2\pi$ --- (i) \emph{aligned}: the phase
 modulation preserves the projection,
@@ -1303,7 +1319,7 @@ $\mathbb{N}\to\mathbb{N}$, with
 \aleph_0^{\aleph_0}=2^{\aleph_0}=\mathfrak c=|\mathbb{R}|,
 \]
 the continuum itself (machine-verified in the isolation file
-\texttt{continuum\_projection\_iso.lean}, iso~28 of the artifact: 15
+\texttt{continuum\_projection\_iso.lean}, iso~28 of the artifact: 35
 declarations, 0 errors, 0 \texttt{sorry}). The ``more than $\aleph_0$''
 intuition is therefore correct for the \emph{result}: the superposition
 produces $2^{\aleph_0}>\aleph_0$ objects (Cantor). The choice space at
@@ -1462,16 +1478,18 @@ journal's submission system accepts the manuscript PDF only; the
 complete Lean verification package is retrievable from these records.
 Environment: Lean 4.32.2 \cite{lean}, mathlib revision 905b95818e
 \cite{mathlib}. The development
-comprises 231 declarations in \texttt{proof.lean} plus the isolation files
-\texttt{zeta\_*\_iso.lean}, \texttt{continuum\_projection\_iso.lean}
-(iso~28: the continuum by phase superposition, 35 declarations), and
+comprises 221 declarations in \texttt{proof.lean} (Layers 1--12), plus the
+isolation files \texttt{zeta\_continuation\_iso.lean} (Layer 13 Blocks A--B,
+12 declarations), \texttt{zeta\_odd\_even\_continuity\_iso.lean} (iso~41:
+the odd/even pairing continuity of this revision, 4 declarations),
+\texttt{continuum\_projection\_iso.lean}
+(iso~28: the continuum by phase superposition, 35 declarations),
 \texttt{symmetry\_cancel\_phase\_iso.lean} (iso~29: what symmetry cancels
-and the single-phase number field, 18 declarations), and
+and the single-phase number field, 18 declarations),
 \texttt{path\_problem\_iso.lean} (iso~30: the path problem, 8
 declarations), and \texttt{phase\_succ\_iso.lean} (iso~31: the
-successor as phase superposition and only-0-and-1, 9 declarations), and
-\texttt{zeta\_odd\_even\_continuity\_iso.lean} (iso~41: the odd/even
-pairing continuity of this revision, 4 declarations); each isolation file
+successor as phase superposition and only-0-and-1, 9 declarations);
+each isolation file
 compiles independently with
 0 errors and 0 \texttt{sorry}. The library theorems used by the Euler--Maclaurin
 continuation blocks of version 1 (all confirmed present in mathlib):
@@ -1505,7 +1523,7 @@ the numbers themselves are unambiguous (Peano); and the continuum
 hypothesis remains independent of ZFC.
 
 Along the path of known mathematics only, the Riemann direction is
-machine-verified through twelve layers: from the complex-axis representation
+machine-verified through thirteen layers: from the complex-axis representation
 and the circle geometry, through the false-real-axis framework and the
 critical-line phase layer, the covering-space phase locking, the predictor
 residuals, and the argument-principle rectangle closure with its boundary
@@ -1517,21 +1535,21 @@ classical doubling identity (\S\ref{sec:blocksCG}), completing the
 zero-free bottom edge of the rectangle of Layer~12.
 
 \appendix
-\section{Complete declaration inventory (231 + 4 declarations, by layer)}
+\section{Complete declaration inventory (221 + 12 + 4 declarations, by layer)}
 \label{app:inventory}
 
 {\small\begin{sloppypar}
 \begin{enumerate}
-\item \textbf{L1 (11)}: \texttt{add}, \texttt{neg}, \texttt{zero},
+\item \textbf{L1 (15)}: \texttt{add}, \texttt{neg}, \texttt{zero},
 \texttt{one}, \texttt{J}, \texttt{mul}, \texttt{sub}, \texttt{lift},
 \texttt{norm}, \texttt{primeCircle}, \texttt{criticalCircle};
 \texttt{card\_units\_zmod\_prime}, \texttt{fermat\_little},
 \texttt{fermat\_little\_complete}, \texttt{infinitely\_many\_primes}.
-\item \textbf{L2 (13)}: \texttt{orthogonal\_frame\_crt},
+\item \textbf{L2 (7)}: \texttt{orthogonal\_frame\_crt},
 \texttt{factor\_observable\_zero}, \texttt{distinct\_primes\_observable},
 \texttt{prime\_unit\_on\_other\_circle}, \texttt{zeta\_zero\_reflection},
 \texttt{zeta\_zero\_strip\_reflection}, \texttt{zeta\_zero\_offline\_pair}.
-\item \textbf{L3 (22)}: \texttt{j}, \texttt{normSq}, \texttt{j\_sq},
+\item \textbf{L3 (19)}: \texttt{j}, \texttt{normSq}, \texttt{j\_sq},
 \texttt{normSq\_mul}, \texttt{imaginary\_radius\_circle},
 \texttt{real\_radius\_circle}, \texttt{orthogonal\_radii},
 \texttt{circles\_disjoint}, \texttt{odd\_prime\_is\_split\_norm},
@@ -1542,7 +1560,7 @@ zero-free bottom edge of the rectangle of Layer~12.
 \texttt{imagAxis\_inter\_primeCircle},
 \texttt{prime3Circle\_inter\_criticalCircle},
 \texttt{primeCircle\_inter\_criticalCircle\_ge5}.
-\item \textbf{L4 (27)}: \texttt{j}, \texttt{normSq}, \texttt{unitCircle},
+\item \textbf{L4 (25)}: \texttt{j}, \texttt{normSq}, \texttt{unitCircle},
 \texttt{imaginaryCircle}, \texttt{transpose},
 \texttt{transpose\_involutive}, \texttt{transpose\_maps\_one\_to\_i},
 \texttt{transpose\_origin\_fixed}, \texttt{transpose\_maps\_unit\_to\_imaginary},
@@ -1557,32 +1575,32 @@ zero-free bottom edge of the rectangle of Layer~12.
 \texttt{transpose\_realAxis\_eq\_imaginaryAxis},
 \texttt{transpose\_natural\_imaginary\_is\_natural\_real},
 \texttt{complex\_imag\_axis\_coefficient}.
-\item \textbf{L5 (19)}: \texttt{complex\_mul\_imag\_leaks},
+\item \textbf{L5 (10)}: \texttt{complex\_mul\_imag\_leaks},
 \texttt{complex\_mul\_cross\_stays\_imag}, \texttt{split\_mul\_imag\_leaks},
 \texttt{leak\_sign\_is\_unit\_square}, \texttt{unit\_1\_on\_real\_circle},
 \texttt{unit\_j\_on\_imag\_circle}, \texttt{real\_circle\_is\_direction\_1},
 \texttt{imag\_circle\_is\_direction\_j}, \texttt{directions\_orthogonal},
 \texttt{euler\_plane}.
-\item \textbf{L6 (9)}: \texttt{complex\_zeta\_convergence\_region},
+\item \textbf{L6 (10)}: \texttt{complex\_zeta\_convergence\_region},
 \texttt{cosh\_lower\_bound}, \texttt{cosh\_unbounded},
 \texttt{log\_nat\_unbounded}, \texttt{split\_zeta\_term\_unbounded},
 \texttt{zeta\_term\_norm\_split}, \texttt{period\_pair\_reduces},
 \texttt{divergence\_pair\_reduces}, \texttt{term\_conj\_symmetry},
 \texttt{functional\_equation\_bridges}.
-\item \textbf{L7 (18)}: \texttt{prime\_factor\_zero},
+\item \textbf{L7 (15)}: \texttt{prime\_factor\_zero},
 \texttt{trivial\_zero\_condition}, \texttt{critical\_line\_observation},
 \texttt{i\_pow\_i\_eq\_exp\_neg\_pi\_div\_two}, \texttt{i\_pow\_i\_ne\_i},
 \texttt{i\_pow\_i\_pos\_lt\_one}, \texttt{axis\_tick\_pow},
-\texttt{prime\_no\_power\_decomposition}, \texttt{xi\_symmetry\_zero},
+\texttt{prime\_no\_power\_decomposition}, \texttt{xi\_symmetry}\(_0\),
 \texttt{xi\_symmetry}, \texttt{xi\_entire}, \texttt{zeta\_series\_form},
 \texttt{zeta\_functional\_equation}, \texttt{alternating\_series\_converges},
 \texttt{alternating\_partial\_sum\_bounded}, \texttt{eta\_pair\_form}.
-\item \textbf{L8 (31)}: \texttt{zeta\_conj\_of\_one\_lt\_re},
+\item \textbf{L8 (37)}: \texttt{zeta\_conj\_of\_one\_lt\_re},
 \texttt{arg\_two\_ne\_pi}, \texttt{arg\_pi\_ne\_pi}, \texttt{conj\_two\_cpow},
 \texttt{conj\_pi\_cpow}, \texttt{conj\_sin\_half}, \texttt{conj\_gamma\_one\_sub},
 \texttt{chi\_conj}, \texttt{zeta\_conj\_of\_re\_lt\_zero},
 \texttt{conj\_cpow\_of\_pos}, \texttt{conj\_f\_modif\_zero},
-\texttt{conj\_mellin\_f\_modif}, \texttt{conj\_completedRiemannZeta\_zero},
+\texttt{conj\_mellin\_f\_modif}, \texttt{conj\_completedRiemannZeta}\(_0\),
 \texttt{zeta\_conj\_of\_critical\_strip}, \texttt{zeta\_re\_conj\_symm},
 \texttt{zeta\_im\_conj\_antisymm}, \texttt{zeta\_re\_even\_on\_line},
 \texttt{zeta\_im\_odd\_on\_line}, \texttt{zeta\_eq\_zero\_iff\_re\_im},
@@ -1599,7 +1617,7 @@ zero-free bottom edge of the rectangle of Layer~12.
 \texttt{critical\_line\_positional}, \texttt{orbit\_center\_half},
 \texttt{orbit\_degenerate\_iff\_on\_line},
 \texttt{recip\_on\_critical\_circle\_iff}, \texttt{zero\_orbit\_four}.
-\item \textbf{L9 (36)}: \texttt{chi\_mul\_chi\_one\_sub},
+\item \textbf{L9 (31)}: \texttt{chi\_mul\_chi\_one\_sub},
 \texttt{conj\_cpow\_inv\_half\_of\_unit}, \texttt{hardyZ\_real},
 \texttt{chi\_unit\_on\_line}, \texttt{chi\_ne\_zero\_on\_line},
 \texttt{chi\_mem\_slitPlane\_on\_line}, \texttt{zero\_orbit\_distinct\_of\_offline},
@@ -1616,7 +1634,7 @@ zero-free bottom edge of the rectangle of Layer~12.
 \texttt{chi\_translation\_two}, \texttt{chi\_arg\_translation\_two},
 \texttt{chi\_translation\_four}, \texttt{chi\_arg\_translation\_four},
 \texttt{zeta\_eq\_chi\_mul\_conj\_on\_line}, \texttt{zeta\_unit\_sq\_eq\_chi}.
-\item \textbf{L10 (28)}: \texttt{zetaZeroSet}, \texttt{isClosed\_zetaZeroSet},
+\item \textbf{L10 (27)}: \texttt{zetaZeroSet}, \texttt{isClosed\_zetaZeroSet},
 \texttt{isDiscrete\_zetaZeroSet}, \texttt{zeta\_zeros\_finite\_in\_strip},
 \texttt{zetaUnit}, \texttt{continuousOn\_zetaUnit}, \texttt{chi},
 \texttt{continuousOn\_chi\_line}, \texttt{chi\_ne\_zero\_on\_line},
@@ -1631,15 +1649,15 @@ zero-free bottom edge of the rectangle of Layer~12.
 \item \textbf{L11 (5)}: \texttt{polyError}, \texttt{poly\_error\_ratio},
 \texttt{error\_seq\_predicts}, \texttt{poly\_error\_monotone},
 \texttt{error\_precision\_bound}.
-\item \textbf{L12 (12)}: \texttt{flip\_chi\_circle\_bridge},
+\item \textbf{L12 (10)}: \texttt{flip\_chi\_circle\_bridge},
 \texttt{net\_flip\_from\_chi\_lift}, \texttt{flip\_count\_from\_theta\_lifts},
-\texttt{completedZeta\_zero\_log\_reflection},
-\texttt{zeta\_zero\_iff\_completedZeta\_zero\_one\_over\_sum},
+\texttt{completedZeta}\(_0\)\_log\_reflection,
+\texttt{zeta\_zero\_iff\_completedZeta}\(_0\)\_one\_over\_sum,
 \texttt{zeta\_line\_two\_bounded}, \texttt{Gamma\_one\_add\_it\_norm\_le\_one},
 \texttt{zeta\_ne\_zero\_on\_bottom\_edge}, \texttt{zeta\_im\_zero\_on\_real},
 \texttt{zeta\_neg\_one\_re\_neg}, \texttt{bottom\_edge\_arg\_jump},
 \texttt{zeta\_partial\_sum\_lt\_integral\_bound}.
-\item \textbf{L13 (9, isolation file)}: \texttt{zetaEmR\_N},
+\item \textbf{L13 (12, isolation file)}: \texttt{zetaEmR\_N},
 \texttt{zetaEmG\_N}, \texttt{zetaEmG\_N\_eq\_smul},
 \texttt{zetaEmR\_N\_differentiableOn}, \texttt{zetaEmG\_N\_differentiableOn},
 \texttt{zetaTermC}, \texttt{zetaTermC\_fund\_integral},
@@ -1774,14 +1792,14 @@ requiring only 0pat formalization, with $\log$ as $e$'s
 finite-to-infinite; and that a mapping phase relation in phase modulation
 can replace iterative approximation (the residual has a definite lower bound
 and stable direction), since iterative approximation is itself
-finite-reaching-infinite (\S\ref{sec:L11}, \S\ref{sec:growth}).
+finite-reaching-infinite (\S\ref{sec:L11}).
 \item \emph{Sign flips as the symmetry process; reversal docking as the
 period--divergence bridge.} The author proposed that oscillation is the
 sign-flip process of the framework (symmetry itself: a sign change with the
 position fixed, realized as iteration of $i$), that reversal docking is the
 period--divergence bridge, together with the continuous--discrete inverse
 bridge, and that the expansion of the sign-change mechanism joins the
-existing fast paths (\S\ref{sec:flip}, \S\ref{sec:methodology},
+existing fast paths (\S\ref{sec:bridge}, \S\ref{sec:methodology},
 \S\ref{sec:L10}).
 \item \emph{Essence of pat: cancellation of phases.} The author proposed
 that pat defines a single-phase number, that all numbers are
@@ -1819,7 +1837,7 @@ not from hand-derived classical expansions (\S\ref{sec:methodology},
 \S\ref{sec:L9}, \S\ref{sec:blockB}).
 \item \emph{Use known curves} (\S\ref{sec:boundary}).
 \item \emph{The false real axis is proved, not KNOWN}
-(\S\ref{sec:L8}, \S\ref{sec:bottom}).
+(\S\ref{sec:L8}, Theorem~\ref{thm:bottom}).
 \item \emph{Epistemic calibration: Lean no sorry}
 (\S\ref{sec:calibration}).
 \item \emph{Search the library first} (mathlib \texttt{ZetaAsymptotics};
@@ -1863,7 +1881,7 @@ by parts and power-law assembly (\S\ref{sec:blockB}).
 (\texttt{differentiableOn\_tsum\_of\_summable\_norm} and
 \texttt{eqOn\_zero\_of\_preconnected\_of\_frequently\_eq\_zero})
 (\S\ref{sec:blocksCG}, \S\ref{sec:verification}).
-\item The mechanical Lean~4 code for all 231 declarations and the
+\item The mechanical Lean~4 code for all 221 declarations and the
 typesetting of this manuscript (\S\ref{sec:verification}, Appendix~A).
 \end{enumerate}
 
@@ -1885,7 +1903,7 @@ exponential bridges and known curves (\S\ref{sec:methodology},
 \item \emph{Marking the bottom-edge real-valuedness as KNOWN.} The AI
 proposed citing the real-axis behavior of $\zt$ as classical; the author
 corrected that the false-real-axis framework is already machine-verified and
-must be assembled, not cited (\S\ref{sec:L8}, \S\ref{sec:bottom}).
+must be assembled, not cited (\S\ref{sec:L8}, Theorem~\ref{thm:bottom}).
 \item \emph{Difference-chain treatment of continuation.} The AI treated the
 symmetric continuation by difference chains; the author redirected: under
 pat0 a difference chain is a symmetric operation, and the continuation must
@@ -1906,8 +1924,10 @@ route; the author rejected it and required a fast path quoting known curves
 (\S\ref{sec:methodology}, \S\ref{sec:boundary}).
 \item \emph{Paper scope limited to the four tasks.} The AI first framed the
 paper around the four tasks only; the author rejected this scope and
-required a complete review of the whole development (all 231 declarations
-in thirteen layers, plus the 4 declarations of the odd/even pairing of this
+required a complete review of the whole development (all 221 declarations
+in twelve layers, plus the 12 declarations of Blocks A--B
+(\texttt{zeta\_continuation\_iso.lean}) and the 4 declarations of the
+odd/even pairing of this
 revision) (\S\ref{sec:intro}, Table~\ref{tab:layers},
 Appendix~A).
 \item \emph{Continuing the $(0,1)$-segment before publication.} The AI
@@ -1923,7 +1943,8 @@ subsection, designed the proof architecture and the layer decomposition,
 calibrated the development as listed in the second subsection, and takes
 full responsibility for the content of this submission, including its
 correctness and the integrity and accuracy of its citations. AI tools (the
-ZCode environment) performed the mechanical proof expansion, the writing of
+ZCode environment and the DeepSeek API) performed the
+mechanical proof expansion, the writing of
 the Lean~4 code, and the typesetting of this manuscript; all theorems were
 verified by the Lean~4 compiler (0 errors, 0 \texttt{sorry}). AI agents are
 not authors.
