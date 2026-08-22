@@ -28,9 +28,10 @@ the Zeta Series under Machine Check (Exercise XXXVII)}
 
 \begin{abstract}
 We unify thirteen exercises of the Riemann direction into a single
-machine-checked development of one hundred and one declarations
-(eighty-nine theorems and twelve lemmas), all formalized in Lean 4 +
-mathlib from known mathematics alone. The
+machine-checked development of one hundred and fifty-six declarations
+(one hundred and twenty-four theorems and lemmas and thirty-two
+definitions), all formalized in Lean 4 + mathlib from known
+mathematics alone. The
 development proceeds in six layers: prime structure (infinitely many
 primes, Fermat's little theorem, the unit groups of the prime residue
 rings); an observation frame built from split-complex numbers whose
@@ -423,7 +424,33 @@ symmetry of $\zeta$, the unit modulus of the multiplier, the
 conjugation law for the power $-1/2$ (main branch; at the branch
 point $\chi = -1$ the value is computed directly), and the power-law
 identity $\chi^{1/2}\chi^{-1} = \chi^{-1/2}$. The equality
-$\overline{Z(t)} = Z(t)$ is machine-checked for every real $t$.
+$\overline{Z(t)} = Z(t)$ is machine-checked for every real $t$
+(\texttt{hardyZ\_conj}, \texttt{hardyZ\_im\_zero}). The proof is a
+conjugation-reflection symmetry: $\overline{Z} = Z$ (the conjugate
+of each factor of $Z$ is computed in place, and the unit modulus of
+$\chi$ closes the conjugation), rather than an algebraic argument on
+$Z^2$; the file \texttt{HardyZ.lean} imports Mathlib only.
+
+\paragraph{Flip $=$ zero: sign changes of $Z$ force critical-line
+zeros (hardyZ\_zero\_between).} The real-valuedness of $Z$ is the
+first missing ring of the flip count. The second ring is the
+intermediate value theorem. Machine-checked: $Z(t) = 0$ if and only
+if $\zeta(1/2+it) = 0$ (the multiplier is never zero on the line,
+hence the power $\chi^{-1/2}$ is never zero); $Z$ is continuous
+($\chi$ is continuous on the critical line --- the power factor
+$2\cdot(2\pi)^{s-1}$ has its base $2\pi$ in the slit plane, the
+Gamma factor is continuous off the negative integers, and $\sin$ is
+continuous; $\zeta$ is differentiable off $s=1$; and the power
+$c\mapsto c^{-1/2}$ is continuous at $c=\chi(1/2+it)$ because the
+multiplier lies in the slit plane); and, for $a<b$,
+\[
+\operatorname{Re}Z(a)<0<\operatorname{Re}Z(b)
+\implies \exists\,t\in(a,b),\ Z(t)=0
+\]
+(\texttt{hardyZ\_zero\_between}, \texttt{intermediate\_value\_Icc}).
+A flip --- a sign change of $Z$ across the critical line --- therefore
+always records a zero of $\zeta$ on the critical line: every flip
+counts toward $N_0(T)$.
 
 \section{Splitting the zeta function: even/odd parts and the base point $i$}
 
@@ -490,34 +517,43 @@ The content is classical mathematics: prime structure, split-complex
 geometry, intersection tables, the compression of the imaginary part,
 the divergence--period split of the series, the functional equation,
 zero reflection, prime-factor zeros, trivial zeros, the critical-line
-observation, the iteration of $i$, and the completed zeta structure.
-All one hundred and thirty declarations (one hundred and fifteen theorems and
-fifteen lemmas) are machine-checked in Lean 4 + mathlib from known
-mathematics alone, with zero errors and zero \texttt{sorry}; the
-functional equation and the completed zeta facts are cited from
-mathlib rather than proved anew.
+observation, the iteration of $i$, the completed zeta structure, and
+the Hardy $Z$ function (real-valuedness and the intermediate-value
+flip-to-zero theorem). All one hundred and fifty-six declarations (one
+hundred and twenty-four theorems and lemmas and thirty-two definitions)
+are machine-checked in Lean 4 + mathlib from known mathematics alone,
+with zero errors and zero \texttt{sorry}; the functional equation and
+the completed zeta facts are cited from mathlib rather than proved anew.
 
 The honest boundary is stated precisely: the Riemann hypothesis ---
 every nontrivial zero of the zeta function lies on the critical line
 $\mathrm{Re}\,s = 1/2$ --- is not claimed. What is machine-checked
 here is the structure around it: the symmetry of zeros under the
 functional equation, the location of the Euler-factor zeros on the
-imaginary axis, the trigonometric origin of the trivial zeros, and the
+imaginary axis, the trigonometric origin of the trivial zeros, the
 observation that the critical line is exactly the locus of the
-divergence factor $n^{-1/2}$, and the machine-checked fact that the
-function $Z(t) = \chi(1/2+it)^{-1/2}\zeta(1/2+it)$ is real-valued.
-The Riemann hypothesis is equivalent to all zeros of $Z$ being real;
-that statement is not claimed. Proving that $Z$ has no non-real zeros
-requires the analytic theory of zero counting and of sign changes,
-which is beyond the machine-checked content of this exercise. The
-Riemann hypothesis remains open.
+divergence factor $n^{-1/2}$, the machine-checked fact that the
+function $Z(t) = \chi(1/2+it)^{-1/2}\zeta(1/2+it)$ is real-valued,
+and the intermediate-value direction of the flip count: a sign change
+of $Z$ between $a$ and $b$ forces a zero of $\zeta$ on the critical
+line (\texttt{hardyZ\_zero\_between}). The Riemann hypothesis is
+equivalent to all zeros of $Z$ being real; that statement is not
+claimed. Proving that $Z$ has no non-real zeros requires the
+converse direction of the zero counting --- that every critical-line
+zero is counted by a flip and that the total count matches the
+argument-principle count $N(T)$ --- which is beyond the
+machine-checked content of this exercise. The Riemann hypothesis
+remains open.
 
 \section*{Artifact}
 
-The artifact contains \texttt{proof.lean} (Lean 4.32.2, mathlib
-v4.32.2): one hundred and thirty declarations (one hundred and fifteen theorems and
-fifteen lemmas), zero errors, zero \texttt{sorry}; and
-\texttt{observation.md}, a record of thirty numerical observations
+The artifact contains \texttt{proof\_unified.lean} (Lean 4.32.2,
+mathlib v4.32.2): one hundred and fifty-six declarations (one hundred
+and twenty-four theorems and lemmas and thirty-two definitions), zero
+errors, zero \texttt{sorry}; the file is the self-contained unification
+of the iso development blocks with the Hardy $Z$ function (imports
+Mathlib only); and \texttt{observation.md}, a record of thirty
+numerical observations
 (critical strip, zero locations, base-point shift, conjugation
 records, and exhaustive radius searches). Build:
 \texttt{lean proof.lean}.
