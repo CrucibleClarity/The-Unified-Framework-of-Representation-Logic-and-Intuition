@@ -100,8 +100,15 @@ PYTHONPATH=runtime:runtime/lab:<venv site-packages> \
 - **submission zip**: `/tmp/tmlr_submission_20260822.zip` (论文 tex/pdf + bib + 主图 + README)
 - **数字审计**: 论文全部数字与 108 runs 实验汇总一致 (decl_full 行已修复, peak 范围 14--41, bib 46=46)
 
+## 提交状态
+
+- **模板**: 已换 **ICLR 2026 官方模板** (iclr2026_conference.sty, 2026-08-22)
+  - 正文 9 页合规 (References 自 p10 起), 14 页总 (含附录), 0 overfull, 0 [?]
+  - 双盲: 不启用 \iclrfinalcopy, 作者 Anonymous
+- **双盲仓**: `papers/tmlr_four_conditions/` (176 文件, 训练快照已清)
+- **submission zip**: `/tmp/tmlr_submission_20260822.zip`
+
 ## 提交前待办
 
-- [ ] 换 TMLR 官方模板 (当前为 article+natbib 近似; 需在宿主侧下载 iclr 模板后替换)
-- [ ] 图终检: 用 deepseek-v4-flash-vision-exp 新会话目视 fig_theorems.png
 - [ ] OpenReview 提交时填写 Ethics / AI 使用声明 (论文已含 AI assistance statement)
+- [ ] 图终检: 已由用户目视确认 (配对点图版定稿)
