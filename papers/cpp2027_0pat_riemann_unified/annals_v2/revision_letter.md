@@ -14,6 +14,24 @@ own response to the calibration statement of the paper: a conclusion
 is regarded as proved only when verified by the Lean 4 compiler with
 no `sorry`.
 
+### Change summary table
+
+| # | Location (v1 → v2) | Change | Reason |
+|---|---|---|---|
+| 1 | Abstract | declaration count 231 → 235; "(0,1)-segment closed by the odd/even pairing (iso 41)" | iso 41 machine verification added |
+| 2 | Methodology statement (§1.3) | honest boundary narrowed: Blocks C–G KNOWN → closed by odd/even pairing | the (0,1)-segment is now machine-verified |
+| 3 | Table 1, Layer 13 row | "Euler–Maclaurin continuation (Blocks A–B verified)" → "odd/even pairing continuity (iso 41 verified) and direct sign" | reflects the new short path |
+| 4 | §10.1 Theorem 10.1 (Main) | proof rewritten as the odd/even short path (continuity iso 41 + positive pairing terms + doubling identity); Euler–Maclaurin retained as background | sign ζ(x) < 0 now follows directly |
+| 5 | §10.3 continuity bridge | "KNOWN classical, argument complete" → "machine-verified, iso 41" (pairing_term_pos, pairing_diff_bound, pairing_summable, zeta_continuous_zero_one) | 0 errors, 0 sorry, Mathlib only |
+| 6 | §10.4 Blocks C–G | rewritten as "The sign of ζ on (0,1): direct odd/even proof" + remark on the Euler–Maclaurin alternative | Weierstrass/identity-theorem assembly requires mathlib infrastructure not yet available; Euler–Maclaurin itself is classical KNOWN; the short path does not affect any other layer |
+| 7 | Conclusion | "Blocks C–G … formalization is in progress" → closed by the odd/even pairing | final state |
+| 8 | §14 verification record | iso 41 (zeta_odd_even_continuity_iso.lean, 4 declarations) added to the isolation files | artifact extended |
+| 9 | Appendix A inventory | header "231 declarations" → "231 + 4 declarations" | iso 41 |
+
+All changes concern Layer 13 (the (0,1)-segment) and the corresponding
+declaration counts only; Layers 1–12 are unchanged from Version 1 and
+remain machine-verified.
+
 ### 1. The (0,1)-segment is now closed by the odd/even pairing (new, machine-verified)
 
 In Version 1, the negativity ζ(x) < 0 on (0,1) was supported by the
