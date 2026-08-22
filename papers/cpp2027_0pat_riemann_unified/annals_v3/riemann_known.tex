@@ -9,14 +9,9 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
-\usepackage[most]{tcolorbox}
 \usepackage[numbers,sort&compress]{natbib}
 \emergencystretch=3em
 
-% 读者向导框 (视觉引导: 邀请式语言, 描述结构而非指路, 避免规训感)
-\newtcolorbox{readerguide}{colback=gray!6,colframe=blue!45!black,
-  boxrule=0.8pt,arc=2pt,title={\small\textbf{The paper at a glance}},
-  fonttitle=\normalsize,left=8pt,right=8pt,top=4pt,bottom=4pt}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -43,17 +38,13 @@
 \maketitle
 
 \begin{abstract}
-We present a machine-verified development of the Riemann direction,
-organized by the symmetries that force it: reflection
-$s\mapsto 1-s$ across the critical line, conjugation, and the pairing
-of the odd and even parts of the series. The development covers the
+We present a machine-verified development of the Riemann direction: the
 zero-order flip of zeros across the critical line, the Stirling phase bridge
 for the multiplier of the functional equation, the argument-principle
 rectangle closure with its boundary estimates, the logarithmic growth control
 of the error term, and the negativity of the zeta function on the real
 interval $(0,1)$ --- the latter closed in this revision by the odd/even
-pairing (iso~41), a single inequality replacing an entire classical
-machinery. The development is a chain of 237 verified Lean~4
+pairing (iso~41). The development is a chain of 237 verified Lean~4
 declarations organized in thirteen layers, from a self-contained algebra of
 complex axes (the basepoint-relative 0pat representation) through the
 geometry of the prime and critical circles, the false-real-axis framework (no
@@ -166,34 +157,12 @@ edge of the rectangle.
   \draw[edge] (L8) -- (L9) -- (L10) -- (L11) -- (L12) -- (L13);
   % 标注
   \node[lab, above=1.2mm of L13] {iso 41};
-  \node[lab, below=1.2mm of bg] {self-contained background of the representation};
-  \node[lab, below=1.2mm of fe] {bridges the series and the functional equation};
-  \node[lab, below=1.2mm of L8, align=center] {analytic core:\\ each box is a machine-verified layer};
 \end{tikzpicture}
-\caption{Structure of the development. The analytic core of the Riemann
-direction is the chain L8--L13 (boxed); the 0pat representation
-L1--L5 and the series/functional-equation layer L6--L7 are the
-self-contained background from which the core is assembled. The
-odd/even pairing of iso~41 is machine-verified independently and
-closes Layer~13.}
+\caption{The thirteen layers of the development and the machine-verified
+odd/even pairing (iso~41) closing Layer~13.}
 \label{fig:map}
 \end{figure}
 
-\begin{readerguide}
-The paper is organized as a chain of thirteen machine-verified layers.
-The analytic core --- the part connecting the zeros of $\zt$ to the
-argument principle --- is the chain L8--L13
-(\S\ref{sec:L8}--\S\ref{sec:kernel}): the false-real-axis framework, the
-critical-line phase layer, the covering-space phase locking, the
-predictor residuals, the rectangle closure, and the $(0,1)$-segment.
-The representation layers L1--L5 (\S\ref{sec:L1}--\S\ref{sec:L5}) are
-self-contained background, and the framework discussion
-(\S\ref{sec:discussion}) is context; neither is needed for the analytic
-chain. Readers of the classical theory of $\zt$ will find their natural
-entry points in \S\ref{sec:L8} and \S\ref{sec:L12}--\S\ref{sec:kernel};
-readers interested in machine verification will find the full
-declaration inventory in \S\ref{sec:verification} and Appendix~A.
-\end{readerguide}
 
 \subsection{Methodology statement}
 \label{sec:methodology}
@@ -446,9 +415,7 @@ symmetry $s\leftrightarrow 1-s$ that governs the whole Riemann direction.
 \end{tikzpicture}
 \caption{The two basepoint circles: the critical circle $\mathcal{C}$ and
 the prime circle $\mathcal{P}$, with the axis intersections located by the
-five intersection theorems of Layer~3. This is background of the
-representation; the analytic core of the development begins at
-Layer~8.}
+five intersection theorems of Layer~3.}
 \label{fig:circles}
 \end{figure}
 
@@ -457,7 +424,6 @@ Layer~8.}
 
 This layer fixes the geometry of the representation: the two basepoint
 circles of Layer~1 and their intersections (Figure~\ref{fig:circles}).
-It is self-contained background of the analytic core.
 
 \begin{theorem}[$j$-algebra]
 \label{thm:jalg}
@@ -496,7 +462,7 @@ reciprocal of the critical line is a hyperbola
 
 This layer records the second geometric symmetry of the representation
 (transposition of the axes) and the uniqueness of the lattice points it
-determines; like Layer~3 it is background.
+determines.
 
 \begin{theorem}[Transpose symmetry]
 \label{thm:transpose}
@@ -576,9 +542,6 @@ period-pair cancellation restores convergence
 behind the odd/even splitting used in Layer 8, and it supplies the
 continuity bridge of \S\ref{sec:contbridge}: the paired series converges
 where the two unpaired sides diverge (\texttt{pairing\_summable}).
-What could survive the divergence of both parts --- and what would it
-mean for the interval $(0,1)$, where the series does not converge at
-all?
 
 \subsection{Layer 7: zeros and the functional equation}
 \label{sec:L7}
@@ -601,10 +564,6 @@ i^i=e^{-\pi/2},\qquad i^i\neq i,\qquad 0<i^i<1
 \texttt{i\_pow\_i\_pos\_lt\_one}, \texttt{axis\_tick\_pow}), and a prime is
 not a power (\texttt{prime\_no\_power\_decomposition}).
 \end{theorem}
-
-The identity $i^i=e^{-\pi/2}$ is the Euler-style surprise of this layer:
-the imaginary power of the imaginary unit is a real number in $(0,1)$ ---
-a pure constant of the phase structure.
 
 \begin{theorem}[Completed zeta and the functional equation]
 \label{thm:xi}
@@ -852,9 +811,7 @@ differs from the lift of $\Xchi$ by an integer multiple of $\pi$
 
 The integer layers of \eqref{eq:align} are the discrete data carried by the
 phase: they count the winding of $u$ along the rectangle (Layer~12), and
-their deterministic prediction is the subject of Layer~11. They are
-integers --- but which integers, and what exactly do they count? The
-question is answered only when the rectangle is closed.
+their deterministic prediction is the subject of Layer~11.
 
 \section{Layer 11: predictor residuals}
 \label{sec:L11}
@@ -899,9 +856,7 @@ directly without invoking the classical asymptotic.
 the bottom edge $[-1,2]$ (false-real-axis assembly, Theorem~\ref{thm:bottom}),
 the right edge $\Re s=2$ (bounded by $\sum n^{-2}$,
 Theorem~\ref{thm:boundary}), and the top/left edges folded by the
-functional equation. This is the closure argument of the analytic
-core: counting the zeros of $\zt$ inside the rectangle is counting the
-flips of its phase across the critical line.}
+functional equation.}
 \label{fig:rect}
 \end{figure}
 
@@ -996,7 +951,6 @@ Every side of the rectangle is now accounted for --- the right edge by
 the series, the top and left edges by the functional equation, and the
 bottom edge by the false-real-axis assembly --- except the segment
 $(0,1)$ itself, where the series diverges and nothing so far applies.
-What can survive there is the question left open by Layer~6.
 
 \section{Layer 13: the $(0,1)$-segment continuation}
 \label{sec:kernel}
@@ -1200,8 +1154,6 @@ Thus the continuity of $\zt$ on $(0,1)$ rests on the same odd/even pairing
 that underlies Layer 5 and the period-pair cancellation of Layer 6: two
 divergent discrete superpositions cancel in pairs and leave a continuous
 function, the discrete superposition converging to the continuous limit.
-What appeared in Layer~6 as an obstruction --- the divergence of each part
---- is here the mechanism itself.
 The odd/even pairing moreover gives the \emph{sign} of $\zt$ on $(0,1)$
 directly, without the Euler--Maclaurin machinery.
 
@@ -1688,11 +1640,6 @@ machine-verified (iso~41, \S\ref{sec:contbridge}), and the sign follows
 directly from the machine-verified positivity of the pairing terms and the
 classical doubling identity (\S\ref{sec:blocksCG}), completing the
 zero-free bottom edge of the rectangle of Layer~12.
-
-In the economy of the whole development: the Riemann direction is
-forced by two symmetries (reflection and conjugation) and closed by one
-pairing; every one of the 237 declarations is a machine-verified step
-of that single argument.
 
 \appendix
 \section{Complete declaration inventory (221 + 12 + 4 declarations, by layer)}
