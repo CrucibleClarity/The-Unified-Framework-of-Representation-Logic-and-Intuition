@@ -1,0 +1,18 @@
+{"eid": "I:1", "name": "inum_20000", "dtype": "num", "value": 20000, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:2", "name": "inum_50000", "dtype": "num", "value": 50000, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:3", "name": "inum_40000", "dtype": "num", "value": 40000, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:4", "name": "inum_80000", "dtype": "num", "value": 80000, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:30", "name": "inum_12345678901234567890", "dtype": "num", "value": 12345678901234567890, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:31", "name": "inum_98765432109876543210", "dtype": "num", "value": 98765432109876543210, "interface": true, "definition": {"form": "interface", "semantics": "constant", "references": []}}
+{"eid": "I:529", "name": "fold_class", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["I:506", "D:102"]}}
+{"eid": "I:531", "name": "inverse_op", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:512", "D:102"]}}
+{"eid": "I:532", "name": "retrieve", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:522", "D:100", "D:142", "D:102"]}}
+{"eid": "I:533", "name": "intuition_path", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:142", "D:102"]}}
+{"eid": "I:534", "name": "prophecy_cut", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:102"]}}
+{"eid": "I:535", "name": "intuition_refine", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:102"]}}
+{"eid": "I:536", "name": "multi_direct", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:100", "D:142", "D:102"]}}
+{"eid": "I:537", "name": "alien_space_op", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:102"]}}
+{"eid": "I:506", "name": "fold", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:163"]}}
+{"eid": "I:513", "name": "orthogonal", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": []}}
+{"eid": "I:524", "name": "storage_is_computation", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": ["D:520", "D:522", "D:206"]}}
+{"eid": "I:527", "name": "dummy_op", "dtype": "bool", "interface": true, "definition": {"form": "interface", "semantics": "intuition", "references": []}}
