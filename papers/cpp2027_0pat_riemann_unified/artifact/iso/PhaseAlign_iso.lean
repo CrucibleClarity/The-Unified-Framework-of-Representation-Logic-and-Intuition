@@ -1,6 +1,7 @@
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.Harmonic.ZetaAsymp
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Tactic
 
 /-!
@@ -97,5 +98,56 @@ theorem phaseAlign_of_critical_line {s : ℂ} (hs : s.re = 1 / 2) (hz : riemannZ
 theorem zeta_zero_phaseAlign {s : ℂ} (hz : riemannZeta s = 0) : phaseAlign s := by
   rw [phaseAlign, chi, hz]
   simp
+
+/-- 模对齐: |χ(s)| = 1 ⟺ 反射配对等模 |ζ(s)| = |ζ(1−s)| (ζ(1−s) ≠ 0 处).
+    只涉 χ, 不涉 ζ 的相位. -/
+theorem chi_unit_modulus_iff_equimod {s : ℂ} (hz1 : riemannZeta (1 - s) ≠ 0) :
+    ‖chi s‖ = 1 ↔ ‖riemannZeta s‖ = ‖riemannZeta (1 - s)‖ := by
+  rw [chi, norm_div]
+  exact div_eq_one_iff_eq (norm_ne_zero_iff.mpr hz1)
+
+/-- ★ 相位对齐分解: 对齐 = 等模 (|χ|=1) ∧ 相位抵消 (ζ(s)·ζ(1−s) ∈ ℝ_{>0}).
+    "拆开做分析"的精确形式: 模条件只涉 χ; 相位条件 = 反射配对乘积实正. -/
+theorem phaseAlign_iff_equimod_and_cancel {s : ℂ} (hz : riemannZeta s ≠ 0)
+    (hz1 : riemannZeta (1 - s) ≠ 0) :
+    phaseAlign s ↔ ‖riemannZeta s‖ = ‖riemannZeta (1 - s)‖ ∧
+      ∃ r : ℝ, 0 < r ∧ riemannZeta s * riemannZeta (1 - s) = (r : ℂ) := by
+  constructor
+  · intro h
+    have hr : riemannZeta (1 - s) = conj (riemannZeta s) :=
+      (phaseAlign_iff_zeta_reflect hz hz1).mp h
+    constructor
+    · rw [hr]
+      exact (norm_star (riemannZeta s)).symm
+    · rw [hr]
+      refine ⟨‖riemannZeta s‖ ^ 2, sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hz), ?_⟩
+      -- ζ(s)·conj(ζ(s)) = ‖ζ(s)‖²  (normSq 桥)
+      rw [mul_comm]
+      rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
+  · rintro ⟨hm, r, hrpos, hprod⟩
+    -- 从乘积: ζ(1−s) = r/ζ(s)
+    have hw : riemannZeta (1 - s) = (r : ℂ) / riemannZeta s := by
+      field_simp [hz] at hprod ⊢
+      exact hprod
+    -- r = ‖ζ(s)‖²: |r| = |z|·|w| = |z|² (等模)
+    have hrab : ‖(r : ℂ)‖ = ‖riemannZeta s‖ ^ 2 := by
+      rw [← hprod, norm_mul]
+      rw [hm]
+      ring_nf
+    have hr_eq : (r : ℂ) = ‖riemannZeta s‖ ^ 2 := by
+      rw [← Complex.ofReal_pow]
+      exact congrArg Complex.ofReal (by
+        rw [← hrab]
+        exact ((RCLike.norm_ofReal (K := ℂ) r).trans (abs_of_pos hrpos)).symm)
+    -- ‖z‖² = z·conj(z) (normSq 桥)
+    have hnorm : (‖riemannZeta s‖ : ℂ) ^ 2 = riemannZeta s * conj (riemannZeta s) := by
+      rw [← Complex.ofReal_pow]
+      rw [← Complex.normSq_eq_norm_sq]
+      rw [Complex.normSq_eq_conj_mul_self]
+      simp [mul_comm]
+    -- 走反射等价: 等模 + 实正 ⟹ ζ(1−s) = conj(ζ(s))
+    apply (phaseAlign_iff_zeta_reflect hz hz1).mpr
+    rw [hw, hr_eq, hnorm]
+    field_simp [hz]
 
 end PhaseAlign
