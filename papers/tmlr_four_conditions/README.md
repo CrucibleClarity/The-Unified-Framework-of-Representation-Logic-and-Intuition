@@ -92,9 +92,16 @@ PYTHONPATH=runtime:runtime/lab:<venv site-packages> \
 | `colm_submission_Intuition_Construction` | AI 视角直觉诱导 (COLM) |
 | `cognition_Intuition-Construction` | 人类视角认知论文 (暂缓) |
 
-## 待办
+## 发布与提交状态
 
-- [ ] 提交前: 换 TMLR 官方模板 (当前为 article+natbib 近似; OpenReview 提交时可用官方 ICLR 模板)
-- [ ] 补附录: 完整实验配置表 (超参/数据生成/逐 seed 明细)
-- [ ] 匿名复现仓库准备 (GitHub 匿名链接)
-- [ ] TMLR 需要 Ethical Statement / AI 使用声明 (已含 AI assistance statement)
+- **双盲仓**: 已上传 `papers/tmlr_four_conditions/` (CrucibleClarity 匿名仓, 446 文件, 2026-08-22)
+  - 上传匿名化: 身份/路径/DOI 清除 + 敏感凭据替换 (会话记录中粘贴过的真实 token → REDACTED)
+  - 工具: `tools/upload_tmlr_package.py` (幂等, sha 对比)
+- **submission zip**: `/tmp/tmlr_submission_20260822.zip` (论文 tex/pdf + bib + 主图 + README)
+- **数字审计**: 论文全部数字与 108 runs 实验汇总一致 (decl_full 行已修复, peak 范围 14--41, bib 46=46)
+
+## 提交前待办
+
+- [ ] 换 TMLR 官方模板 (当前为 article+natbib 近似; 需在宿主侧下载 iclr 模板后替换)
+- [ ] 图终检: 用 deepseek-v4-flash-vision-exp 新会话目视 fig_theorems.png
+- [ ] OpenReview 提交时填写 Ethics / AI 使用声明 (论文已含 AI assistance statement)
