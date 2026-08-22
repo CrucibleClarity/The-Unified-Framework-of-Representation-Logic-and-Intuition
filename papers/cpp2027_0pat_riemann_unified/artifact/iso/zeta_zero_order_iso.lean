@@ -534,7 +534,7 @@ theorem flip_phase_jump_pi {t₀ : ℝ} {m : ℕ} {g : ℂ → ℂ}
       ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) = -1 := by
   -- u⁻ ≠ 0 (G = g/|g| ≠ 0)
   have hden : (-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖) ≠ 0 := by
-    exact mul_ne_zero (pow_ne_zero _ (by simp : (-I : ℂ) ≠ 0)) (div_ne_zero hg (by simp))
+    exact mul_ne_zero (pow_ne_zero _ (by simp : (-I : ℂ) ≠ 0)) (div_ne_zero hg (by simpa using hg))
   -- 翻转: u⁺ = -u⁻ (flip_of_odd_order) ⟹ u⁺/u⁻ = -1
   have hflip := flip_of_odd_order hm h_exp hg hg_cont
   calc
@@ -544,7 +544,7 @@ theorem flip_phase_jump_pi {t₀ : ℝ} {m : ℕ} {g : ℂ → ℂ}
             ((-I) ^ m * (g (zetaLine t₀) / ‖g (zetaLine t₀)‖)) := by
           rw [hflip]
     _ = -1 := by
-      field_simp [hden]
+      field_simp [hden, (norm_ne_zero_iff.mpr hg : ‖g (zetaLine t₀)‖ ≠ 0)]
 
 /-- **翻转 = e^{iπ} (指数形式)**: u(t₀⁻)/u(t₀⁺) = e^{iπ} —
     e^{iπ} 桥的离散版: 翻转 = π 相位跳 = 单位元 -1 的指数表示。
