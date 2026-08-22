@@ -1,21 +1,21 @@
 %% TMLR submission — Verifiable Design Conditions for Symbolic Training:
 %% two-pole OOD evidence, the decoupling operator, and its ablation
-\documentclass[11pt]{article}
-\usepackage[margin=1in]{geometry}
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2026_conference,times}
 \usepackage{amsmath,amssymb}
-\usepackage{natbib}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
+\usepackage{url}
 
 \title{When Does Symbolic Training Generalize Out-of-Distribution?\\
 Four Verifiable Design Conditions and an Ablation of the\\
 Decoupling Operator}
-\author{Anonymous\\\\
-\small Independent Researcher\\\\
+
+% 双盲: 不取消注释 \iclrfinalcopy; 作者匿名
+\author{Anonymous\\
+\small Independent Researcher\\
 \small AI assistance: DeepSeek (commercial API language model)}
-\date{2026-08-21}
 
 \begin{document}
 \maketitle
@@ -322,7 +322,9 @@ multiple presentations of one source are bridged by explicit
 equivalence; symbol sources are identified by unique glyph and
 lossless round trip; numeric coincidence without explicit
 declaration is illegal (the supervision signal carries no direction
-information).
+information). Legality is the minimum standard: a presentation
+can be legal and still unreadable, and reader-friendliness is a
+separate dimension outside this condition (Section~8).
 
 \textbf{Argument.} A presentation is where the training signal
 meets the structure: the signal sees sequences, not meanings. The
@@ -596,10 +598,21 @@ informal channels by which a representation can also carry
 influence --- emotion, linguistic bias, suggestion; these are not
 legal presentations and not norm symbols under the present
 conditions, and the framework records only that they exist and are
-unjudged here. Sixth, the claims are kept minimal by discipline:
+unjudged here. Sixth, legality is the minimum standard, not
+the full standard. A presentation can be fully legal and still
+poor: the parenthesis-free notation is unambiguous --- the strong
+form of legality --- yet is read with difficulty, and a token
+system can satisfy every resolvability condition while imposing
+high cognitive load, low naturalness, or poor maintainability.
+Reader-friendliness --- readability, cognitive load, naturalness,
+maintainability --- is a real dimension of presentation quality,
+and it is deliberately outside the present conditions: the
+conditions judge legality, and take no position on the further
+dimension, which belongs to cognitive and human-factors research.
+Seventh, the claims are kept minimal by discipline:
 every claim is restricted to what the experiments show; the
 philosophical lineages and the continuations are positioned as
-context, not as result. Seventh, what remains open: (1) whether the
+context, not as result. Eighth, what remains open: (1) whether the
 decoupling clauses suffice for other token systems (natural-language
 corpora, visual symbols); (2) a norm checker that \emph{computes}
 whether a given symbol system is norm; (3) a grammar-based detector
@@ -655,7 +668,7 @@ question its failures asked: what does it take, in this program's
 setting, for a symbolic training signal to generalize
 out-of-distribution?
 
-\bibliographystyle{plainnat}
+\bibliographystyle{iclr2026_conference}
 \bibliography{refs}
 
 
