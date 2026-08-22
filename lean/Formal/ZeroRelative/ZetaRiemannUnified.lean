@@ -30,7 +30,11 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.LSeries.Nonvanishing
+import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
+import Mathlib.NumberTheory.Bernoulli
 import Mathlib.Data.Real.Basic
+import Mathlib.MeasureTheory.VectorMeasure.Integral
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.FieldSimp
@@ -5336,16 +5340,550 @@ theorem flip_chi_circle_bridge (T : ℝ)
     从连续提升的端点差重构离散翻转计数。 -/
 theorem net_flip_from_chi_lift (T : ℝ)
     (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
-    ((2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)) /
-      (2 * ↑Real.pi * Complex.I)) ∈ ℤ := by
+    ∃ m : ℤ, (2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)) /
+      (2 * ↑Real.pi * Complex.I) = (m : ℂ) := by
   rcases (flip_chi_circle_bridge T hz) with ⟨m, hm⟩
+  refine ⟨m, ?_⟩
+  have hne : (2 * ↑Real.pi * Complex.I : ℂ) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero))
+      Complex.I_ne_zero
+  -- hm : 2Δu - Δθ = m·2πi ⟹ (2Δu-Δθ)/(2πi) = m
   rw [hm]
-  -- (m·2πi)/(2πi) = m ∈ ℤ
-  rw [show (m : ℂ) * (2 * ↑Real.pi * Complex.I) / (2 * ↑Real.pi * Complex.I) = (m : ℂ) by
-    exact mul_div_cancel_left₀ (m : ℂ) (by
-      -- 2πi ≠ 0
-      rw [show (2 * ↑Real.pi * Complex.I : ℂ) ≠ 0 by
-        exact mul_ne_zero (mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero)) Complex.I_ne_zero])]
-  exact ⟨m, rfl⟩
+  field_simp [hne]
+
+
+  -- ============================================================
+  -- T6k: 矩形闭合桥 — 翻转计数 = χ 圈数 - 整数层 (2026-08-19)
+  -- 参数原理矩形闭合 N(T) = (1/π)θ_χ + S(T) + 1 的整数层结构:
+  --   翻转计数 (零点数) = (1/2π)·Im Δθ_χ = (1/π)·Im Δθ_ζ - m
+  -- θ_χ 是显式相位刻度 (χ 定义), θ_ζ 是隐式相位 (u = ζ/|ζ|),
+  -- m ∈ ℤ 是整数层 (e^{iπ} 桥: u² = χ ⟹ 2θ_ζ = θ_χ + 2πi·m)。
+  -- ============================================================
+
+/-- **翻转计数桥**: χ 圈数 - 2·θ_ζ 圈数 ∈ ℤ —
+    翻转计数 (零点数) 由 χ 的显式圈数与 ζ 的隐式圈数共同确定,
+    差是整数层 m (flip_chi_circle_bridge 取虚部)。
+    N(T) = (1/π)θ_χ + S + 1 的矩形闭合: 圈数 = 相位差/2π。 -/
+theorem flip_count_from_theta_lifts (T : ℝ)
+    (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
+    ∃ m : ℤ, (thetaLift T 1 - thetaLift T 0).im / (2 * ↑Real.pi) -
+      (2 * (uLift T hz 1 - uLift T hz 0)).im / (2 * ↑Real.pi) = (m : ℝ) := by
+  rcases (flip_chi_circle_bridge T hz) with ⟨m, hm⟩
+  refine ⟨-m, ?_⟩
+  -- hm : 2Δu - Δθ = m·2πi ⟹ 取虚部: Im(2Δu) - Im(Δθ) = 2π·m
+  have hlinC : (2 * (uLift T hz 1 - uLift T hz 0)).im - (thetaLift T 1 - thetaLift T 0).im
+      = (2 * ↑Real.pi : ℝ) * (m : ℝ) := by
+    have him := congrArg Complex.im hm
+    -- him : Im(2Δu - Δθ) = Im(m·2πi) (ℝ 等式); 左侧 Im 线性, 右侧 Im(m·2πi) = 2π·m
+    rw [sub_im] at him
+    have hrim : ((m : ℂ) * (2 * ↑Real.pi * Complex.I)).im = (2 * ↑Real.pi : ℝ) * (m : ℝ) := by
+      simp
+      ring
+    rwa [hrim] at him
+  -- 转实数: Im(Δθ) - Im(2Δu) = -2π·m
+  have hreal : (thetaLift T 1 - thetaLift T 0).im -
+      (2 * (uLift T hz 1 - uLift T hz 0)).im = -((2 * ↑Real.pi : ℝ) * (m : ℝ)) := by
+    linarith
+  -- 除以 2π: 差/2π = -m
+  have hdiv : (thetaLift T 1 - thetaLift T 0).im / (2 * ↑Real.pi) -
+      (2 * (uLift T hz 1 - uLift T hz 0)).im / (2 * ↑Real.pi) = -(m : ℝ) := by
+    have hπ : (2 * ↑Real.pi : ℝ) ≠ 0 := by positivity
+    have hd : ((thetaLift T 1 - thetaLift T 0).im - (2 * (uLift T hz 1 - uLift T hz 0)).im) /
+        (2 * ↑Real.pi) = -(m : ℝ) := by
+      rw [hreal]
+      field_simp [hπ]
+    simpa [sub_div] using hd
+  simpa using hdiv
+
+
+  -- ============================================================
+  -- T6m: 矩形闭合骨架 — Λ₀ 反射对消 (2026-08-19)
+  -- 用户方法论继续: 未证部分用桥接+相位对消推进。
+  -- mathlib completedRiemannZeta₀ (整函数, 无极点) 替代 ζ (s=1 极点):
+  --   Λ₀(1-s) = Λ₀ s (mathlib 反射) ⟹ log Λ₀(1-s) - log Λ₀ s ∈ 2πiℤ
+  --   (矩形顶边/左边相位对消的代数骨架: 反射对称的两边 log 差是整数层)
+  -- ============================================================
+
+/-- **Λ₀ 反射对消**: log Λ₀(1-s) - log Λ₀ s ∈ 2πiℤ —
+    矩形顶边 (s) 与左边 (1-s) 的相位差是整数层 (mathlib 整函数反射
+    completedRiemannZeta₀_one_sub + exp 相等 ⟹ log 差 2πi·n)。
+    矩形闭合的对称性骨架: 反射两边相位对消, 剩整数圈数。 -/
+theorem completedZeta₀_log_reflection (s : ℂ) (hs : completedRiemannZeta₀ s ≠ 0) :
+    ∃ n : ℤ, Complex.log (completedRiemannZeta₀ (1 - s)) -
+        Complex.log (completedRiemannZeta₀ s)
+      = (n : ℂ) * (2 * ↑Real.pi * Complex.I) := by
+  -- exp(log Λ₀(1-s)) = Λ₀(1-s) = Λ₀ s = exp(log Λ₀ s) (反射 + exp_log)
+  have h1 : Complex.exp (Complex.log (completedRiemannZeta₀ (1 - s))) =
+      Complex.exp (Complex.log (completedRiemannZeta₀ s)) := by
+    rw [Complex.exp_log, Complex.exp_log, completedRiemannZeta₀_one_sub]
+    · exact hs
+    · rw [completedRiemannZeta₀_one_sub]
+      exact hs
+  -- exp 相等 ⟹ log 差 = n·2πi
+  rcases (Complex.exp_eq_exp_iff_exists_int).1 h1 with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  -- hn : log Λ₀(1-s) = log Λ₀ s + n·2πi
+  rw [hn]
+  ring
+
+
+/-- **带内零点 ⟺ Λ₀ 取修正值** (整函数版 Λ₀ = Λ + 1/s + 1/(1-s)):
+    ζ(s) = (Λ₀(s) - 1/s - 1/(1-s)) / (π^{-s/2}Γ(s/2)), 分母带内非零 (π ≠ 0, Γ(s/2) ≠ 0)
+    ⟹ ζ(s) = 0 ⟺ Λ₀(s) = 1/s + 1/(1-s).  (矩形闭合: 带内零点都对应 Λ₀ 的一个精确值) -/
+theorem zeta_zero_iff_completedZeta₀_one_over_sum {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hre : 0 < s.re) :
+    riemannZeta s = 0 ↔ completedRiemannZeta₀ s = 1 / s + 1 / (1 - s) := by
+  have hzeq := riemannZeta_eq_completedRiemannZeta₀ (s := s) hs0
+  -- ζ(s) = (Λ₀(s) - 1/s - 1/(1-s)) / (π^{-s/2}Γ(s/2))
+  have hpi : (↑Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have hpow : (↑Real.pi ^ (-s / 2) : ℂ) ≠ 0 := by
+    -- π^z = exp(z·log π) (π ≠ 0) ≠ 0
+    rw [Complex.cpow_def_of_ne_zero hpi]
+    exact Complex.exp_ne_zero _
+  have hgam : Complex.Gamma (s / 2) ≠ 0 := by
+    apply Complex.Gamma_ne_zero
+    intro m hm
+    -- s/2 = -m ⟹ Re(s/2) = s.re/2 > 0 但 = -m ≤ 0: 矛盾
+    have hre2 : (s / 2).re = s.re / 2 := by simp
+    have hneg : (s / 2).re = -((m : ℂ).re) := by rw [hm, Complex.neg_re]
+    have hmre : ((m : ℂ).re) = (m : ℝ) := by
+      rw [← Complex.ofReal_natCast]
+      rfl
+    have : s.re / 2 = -((m : ℝ) : ℂ).re := by
+      rw [← hre2, hneg, hmre, Complex.ofReal_re]
+    have hmcast : -((m : ℝ) : ℂ).re = -((m : ℝ) : ℝ) := by simp
+    rw [hmcast] at this
+    have hmnonneg : (0 : ℝ) ≤ (m : ℝ) := by exact_mod_cast (Nat.zero_le m)
+    nlinarith
+  have hden : (↑Real.pi ^ (-s / 2) * Complex.Gamma (s / 2) : ℂ) ≠ 0 :=
+    mul_ne_zero hpow hgam
+  constructor
+  · intro hζ
+    -- ζ = 0 ⟹ 分子 = 0 (分母非零) ⟹ Λ₀ = 1/s + 1/(1-s)
+    have hq : (completedRiemannZeta₀ s - 1 / s - 1 / (1 - s)) /
+        (↑Real.pi ^ (-s / 2) * Complex.Gamma (s / 2)) = 0 := by
+      simpa [hzeq] using hζ
+    rcases (div_eq_zero_iff.mp hq) with hnum | hden0
+    · apply sub_eq_zero.mp
+      simpa [sub_eq_add_neg, neg_add, add_assoc, add_comm, add_left_comm] using hnum
+    · exact (hden hden0).elim
+  · intro hΛ
+    -- Λ₀ = 1/s + 1/(1-s) ⟹ 分子 = 0 ⟹ ζ = 0
+    rw [riemannZeta_eq_completedRiemannZeta₀ hs0, hΛ]
+    simp
+
+/-- **矩形右边 O(1) 卷已知曲线**: ζ(2+it) 有界 (‖ζ(2+it)‖ ≤ Σ n⁻² = ζ(2))。
+    Re>1 级数 (zeta_eq_tsum_one_div_nat_cpow) 直接卷: 模和 Σ n^{-2}
+    收敛 (Real.summable_nat_rpow, p = -2 < -1), norm_tsum_le_tsum_norm。
+    矩形闭合的右边边界 (σ=2) 相位变化 O(1) 的已知曲线依据。 -/
+theorem zeta_line_two_bounded (t : ℝ) :
+    ‖riemannZeta ((2 : ℂ) + (t : ℂ) * Complex.I)‖ ≤ ∑' n : ℕ, (n : ℝ) ^ (-2 : ℝ) := by
+  -- ζ(2+it) = Σ n^{-2-it} (Re = 2 > 1 级数)
+  rw [zeta_eq_tsum_one_div_nat_cpow (s := (2 : ℂ) + (t : ℂ) * Complex.I) (by norm_num)]
+  -- ‖Σ‖ ≤ Σ‖·‖ (norm_tsum_le_tsum_norm): 需绝对收敛
+  have hterm : ∀ n : ℕ, ‖(n : ℂ) ^ (-(2 : ℂ) - (t : ℂ) * Complex.I)‖ = (n : ℝ) ^ (-2 : ℝ) := by
+    intro n
+    by_cases hn : n = 0
+    · subst hn
+      -- 0^{-2-it} = 0, ‖0‖ = 0 = 0^{-2} (rpow 0^y = 0 当 y ≠ 0)
+      have hz : -(2 : ℂ) - (t : ℂ) * Complex.I ≠ 0 := by
+        intro h
+        have hre : (-(2 : ℂ) - (t : ℂ) * Complex.I).re = 0 := by rw [h]; simp
+        norm_num at hre
+      rw [Nat.cast_zero]
+      rw [Complex.zero_cpow hz]
+      norm_num
+    · have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+      have hpos : 0 < (n : ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
+      rw [Complex.cpow_def_of_ne_zero hn0]
+      rw [Complex.norm_exp]
+      -- log(↑n) = ↑(log n) (正实数)
+      have hlog : Complex.log (n : ℂ) = (Real.log (n : ℝ) : ℂ) := by
+        rw [← Complex.ofReal_natCast]
+        rw [← Complex.ofReal_log (Nat.cast_nonneg n)]
+      -- (-2 - i·t)·log(↑n) 的实部 = -2·log n
+      have hre : (((-(2 : ℂ) - (t : ℂ) * Complex.I) * Complex.log (n : ℂ)).re)
+          = -2 * Real.log (n : ℝ) := by
+        have hlog_re : (Complex.log (n : ℂ)).re = Real.log (n : ℝ) := by
+          rw [← Complex.ofReal_natCast]
+          have hl := Complex.ofReal_log (Nat.cast_nonneg n)
+          rw [← hl]
+          rfl
+        have hlog_im : (Complex.log (n : ℂ)).im = 0 := by
+          rw [← Complex.ofReal_natCast]
+          have hl := Complex.ofReal_log (Nat.cast_nonneg n)
+          rw [← hl]
+          rfl
+        rw [Complex.mul_re]
+        simp only [Complex.mul_I_re, Complex.mul_I_im, Complex.ofReal_re, Complex.ofReal_im,
+          Complex.sub_re, Complex.sub_im, Complex.neg_re, Complex.neg_im]
+        rw [hlog_re, hlog_im]
+        norm_num
+      rw [mul_comm, hre]
+      -- exp(-2·log n) = n^{-2} (rpow 定义)
+      rw [Real.rpow_def_of_pos hpos]
+      congr 1
+      ring
+  have hconv : ∀ n : ℕ, 1 / (n : ℂ) ^ (2 + (t : ℂ) * Complex.I)
+      = (n : ℂ) ^ (-(2 : ℂ) - (t : ℂ) * Complex.I) := by
+    intro n
+    by_cases hn : n = 0
+    · subst hn
+      have hz1 : (2 : ℂ) + (t : ℂ) * Complex.I ≠ 0 := by
+        intro h
+        have : ((2 : ℂ) + (t : ℂ) * Complex.I).re = 0 := by rw [h]; simp
+        norm_num at this
+      have hz2 : (-(2 : ℂ) - (t : ℂ) * Complex.I) ≠ 0 := by
+        intro h
+        have : ((-(2 : ℂ) - (t : ℂ) * Complex.I).re) = 0 := by rw [h]; simp
+        norm_num at this
+      rw [Nat.cast_zero]
+      rw [Complex.zero_cpow hz1, Complex.zero_cpow hz2]
+      simp
+    · have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn
+      rw [one_div, ← Complex.cpow_neg]
+      congr 1
+      ring
+  have hsum_norm : Summable (fun n : ℕ => ‖1 / (n : ℂ) ^ (2 + (t : ℂ) * Complex.I)‖) := by
+    -- ‖1/n^{2+it}‖ = ‖n^{-2-it}‖ = n^{-2}, Σ n^{-2} 收敛 (p = -2 < -1)
+    have hsum : Summable (fun n : ℕ => (n : ℝ) ^ (-2 : ℝ)) :=
+      (Real.summable_nat_rpow (p := (-2 : ℝ))).2 (by norm_num)
+    refine hsum.congr ?_
+    intro n
+    rw [hconv n]
+    exact (hterm n).symm
+  exact (norm_tsum_le_tsum_norm hsum_norm).trans_eq (by
+    apply tsum_congr
+    intro n
+    rw [hconv n]
+    exact hterm n)
+
+
+/-- **Γ 竖线有界 (卷积分表示)**: ‖Γ(1+it)‖ ≤ 1。
+    Γ(1+it) = ∫₀^∞ e^{-x}·x^{it}dx (mathlib Gamma_eq_integral, Re=1>0),
+    ‖∫‖ ≤ ∫‖·‖ (norm_integral_le_integral_norm), 逐项模 = e^{-x},
+    ∫₀^∞ e^{-x}dx = 1 (integral_exp_neg_Ioi_zero)。免 Stirling。 -/
+theorem Gamma_one_add_it_norm_le_one (t : ℝ) :
+    ‖Complex.Gamma ((1 : ℂ) + (t : ℂ) * Complex.I)‖ ≤ 1 := by
+  -- Γ(1+it) = ∫₀^∞ e^{-x}·x^{it} dx (积分表示, mathlib Gamma_eq_integral)
+  have hg := Complex.Gamma_eq_integral (s := (1 : ℂ) + (t : ℂ) * Complex.I)
+    (by simp : 0 < ((1 : ℂ) + (t : ℂ) * Complex.I).re)
+  -- 逐项模: ‖e^{-x}·x^{it}‖ = e^{-x} (|x^{it}| = 1, x > 0)
+  have hterm : ∀ x ∈ Set.Ioi (0 : ℝ),
+      ‖((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖
+        = Real.exp (-x) := by
+    intro x hx
+    have hx0 : 0 < x := hx
+    have hxn : (x : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hx0)
+    have hpow : (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)
+        = (x : ℂ) ^ ((t : ℂ) * Complex.I) := by
+      congr 1
+      ring
+    rw [hpow]
+    -- ‖e^{-x}‖ = e^{-x} (正实数), ‖x^{it}‖ = 1
+    have hnorm1 : ‖((Real.exp (-x)) : ℂ)‖ = Real.exp (-x) := by
+      rw [Complex.ofReal_exp]
+      exact Complex.norm_exp_ofReal (-x)
+    have hnorm2 : ‖(x : ℂ) ^ ((t : ℂ) * Complex.I)‖ = 1 := by
+      -- x^{it} = exp(it·log x): 模 = exp(re(it·log x)) = exp 0 = 1
+      rw [Complex.cpow_def_of_ne_zero hxn]
+      rw [Complex.norm_exp]
+      have hlog : Complex.log (x : ℂ) = (Real.log x : ℂ) := by
+        rw [← Complex.ofReal_log hx0.le]
+      rw [hlog]
+      -- (log x : ℝ)·((t:ℂ)·I) 的实部 = 0
+      have hre : (((Real.log x : ℂ) * ((t : ℂ) * Complex.I)).re) = 0 := by
+        rw [Complex.mul_re]
+        simp [Complex.mul_I_re, Complex.mul_I_im]
+      rw [hre]
+      rw [Real.exp_zero]
+    calc
+      ‖((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((t : ℂ) * Complex.I)‖
+          = ‖((Real.exp (-x)) : ℂ)‖ * ‖(x : ℂ) ^ ((t : ℂ) * Complex.I)‖ := by
+            exact Complex.norm_mul _ _
+      _ = Real.exp (-x) * 1 := by rw [hnorm1, hnorm2]
+      _ = Real.exp (-x) := by ring
+  -- ∫‖f‖ = ∫ e^{-x} = 1 (hterm 逐项代入 + integral_exp_neg_Ioi_zero)
+  have hsum : ∫ x in Set.Ioi (0 : ℝ),
+      ‖((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖
+      = 1 := by
+    rw [← integral_exp_neg_Ioi_zero]
+    refine MeasureTheory.setIntegral_congr_ae measurableSet_Ioi ?_
+    apply Filter.Eventually.of_forall
+    intro x hx
+    exact hterm x hx
+  -- 拼装: ‖Γ(1+it)‖ = ‖∫‖ ≤ ∫‖·‖ = 1
+  calc
+    ‖Complex.Gamma ((1 : ℂ) + (t : ℂ) * Complex.I)‖
+        = ‖∫ x in Set.Ioi (0 : ℝ),
+            ((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖ := by
+          rw [hg]
+          unfold Complex.GammaIntegral
+          rfl
+    _ ≤ ∫ x in Set.Ioi (0 : ℝ),
+          ‖((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)‖ := by
+          -- set 积分范数不等式: 全空间 Bochner norm_integral_le_integral_norm 于 restrict 测度
+          simpa using (MeasureTheory.norm_integral_le_integral_norm
+            (μ := MeasureTheory.volume.restrict (Set.Ioi (0 : ℝ)))
+            (f := fun x : ℝ => ((Real.exp (-x)) : ℂ) * (x : ℂ) ^ ((1 : ℂ) + (t : ℂ) * Complex.I - 1)))
+    _ = 1 := hsum
+
+
+/-- **底边无零点 (假实轴拼装)**: ζ(x) ≠ 0 对 x ∈ [-1,2] 且 x ∉ (0,1)。
+    假实轴框架 (已证零散件拼装):
+      Re < 0: riemannZeta_ne_zero_of_re_lt_zero (函数方程, 平凡零点 -2,-4 不在段内)
+      Re = 0: riemannZeta_ne_zero_of_re_eq_zero (s ≠ 0)
+      x = 0: riemannZeta_zero (ζ(0) = -1/2)
+      x = 1: riemannZeta_one_ne_zero; 1 < x: riemannZeta_pos_of_one_lt
+    (0,1) 段: ζ(x) < 0 是经典 (欧拉-麦克劳林积分表示, mathlib 无, KNOWN)。
+    底边 Δarg = 0 的支撑: 实值 (riemannZeta_conj) + 无零点 ⟹ arg ∈ {0,π} 常数。 -/
+theorem zeta_ne_zero_on_bottom_edge (x : ℝ) (hx : x ∈ Set.Icc (-1 : ℝ) 2)
+    (hnot : x ∉ Set.Ioo (0 : ℝ) 1) : riemannZeta (x : ℂ) ≠ 0 := by
+  by_cases hx1 : x = 1
+  · subst hx1
+    exact riemannZeta_one_ne_zero
+  by_cases hx0 : x = 0
+  · subst hx0
+    change riemannZeta (0 : ℂ) ≠ 0
+    have : riemannZeta (0 : ℂ) = -1 / 2 := riemannZeta_zero
+    rw [this]
+    norm_num
+  by_cases hpos : 1 < x
+  · intro hz
+    have hre : 0 < (riemannZeta (x : ℂ)).re := riemannZeta_re_pos_of_one_lt hpos
+    have hzre : (riemannZeta (x : ℂ)).re = 0 := by rw [hz]; simp
+    linarith
+  -- x < 1 (hnot 排除 (0,1)): x ≤ 0, 且 x ≠ 0 ⟹ Re ≤ 0
+  have hle0 : x ≤ 0 := by
+    -- x ∈ [-1,2], x < 1, x ∉ (0,1) ⟹ x ≤ 0
+    have hx2 : x < 1 := by
+      by_contra hge
+      have hge' : 1 ≤ x := le_of_not_gt hge
+      -- x = 1 已排除 ⟹ 1 < x ⟹ hpos 矛盾
+      have : 1 < x := lt_of_le_of_ne hge' (Ne.symm hx1)
+      exact hpos this
+    by_contra hgt
+    have : 0 < x := lt_of_not_ge hgt
+    exact hnot ⟨this, hx2⟩
+  by_cases hz : x < 0
+  · by_cases hxm1 : x = -1
+    · subst hxm1
+      -- ζ(-1) = -1/12 ≠ 0 (Bernoulli B₂ = 1/6; -1 不是平凡零点, 平凡零点在负偶数)
+      have hval : riemannZeta (-1 : ℂ) ≠ 0 := by
+        have hk := riemannZeta_neg_nat_eq_bernoulli' (k := 1)
+        have hk2 : riemannZeta (-1 : ℂ) = -bernoulli' 2 / (1 + 1 : ℂ) := by
+          simpa using hk
+        have hval2 : riemannZeta (-1 : ℂ) = -(1 / 12 : ℂ) := by
+          rw [hk2]
+          norm_num [bernoulli'_two]
+        rw [hval2]
+        norm_num
+      have harg : (↑(-1 : ℝ) : ℂ) = (-1 : ℂ) := by norm_num
+      rw [harg]
+      exact hval
+    · -- x ∈ (-1, 0): 非平凡零点 (s ≠ -n 对所有 n, 因 -n ≤ -1 < x)
+      apply riemannZeta_ne_zero_of_re_lt_zero (s := (x : ℂ))
+      · simp [hz]
+      · intro n hn
+        have hxgt : -1 < x := lt_of_le_of_ne (Set.mem_Icc.mp hx).1 (Ne.symm hxm1)
+        have hcast : (-(n : ℂ)).re = -(n : ℝ) := by simp
+        have hre : ((x : ℂ)).re = (-(n : ℂ)).re := by rw [hn]
+        have hxn : x = -(n : ℝ) := by
+          simpa [hcast] using hre
+        have hnle : -(n : ℝ) ≤ -1 := by
+          by_cases hn0 : n = 0
+          · subst hn0
+            exfalso
+            have hx0' : x = 0 := by simpa using hxn
+            linarith
+          · have hnge1 : 1 ≤ (n : ℝ) := by exact_mod_cast (Nat.succ_le_of_lt (Nat.pos_of_ne_zero hn0))
+            linarith
+        rw [hxn] at hxgt
+        linarith
+  · -- x = 0 已排除, x < 0 否 ⟹ x = 0: 矛盾 (已在 hx0 分支)
+    have : x = 0 := le_antisymm hle0 (le_of_not_gt hz)
+    exact (hx0 this).elim
+
+
+/-- **ζ 实轴实值**: ζ(x) ∈ ℝ (x 实) — conj ζ(x) = ζ(conj x) = ζ(x)。
+    假实轴框架: 实轴上 ζ 的虚部 (y 轴泄漏) 为零。 -/
+theorem zeta_im_zero_on_real (x : ℝ) : (riemannZeta (x : ℂ)).im = 0 := by
+  have hc := riemannZeta_conj (x : ℂ)
+  have hx : (starRingEnd ℂ) (x : ℂ) = (x : ℂ) := by simp
+  have hz : (starRingEnd ℂ) (riemannZeta (x : ℂ)) = riemannZeta (x : ℂ) := by
+    rw [← hc, hx]
+  have him : ((starRingEnd ℂ) (riemannZeta (x : ℂ))).im = -(riemannZeta (x : ℂ)).im := by
+    simp
+  have him' : ((starRingEnd ℂ) (riemannZeta (x : ℂ))).im = (riemannZeta (x : ℂ)).im := by
+    rw [hz]
+  linarith
+
+/-- **ζ(-1) 实部为负**: re ζ(-1) < 0 — 函数方程 s=2 (卷 riemannZeta_one_sub):
+    ζ(-1) = 2(2π)^{-2}Γ(2)cos(π)ζ(2) = -2(2π)^{-2}·ζ(2) < 0 (Γ(2)=1, cos π = -1, ζ(2)>0)。 -/
+theorem zeta_neg_one_re_neg : (riemannZeta (-(1 : ℂ))).re < 0 := by
+  have hfe := riemannZeta_one_sub (s := (2 : ℂ)) (by intro n hn; norm_num at hn) (by norm_num)
+  -- hfe : ζ(1-2) = 2(2π)^{-2}Γ(2)cos(π·2/2)ζ(2)
+  have hcos : Complex.cos (↑Real.pi * (2 : ℂ) / 2) = -1 := by
+    have harg : ↑Real.pi * (2 : ℂ) / 2 = ↑Real.pi := by
+      apply Complex.ext <;> simp <;> ring
+    rw [harg]
+    simpa using Complex.cos_pi
+  have hgam : Complex.Gamma (2 : ℂ) = 1 := by
+    simpa using (Complex.Gamma_nat_eq_factorial 1)
+  have hz2 : 0 < (riemannZeta (2 : ℂ)).re := by
+    exact (Complex.pos_iff.mp (riemannZeta_pos_of_one_lt (x := (2 : ℝ)) (by norm_num))).1
+  have hpow : (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) = ↑(1 / (2 * Real.pi) ^ 2) := by
+    have hne : (2 * ↑Real.pi : ℂ) ≠ 0 := by positivity
+    rw [Complex.cpow_intCast]
+    rw [show (-2 : ℤ) = -(2 : ℤ) by norm_num]
+    rw [zpow_neg]
+    rw [zpow_natCast]
+    have hsq : (2 * ↑Real.pi : ℂ) ^ 2 = ↑((2 * Real.pi) ^ 2) := by
+      norm_num [← Complex.ofReal_mul]
+    rw [hsq]
+    rw [← Complex.ofReal_inv]
+  have hmain : riemannZeta (-(1 : ℂ)) = 2 * (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) * (-1) * riemannZeta (2 : ℂ) := by
+    simpa [hcos, hgam] using hfe
+  -- 展开实部: 2·(2π)^{-2}·(-1)·ζ(2), 各系数实
+  have hre : (2 * (2 * ↑Real.pi : ℂ) ^ (-(2 : ℂ)) * (-1) * riemannZeta (2 : ℂ)).re
+      = -(2 * (1 / (2 * Real.pi) ^ 2)) * (riemannZeta (2 : ℂ)).re := by
+    rw [hpow]
+    simp [Complex.ofReal_mul, Complex.ofReal_re]
+    ring
+  rw [hmain, hre]
+  have hcoef : (0 : ℝ) < 2 * (1 / (2 * Real.pi) ^ 2) := by positivity
+  nlinarith
+
+/-- **底边 arg 跳 = π**: arg ζ(-1) - arg ζ(2) = π —
+    矩形闭合的底边 (实轴 -1 → 2) 相位修正: ζ(-1) 实负 (arg = π),
+    ζ(2) 实正 (arg = 0), 跳 = π = e^{iπ} 桥 (翻转半圈, 与零点计数 +1 对应)。
+    假实轴拼装: 实值 (zeta_im_zero_on_real) + 符号 (函数方程/级数)。 -/
+theorem bottom_edge_arg_jump :
+    (riemannZeta (-(1 : ℂ))).arg - (riemannZeta (2 : ℂ)).arg = Real.pi := by
+  have hargn : (riemannZeta (-(1 : ℂ))).arg = Real.pi := by
+    rw [Complex.arg_eq_pi_iff]
+    exact ⟨zeta_neg_one_re_neg, zeta_im_zero_on_real (-1)⟩
+  have hargp : (riemannZeta (2 : ℂ)).arg = 0 := by
+    rw [Complex.arg_eq_zero_iff]
+    constructor
+    · exact (Complex.pos_iff.mp (riemannZeta_pos_of_one_lt (x := (2 : ℝ)) (by norm_num))).1
+    · exact zeta_im_zero_on_real 2
+  rw [hargn, hargp]
+  simp
+
+
+  -- ============================================================
+  -- T6o: (0,1) 段负性核心件 — 部分和 < 积分 (2026-08-21)
+  -- ζ(x) < 0 for x ∈ (0,1) 的欧拉-麦克劳林路径 (Euler 1735 经典):
+  --   Σ_{n=1}^N n^{-x} < ∫₀^N t^{-x}dt = N^{1-x}/(1-x)
+  --   ⟹ 部分和修正 R_N(x) = Σ n^{-x} - N^{1-x}/(1-x) < 0
+  -- 逐项: (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (t^{-s} 递减 ≥ 右端点值, FTC 算积分)
+  -- 本定理 = 核心代数件; 延拓 ζ(x) = lim R_N(x) 需莫雷拉/一致收敛解析
+  -- (mathlib HasPrimitives 未预编译, 标注 KNOWN 路径)。
+  -- ============================================================
+
+/-- **部分和 < 积分 (核心件)**: Σ_{n=1}^N n^{-s} < N^{1-s}/(1-s) 对 0 < s < 1。
+    逐项 (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (单调) + FTC 算积分 + 望远镜求和,
+    第一项 (n=0) 严格 (1 < 1/(1-s))。 -/
+theorem zeta_partial_sum_lt_integral_bound {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1)
+    (N : ℕ) (hN : 1 ≤ N) :
+    (∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (-s))) < (N : ℝ) ^ (1 - s) / (1 - s) := by
+  have h1m : 0 < 1 - s := by linarith
+  -- 逐项: (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt = ((n+1)^{1-s} - n^{1-s})/(1-s)
+  have hterm : ∀ n : ℕ, (n + 1 : ℝ) ^ (-s) ≤
+      ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    intro n
+    by_cases hn : n = 0
+    · subst hn
+      -- 1 ≤ 1/(1-s) (严格)
+      have hlt : (1 : ℝ) < 1 / (1 - s) := by
+        rw [one_div]
+        exact (one_lt_inv₀ h1m).2 (by linarith : 1 - s < 1)
+      exact le_of_lt hlt
+    · -- n ≥ 1: x ∈ [n, n+1] ⟹ x > 0, FTC 可用
+      have hnpos : 0 < (n : ℝ) := by exact_mod_cast (Nat.pos_of_ne_zero hn)
+      -- ∫ₙ^{n+1} t^{-s}dt = ((n+1)^{1-s} - n^{1-s})/(1-s) (FTC: (t^{1-s}/(1-s))' = t^{-s})
+      have hftc : ∫ t in (n : ℝ)..((n : ℝ) + 1), t ^ (-s)
+          = ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+        have hderiv : ∀ x ∈ Set.uIcc (n : ℝ) ((n : ℝ) + 1),
+            HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s)) (x ^ (-s)) x := by
+          intro x hx
+          have hxpos : 0 < x := by
+            have hxge : (n : ℝ) ≤ x := (Set.mem_uIcc.mp hx).1
+            linarith
+          have hd := Real.hasDerivAt_rpow_const (x := x) (p := 1 - s) (Or.inl (ne_of_gt hxpos))
+          -- (x^{1-s})' = (1-s)·x^{1-s-1}, 除以 (1-s): 得 x^{1-s-1} = x^{-s}
+          have hd' : HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s)) (x ^ (-s)) x := by
+            have hd'' : HasDerivAt (fun t : ℝ => t ^ (1 - s) / (1 - s))
+                ((1 - s) * x ^ (1 - s - 1) / (1 - s)) x := by
+              simpa using hd.div_const (1 - s)
+            -- (1-s)·x^{1-s-1}/(1-s) = x^{1-s-1} = x^{-s} (1-s-1 = -s)
+            have hpow : x ^ (1 - s - 1) = x ^ (-s) := by
+              congr 1
+              ring
+            simpa [hpow] using hd''
+          exact hd'
+        have hint : IntervalIntegrable (fun t : ℝ => t ^ (-s)) volume (n : ℝ) ((n : ℝ) + 1) := by
+          -- t^{-s} 在 [n, n+1] 连续 (t ≥ n ≥ 1 > 0)
+          refine Continuous.intervalIntegrable ?_ (n : ℝ) ((n : ℝ) + 1)
+          · -- t ↦ t^{-s} 连续于正半轴
+            exact continuousAt_rpow_const.continuousOn.mono (by intro t ht; exact ht)
+          · intro x hx
+            -- IntervalIntegrable 的连续版本需要连续性; 上面已给
+            simpa using (continuousAt_rpow_const.continuousOn (x := x) (by
+              -- x ∈ uIcc (n) (n+1) ⟹ x ≥ n ≥ 1 > 0
+              have hxge : (n : ℝ) ≤ x := (Set.mem_uIcc.mp hx).1
+              linarith))
+        exact intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+      -- (n+1)^{-s} ≤ ∫ₙ^{n+1} t^{-s}dt (t ≤ n+1 ⟹ t^{-s} ≥ (n+1)^{-s}, s > 0)
+      have hmono : (n + 1 : ℝ) ^ (-s) ≤ ∫ t in (n : ℝ)..((n : ℝ) + 1), t ^ (-s) := by
+        refine intervalIntegral.integral_mono_on (by linarith) ?_ ?_ ?_
+        · exact Continuous.intervalIntegrable (by fun_prop) (n : ℝ) ((n : ℝ) + 1)
+        · exact Continuous.intervalIntegrable (by fun_prop) (n : ℝ) ((n : ℝ) + 1)
+        · intro t ht
+          -- t ∈ [n, n+1] ⟹ t ≤ n+1 ⟹ t^{-s} ≥ (n+1)^{-s} (rpow 递减反转)
+          have htle : t ≤ (n + 1 : ℝ) := (Set.mem_Icc.mp ht).2
+          have htpos : 0 < t := by
+            have htge : (n : ℝ) ≤ t := (Set.mem_Icc.mp ht).1
+            linarith
+          -- t^{-s} = (t^s)⁻¹ ≥ ((n+1)^s)⁻¹ = (n+1)^{-s}
+          rw [← Real.rpow_neg (le_of_lt htpos), ← Real.rpow_neg (by positivity : 0 ≤ (n+1 : ℝ))]
+          -- t^s ≤ (n+1)^s (底递增, s > 0) ⟹ 逆 ≥
+          have hpow : t ^ s ≤ (n + 1 : ℝ) ^ s := by
+            exact Real.rpow_le_rpow (le_of_lt htpos) htle (le_of_lt hs0)
+          exact inv_le_inv₀ (Real.rpow_pos_of_pos htpos s) (Real.rpow_pos_of_pos (by positivity) s) hpow
+      rw [hftc]
+      exact hmono
+  -- 望远镜: Σ ((n+1)^{1-s} - n^{1-s})/(1-s) = (N^{1-s} - 0^{1-s})/(1-s)
+  have htel : (∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s))
+      = (N : ℝ) ^ (1 - s) / (1 - s) := by
+    rw [← Finset.sum_div]
+    rw [Finset.sum_range_sub]
+    have h0 : (0 : ℝ) ^ (1 - s) = 0 := by
+      exact (Real.rpow_eq_zero (by norm_num) (by linarith : 1 - s ≠ 0)).2 rfl
+    rw [h0]
+    ring
+  -- 逐项求和 + 第一项严格
+  have hsum_le : (∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (-s))) ≤
+      ∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    exact Finset.sum_le_sum (fun n hn => hterm n)
+  -- 第一项严格: 1 < 1/(1-s)
+  have h0_lt : (1 : ℝ) < ((1 : ℝ) ^ (1 - s) - (0 : ℝ) ^ (1 - s)) / (1 - s) := by
+    have hlt : (1 : ℝ) < 1 / (1 - s) := by
+      rw [one_div]
+      exact (one_lt_inv₀ h1m).2 (by linarith : 1 - s < 1)
+    have hpow1 : (1 : ℝ) ^ (1 - s) = 1 := by simp
+    have h0 : (0 : ℝ) ^ (1 - s) = 0 := by
+      exact (Real.rpow_eq_zero (by norm_num) (by linarith : 1 - s ≠ 0)).2 rfl
+    simpa [hpow1, h0] using hlt
+  have hsum_lt : (∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (-s))) <
+      ∑ n ∈ (Finset.range N), ((n + 1 : ℝ) ^ (1 - s) - (n : ℝ) ^ (1 - s)) / (1 - s) := by
+    refine Finset.sum_lt_sum ?_ (fun n hn => hterm n) ?_
+    · exact Finset.range_nonempty.mpr hN
+    · refine ⟨0, Finset.mem_range.mpr (by omega), ?_⟩
+      simpa using h0_lt
+  -- 拼装
+  rw [htel]
+  exact hsum_lt
 
 end RiemannUnifiedObservation
