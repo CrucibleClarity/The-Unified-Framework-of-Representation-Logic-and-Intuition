@@ -593,6 +593,11 @@ real (\texttt{hardyZ\_real}); and the positional theorems
 locate the orbit of a zero under reflection.\end{sloppypar}
 \end{theorem}
 
+On the critical line $\zt$ is real up to the multiplier phase: the Hardy
+$Z$-function is real (\texttt{hardyZ\_real}, Layer~8), so the phase of
+$\zt$ on the line is determined by the sign of $Z$ and the phase of
+$\Xchi$; the phase structure of $\Xchi$ itself is the subject of this layer.
+
 \section{Layer 9: the critical-line phase layer}
 \label{sec:L9}
 
@@ -720,7 +725,8 @@ differs from the lift of $\Xchi$ by an integer multiple of $\pi$
 \end{theorem}
 
 The integer layers of \eqref{eq:align} are the discrete data carried by the
-phase: they count the winding of $u$ along the rectangle (Layer~12).
+phase: they count the winding of $u$ along the rectangle (Layer~12), and
+their deterministic prediction is the subject of Layer~11.
 
 \section{Layer 11: predictor residuals}
 \label{sec:L11}
@@ -768,7 +774,8 @@ functional equation.}
 In the rectangle of Figure~\ref{fig:rect}, a \emph{flip} is a sign
 change of $\Re\zt$ across the critical line; the
 \emph{flip count} is the number of flips recorded by the lifted phases of
-Layer~10. The \emph{winding number} of $\Xchi$ along a path is the total
+Layer~10 (the predictor residual of Layer~11 is the error sequence of this
+count). The \emph{winding number} of $\Xchi$ along a path is the total
 change of its lifted argument divided by $2\pi$.
 
 \subsection{The integer-layer bridges}
@@ -1544,6 +1551,10 @@ zero-free bottom edge of the rectangle of Layer~12.
 \section{Complete declaration inventory (221 + 12 + 4 declarations, by layer)}
 \label{app:inventory}
 
+The declarations of the isolation files iso~28--31 (35 + 18 + 8 + 9) are
+listed in their files (see \S\ref{sec:verification}), not here; the
+following inventory covers the thirteen layers.
+
 {\small\begin{sloppypar}
 \begin{enumerate}
 \item \textbf{L1 (15)}: \texttt{add}, \texttt{neg}, \texttt{zero},
@@ -1899,8 +1910,9 @@ Euler--Maclaurin continuation argument, including the continuity of $\zt$ on
 the interval. The author rejected this: the continuity is already covered by
 the odd/even pairing bridge of \S\ref{sec:contbridge} (both sides are
 locally uniform limits of discrete series --- continuity by discrete
-superposition), and the Euler--Maclaurin kernel is needed only for the sign
-(\S\ref{sec:L7}, \S\ref{sec:kernel}, \S\ref{sec:blocksCG}).
+superposition), and the sign is likewise covered by the positivity of the
+pairing terms together with the doubling identity
+(\S\ref{sec:blocksCG}), so the Euler--Maclaurin kernel is not needed at all.
 \item \emph{Hand-derived asymptotic expansions (Binet-type).} The AI
 proposed deriving Stirling-type asymptotics by classical expansions; the
 author rejected this as wheel-reinvention and redirected the argument to
