@@ -486,16 +486,16 @@ theorem flip_chi_circle_bridge (T : ℝ)
     从连续提升的端点差重构离散翻转计数。 -/
 theorem net_flip_from_chi_lift (T : ℝ)
     (hz : ∀ s : unitInterval, riemannZeta ((1 / 2 : ℂ) + (T * s.1 : ℝ) * Complex.I) ≠ 0) :
-    ((2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)) /
-      (2 * ↑Real.pi * Complex.I)) ∈ ℤ := by
+    ∃ m : ℤ, ((2 * (uLift T hz 1 - uLift T hz 0) - (thetaLift T 1 - thetaLift T 0)) /
+      (2 * ↑Real.pi * Complex.I)) = (m : ℂ) := by
   rcases (flip_chi_circle_bridge T hz) with ⟨m, hm⟩
   rw [hm]
   -- (m·2πi)/(2πi) = m ∈ ℤ
+  have h2pi : (2 * ↑Real.pi * Complex.I : ℂ) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (by norm_num : (2 : ℂ) ≠ 0)
+      (by exact_mod_cast (Real.pi_ne_zero) : (↑Real.pi : ℂ) ≠ 0)) Complex.I_ne_zero
   rw [show (m : ℂ) * (2 * ↑Real.pi * Complex.I) / (2 * ↑Real.pi * Complex.I) = (m : ℂ) by
-    exact mul_div_cancel_left₀ (m : ℂ) (by
-      -- 2πi ≠ 0
-      rw [show (2 * ↑Real.pi * Complex.I : ℂ) ≠ 0 by
-        exact mul_ne_zero (mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero)) Complex.I_ne_zero])]
+    exact mul_div_cancel_right₀ (m : ℂ) h2pi]
   exact ⟨m, rfl⟩
 
 end RiemannUnifiedObservation
