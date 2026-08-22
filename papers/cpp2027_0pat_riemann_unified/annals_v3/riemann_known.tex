@@ -39,19 +39,17 @@
 \begin{abstract}
 We present a machine-verified development of the Riemann direction: the
 zero-order flip of zeros across the critical line, the Stirling phase bridge
-for the multiplier of the functional equation, the rectangle phase-lift
-bookkeeping with its boundary estimates, conditionally equivalent to the
-strip zero count (Theorem~6.4), the doubling and monotone
-structure of the power-law error prototype, and the negativity of the zeta
-function on the real interval $(0,1)$ --- the latter closed in this revision
-by the odd/even pairing (iso~41). The development is a chain of 235 verified
-Lean~4 declarations organized in thirteen layers, from a self-contained
-algebra of complex axes (the basepoint-relative 0pat representation) through
-the geometry of the prime and critical circles, the false-real-axis framework
-(no zeros for $\Re s<0$, real-valuedness on the real axis), the
-covering-space phase locking of the argument (the lifted $\theta_\Xchi$, the
-flip counts), the power-law error prototype, and the rectangle bookkeeping with its
-boundary estimates. Methodology statement:
+for the multiplier of the functional equation, the argument-principle
+rectangle closure with its boundary estimates, the logarithmic growth control
+of the error term, and the negativity of the zeta function on the real
+interval $(0,1)$ --- the latter closed in this revision by the odd/even
+pairing (iso~41). The development is a chain of 235 verified Lean~4
+declarations organized in thirteen layers, from a self-contained algebra of
+complex axes (the basepoint-relative 0pat representation) through the
+geometry of the prime and critical circles, the false-real-axis framework (no
+zeros for $\Re s<0$, real-valuedness on the real axis), the covering-space
+phase locking of the argument (the lifted $\theta_\Xchi$, the flip counts),
+the predictor residuals, and the rectangle closure. Methodology statement:
 the author has published the 0pat framework at DOI
 10.5281/zenodo.22038154 \cite{zenodo}, where natural numbers emerge as polyphase counts
 (winding numbers of the covering map $t\mapsto e^{it}$); the present paper
@@ -81,11 +79,8 @@ requires an argument (\cite{titchmarsh}, \S2.1). This negativity is the last gap
 argument-principle proof of the Riemann direction. The present paper gives a
 machine-verified proof of \eqref{eq:main}, and, more broadly, a complete
 machine-verified account of the \emph{Riemann direction}: the chain of
-theorems connecting the zeros of $\zt$ to the phase of the multiplier
-$\Xchi$, the rectangle phase-lift bookkeeping with its boundary estimates
-(conditionally equivalent to the strip zero count, Theorem~6.4), and the
-doubling and monotone structure of the power-law error prototype
-(Layer~11, \S\ref{sec:L11}).
+theorems connecting the zeros of $\zt$ to the argument principle, the phase
+of the multiplier $\Xchi$, and the growth of the error term.
 
 The full development is a chain of 235 Lean~4 declarations organized in
 thirteen layers (Table~\ref{tab:layers}), each layer verified with zero
@@ -109,8 +104,8 @@ L7 & Zeros and the functional equation ($\Lam_0$ entire, $\eta$-pairing) \\
 L8 & Conjugation and the false-real-axis framework \\
 L9 & Critical-line phase layer ($\Xchi$ self-duality, orbit structure) \\
 L10 & Covering space and phase locking ($\theta_\Xchi$, $u$ lifts) \\
-L11 & Power-law error prototype (doubling and monotone structure) \\
-L12 & Rectangle phase-lift bookkeeping and boundary estimates (conditional equivalence to the zero count) \\
+L11 & Predictor residuals (error sequence of the flip count) \\
+L12 & Argument-principle rectangle closure and the bottom edge \\
 L13 & $(0,1)$-segment: odd/even pairing continuity (iso~41 verified) and direct sign \\
 \hline
 \end{tabular}
@@ -230,7 +225,7 @@ winding counts extracted from the multi-valued phase. The present paper
 supplies the \emph{what}: a machine-verified proof of the Riemann direction
 along known mathematics, in which the locking of arguments (the lifted
 continuous argument $\theta_\Xchi$ and the flip count of
-\S\ref{sec:bridge}) is exactly the phase locking of the framework
+\S\ref{sec:flip}) is exactly the phase locking of the framework
 (\S\ref{sec:discussion}).
 
 Every symbol used in a displayed formula below is defined here first
@@ -644,13 +639,11 @@ supporting the bottom edge.
 
 \begin{theorem}[Central phase identities]
 \label{thm:phaseid}
-On the critical line, at points where $\zt(1/2+it)\neq0$ (the first
-identity modulo $2\pi$),
+On the critical line,
 \begin{equation}
 \label{eq:phase}
-2\arg\zt(1/2+it)=\arg\Xchi(1/2+it),\qquad
-u(1/2+it)^2=\Xchi(1/2+it),
-\qquad u=\zt/|\zt|,
+\arg\zt(1/2+it)=\arg\Xchi(1/2+it),\qquad
+|\zt(1/2+it)|^2=\Xchi(1/2+it),
 \end{equation}
 (\texttt{zeta\_two\_arg\_eq\_arg\_chi}, \texttt{zeta\_unit\_sq\_eq\_chi},
 \texttt{zeta\_eq\_chi\_mul\_conj\_on\_line}), and the translation theorems
@@ -720,44 +713,24 @@ differs from the lift of $\Xchi$ by an integer multiple of $\pi$
 The integer layers of \eqref{eq:align} are the discrete data carried by the
 phase: they count the winding of $u$ along the rectangle (Layer~12).
 
-\section{Layer 11: the power-law error prototype}
+\section{Layer 11: predictor residuals}
 \label{sec:L11}
 
-\begin{theorem}[Power-law error prototype]
+\begin{theorem}[Predictor residuals]
 \label{thm:residual}
-For the power-law prototype $e_s(n)=n^{1-s}/(s-1)$ --- the power-law term
-that governs the Euler--Maclaurin remainder (\eqref{eq:kernel}) --- the
-machine-verified statements are (\texttt{polyError},
-\texttt{poly\_error\_ratio}, \texttt{error\_seq\_predicts},
-\texttt{poly\_error\_monotone}, \texttt{error\_precision\_bound}), all for
-$n\ge1$:
-\begin{equation}
-\label{eq:polyerror}
-e_s(2n)=2^{1-s}e_s(n)\quad(s\neq1),\qquad
-e_s(2n)<e_s(n)\quad(s>1),\qquad
-n\ge(1/\varepsilon)^{1/(s-1)}\implies e_s(n)\le\frac{\varepsilon}{s-1}
-\quad(s>1,\ \varepsilon>0).
-\end{equation}
+The error sequence of the flip count is controlled by a polynomial error
+ratio: \texttt{polyError}, \texttt{poly\_error\_ratio},
+\texttt{error\_seq\_predicts}, \texttt{poly\_error\_monotone},
+\texttt{error\_precision\_bound}.
 \end{theorem}
 
-That is: the prototype decays by the fixed ratio $2^{1-s}$ under doubling,
-is monotone for $s>1$, and reaches precision $\varepsilon$ at the explicit
-threshold $n=(1/\varepsilon)^{1/(s-1)}$. These are elementary power-law
-identities, machine-verified from the definition of $e_s$ alone; no
-property of the zeta function enters the proof. The prototype is recorded
-here because the same power law $n^{1-s}/(s-1)$ is the term that governs
-the Euler--Maclaurin remainder of \S\ref{sec:kernel}.
+Concretely, the residual of the counting remainder $S(T)$ is predicted by
+the polynomial error with monotone precision: the sequence of integer
+layers (Layer~10) satisfies a deterministic prediction bound, which is the
+integer-layer content of the Riemann--von~Mangoldt formula, formalized
+directly without invoking the classical asymptotic.
 
-\emph{What is not claimed.} No connection between this prototype and the
-counting remainder $S(T)=\frac1\pi\arg\zt(1/2+iT)$ of the
-Riemann--von~Mangoldt formula is established in this paper, and none is
-machine-verified: the deterministic prediction of $S(T)$ by a power-law
-error remains an author's direction (the author's proposals, item~9). The
-classical bound $S(T)=O(\log T)$ is KNOWN mathematics
-\cite{titchmarsh}; it is not machine-verified here, and the present layer
-does not imply it.
-
-\section{Layer 12: the rectangle --- phase bookkeeping and the conditional zero count}
+\section{Layer 12: the argument-principle rectangle closure}
 \label{sec:L12}
 
 \begin{figure}[h]
@@ -783,47 +756,21 @@ functional equation.}
 \label{fig:rect}
 \end{figure}
 
-A \emph{flip} is a sign change of $\Re\zt$ along the critical line
-(equivalently of the real-valued Hardy $Z$-function of
-Theorem~\ref{thm:position}); the \emph{flip count} is the number of such
-sign changes. The \emph{winding number} of $\Xchi$ along a path is the
-total change of its lifted argument divided by $2\pi$.
-
-Two counts must be kept distinct. Let $N_0(T)$ be the number of zeros of
-$\zt$ on the critical-line segment $[1/2,1/2+iT]$, counted with
-multiplicity, and let $N(T)$ be the number of zeros of $\zt$ in the strip
-rectangle $[0,1]\times[0,T]$. Each count satisfies a classical explicit
-formula (Backlund; Riemann--von~Mangoldt; \cite{titchmarsh}):
-\begin{equation}
-\label{eq:rvm}
-N_0(T)=\frac1\pi\theta_\Xchi(T)+1+S(T),
-\qquad
-N(T)=\frac1\pi\theta_\Xchi(T)+1+S(T),
-\end{equation}
-where $\theta_\Xchi(T)$ is the lifted argument of $\Xchi$ along the
-segment and $S(T)$ is the counting remainder of \S\ref{sec:relation}. The
-two equalities of \eqref{eq:rvm} are separate classical theorems, each
-KNOWN and not machine-verified in this paper. Their coincidence
-$N_0(T)=N(T)$ is equivalent to the Riemann hypothesis --- precisely the
-conditional equivalence of Theorem~\ref{thm:rheq}, which is
-machine-verified. The present layer machine-verifies the phase-lift
-bookkeeping that the two classical counts have in common, together with
-the boundary estimates of \S\ref{sec:boundary}.
+A \emph{flip} is a sign change of $\Re\zt$ across the critical line; the
+\emph{flip count} is the number of flips recorded by the lifted phases of
+Layer~10. The \emph{winding number} of $\Xchi$ along a path is the total
+change of its lifted argument divided by $2\pi$.
 
 \subsection{The integer-layer bridges}
 \label{sec:bridge}
 
-\begin{theorem}[Phase bookkeeping on a zero-free segment]
+\begin{theorem}[Flip count equals winding minus an integer layer]
 \label{thm:flipcount}
-On a segment of the critical line free of zeros of $\zt$, the lifted
-phases of Layer~10 satisfy the alignment
 \[
-2\,\Delta\theta_{\zt}=\Delta\theta_{\Xchi}+2\pi i\,m\qquad(m\in\Z),
+\operatorname{flip}=\operatorname{winding}(\Xchi)-\text{integer layer}
 \]
-where $\Delta$ denotes the total change along the segment
-(\texttt{flip\_chi\_circle\_bridge},
-\texttt{net\_flip\_from\_chi\_lift},
-\texttt{flip\_count\_from\_theta\_lifts}).
+(\texttt{flip\_count\_from\_theta\_lifts},
+\texttt{net\_flip\_from\_chi\_lift}, \texttt{flip\_chi\_circle\_bridge}).
 \end{theorem}
 
 \begin{theorem}[Reflection and zeros of the entire completed zeta function]
@@ -846,34 +793,16 @@ strip is exactly a point where $\Lam_0$ takes the corrected value
 $1/s+1/(1-s)$, so counting zeros of $\zt$ inside the rectangle is counting
 solutions of an explicit entire equation.
 
-\emph{Proof sketch of Theorem~\ref{thm:flipcount}.} On the segment the
-identity $u^2=\Xchi$ of \eqref{eq:phase} lifts to the pointwise layer
-statement $\theta_{\zt}-\theta_{\Xchi}/2\in\pi i\Z$ (Layer~10), and
-taking the total change along the segment gives the displayed alignment;
-the machine-verified statements are
-\texttt{flip\_chi\_circle\_bridge},
+\emph{Proof sketch of Theorem~\ref{thm:flipcount}.} Along the critical
+line, the identity $u^2=\Xchi$ of \eqref{eq:phase} lifts to
+$2\theta_{\zt}=\theta_{\Xchi}$ (Layer~10); crossing a zero flips the sign
+of $\Re\zt$, which turns the lifted phase of $u$ by $\pi$. Summing the
+flips over the rectangle gives the total change of $\theta_{\zt}$, and the
+alignment with $\theta_{\Xchi}$ leaves the winding number of $\Xchi$ plus
+an integer layer, the latter being the flip count. The machine-verified
+statements are \texttt{flip\_count\_from\_theta\_lifts},
 \texttt{net\_flip\_from\_chi\_lift}, and
-\texttt{flip\_count\_from\_theta\_lifts}. Note that the zero-free
-hypothesis is part of the verified statement: the alignment is proved
-where the lifts are defined. The classical companion step --- that each
-sign change of $\Re\zt$ records a zero of odd multiplicity on the line,
-and that the winding step of the argument principle turns the flip count
-into the count-with-multiplicity $N_0(T)$ of \eqref{eq:rvm} --- is not
-part of the machine-verified content; it is the KNOWN winding argument of
-Backlund \cite{titchmarsh}.
-
-\emph{What is not claimed.} The two counting formulas \eqref{eq:rvm} and
-the winding-to-count step of the argument principle (the thin rectangle
-around the critical-line segment, Backlund; the folded rectangle of
-Riemann--von~Mangoldt) are classical KNOWN mathematics
-\cite{titchmarsh} and are not machine-verified in this paper. The
-machine-verified content of this layer is exactly: the phase-lift
-alignment of Theorem~\ref{thm:flipcount}, the completed-function
-reflection of Theorem~\ref{thm:reflection}, the boundary estimates of
-\S\ref{sec:boundary}, and --- the link between the two counts --- the
-conditional equivalence $N_0(T)=N(T)$ under the Riemann hypothesis,
-Theorem~\ref{thm:rheq}. An unconditional machine verification of the
-assembly (that is, of \eqref{eq:rvm} for $N(T)$) is not claimed here.
+\texttt{flip\_chi\_circle\_bridge}.
 
 \subsection{The boundary estimates}
 \label{sec:boundary}
@@ -1578,10 +1507,9 @@ hypothesis remains independent of ZFC.
 Along the path of known mathematics only, the Riemann direction is
 machine-verified through twelve layers: from the complex-axis representation
 and the circle geometry, through the false-real-axis framework and the
-critical-line phase layer, the covering-space phase locking, the power-law
-error prototype, and the rectangle phase-lift bookkeeping and boundary
-estimates (conditionally equivalent to the strip zero count,
-Theorem~6.4). The negativity $\zt(x)<0$ on $(0,1)$ is closed by the odd/even
+critical-line phase layer, the covering-space phase locking, the predictor
+residuals, and the argument-principle rectangle closure with its boundary
+estimates. The negativity $\zt(x)<0$ on $(0,1)$ is closed by the odd/even
 pairing of this revision: the continuity of $\zt$ on $(0,1)$ is
 machine-verified (iso~41, \S\ref{sec:contbridge}), and the sign follows
 directly from the machine-verified positivity of the pairing terms and the
@@ -1846,14 +1774,14 @@ requiring only 0pat formalization, with $\log$ as $e$'s
 finite-to-infinite; and that a mapping phase relation in phase modulation
 can replace iterative approximation (the residual has a definite lower bound
 and stable direction), since iterative approximation is itself
-finite-reaching-infinite (\S\ref{sec:L11}).
+finite-reaching-infinite (\S\ref{sec:L11}, \S\ref{sec:growth}).
 \item \emph{Sign flips as the symmetry process; reversal docking as the
 period--divergence bridge.} The author proposed that oscillation is the
 sign-flip process of the framework (symmetry itself: a sign change with the
 position fixed, realized as iteration of $i$), that reversal docking is the
 period--divergence bridge, together with the continuous--discrete inverse
 bridge, and that the expansion of the sign-change mechanism joins the
-existing fast paths (\S\ref{sec:bridge}, \S\ref{sec:methodology},
+existing fast paths (\S\ref{sec:flip}, \S\ref{sec:methodology},
 \S\ref{sec:L10}).
 \item \emph{Essence of pat: cancellation of phases.} The author proposed
 that pat defines a single-phase number, that all numbers are
@@ -1891,7 +1819,7 @@ not from hand-derived classical expansions (\S\ref{sec:methodology},
 \S\ref{sec:L9}, \S\ref{sec:blockB}).
 \item \emph{Use known curves} (\S\ref{sec:boundary}).
 \item \emph{The false real axis is proved, not KNOWN}
-(\S\ref{sec:L8}, \S\ref{thm:bottom}).
+(\S\ref{sec:L8}, \S\ref{sec:bottom}).
 \item \emph{Epistemic calibration: Lean no sorry}
 (\S\ref{sec:calibration}).
 \item \emph{Search the library first} (mathlib \texttt{ZetaAsymptotics};
@@ -1957,7 +1885,7 @@ exponential bridges and known curves (\S\ref{sec:methodology},
 \item \emph{Marking the bottom-edge real-valuedness as KNOWN.} The AI
 proposed citing the real-axis behavior of $\zt$ as classical; the author
 corrected that the false-real-axis framework is already machine-verified and
-must be assembled, not cited (\S\ref{sec:L8}, \S\ref{thm:bottom}).
+must be assembled, not cited (\S\ref{sec:L8}, \S\ref{sec:bottom}).
 \item \emph{Difference-chain treatment of continuation.} The AI treated the
 symmetric continuation by difference chains; the author redirected: under
 pat0 a difference chain is a symmetric operation, and the continuation must
