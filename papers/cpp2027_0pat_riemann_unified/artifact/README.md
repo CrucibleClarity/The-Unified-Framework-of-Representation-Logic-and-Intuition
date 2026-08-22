@@ -4,10 +4,15 @@
 
 ```bash
 # Lean 4.32.2 + mathlib v4.32.2
-lean proof.lean   # 0 errors, 0 warnings, 0 sorry
+lean proof_unified.lean   # 0 errors, 0 warnings, 0 sorry
 ```
 
-## Theorems (138, all 0pat)
+## Theorems (156, all 0pat)
+
+`proof_unified.lean` = iso 分块 (zeta_*_iso.lean, 27 块独立编译通过) 拼接为
+单文件完整证明 + Hardy Z (翻转缺口 1+1b): 156 声明 (124 theorems/lemmas +
+32 definitions), 声明级去重 (同名保留首现; zetaUnit ℝ 版重命名
+zetaUnitOnLine), 只 import Mathlib。
 
 Merged from exercises XXIV–XXXVI (original namespaces preserved) plus
 new theorems in `RiemannUnifiedObservation`:
@@ -32,7 +37,7 @@ new theorems in `RiemannUnifiedObservation`:
 | Affine base-point shift | affine_image_critical_line_is_line (affine shifts keep the critical line a line; circle view only from inversion) |
 | Euler-circle split norm | zero_split_normSq (zero on the split cone Re²−Im² = 0), zero_not_on_euler_circles (zeros avoid both orthogonal Euler circles) |
 | p-adic split / zero region | zeta_eq_zero_iff_p_split (zero = common zero of odd/even parts), odd_part_extra_zero_on_imag_axis (extra odd-part zeros on the imaginary axis), riemannZeta_ne_zero_of_re_lt_zero, riemannZeta_ne_zero_of_re_eq_zero, nontrivial_zero_in_critical_strip (nontrivial zeros in 0 < Re < 1) |
-| Hardy Z | hardyZ_real: conj(Z(t)) = Z(t) — functional-equation multiplier unit modulus, conjugation cancellation |
+| Hardy Z | chi (self-contained Landau multiplier), chi_pair_product (χ(s)·χ(1−s)=1), chi_conj_symm (conj passes through χ), chi_unit_modulus (|χ(1/2+it)|=1), zeta_eq_chi_conj_on_line (critical-line functional equation), hardyZ_conj (conj(Z)=Z, conjugation-reflection symmetry), hardyZ_im_zero (Z real-valued), chi_continuousOn_line, hardyZ_eq_zero_iff (Z=0 ⟺ ζ=0 on the line), hardyZ_continuousOn, hardyZ_zero_between (Re Z(a) < 0 < Re Z(b) ⟹ ∃t∈(a,b), Z(t)=0; intermediate value — every flip records a critical-line zero) |
 | Conjugation counting | zero_orbit_counting: zeros form 2-point conjugate pairs on the line, 4-point orbits off the line; orbit_degenerate_iff_on_line, recip_on_critical_circle_iff, zero_orbit_four |
 | Zero structure | zeta_zero_reflection, prime_factor_zero, trivial_zero_condition, critical_line_observation |
 | i-iteration | i_pow_i_eq_exp_neg_pi_div_two, i_pow_i_ne_i, axis_tick_pow, prime_no_power_decomposition |
@@ -44,10 +49,13 @@ The Riemann direction is machine-checked up to its honest boundary:
 the functional equation, zero symmetry, prime-factor zeros on the
 imaginary axis, trivial zeros from the trigonometric factor, the
 critical-line observation, the real axis as iteration of i
-(i^i = e^{−π/2}), and the completed zeta structure. The Riemann
-hypothesis itself is not claimed; the thirty-five observation records in
-observation.md document the numerical evidence and the exact location
-of the gap.
+(i^i = e^{−π/2}), the completed zeta structure, and the Hardy Z
+function: real-valuedness (conj(Z)=Z) and the intermediate-value
+flip-to-zero theorem (a sign change of Z forces a critical-line
+zero). The Riemann hypothesis itself is not claimed; the thirty-five
+observation records in observation.md document the numerical evidence
+and the exact location of the remaining gap (the converse zero
+counting: every critical-line zero counted by a flip, matching N(T)).
 
 ## Provenance
 
@@ -67,3 +75,9 @@ No author / affiliation / email / repository identifiers.
 0 error 0 sorry) 的阶段成果, 按 0pat 隔离开发纪律先独立验证再合并入 proof.lean。
 `iso_hashes.md` = 阶段成果 hash + 时间戳台账 (SHA256 前 16 位, mtime 精确到秒),
 与合并文件 hash (claims_manifest.md) 分离保留, 可独立追溯。
+
+## 发布 v2 状态 (2026-08-21)
+
+iso/ 下 28 个隔离文件; 24 个当前环境 0 error 0 sorry (含新增 zeta_continuation_iso.lean)。
+proof.lean (合并总) 与新 mathlib 905b95818e API 迁移适配中, 内容以 iso 文件为准。
+编译状态表见 iso/ISO_README.md。
