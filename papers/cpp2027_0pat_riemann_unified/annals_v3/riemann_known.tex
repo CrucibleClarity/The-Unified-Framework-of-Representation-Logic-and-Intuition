@@ -333,7 +333,9 @@ and an offline zero comes with its reflected partner
 
 The reflected partner is the seed of the orbit structure of
 \S\ref{sec:L9}: the map $s\mapsto 1-s$ acts on the zero set, and zeros off
-the line occur in pairs. This is the first appearance of the reflection
+the line occur in pairs (\texttt{zeta\_zero\_offline\_pair}, and in
+Layer~9 \texttt{zero\_orbit\_distinct\_of\_offline}). This is the first
+appearance of the reflection
 symmetry $s\leftrightarrow 1-s$ that governs the whole Riemann direction.
 
 \section{Layers 3--5: circle geometry, transpose symmetry, leak signs}
@@ -437,7 +439,8 @@ basepoint selects the sign. The direction theorems
 (\texttt{unit\_1\_on\_real\_circle}, \texttt{imag\_circle\_is\_direction\_j},
 \texttt{directions\_orthogonal}, \texttt{euler\_plane}) record the
 orthogonality of the two directions used later for the odd/even splitting of
-the zeta term.
+the zeta term (\texttt{zeta\_eq\_odd\_add\_even}, Layer~8;
+\texttt{pairing\_summable}, Layer~13).
 
 \section{Layers 6--7: convergence, divergence, and the functional equation}
 \label{sec:L6}
@@ -461,10 +464,11 @@ divergence pairs reduce; the conjugation symmetry
 
 The divergence structure explains why the zeta series cannot be split
 naively into its odd and even parts: each part diverges, and only the
-period-pair cancellation restores convergence. This is the analytic content
+period-pair cancellation restores convergence
+(\texttt{period\_pair\_reduces}). This is the analytic content
 behind the odd/even splitting used in Layer 8, and it supplies the
 continuity bridge of \S\ref{sec:contbridge}: the paired series converges
-where the two unpaired sides diverge.
+where the two unpaired sides diverge (\texttt{pairing\_summable}).
 
 \subsection{Layer 7: zeros and the functional equation}
 \label{sec:L7}
@@ -495,10 +499,13 @@ converges with bounded partial sums and pairs into the eta function
 \texttt{alternating\_partial\_sum\_bounded}, \texttt{eta\_pair\_form}).
 \end{theorem}
 
-The passage from the meromorphic $\zt$ to the entire $\Lam_0$ is the
+The passage from the meromorphic $\zt$ to the entire $\Lam_0$
+(\texttt{xi\_entire}) is the
 structural move of the whole development: it replaces the pole at $s=1$ by
 the explicit correction $1/s+1/(1-s)$, and it is the entire $\Lam_0$ that
-enters the rectangle argument of Layer 12.
+enters the rectangle argument of Layer 12
+(\texttt{completedZeta}\(_0\)\_log\_reflection,
+\texttt{zeta\_zero\_iff\_completedZeta}\(_0\)\_one\_over\_sum).
 
 \section{Layer 8: conjugation and the false-real-axis framework}
 \label{sec:L8}
@@ -668,7 +675,8 @@ quantify the period of the multiplier's argument.
 The second identity of \eqref{eq:phase} is the source of the square
 relation $u^2=\Xchi$ used in Layer~10: since $|\Xchi|=1$ on the line,
 $\zt=\Xchi\overline{\zt}$ squares to $\zt^2=\Xchi|\zt|^2$, so the unit
-phase $u=\zt/|\zt|$ satisfies $u^2=\Xchi$, which is why the flip of $u$
+phase $u=\zt/|\zt|$ satisfies $u^2=\Xchi$ (\texttt{zeta\_unit\_sq\_eq\_chi}),
+which is why the flip of $u$
 across the line is governed by the phase of $\Xchi$.
 
 \section{Layer 10: covering space and phase locking}
