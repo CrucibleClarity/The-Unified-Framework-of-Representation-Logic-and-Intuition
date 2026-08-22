@@ -196,7 +196,18 @@ and the Weierstrass theorem on locally uniform limits of functions (for the
 odd/even pairing of Layer~13). The reason is epistemic calibration: the author does
 not accept a statement as proved on the authority of ``classical and
 therefore citable''; a conclusion is regarded as proved only when it has been
-verified by the Lean~4 compiler with no \texttt{sorry}. Everything not yet
+verified by the Lean~4 compiler with no \texttt{sorry}.\footnote{The
+tools of this verification --- the compiler, the computer, the AI ---
+are modern; the mathematics they verify is not. It was built by
+mathematicians working without any of these tools, under constraints of
+notation and rigor that the present tools were designed to relieve.
+Machine verification does not replace their arguments; it re-checks
+them with a different tool. What the classical authors established does
+not become more true by being verified; it becomes more usable. This
+paper assembles their work and checks the assembly; it does not add to
+the mathematics it verifies. Accordingly, the boundaries of the paper
+are drawn narrowly: the chain is verified, and the conjectures around
+it are not touched.} Everything not yet
 machine-verified is explicitly marked KNOWN and listed as an honest boundary
 (in version 1: the Euler--Maclaurin continuation Blocks C--G, see the
 remark in \S\ref{sec:blocksCG}). In this revision the boundary is closed: the odd/even
@@ -1627,7 +1638,12 @@ quotient, the kernel of $\exp$ --- is standard). Honest boundaries are
 recorded throughout: the tool is one of several possible
 representations (no uniqueness or novelty of the objects is claimed);
 the numbers themselves are unambiguous (Peano); and the continuum
-hypothesis remains independent of ZFC.
+hypothesis remains independent of ZFC. In the same spirit, the Riemann
+hypothesis itself is not claimed: the chain surrounding it is
+machine-verified, the hypothesis is only restated in an equivalent
+form (Theorem~\ref{thm:rheq}), and everything beyond this chain ---
+the zero-free regions, the moments, the distributions --- remains
+exactly where the classical theory left it.
 
 Along the path of known mathematics only, the Riemann direction is
 machine-verified through thirteen layers: from the complex-axis representation
