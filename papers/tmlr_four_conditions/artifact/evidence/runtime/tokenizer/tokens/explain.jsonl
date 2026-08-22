@@ -1,0 +1,668 @@
+{"eid": "D:100", "name": "addition", "dtype": "bool", "ref": "[addition]", "intension": ""}
+{"eid": "D:101", "name": "subtraction", "dtype": "bool", "ref": "[subtraction]", "intension": ""}
+{"eid": "D:102", "name": "equals_arith", "dtype": "bool", "ref": "[=]", "intension": ""}
+{"eid": "D:103", "name": "not_equals", "dtype": "bool", "ref": "[≠]", "intension": ""}
+{"eid": "D:104", "name": "greater_than", "dtype": "bool", "ref": "[>]", "intension": ""}
+{"eid": "D:105", "name": "less_than", "dtype": "bool", "ref": "[<]", "intension": ""}
+{"eid": "D:106", "name": "greater_equal", "dtype": "bool", "ref": "[≥]", "intension": ""}
+{"eid": "D:107", "name": "less_equal", "dtype": "bool", "ref": "[≤]", "intension": ""}
+{"eid": "D:108", "name": "logical_and", "dtype": "bool", "ref": "[∧]", "intension": ""}
+{"eid": "D:109", "name": "logical_or", "dtype": "bool", "ref": "[∨]", "intension": ""}
+{"eid": "D:110", "name": "logical_not", "dtype": "bool", "ref": "[¬]", "intension": ""}
+{"eid": "D:111", "name": "logical_imply", "dtype": "bool", "ref": "[→]", "intension": ""}
+{"eid": "D:112", "name": "logical_iff", "dtype": "bool", "ref": "[↔]", "intension": ""}
+{"eid": "D:113", "name": "logical_xor", "dtype": "bool", "ref": "[⊕]", "intension": ""}
+{"eid": "D:114", "name": "logical_nand", "dtype": "bool", "ref": "[↑]", "intension": ""}
+{"eid": "D:115", "name": "logical_nor", "dtype": "bool", "ref": "[↓]", "intension": ""}
+{"eid": "D:116", "name": "logical_xnor", "dtype": "bool", "ref": "[⊙]", "intension": ""}
+{"eid": "D:117", "name": "value_zero", "dtype": "bool", "ref": "[0](D:117)", "intension": "value_0 = 数字中的基点 (数字 0). 数字序列锚在 0 上, 不在系统基点 basepoint 上. 除法不能除的是 0 (无法分割 0 次), 基点本身可除 (外部视角平移)"}
+{"eid": "D:118", "name": "value_one", "dtype": "bool", "ref": "[value_one]", "intension": ""}
+{"eid": "D:119", "name": "value_two", "dtype": "bool", "ref": "[value_two]", "intension": ""}
+{"eid": "D:120", "name": "value_three", "dtype": "bool", "ref": "[value_three]", "intension": ""}
+{"eid": "D:121", "name": "value_four", "dtype": "bool", "ref": "[value_four]", "intension": ""}
+{"eid": "D:122", "name": "value_five", "dtype": "bool", "ref": "[value_five]", "intension": ""}
+{"eid": "D:123", "name": "value_six", "dtype": "bool", "ref": "[value_six]", "intension": ""}
+{"eid": "D:124", "name": "value_seven", "dtype": "bool", "ref": "[value_seven]", "intension": ""}
+{"eid": "D:125", "name": "value_eight", "dtype": "bool", "ref": "[value_eight]", "intension": ""}
+{"eid": "D:126", "name": "value_nine", "dtype": "bool", "ref": "[value_nine]", "intension": ""}
+{"eid": "D:127", "name": "digit_zero", "dtype": "bool", "ref": "[digit_zero]", "intension": ""}
+{"eid": "D:128", "name": "digit_one", "dtype": "bool", "ref": "[digit_one]", "intension": ""}
+{"eid": "D:129", "name": "digit_two", "dtype": "bool", "ref": "[digit_two]", "intension": ""}
+{"eid": "D:130", "name": "digit_three", "dtype": "bool", "ref": "[digit_three]", "intension": ""}
+{"eid": "D:131", "name": "digit_four", "dtype": "bool", "ref": "[digit_four]", "intension": ""}
+{"eid": "D:132", "name": "digit_five", "dtype": "bool", "ref": "[digit_five]", "intension": ""}
+{"eid": "D:133", "name": "digit_six", "dtype": "bool", "ref": "[digit_six]", "intension": ""}
+{"eid": "D:134", "name": "digit_seven", "dtype": "bool", "ref": "[digit_seven]", "intension": ""}
+{"eid": "D:135", "name": "digit_eight", "dtype": "bool", "ref": "[digit_eight]", "intension": ""}
+{"eid": "D:136", "name": "digit_nine", "dtype": "bool", "ref": "[digit_nine]", "intension": ""}
+{"eid": "S:300", "name": "symbol_numeral_0", "dtype": "bool", "ref": "[symbol_numeral_0]", "intension": ""}
+{"eid": "S:301", "name": "symbol_numeral_1", "dtype": "bool", "ref": "[symbol_numeral_1]", "intension": ""}
+{"eid": "S:302", "name": "symbol_numeral_2", "dtype": "bool", "ref": "[symbol_numeral_2]", "intension": ""}
+{"eid": "S:303", "name": "symbol_numeral_3", "dtype": "bool", "ref": "[symbol_numeral_3]", "intension": ""}
+{"eid": "S:304", "name": "symbol_numeral_4", "dtype": "bool", "ref": "[symbol_numeral_4]", "intension": ""}
+{"eid": "S:305", "name": "symbol_numeral_5", "dtype": "bool", "ref": "[symbol_numeral_5]", "intension": ""}
+{"eid": "S:306", "name": "symbol_numeral_6", "dtype": "bool", "ref": "[symbol_numeral_6]", "intension": ""}
+{"eid": "S:307", "name": "symbol_numeral_7", "dtype": "bool", "ref": "[symbol_numeral_7]", "intension": ""}
+{"eid": "S:308", "name": "symbol_numeral_8", "dtype": "bool", "ref": "[symbol_numeral_8]", "intension": ""}
+{"eid": "S:309", "name": "symbol_numeral_9", "dtype": "bool", "ref": "[symbol_numeral_9]", "intension": ""}
+{"eid": "S:310", "name": "symbol_plus", "dtype": "bool", "ref": "[symbol_plus]", "intension": ""}
+{"eid": "S:311", "name": "symbol_minus", "dtype": "bool", "ref": "[symbol_minus]", "intension": ""}
+{"eid": "S:312", "name": "symbol_eq", "dtype": "bool", "ref": "[symbol_eq]", "intension": ""}
+{"eid": "S:313", "name": "symbol_neq", "dtype": "bool", "ref": "[symbol_neq]", "intension": ""}
+{"eid": "S:314", "name": "symbol_gt", "dtype": "bool", "ref": "[symbol_gt]", "intension": ""}
+{"eid": "S:315", "name": "symbol_lt", "dtype": "bool", "ref": "[symbol_lt]", "intension": ""}
+{"eid": "S:316", "name": "symbol_ge", "dtype": "bool", "ref": "[symbol_ge]", "intension": ""}
+{"eid": "S:317", "name": "symbol_le", "dtype": "bool", "ref": "[symbol_le]", "intension": ""}
+{"eid": "S:318", "name": "symbol_and", "dtype": "bool", "ref": "[symbol_and]", "intension": ""}
+{"eid": "S:319", "name": "symbol_or", "dtype": "bool", "ref": "[symbol_or]", "intension": ""}
+{"eid": "S:320", "name": "symbol_not", "dtype": "bool", "ref": "[symbol_not]", "intension": ""}
+{"eid": "S:321", "name": "symbol_imply", "dtype": "bool", "ref": "[symbol_imply]", "intension": ""}
+{"eid": "S:322", "name": "symbol_iff", "dtype": "bool", "ref": "[symbol_iff]", "intension": ""}
+{"eid": "S:323", "name": "symbol_xor", "dtype": "bool", "ref": "[symbol_xor]", "intension": ""}
+{"eid": "S:324", "name": "symbol_nand", "dtype": "bool", "ref": "[symbol_nand]", "intension": ""}
+{"eid": "S:325", "name": "symbol_nor", "dtype": "bool", "ref": "[symbol_nor]", "intension": ""}
+{"eid": "S:326", "name": "symbol_xnor", "dtype": "bool", "ref": "[symbol_xnor]", "intension": ""}
+{"eid": "D:137", "name": "is_true", "dtype": "bool", "ref": "[is_true]", "intension": ""}
+{"eid": "D:138", "name": "truth_true", "dtype": "bool", "ref": "[truth_true]", "intension": ""}
+{"eid": "D:139", "name": "truth_false", "dtype": "bool", "ref": "[truth_false]", "intension": ""}
+{"eid": "D:140", "name": "bracket", "dtype": "dual", "ref": "[bracket]", "intension": ""}
+{"eid": "D:141", "name": "numeral", "dtype": "bool", "ref": "[numeral]", "intension": ""}
+{"eid": "D:142", "name": "multiplication", "dtype": "bool", "ref": "[multiplication]", "intension": ""}
+{"eid": "D:143", "name": "base", "dtype": "bool", "ref": "[base]", "intension": "进制值: 还原为迭代结构 (succ 嵌套, 如十进制 base = succ 嵌套10层), 幂运算的底数. 非数值, 非真值表"}
+{"eid": "D:144", "name": "place", "dtype": "bool", "ref": "[place]", "intension": ""}
+{"eid": "D:145", "name": "place_pos", "dtype": "bool", "ref": "[place_pos]", "intension": ""}
+{"eid": "D:146", "name": "cardinality", "dtype": "bool", "ref": "[cardinality]", "intension": ""}
+{"eid": "D:147", "name": "place_contribution", "dtype": "bool", "ref": "[place_contribution]", "intension": ""}
+{"eid": "D:148", "name": "numeral_value", "dtype": "bool", "ref": "[numeral_value]", "intension": ""}
+{"eid": "D:149", "name": "carry_zero", "dtype": "bool", "ref": "[carry_zero]", "intension": ""}
+{"eid": "D:150", "name": "carry_one", "dtype": "bool", "ref": "[carry_one]", "intension": ""}
+{"eid": "D:151", "name": "digit_add", "dtype": "bool", "ref": "[digit_add]", "intension": ""}
+{"eid": "D:152", "name": "neg", "dtype": "bool", "ref": "[neg]", "intension": ""}
+{"eid": "D:153", "name": "reciprocal", "dtype": "bool", "ref": "[reciprocal]", "intension": "乘法层极性对偶 (反射@1): a → 1/a. 迭代2 层对偶, 类比 neg(迭代1 层对偶 a→-a). 对合律 reciprocal(reciprocal(x))=x; 不动点 reciprocal(1)=1. 分数代数读法: a/b = a × reciprocal(b)."}
+{"eid": "D:154", "name": "power", "dtype": "bool", "ref": "[power]", "intension": "迭代3 正方向 (乘法迭代): a^b = b 次 a 相乘. 基例 a^0=1, a^1=a; 幂定律 (a^b)^c = a^(b×c). root 的对偶正方向."}
+{"eid": "D:155", "name": "root", "dtype": "bool", "ref": "[root]", "intension": "迭代3 层对偶 (开方/分割/新基数轴): root(a,b) = a^(1/b), 定义律 (root(a,b))^b = a. 单位分割测度读法: 单位切成 b 份. root(2,-1) = √-1 → 复数 i 轴 (新基数轴, 基数种类 ×2)."}
+{"eid": "D:156", "name": "division", "dtype": "bool", "ref": "[division]", "intension": "除法 = 乘法∘reciprocal (分数表达): division(a,b) = a × reciprocal(b). 单位分数 reciprocal(a) = division(1,a). 乘法逆三角 (换质位): division(a×b, b) = a. 与减法=加法∘neg 同构 (每层对偶定义逆运算)."}
+{"eid": "D:157", "name": "complement", "dtype": "bool", "ref": "[complement]", "intension": "单位区间对偶 (反射@1/2): a → 1-a. 真值 0/1 补运算在 [0,1] 的测度读法. 对合 complement(complement(x))=x. complement(a) = 1 - a (value_one 减 a). 承载分数 part-whole 测度结构."}
+{"eid": "D:158", "name": "parallel_sum", "dtype": "bool", "ref": "[parallel_sum]", "intension": "并行和 (加法在乘法层对偶下的 De Morgan 对偶): a∥b = reciprocal(addition(reciprocal(a), reciprocal(b))) = 1/(1/a + 1/b). 由 reciprocal 套到加法生成的迭代链外新运算. 物理: 并联电阻/透镜."}
+{"eid": "S:327", "name": "symbol_reciprocal", "dtype": "bool", "ref": "[symbol_reciprocal]", "intension": ""}
+{"eid": "S:328", "name": "symbol_power", "dtype": "bool", "ref": "[symbol_power]", "intension": ""}
+{"eid": "S:329", "name": "symbol_root", "dtype": "bool", "ref": "[symbol_root]", "intension": ""}
+{"eid": "S:330", "name": "symbol_division", "dtype": "bool", "ref": "[symbol_division]", "intension": ""}
+{"eid": "S:331", "name": "symbol_complement", "dtype": "bool", "ref": "[symbol_complement]", "intension": ""}
+{"eid": "S:332", "name": "symbol_parallel_sum", "dtype": "bool", "ref": "[symbol_parallel_sum]", "intension": ""}
+{"eid": "D:159", "name": "imaginary", "dtype": "bool", "ref": "[imaginary]", "intension": "复数单位 i: 命名表达式 root(neg(1), 2) = √-1, 非新基数 (基数唯一为 1, i 是基数 1 上的派生结构). 规则 i = root(neg(1),2); i² = 0-1 = -1. 复类 = root 对负对偶的破序表达式."}
+{"eid": "D:160", "name": "differential", "dtype": "bool", "ref": "[differential]", "intension": "微分 = 降层算子 (跨层对偶): 从 n 层迭代结构提取重复次数 n, 降到 n-1 层. differentiate(x,n) = n·x^(n-1). 与 integral 互逆 (跨层对偶, 类比层内对偶 neg/reciprocal)."}
+{"eid": "D:161", "name": "integral", "dtype": "bool", "ref": "[integral]", "intension": "积分 = 升层算子 (跨层对偶): 结构升到 n+1 层, 除以新次数. integrate(x,n) = x^(n+1)/(n+1). 与 differential 互逆 (∫∘d/dx = id)."}
+{"eid": "S:333", "name": "symbol_d", "dtype": "bool", "ref": "[symbol_d]", "intension": ""}
+{"eid": "S:334", "name": "symbol_integral", "dtype": "bool", "ref": "[symbol_integral]", "intension": ""}
+{"eid": "S:335", "name": "symbol_i", "dtype": "bool", "ref": "[symbol_i]", "intension": ""}
+{"eid": "D:162", "name": "logarithm", "dtype": "bool", "ref": "[logarithm]", "intension": "幂的第二逆 (深度测量算子): log_a(b) 解 a^x=b (固定底数, 解指数). 幂的两个逆: root_b(a)=固定指数解底数, log_a(b)=固定底数解指数 (二维逆结构). 降层结构律: log_a(x·y)=log_a(x)+log_a(y) 把乘法(迭代2)降到加法(迭代1). 测量迭代深度: log_a(b) = a 乘性迭代到 b 的次数. 与微积分延伸呼应 (d/dx a^x 需 ln)."}
+{"eid": "S:336", "name": "symbol_log", "dtype": "bool", "ref": "[symbol_log]", "intension": ""}
+{"eid": "D:163", "name": "translation", "dtype": "bool", "ref": "[translation]", "intension": "平移 (模群生成元 T): x → x+1. 复合 complement∘neg = 1-(-x) = x+1. 与 inversion 一起生成对称群 (模群 PGL(2,Z)), 作用基数 1 的轨道 = 全部有理数."}
+{"eid": "D:164", "name": "inversion", "dtype": "bool", "ref": "[inversion]", "intension": "反演 (模群生成元 S): x → -1/x. 复合 reciprocal∘neg = 1/(-x) = -1/x. 对合 (involution, 阶 2). 与 translation 生成对称群, 轨道 = 全部有理数."}
+{"eid": "D:165", "name": "symmetry_group", "dtype": "bool", "ref": "[symmetry_group]", "intension": "对称群 (模群 PGL(2,Z)): 层内对偶 neg/reciprocal/complement 作为变换生成. 生成元关系: neg = inversion∘reciprocal, complement = translation∘neg. 平移+反演生成整群, 作用基数 1 的轨道 = 全部有理数. 整体变换 = 对称群作用数域."}
+{"eid": "S:337", "name": "symbol_T", "dtype": "bool", "ref": "[symbol_T]", "intension": ""}
+{"eid": "S:338", "name": "symbol_S", "dtype": "bool", "ref": "[symbol_S]", "intension": ""}
+{"eid": "S:339", "name": "symbol_exp", "dtype": "bool", "ref": "[symbol_exp]", "intension": ""}
+{"eid": "D:166", "name": "exp", "dtype": "bool", "ref": "[exp]", "intension": "指数函数 exp: 微分算子不动点 (自指 d/dx exp=exp). e=exp(1), π=exp 周期 (exp(z+2πi)=exp(z)). 基元通过自指引出 e 和 π 的入口. exp(0)=1, exp(a+b)=exp(a)·exp(b)."}
+{"eid": "D:167", "name": "iterate", "dtype": "bool", "ref": "[iter]", "intension": "迭代算符: 以结构自指表达迭代, iterate(x,n) = 从基点 x 出发的迭代. 数 = 基点迭代的结构 (succ 自指嵌套), 非计数预设"}
+{"eid": "S:340", "name": "symbol_iterate", "dtype": "bool", "ref": "[symbol_iterate]", "intension": ""}
+{"eid": "D:168", "name": "fixpoint", "dtype": "bool", "ref": "[fixpoint]", "intension": "不动点算符 (自指核心): fixpoint(x) = 自指平均迭代 g(t)=(t+x)/2 的收敛点. 不动点性质 fp(x) = (fp(x)+x)/2 → fp(x)=x. 自指统一 = 寻找不动点, 不动点 = 自指迭代的稳定点."}
+{"eid": "S:341", "name": "symbol_fixpoint", "dtype": "bool", "ref": "[symbol_fixpoint]", "intension": ""}
+{"eid": "D:169", "name": "rotation", "dtype": "bool", "ref": "[rotation]", "intension": "旋转 (旋移的旋转部分): 90° 旋转 = 乘 i (imaginary). 四次旋转 = 恒等 (i⁴=1), rotation⁴(x)=x. 手性/顺逆的载体, 旋转/对偶分类的不动点结构."}
+{"eid": "S:342", "name": "symbol_rotation", "dtype": "bool", "ref": "[symbol_rotation]", "intension": ""}
+{"eid": "D:170", "name": "tetration", "dtype": "bool", "ref": "[tetration]", "intension": "超幂 (迭代4, tetration): a↑↑b = a^(a^...^a) b 次 = 幂的自指迭代. 迭代4 = 幂的重复. tetration(a,1)=a, tetration(a,n+1)=a^tetration(a,n). 2↑↑4 = 65536. 迭代4 首次生成超越数."}
+{"eid": "S:343", "name": "symbol_tetration", "dtype": "bool", "ref": "[symbol_tetration]", "intension": ""}
+{"eid": "D:171", "name": "super_root", "dtype": "bool", "ref": "[super_root]", "intension": "超根 (迭代4 层内对偶): super_root(x,b) = 解 a↑↑b = x 的底数. 幂层对偶 root 的迭代4 推广. tetration(super_root(x,b), b) = x. 超根式数 = 首次超越数 (如 x^x=3 的解 ≈ 1.825)."}
+{"eid": "D:172", "name": "super_log", "dtype": "bool", "ref": "[super_log]", "intension": "超对数 (迭代4 层内对偶): super_log(a,x) = 解 a↑↑b = x 的迭代次数. 幂层对偶 log 的迭代4 推广. tetration(a, super_log(a,x)) = x. 测量超幂迭代深度."}
+{"eid": "S:344", "name": "symbol_super_root", "dtype": "bool", "ref": "[symbol_super_root]", "intension": ""}
+{"eid": "S:345", "name": "symbol_super_log", "dtype": "bool", "ref": "[symbol_super_log]", "intension": ""}
+{"eid": "D:173", "name": "coupled_fixpoint", "dtype": "bool", "ref": "[coupled_fixpoint]", "intension": "耦合不动点 (多自指交互): 解 x = a + b·x 的交互不动点 → x = a/(1-b). 多个自指结构交互的稳定态, 类比耦合不动点定理 (Bhaskar-Lakshmikantham) 与纳什均衡 (多主体交互不动点)."}
+{"eid": "S:346", "name": "symbol_coupled_fixpoint", "dtype": "bool", "ref": "[symbol_coupled_fixpoint]", "intension": ""}
+{"eid": "D:174", "name": "scale", "dtype": "bool", "ref": "[scale]", "intension": "张缩/幂放缩 (对称家族 neg/scale/root 之一): scale(x,n) = x^n. base^n 可缩放, 每次 ×base/÷base. 张缩 ≡ 平移 (通过 log: log(x·y)=log(x)+log(y) 把乘法降为加法). 位权表示即 scale 的压缩."}
+{"eid": "D:175", "name": "recursion", "dtype": "bool", "ref": "[rec]", "intension": "递归 (结构自指): recursion(x,n) = iterate(x,n), 递归定义 = 迭代的结构形式. 自指三分支之一: 迭代自指/结构自指(递归)/不动点自指(fixpoint). 递归定义引用自身"}
+{"eid": "S:347", "name": "symbol_scale", "dtype": "bool", "ref": "[symbol_scale]", "intension": ""}
+{"eid": "S:348", "name": "symbol_recursion", "dtype": "bool", "ref": "[symbol_recursion]", "intension": ""}
+{"eid": "B:0", "name": "basepoint", "dtype": "object", "ref": "[basepoint]", "intension": "基点: 箭头系统的锚点, 自指箭头(基点→基点)的源与宿"}
+{"eid": "D:176", "name": "cardinality_one", "dtype": "bool", "ref": "[cardinality_one]", "intension": "基数1: 自指箭头(基点→基点)的概念化, 箭头抽象为概念的产物"}
+{"eid": "S:349", "name": "symbol_basepoint", "dtype": "bool", "ref": "[symbol_basepoint]", "intension": "基点符号: ◆ 箭头锚点"}
+{"eid": "S:350", "name": "symbol_cardinality_one", "dtype": "bool", "ref": "[symbol_cardinality_one]", "intension": "基数1符号: 与 digit_one/value_one 同 glyph 多义候选"}
+{"eid": "A:0", "name": "arrow_cardinality_one", "dtype": "arrow", "ref": "[arrow_cardinality_one]", "intension": "基数1箭头: 从基点到基点的自指箭头 (基点→基点), 抽象过程的产物"}
+{"eid": "D:177", "name": "morphism", "dtype": "bool", "ref": "[morphism]", "intension": "态射: 从对象到对象的结构, 箭头(atoken)的属概念"}
+{"eid": "D:178", "name": "relation", "dtype": "bool", "ref": "[relation]", "intension": "关系: 概念间的关联, 箭头的语义维度"}
+{"eid": "D:179", "name": "succ", "dtype": "bool", "ref": "[succ]", "intension": "后继: 正向迭代 (succ = 迭代 + forward), 基点→value_one. 有向箭头 (方向参与定义, 否则 base succ 无方向)"}
+{"eid": "A:1", "name": "arrow_value_one", "dtype": "arrow", "ref": "[arrow_value_one]", "intension": "value 1 箭头: 基点→基数1, 概念化 = value_one (等式2)"}
+{"eid": "A:2", "name": "arrow_succ", "dtype": "arrow", "ref": "[arrow_succ]", "intension": "后继箭头: 基点→value_one, 概念化 = succ (等式3)"}
+{"eid": "A:3", "name": "arrow_value_two", "dtype": "arrow", "ref": "[arrow_value_two]", "intension": "value 2 箭头: 基点→succ, 概念化 = value_two (抽象链延续)"}
+{"eid": "A:4", "name": "arrow_value_three", "dtype": "arrow", "ref": "[arrow_value_three]", "intension": "value 3 箭头: 基点→value_two, 概念化 = value_three"}
+{"eid": "A:5", "name": "arrow_value_four", "dtype": "arrow", "ref": "[arrow_value_four]", "intension": "value 4 箭头: 基点→value_three, 概念化 = value_four"}
+{"eid": "A:6", "name": "arrow_value_five", "dtype": "arrow", "ref": "[arrow_value_five]", "intension": "value 5 箭头: 基点→value_four, 概念化 = value_five"}
+{"eid": "A:7", "name": "arrow_value_six", "dtype": "arrow", "ref": "[arrow_value_six]", "intension": "value 6 箭头: 基点→value_five, 概念化 = value_six"}
+{"eid": "A:8", "name": "arrow_value_seven", "dtype": "arrow", "ref": "[arrow_value_seven]", "intension": "value 7 箭头: 基点→value_six, 概念化 = value_seven"}
+{"eid": "A:9", "name": "arrow_value_eight", "dtype": "arrow", "ref": "[arrow_value_eight]", "intension": "value 8 箭头: 基点→value_seven, 概念化 = value_eight"}
+{"eid": "A:10", "name": "arrow_value_nine", "dtype": "arrow", "ref": "[arrow_value_nine]", "intension": "value 9 箭头: 基点→value_eight, 概念化 = value_nine"}
+{"eid": "A:11", "name": "arrow_add_one_one_two", "dtype": "arrow", "ref": "[arrow_add_one_one_two]", "intension": "1+1=2 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:12", "name": "arrow_add_one_two_three", "dtype": "arrow", "ref": "[arrow_add_one_two_three]", "intension": "1+2=3 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:13", "name": "arrow_add_one_three_four", "dtype": "arrow", "ref": "[arrow_add_one_three_four]", "intension": "1+3=4 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:14", "name": "arrow_add_one_four_five", "dtype": "arrow", "ref": "[arrow_add_one_four_five]", "intension": "1+4=5 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:15", "name": "arrow_add_one_five_six", "dtype": "arrow", "ref": "[arrow_add_one_five_six]", "intension": "1+5=6 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:16", "name": "arrow_add_one_six_seven", "dtype": "arrow", "ref": "[arrow_add_one_six_seven]", "intension": "1+6=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:17", "name": "arrow_sign_pos_neg", "dtype": "bool", "ref": "[arrow_sign_pos_neg]", "intension": ""}
+{"eid": "A:18", "name": "arrow_sign_neg_pos", "dtype": "bool", "ref": "[arrow_sign_neg_pos]", "intension": ""}
+{"eid": "A:19", "name": "arrow_sign_to_pos", "dtype": "bool", "ref": "[arrow_sign_to_pos]", "intension": ""}
+{"eid": "A:20", "name": "arrow_sign_to_neg", "dtype": "bool", "ref": "[arrow_sign_to_neg]", "intension": ""}
+{"eid": "A:21", "name": "arrow_add_two_three_five", "dtype": "arrow", "ref": "[arrow_add_two_three_five]", "intension": "2+3=5 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:22", "name": "arrow_add_two_four_six", "dtype": "arrow", "ref": "[arrow_add_two_four_six]", "intension": "2+4=6 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:23", "name": "arrow_add_two_five_seven", "dtype": "arrow", "ref": "[arrow_add_two_five_seven]", "intension": "2+5=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:24", "name": "arrow_add_two_six_eight", "dtype": "arrow", "ref": "[arrow_add_two_six_eight]", "intension": "2+6=8 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:25", "name": "arrow_add_two_seven_nine", "dtype": "arrow", "ref": "[arrow_add_two_seven_nine]", "intension": "2+7=9 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:26", "name": "arrow_add_three_one_four", "dtype": "arrow", "ref": "[arrow_add_three_one_four]", "intension": "3+1=4 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:27", "name": "arrow_add_three_two_five", "dtype": "arrow", "ref": "[arrow_add_three_two_five]", "intension": "3+2=5 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:28", "name": "arrow_add_three_three_six", "dtype": "arrow", "ref": "[arrow_add_three_three_six]", "intension": "3+3=6 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:29", "name": "arrow_add_three_four_seven", "dtype": "arrow", "ref": "[arrow_add_three_four_seven]", "intension": "3+4=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:30", "name": "arrow_add_three_five_eight", "dtype": "arrow", "ref": "[arrow_add_three_five_eight]", "intension": "3+5=8 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:31", "name": "arrow_add_three_six_nine", "dtype": "arrow", "ref": "[arrow_add_three_six_nine]", "intension": "3+6=9 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:32", "name": "arrow_add_four_one_five", "dtype": "arrow", "ref": "[arrow_add_four_one_five]", "intension": "4+1=5 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:33", "name": "arrow_add_four_two_six", "dtype": "arrow", "ref": "[arrow_add_four_two_six]", "intension": "4+2=6 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:34", "name": "arrow_add_four_three_seven", "dtype": "arrow", "ref": "[arrow_add_four_three_seven]", "intension": "4+3=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:35", "name": "arrow_add_four_four_eight", "dtype": "arrow", "ref": "[arrow_add_four_four_eight]", "intension": "4+4=8 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:36", "name": "arrow_add_four_five_nine", "dtype": "arrow", "ref": "[arrow_add_four_five_nine]", "intension": "4+5=9 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:37", "name": "arrow_add_five_one_six", "dtype": "arrow", "ref": "[arrow_add_five_one_six]", "intension": "5+1=6 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:38", "name": "arrow_add_five_two_seven", "dtype": "arrow", "ref": "[arrow_add_five_two_seven]", "intension": "5+2=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:39", "name": "arrow_add_five_three_eight", "dtype": "arrow", "ref": "[arrow_add_five_three_eight]", "intension": "5+3=8 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:40", "name": "arrow_add_five_four_nine", "dtype": "arrow", "ref": "[arrow_add_five_four_nine]", "intension": "5+4=9 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:41", "name": "arrow_add_six_one_seven", "dtype": "arrow", "ref": "[arrow_add_six_one_seven]", "intension": "6+1=7 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:42", "name": "arrow_add_six_two_eight", "dtype": "arrow", "ref": "[arrow_add_six_two_eight]", "intension": "6+2=8 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:43", "name": "arrow_add_six_three_nine", "dtype": "arrow", "ref": "[arrow_add_six_three_nine]", "intension": "6+3=9 加法规则箭头 (source=a, target=c, concept=addition)"}
+{"eid": "A:44", "name": "arrow_iterate_succ_addition", "dtype": "arrow", "ref": "[arrow_iterate_succ_addition]", "intension": ""}
+{"eid": "A:45", "name": "arrow_iterate_addition_multiplication", "dtype": "arrow", "ref": "[arrow_iterate_addition_multiplication]", "intension": ""}
+{"eid": "A:46", "name": "arrow_iterate_multiplication_power", "dtype": "arrow", "ref": "[arrow_iterate_multiplication_power]", "intension": ""}
+{"eid": "A:47", "name": "arrow_iterate_power_tetration", "dtype": "arrow", "ref": "[arrow_iterate_power_tetration]", "intension": ""}
+{"eid": "A:48", "name": "arrow_iterate_pred_subtraction", "dtype": "arrow", "ref": "[arrow_iterate_pred_subtraction]", "intension": ""}
+{"eid": "A:49", "name": "arrow_iterate_subtraction_division", "dtype": "arrow", "ref": "[arrow_iterate_subtraction_division]", "intension": ""}
+{"eid": "A:50", "name": "arrow_iterate_power_root", "dtype": "arrow", "ref": "[arrow_iterate_power_root]", "intension": ""}
+{"eid": "A:51", "name": "arrow_iterate_tetration_super_root", "dtype": "arrow", "ref": "[arrow_iterate_tetration_super_root]", "intension": ""}
+{"eid": "A:52", "name": "arrow_iterate_tetration_super_log", "dtype": "arrow", "ref": "[arrow_iterate_tetration_super_log]", "intension": ""}
+{"eid": "A:53", "name": "arrow_inverse_addition_subtraction", "dtype": "arrow", "ref": "[arrow_inverse_addition_subtraction]", "intension": ""}
+{"eid": "A:54", "name": "arrow_inverse_subtraction_addition", "dtype": "arrow", "ref": "[arrow_inverse_subtraction_addition]", "intension": ""}
+{"eid": "A:55", "name": "arrow_inverse_multiplication_division", "dtype": "arrow", "ref": "[arrow_inverse_multiplication_division]", "intension": ""}
+{"eid": "A:56", "name": "arrow_inverse_division_multiplication", "dtype": "arrow", "ref": "[arrow_inverse_division_multiplication]", "intension": ""}
+{"eid": "A:57", "name": "arrow_inverse_power_root", "dtype": "arrow", "ref": "[arrow_inverse_power_root]", "intension": ""}
+{"eid": "A:58", "name": "arrow_inverse_root_power", "dtype": "arrow", "ref": "[arrow_inverse_root_power]", "intension": ""}
+{"eid": "A:59", "name": "arrow_inverse_tetration_super_root", "dtype": "arrow", "ref": "[arrow_inverse_tetration_super_root]", "intension": ""}
+{"eid": "A:60", "name": "arrow_inverse_super_root_tetration", "dtype": "arrow", "ref": "[arrow_inverse_super_root_tetration]", "intension": ""}
+{"eid": "A:61", "name": "arrow_inverse_tetration_super_log", "dtype": "arrow", "ref": "[arrow_inverse_tetration_super_log]", "intension": ""}
+{"eid": "A:62", "name": "arrow_inverse_super_log_tetration", "dtype": "arrow", "ref": "[arrow_inverse_super_log_tetration]", "intension": ""}
+{"eid": "A:63", "name": "arrow_inverse_differential_integral", "dtype": "arrow", "ref": "[arrow_inverse_differential_integral]", "intension": ""}
+{"eid": "A:64", "name": "arrow_inverse_integral_differential", "dtype": "arrow", "ref": "[arrow_inverse_integral_differential]", "intension": ""}
+{"eid": "A:65", "name": "arrow_logical_nand_basepoint_logical_nand", "dtype": "arrow", "ref": "[arrow_logical_nand_basepoint_logical_nand]", "intension": ""}
+{"eid": "D:180", "name": "carry", "dtype": "bool", "ref": "[carry]", "intension": "进位机制: 任意进制任意位序, 位和超出进制值时剥离 base 幂. 还原为幂+加减法: 位和 s = q×base + r (base = 迭代结构), q 进高位, r 留本位. 非真值表"}
+{"eid": "A:66", "name": "arrow_logical_nor_basepoint_logical_nor", "dtype": "arrow", "ref": "[arrow_logical_nor_basepoint_logical_nor]", "intension": ""}
+{"eid": "D:181", "name": "congruence", "dtype": "bool", "ref": "[congruence]", "intension": "同余: s mod base = r, 位和剥离 base 幂的余数. 还原为迭代减法 (反复剥离 base 直到 < base), 商 = 剥离次数. 进位 = 同余的商余分离 (商进高位, 余留本位)"}
+{"eid": "A:67", "name": "arrow_logical_xor_basepoint_logical_xor", "dtype": "arrow", "ref": "[arrow_logical_xor_basepoint_logical_xor]", "intension": ""}
+{"eid": "A:68", "name": "arrow_logical_xnor_basepoint_logical_xnor", "dtype": "arrow", "ref": "[arrow_logical_xnor_basepoint_logical_xnor]", "intension": ""}
+{"eid": "A:69", "name": "arrow_logical_not_basepoint_logical_not", "dtype": "arrow", "ref": "[arrow_logical_not_basepoint_logical_not]", "intension": ""}
+{"eid": "A:70", "name": "arrow_inverse_logical_nand_logical_or", "dtype": "arrow", "ref": "[arrow_inverse_logical_nand_logical_or]", "intension": ""}
+{"eid": "A:71", "name": "arrow_inverse_logical_or_logical_nand", "dtype": "arrow", "ref": "[arrow_inverse_logical_or_logical_nand]", "intension": ""}
+{"eid": "A:72", "name": "arrow_inverse_logical_nor_logical_and", "dtype": "arrow", "ref": "[arrow_inverse_logical_nor_logical_and]", "intension": ""}
+{"eid": "A:73", "name": "arrow_inverse_logical_and_logical_nor", "dtype": "arrow", "ref": "[arrow_inverse_logical_and_logical_nor]", "intension": ""}
+{"eid": "A:74", "name": "arrow_inverse_logical_xnor_logical_xor", "dtype": "arrow", "ref": "[arrow_inverse_logical_xnor_logical_xor]", "intension": ""}
+{"eid": "A:75", "name": "arrow_inverse_logical_xor_logical_xnor", "dtype": "arrow", "ref": "[arrow_inverse_logical_xor_logical_xnor]", "intension": ""}
+{"eid": "A:76", "name": "arrow_inverse_logical_iff_logical_xor", "dtype": "arrow", "ref": "[arrow_inverse_logical_iff_logical_xor]", "intension": ""}
+{"eid": "A:77", "name": "arrow_inverse_logical_xor_logical_iff", "dtype": "arrow", "ref": "[arrow_inverse_logical_xor_logical_iff]", "intension": ""}
+{"eid": "A:78", "name": "arrow_inverse_logical_not_logical_not", "dtype": "arrow", "ref": "[arrow_inverse_logical_not_logical_not]", "intension": ""}
+{"eid": "A:79", "name": "arrow_mul_two_three_six", "dtype": "arrow", "ref": "[arrow_mul_two_three_six]", "intension": "2×3=6 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:80", "name": "arrow_mul_two_four_eight", "dtype": "arrow", "ref": "[arrow_mul_two_four_eight]", "intension": "2×4=8 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:81", "name": "arrow_mul_three_one_three", "dtype": "arrow", "ref": "[arrow_mul_three_one_three]", "intension": "3×1=3 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:82", "name": "arrow_mul_three_two_six", "dtype": "arrow", "ref": "[arrow_mul_three_two_six]", "intension": "3×2=6 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:83", "name": "arrow_mul_three_three_nine", "dtype": "arrow", "ref": "[arrow_mul_three_three_nine]", "intension": "3×3=9 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:84", "name": "arrow_mul_four_one_four", "dtype": "arrow", "ref": "[arrow_mul_four_one_four]", "intension": "4×1=4 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:85", "name": "arrow_mul_four_two_eight", "dtype": "arrow", "ref": "[arrow_mul_four_two_eight]", "intension": "4×2=8 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:86", "name": "arrow_mul_five_one_five", "dtype": "arrow", "ref": "[arrow_mul_five_one_five]", "intension": "5×1=5 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:87", "name": "arrow_mul_six_one_six", "dtype": "arrow", "ref": "[arrow_mul_six_one_six]", "intension": "6×1=6 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:88", "name": "arrow_mul_seven_one_seven", "dtype": "arrow", "ref": "[arrow_mul_seven_one_seven]", "intension": "7×1=7 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:89", "name": "arrow_mul_eight_one_eight", "dtype": "arrow", "ref": "[arrow_mul_eight_one_eight]", "intension": "8×1=8 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:90", "name": "arrow_mul_nine_one_nine", "dtype": "arrow", "ref": "[arrow_mul_nine_one_nine]", "intension": "9×1=9 乘法规则箭头 (乘法=迭代加法)"}
+{"eid": "A:91", "name": "arrow_sub_zero_zero_zero", "dtype": "arrow", "ref": "[arrow_sub_zero_zero_zero]", "intension": "0-0=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:92", "name": "arrow_sub_one_zero_one", "dtype": "arrow", "ref": "[arrow_sub_one_zero_one]", "intension": "1-0=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:93", "name": "arrow_sub_one_one_zero", "dtype": "arrow", "ref": "[arrow_sub_one_one_zero]", "intension": "1-1=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:94", "name": "arrow_sub_two_zero_two", "dtype": "arrow", "ref": "[arrow_sub_two_zero_two]", "intension": "2-0=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:95", "name": "arrow_sub_two_one_one", "dtype": "arrow", "ref": "[arrow_sub_two_one_one]", "intension": "2-1=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:96", "name": "arrow_sub_two_two_zero", "dtype": "arrow", "ref": "[arrow_sub_two_two_zero]", "intension": "2-2=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:97", "name": "arrow_sub_three_zero_three", "dtype": "arrow", "ref": "[arrow_sub_three_zero_three]", "intension": "3-0=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:98", "name": "arrow_sub_three_one_two", "dtype": "arrow", "ref": "[arrow_sub_three_one_two]", "intension": "3-1=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:99", "name": "arrow_sub_three_two_one", "dtype": "arrow", "ref": "[arrow_sub_three_two_one]", "intension": "3-2=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:100", "name": "arrow_sub_three_three_zero", "dtype": "arrow", "ref": "[arrow_sub_three_three_zero]", "intension": "3-3=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:101", "name": "arrow_sub_four_zero_four", "dtype": "arrow", "ref": "[arrow_sub_four_zero_four]", "intension": "4-0=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:102", "name": "arrow_sub_four_one_three", "dtype": "arrow", "ref": "[arrow_sub_four_one_three]", "intension": "4-1=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:103", "name": "arrow_sub_four_two_two", "dtype": "arrow", "ref": "[arrow_sub_four_two_two]", "intension": "4-2=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:104", "name": "arrow_sub_four_three_one", "dtype": "arrow", "ref": "[arrow_sub_four_three_one]", "intension": "4-3=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:105", "name": "arrow_sub_four_four_zero", "dtype": "arrow", "ref": "[arrow_sub_four_four_zero]", "intension": "4-4=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:106", "name": "arrow_sub_five_zero_five", "dtype": "arrow", "ref": "[arrow_sub_five_zero_five]", "intension": "5-0=5 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:107", "name": "arrow_sub_five_one_four", "dtype": "arrow", "ref": "[arrow_sub_five_one_four]", "intension": "5-1=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:108", "name": "arrow_sub_five_two_three", "dtype": "arrow", "ref": "[arrow_sub_five_two_three]", "intension": "5-2=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:109", "name": "arrow_sub_five_three_two", "dtype": "arrow", "ref": "[arrow_sub_five_three_two]", "intension": "5-3=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:110", "name": "arrow_sub_five_four_one", "dtype": "arrow", "ref": "[arrow_sub_five_four_one]", "intension": "5-4=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:111", "name": "arrow_sub_five_five_zero", "dtype": "arrow", "ref": "[arrow_sub_five_five_zero]", "intension": "5-5=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:112", "name": "arrow_sub_six_zero_six", "dtype": "arrow", "ref": "[arrow_sub_six_zero_six]", "intension": "6-0=6 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:113", "name": "arrow_sub_six_one_five", "dtype": "arrow", "ref": "[arrow_sub_six_one_five]", "intension": "6-1=5 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:114", "name": "arrow_sub_six_two_four", "dtype": "arrow", "ref": "[arrow_sub_six_two_four]", "intension": "6-2=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:115", "name": "arrow_sub_six_three_three", "dtype": "arrow", "ref": "[arrow_sub_six_three_three]", "intension": "6-3=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:116", "name": "arrow_sub_six_four_two", "dtype": "arrow", "ref": "[arrow_sub_six_four_two]", "intension": "6-4=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:117", "name": "arrow_sub_six_five_one", "dtype": "arrow", "ref": "[arrow_sub_six_five_one]", "intension": "6-5=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:118", "name": "arrow_sub_six_six_zero", "dtype": "arrow", "ref": "[arrow_sub_six_six_zero]", "intension": "6-6=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:119", "name": "arrow_sub_seven_zero_seven", "dtype": "arrow", "ref": "[arrow_sub_seven_zero_seven]", "intension": "7-0=7 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:120", "name": "arrow_sub_seven_one_six", "dtype": "arrow", "ref": "[arrow_sub_seven_one_six]", "intension": "7-1=6 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:121", "name": "arrow_sub_seven_two_five", "dtype": "arrow", "ref": "[arrow_sub_seven_two_five]", "intension": "7-2=5 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:122", "name": "arrow_sub_seven_three_four", "dtype": "arrow", "ref": "[arrow_sub_seven_three_four]", "intension": "7-3=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:123", "name": "arrow_sub_seven_four_three", "dtype": "arrow", "ref": "[arrow_sub_seven_four_three]", "intension": "7-4=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:124", "name": "arrow_sub_seven_five_two", "dtype": "arrow", "ref": "[arrow_sub_seven_five_two]", "intension": "7-5=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:125", "name": "arrow_sub_seven_six_one", "dtype": "arrow", "ref": "[arrow_sub_seven_six_one]", "intension": "7-6=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:126", "name": "arrow_sub_seven_seven_zero", "dtype": "arrow", "ref": "[arrow_sub_seven_seven_zero]", "intension": "7-7=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:127", "name": "arrow_sub_eight_zero_eight", "dtype": "arrow", "ref": "[arrow_sub_eight_zero_eight]", "intension": "8-0=8 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:128", "name": "arrow_sub_eight_one_seven", "dtype": "arrow", "ref": "[arrow_sub_eight_one_seven]", "intension": "8-1=7 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:129", "name": "arrow_sub_eight_two_six", "dtype": "arrow", "ref": "[arrow_sub_eight_two_six]", "intension": "8-2=6 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:130", "name": "arrow_sub_eight_three_five", "dtype": "arrow", "ref": "[arrow_sub_eight_three_five]", "intension": "8-3=5 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:131", "name": "arrow_sub_eight_four_four", "dtype": "arrow", "ref": "[arrow_sub_eight_four_four]", "intension": "8-4=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:132", "name": "arrow_sub_eight_five_three", "dtype": "arrow", "ref": "[arrow_sub_eight_five_three]", "intension": "8-5=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:133", "name": "arrow_sub_eight_six_two", "dtype": "arrow", "ref": "[arrow_sub_eight_six_two]", "intension": "8-6=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:134", "name": "arrow_sub_eight_seven_one", "dtype": "arrow", "ref": "[arrow_sub_eight_seven_one]", "intension": "8-7=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:135", "name": "arrow_sub_eight_eight_zero", "dtype": "arrow", "ref": "[arrow_sub_eight_eight_zero]", "intension": "8-8=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:136", "name": "arrow_sub_nine_zero_nine", "dtype": "arrow", "ref": "[arrow_sub_nine_zero_nine]", "intension": "9-0=9 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:137", "name": "arrow_sub_nine_one_eight", "dtype": "arrow", "ref": "[arrow_sub_nine_one_eight]", "intension": "9-1=8 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:138", "name": "arrow_sub_nine_two_seven", "dtype": "arrow", "ref": "[arrow_sub_nine_two_seven]", "intension": "9-2=7 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:139", "name": "arrow_sub_nine_three_six", "dtype": "arrow", "ref": "[arrow_sub_nine_three_six]", "intension": "9-3=6 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:140", "name": "arrow_sub_nine_four_five", "dtype": "arrow", "ref": "[arrow_sub_nine_four_five]", "intension": "9-4=5 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:141", "name": "arrow_sub_nine_five_four", "dtype": "arrow", "ref": "[arrow_sub_nine_five_four]", "intension": "9-5=4 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:142", "name": "arrow_sub_nine_six_three", "dtype": "arrow", "ref": "[arrow_sub_nine_six_three]", "intension": "9-6=3 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:143", "name": "arrow_sub_nine_seven_two", "dtype": "arrow", "ref": "[arrow_sub_nine_seven_two]", "intension": "9-7=2 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:144", "name": "arrow_sub_nine_eight_one", "dtype": "arrow", "ref": "[arrow_sub_nine_eight_one]", "intension": "9-8=1 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:145", "name": "arrow_sub_nine_nine_zero", "dtype": "arrow", "ref": "[arrow_sub_nine_nine_zero]", "intension": "9-9=0 减法规则箭头 (加法的逆, 反方向)"}
+{"eid": "A:146", "name": "arrow_div_one_one_one", "dtype": "arrow", "ref": "[arrow_div_one_one_one]", "intension": "1÷1=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:147", "name": "arrow_div_two_one_two", "dtype": "arrow", "ref": "[arrow_div_two_one_two]", "intension": "2÷1=2 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:148", "name": "arrow_div_three_one_three", "dtype": "arrow", "ref": "[arrow_div_three_one_three]", "intension": "3÷1=3 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:149", "name": "arrow_div_four_one_four", "dtype": "arrow", "ref": "[arrow_div_four_one_four]", "intension": "4÷1=4 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:150", "name": "arrow_div_five_one_five", "dtype": "arrow", "ref": "[arrow_div_five_one_five]", "intension": "5÷1=5 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:151", "name": "arrow_div_six_one_six", "dtype": "arrow", "ref": "[arrow_div_six_one_six]", "intension": "6÷1=6 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:152", "name": "arrow_div_seven_one_seven", "dtype": "arrow", "ref": "[arrow_div_seven_one_seven]", "intension": "7÷1=7 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:153", "name": "arrow_div_eight_one_eight", "dtype": "arrow", "ref": "[arrow_div_eight_one_eight]", "intension": "8÷1=8 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:154", "name": "arrow_div_nine_one_nine", "dtype": "arrow", "ref": "[arrow_div_nine_one_nine]", "intension": "9÷1=9 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:155", "name": "arrow_div_two_two_one", "dtype": "arrow", "ref": "[arrow_div_two_two_one]", "intension": "2÷2=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:156", "name": "arrow_div_four_two_two", "dtype": "arrow", "ref": "[arrow_div_four_two_two]", "intension": "4÷2=2 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:157", "name": "arrow_div_six_two_three", "dtype": "arrow", "ref": "[arrow_div_six_two_three]", "intension": "6÷2=3 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:158", "name": "arrow_div_eight_two_four", "dtype": "arrow", "ref": "[arrow_div_eight_two_four]", "intension": "8÷2=4 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:159", "name": "arrow_div_three_three_one", "dtype": "arrow", "ref": "[arrow_div_three_three_one]", "intension": "3÷3=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:160", "name": "arrow_div_six_three_two", "dtype": "arrow", "ref": "[arrow_div_six_three_two]", "intension": "6÷3=2 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:161", "name": "arrow_div_nine_three_three", "dtype": "arrow", "ref": "[arrow_div_nine_three_three]", "intension": "9÷3=3 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:162", "name": "arrow_div_four_four_one", "dtype": "arrow", "ref": "[arrow_div_four_four_one]", "intension": "4÷4=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:163", "name": "arrow_div_eight_four_two", "dtype": "arrow", "ref": "[arrow_div_eight_four_two]", "intension": "8÷4=2 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:164", "name": "arrow_div_five_five_one", "dtype": "arrow", "ref": "[arrow_div_five_five_one]", "intension": "5÷5=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:165", "name": "arrow_div_six_six_one", "dtype": "arrow", "ref": "[arrow_div_six_six_one]", "intension": "6÷6=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:166", "name": "arrow_div_seven_seven_one", "dtype": "arrow", "ref": "[arrow_div_seven_seven_one]", "intension": "7÷7=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:167", "name": "arrow_div_eight_eight_one", "dtype": "arrow", "ref": "[arrow_div_eight_eight_one]", "intension": "8÷8=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:168", "name": "arrow_div_nine_nine_one", "dtype": "arrow", "ref": "[arrow_div_nine_nine_one]", "intension": "9÷9=1 除法规则箭头 (乘法的逆, 除数≠0)"}
+{"eid": "A:169", "name": "arrow_pow_one_one_one", "dtype": "arrow", "ref": "[arrow_pow_one_one_one]", "intension": "1^1=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:170", "name": "arrow_pow_one_two_one", "dtype": "arrow", "ref": "[arrow_pow_one_two_one]", "intension": "1^2=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:171", "name": "arrow_pow_one_three_one", "dtype": "arrow", "ref": "[arrow_pow_one_three_one]", "intension": "1^3=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:172", "name": "arrow_pow_one_four_one", "dtype": "arrow", "ref": "[arrow_pow_one_four_one]", "intension": "1^4=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:173", "name": "arrow_pow_one_five_one", "dtype": "arrow", "ref": "[arrow_pow_one_five_one]", "intension": "1^5=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:174", "name": "arrow_pow_one_six_one", "dtype": "arrow", "ref": "[arrow_pow_one_six_one]", "intension": "1^6=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:175", "name": "arrow_pow_one_seven_one", "dtype": "arrow", "ref": "[arrow_pow_one_seven_one]", "intension": "1^7=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:176", "name": "arrow_pow_one_eight_one", "dtype": "arrow", "ref": "[arrow_pow_one_eight_one]", "intension": "1^8=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:177", "name": "arrow_pow_one_nine_one", "dtype": "arrow", "ref": "[arrow_pow_one_nine_one]", "intension": "1^9=1 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:178", "name": "arrow_pow_two_one_two", "dtype": "arrow", "ref": "[arrow_pow_two_one_two]", "intension": "2^1=2 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:179", "name": "arrow_pow_two_two_four", "dtype": "arrow", "ref": "[arrow_pow_two_two_four]", "intension": "2^2=4 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:180", "name": "arrow_pow_two_three_eight", "dtype": "arrow", "ref": "[arrow_pow_two_three_eight]", "intension": "2^3=8 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:181", "name": "arrow_pow_three_one_three", "dtype": "arrow", "ref": "[arrow_pow_three_one_three]", "intension": "3^1=3 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:182", "name": "arrow_pow_three_two_nine", "dtype": "arrow", "ref": "[arrow_pow_three_two_nine]", "intension": "3^2=9 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:183", "name": "arrow_pow_four_one_four", "dtype": "arrow", "ref": "[arrow_pow_four_one_four]", "intension": "4^1=4 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:184", "name": "arrow_pow_five_one_five", "dtype": "arrow", "ref": "[arrow_pow_five_one_five]", "intension": "5^1=5 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:185", "name": "arrow_pow_six_one_six", "dtype": "arrow", "ref": "[arrow_pow_six_one_six]", "intension": "6^1=6 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:186", "name": "arrow_pow_seven_one_seven", "dtype": "arrow", "ref": "[arrow_pow_seven_one_seven]", "intension": "7^1=7 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:187", "name": "arrow_pow_eight_one_eight", "dtype": "arrow", "ref": "[arrow_pow_eight_one_eight]", "intension": "8^1=8 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "A:188", "name": "arrow_pow_nine_one_nine", "dtype": "arrow", "ref": "[arrow_pow_nine_one_nine]", "intension": "9^1=9 幂箭头 (迭代 mul 的快速路径压缩, concept=power)"}
+{"eid": "D:182", "name": "proposition", "dtype": "bool", "ref": "[proposition]", "intension": "命题: 可真可假的判断对象 (如 2+3=5)"}
+{"eid": "D:183", "name": "judge", "dtype": "bool", "ref": "[judge]", "intension": "判定 (逻辑运算 arrow 概念): 逻辑算符的箭头化 = 命题复合→真值 (布尔域); 数学计算的数值判定是其特化 (computation)"}
+{"eid": "D:184", "name": "gap", "dtype": "bool", "ref": "[gap]", "intension": "缺口: 待填的箭头位置 (缺失的态射, FILL 核心)"}
+{"eid": "D:185", "name": "gap_value", "dtype": "bool", "ref": "[gap_value]", "intension": "值缺口: 填空 (2+□=5, 填值)"}
+{"eid": "D:186", "name": "gap_proof", "dtype": "bool", "ref": "[gap_proof]", "intension": "证明缺口: 判断命题真假时填证明/反证"}
+{"eid": "D:187", "name": "gap_path", "dtype": "bool", "ref": "[gap_path]", "intension": "路径缺口: 论述 (填 derivation 路径)"}
+{"eid": "D:188", "name": "question", "dtype": "bool", "ref": "[question]", "intension": "问题: 结构+缺口+答案空间+约束 (FILL primitive)"}
+{"eid": "D:189", "name": "answer", "dtype": "bool", "ref": "[answer]", "intension": "答案: 填充物 + certificate (满足约束)"}
+{"eid": "D:190", "name": "certificate", "dtype": "bool", "ref": "[certificate]", "intension": "证据: 答案为什么合法 (certificate)"}
+{"eid": "D:191", "name": "candidate", "dtype": "bool", "ref": "[candidate]", "intension": "候选: 选择题的答案空间"}
+{"eid": "D:192", "name": "constraint", "dtype": "bool", "ref": "[constraint]", "intension": "约束: 答案必须满足的条件 (答案层)"}
+{"eid": "D:193", "name": "derive", "dtype": "bool", "ref": "[derive]", "intension": "推导: 从命题到结论的路径 (论述)"}
+{"eid": "S:351", "name": "symbol_gap", "dtype": "bool", "ref": "[symbol_gap]", "intension": "缺口符号: □ → [gap] (待填箭头位置)"}
+{"eid": "D:194", "name": "successor", "dtype": "bool", "ref": "[successor]", "intension": "正向: 方向 ctoken (succ/加法方向, arrow 有向性必需, 否则 base succ 无方向)"}
+{"eid": "D:195", "name": "predecessor", "dtype": "bool", "ref": "[predecessor]", "intension": "反向: 方向 ctoken (pred/减法方向, succ 的对偶)"}
+{"eid": "D:196", "name": "pred", "dtype": "bool", "ref": "[pred]", "intension": "前驱: succ 的对偶 (succ∘pred = pred∘succ = id), 反向迭代 (pred = 迭代 + reverse)"}
+{"eid": "D:197", "name": "direction", "dtype": "bool", "ref": "[direction]", "intension": "方向: 带逆元对偶的可逆方向结构 (对称性定义, mathlib IsSymmRel: r a b → r b a 可逆; Involutive: f(f x)=x 对合; Group.inv: a⁻¹*a=1 逆元). 多维度: 迭代 successor/predecessor 逆对偶, 符号 positive/negative, 模群 translation/inversion/rotation, 逻辑 imply/iff, 层 increase/decrease"}
+{"eid": "D:198", "name": "inverse", "dtype": "bool", "ref": "[inverse]", "intension": "逆元: 对称性结构 (mathlib Group.inv: a⁻¹*a=1), f 与 f⁻¹ 对偶 (succ∘pred=id). 方向对称性的基础"}
+{"eid": "D:199", "name": "positive", "dtype": "bool", "ref": "[positive]", "intension": "正方向 (迭代1正向=加法; 逆元 negative)"}
+{"eid": "D:200", "name": "negative", "dtype": "bool", "ref": "[negative]", "intension": "负方向 (迭代1反向=减法; 逆元对偶 positive)"}
+{"eid": "D:201", "name": "increase", "dtype": "bool", "ref": "[increase]", "intension": "层升方向 (迭代层级升高: 迭代1→迭代2; 逆元 decrease)"}
+{"eid": "D:202", "name": "decrease", "dtype": "bool", "ref": "[decrease]", "intension": "层降方向 (迭代层级降低: 迭代2→迭代1; 逆元对偶 increase)"}
+{"eid": "D:203", "name": "imply_direction", "dtype": "bool", "ref": "[imply_direction]", "intension": "逻辑蕴涵方向 (纯方向维度; 数学序复用 ≤/⊆/→; 对应算符 logical_imply 的定义含此方向)"}
+{"eid": "D:204", "name": "iff_direction", "dtype": "bool", "ref": "[iff_direction]", "intension": "逻辑等价方向 (纯方向维度; 数学等价复用 =/≅/↔; 对应算符 logical_iff 的定义含此方向)"}
+{"eid": "D:205", "name": "iteration_layer", "dtype": "bool", "ref": "[iteration_layer]", "intension": "迭代层级 (结构属性: 层数=沿定义引用链的迭代基础深度, 由 token 定义推导, 非数值硬编码; 加法=succ迭代, 乘法=加法迭代, 幂=乘法迭代)"}
+{"eid": "D:206", "name": "computation", "dtype": "bool", "ref": "[computation]", "intension": "计算 (数学运算 arrow 概念): 数学算符的箭头化 = 确定性值变换 (输入值→输出值), 与 judge(逻辑判定) 平行但域不同 (数字域)"}
+{"eid": "D:207", "name": "number_domain", "dtype": "bool", "ref": "[number_domain]", "intension": "数域 (数学对象宇宙分类; 自然数从基点 basepoint 经后继 succ 迭代内生生成, 非公设 Nat, 禁 Church)"}
+{"eid": "D:208", "name": "natural_domain", "dtype": "bool", "ref": "[natural_domain]", "intension": "自然数域: 数字位置记法 (value 家族); 从基点+后继迭代生成"}
+{"eid": "D:209", "name": "integer_domain", "dtype": "bool", "ref": "[integer_domain]", "intension": "整数域: 自然数域 + 负号扩展 (neg)"}
+{"eid": "D:210", "name": "rational_domain", "dtype": "bool", "ref": "[rational_domain]", "intension": "有理数域: 分数表示 (fraction)"}
+{"eid": "D:211", "name": "real_domain", "dtype": "bool", "ref": "[real_domain]", "intension": "实数域: 根式表示 (radical, 无理数新基数轴)"}
+{"eid": "D:212", "name": "complex_domain", "dtype": "bool", "ref": "[complex_domain]", "intension": "复数域: 虚数表示 (imaginary_unit)"}
+{"eid": "D:213", "name": "fraction", "dtype": "bool", "ref": "[fraction]", "intension": "分数 (有理数表示法: 分子/分母结构, 逆元 reciprocal)"}
+{"eid": "D:214", "name": "radical", "dtype": "bool", "ref": "[radical]", "intension": "根式 (无理数表示法: 根号, root 新基数轴)"}
+{"eid": "D:215", "name": "imaginary_unit", "dtype": "bool", "ref": "[imaginary_unit]", "intension": "虚数单位 i (复数表示法)"}
+{"eid": "D:216", "name": "coercion", "dtype": "bool", "ref": "[coercion]", "intension": "提升/嵌入 (mathlib @[coe] cast: 低域→高域自动包含嵌入, 运算结果超出当前域时提升表示)"}
+{"eid": "D:217", "name": "natural_to_integer", "dtype": "bool", "ref": "[natural_to_integer]", "intension": "自然数→整数嵌入 (数学计算 token: 正整数即整数, 无符号提升)"}
+{"eid": "D:218", "name": "integer_to_rational", "dtype": "bool", "ref": "[integer_to_rational]", "intension": "整数→有理数嵌入 (整数 = 分母 1 的分数)"}
+{"eid": "D:219", "name": "rational_to_real", "dtype": "bool", "ref": "[rational_to_real]", "intension": "有理数→实数嵌入 (有理数是实数的稠密子集, 根式/无理数进入实数域)"}
+{"eid": "D:220", "name": "real_to_complex", "dtype": "bool", "ref": "[real_to_complex]", "intension": "实数→复数嵌入 (实数 = 虚部 0 的复数, 负根进入复数域)"}
+{"eid": "D:221", "name": "simplification", "dtype": "bool", "ref": "[simplification]", "intension": "化简 (mathlib simp 重写规则体系: 有向等式 LHS→RHS 往简单方向; 分数约分 6∕2→3, 根式化简 √9→3, 复部归零 n+0i→n)"}
+{"eid": "D:222", "name": "normal_form", "dtype": "bool", "ref": "[normal_form]", "intension": "最简形式 (mathlib simp 不动点: 无可再化简重写规则; norm_num 数值化简终点, 有理数约分后分母最小)"}
+{"eid": "D:223", "name": "expansion", "dtype": "bool", "ref": "[expansion]", "intension": "展开 (重写规则逆方向: 最简形式 → 具体表示; mathlib delab/norm_cast 反向展开)"}
+{"eid": "D:224", "name": "prime", "dtype": "bool", "ref": "[prime]", "intension": "质数 (因式分解原子构件): 只有 1 和自身整除的自然数, 整除性=division 余 0"}
+{"eid": "D:225", "name": "factorization", "dtype": "bool", "ref": "[factorization]", "intension": "因式分解 (乘性规范分解, 化简先决): n = ∏pᵉⁱ 质因数展开; 与进制转换同为 normal_form 规范分解, 共同基础=重复除法迭代"}
+{"eid": "D:226", "name": "base_conversion", "dtype": "bool", "ref": "[base_conversion]", "intension": "进制转换 (加性规范分解): n = Σdᵢ·bⁱ 位置展开, 重复 ÷b 取余得数位; 与因式分解同为 normal_form 规范分解, 共同基础=重复除法迭代"}
+{"eid": "D:227", "name": "left_bracket", "dtype": "dual", "ref": "[left_bracket]", "intension": "左括号 (开括号, bracket 成对结构的方向实例; 与 right_bracket 配对嵌套)"}
+{"eid": "D:228", "name": "right_bracket", "dtype": "dual", "ref": "[right_bracket]", "intension": "右括号 (闭括号, 与 left_bracket 对偶配对; 嵌套层级闭合)"}
+{"eid": "D:229", "name": "category", "dtype": "bool", "ref": "[category]", "intension": "范畴 (对象+态射的集合: 态射连接对象, 复合封闭, 恒等存在)"}
+{"eid": "D:230", "name": "object", "dtype": "bool", "ref": "[object]", "intension": "对象 (范畴论: 态射连接的元素/端点, arrow 的 source/target)"}
+{"eid": "D:231", "name": "composition", "dtype": "bool", "ref": "[composition]", "intension": "复合 (态射∘态射: 箭头组合, 关联律, 范畴的基本操作)"}
+{"eid": "D:232", "name": "identity", "dtype": "bool", "ref": "[identity]", "intension": "恒等态射 (每个对象上的 id: 复合单位元)"}
+{"eid": "D:233", "name": "isomorphism", "dtype": "bool", "ref": "[isomorphism]", "intension": "同构 (可逆态射: 有逆态射, 双向箭头)"}
+{"eid": "D:234", "name": "functor", "dtype": "bool", "ref": "[functor]", "intension": "函子 (范畴间保结构映射: 对象→对象, 态射→态射)"}
+{"eid": "D:235", "name": "natural_transformation", "dtype": "bool", "ref": "[natural_transformation]", "intension": "自然变换 (函子间映射: 保持箭头, 交换图)"}
+{"eid": "D:236", "name": "fill", "dtype": "scalar", "ref": "[fill]", "intension": ""}
+{"eid": "D:237", "name": "choose", "dtype": "scalar", "ref": "[choose]", "intension": ""}
+{"eid": "D:241", "name": "representation", "dtype": "scalar", "ref": "[representation]", "intension": ""}
+{"eid": "S:378", "name": "symbol_lbracket", "dtype": "bool", "ref": "[symbol_lbracket]", "intension": ""}
+{"eid": "S:379", "name": "symbol_rbracket", "dtype": "bool", "ref": "[symbol_rbracket]", "intension": ""}
+{"eid": "D:242", "name": "representation_left", "dtype": "scalar", "ref": "[[]", "intension": ""}
+{"eid": "D:243", "name": "representation_right", "dtype": "scalar", "ref": "[]]", "intension": ""}
+{"eid": "D:244", "name": "value", "dtype": "bool", "ref": "[value]", "intension": ""}
+{"eid": "D:245", "name": "digit", "dtype": "bool", "ref": "[digit]", "intension": ""}
+{"eid": "D:246", "name": "sign_part", "dtype": "bool", "ref": "[sign_part]", "intension": ""}
+{"eid": "D:247", "name": "digit_seq", "dtype": "bool", "ref": "[digit_seq]", "intension": ""}
+{"eid": "D:248", "name": "num_0", "dtype": "num", "ref": "[num_0]", "intension": "数字 0: 一个都没有的意思, 数数的起点。任何数加 0 都不变; 0 不能当除数 (没法把东西分成 0 份)。"}
+{"eid": "D:249", "name": "num_1", "dtype": "num", "ref": "[num_1]", "intension": "数字 1: 0 后面的第一个数, \"单个\"的意思。任何数乘 1 都不变, 1 的多少次方都还是 1。"}
+{"eid": "D:250", "name": "num_2", "dtype": "num", "ref": "[num_2]", "intension": "数字 2: 最小的质数, 也是唯一的偶质数 — 质数序列从 2 开始 (2, 3, 5, 7, 11…), 它是质数的起点, 就像 0 是数字的起点。一分为二、成双成对就是这个数。"}
+{"eid": "D:251", "name": "num_3", "dtype": "num", "ref": "[num_3]", "intension": "数字 3: 质数 — 只能被 1 和它自己整除。把 3 个东西分成相等的几份, 只有 1 份或 3 份两种分法。"}
+{"eid": "D:252", "name": "num_4", "dtype": "num", "ref": "[num_4]", "intension": "数字 4: 2 的 2 次方 (2 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:253", "name": "num_5", "dtype": "num", "ref": "[num_5]", "intension": "数字 5: 质数 — 只能被 1 和它自己整除。把 5 个东西分成相等的几份, 只有 1 份或 5 份两种分法。"}
+{"eid": "D:254", "name": "num_6", "dtype": "num", "ref": "[num_6]", "intension": "数字 6: 从 0 开始数 6 次到达的数 — 数东西时正好有 6 个的数量。"}
+{"eid": "D:255", "name": "num_7", "dtype": "num", "ref": "[num_7]", "intension": "数字 7: 质数 — 只能被 1 和它自己整除。把 7 个东西分成相等的几份, 只有 1 份或 7 份两种分法。"}
+{"eid": "D:256", "name": "num_8", "dtype": "num", "ref": "[num_8]", "intension": "数字 8: 2 的 3 次方 (3 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:257", "name": "num_9", "dtype": "num", "ref": "[num_9]", "intension": "数字 9: 从 0 开始数 9 次到达的数 — 数东西时正好有 9 个的数量。"}
+{"eid": "D:258", "name": "num_10", "dtype": "num", "ref": "[num_10]", "intension": "数字 10: 从 0 开始数 10 次到达的数 — 数东西时正好有 10 个的数量。"}
+{"eid": "D:259", "name": "num_11", "dtype": "num", "ref": "[num_11]", "intension": "数字 11: 质数 — 只能被 1 和它自己整除。把 11 个东西分成相等的几份, 只有 1 份或 11 份两种分法。"}
+{"eid": "D:260", "name": "num_12", "dtype": "num", "ref": "[num_12]", "intension": "数字 12: 从 0 开始数 12 次到达的数 — 数东西时正好有 12 个的数量。"}
+{"eid": "D:261", "name": "num_13", "dtype": "num", "ref": "[num_13]", "intension": "数字 13: 质数 — 只能被 1 和它自己整除。把 13 个东西分成相等的几份, 只有 1 份或 13 份两种分法。"}
+{"eid": "D:262", "name": "num_14", "dtype": "num", "ref": "[num_14]", "intension": "数字 14: 从 0 开始数 14 次到达的数 — 数东西时正好有 14 个的数量。"}
+{"eid": "D:263", "name": "num_15", "dtype": "num", "ref": "[num_15]", "intension": "数字 15: 从 0 开始数 15 次到达的数 — 数东西时正好有 15 个的数量。"}
+{"eid": "D:264", "name": "num_16", "dtype": "num", "ref": "[num_16]", "intension": "数字 16: 2 的 4 次方 (4 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:265", "name": "num_17", "dtype": "num", "ref": "[num_17]", "intension": "数字 17: 质数 — 只能被 1 和它自己整除。把 17 个东西分成相等的几份, 只有 1 份或 17 份两种分法。"}
+{"eid": "D:266", "name": "num_18", "dtype": "num", "ref": "[num_18]", "intension": "数字 18: 从 0 开始数 18 次到达的数 — 数东西时正好有 18 个的数量。"}
+{"eid": "D:267", "name": "num_19", "dtype": "num", "ref": "[num_19]", "intension": "数字 19: 质数 — 只能被 1 和它自己整除。把 19 个东西分成相等的几份, 只有 1 份或 19 份两种分法。"}
+{"eid": "D:268", "name": "num_20", "dtype": "num", "ref": "[num_20]", "intension": "数字 20: 从 0 开始数 20 次到达的数 — 数东西时正好有 20 个的数量。"}
+{"eid": "D:269", "name": "num_21", "dtype": "num", "ref": "[num_21]", "intension": "数字 21: 从 0 开始数 21 次到达的数 — 数东西时正好有 21 个的数量。"}
+{"eid": "D:270", "name": "num_22", "dtype": "num", "ref": "[num_22]", "intension": "数字 22: 从 0 开始数 22 次到达的数 — 数东西时正好有 22 个的数量。"}
+{"eid": "D:271", "name": "num_23", "dtype": "num", "ref": "[num_23]", "intension": "数字 23: 质数 — 只能被 1 和它自己整除。把 23 个东西分成相等的几份, 只有 1 份或 23 份两种分法。"}
+{"eid": "D:272", "name": "num_24", "dtype": "num", "ref": "[num_24]", "intension": "数字 24: 从 0 开始数 24 次到达的数 — 数东西时正好有 24 个的数量。"}
+{"eid": "D:273", "name": "num_25", "dtype": "num", "ref": "[num_25]", "intension": "数字 25: 从 0 开始数 25 次到达的数 — 数东西时正好有 25 个的数量。"}
+{"eid": "D:274", "name": "num_26", "dtype": "num", "ref": "[num_26]", "intension": "数字 26: 从 0 开始数 26 次到达的数 — 数东西时正好有 26 个的数量。"}
+{"eid": "D:275", "name": "num_27", "dtype": "num", "ref": "[num_27]", "intension": "数字 27: 从 0 开始数 27 次到达的数 — 数东西时正好有 27 个的数量。"}
+{"eid": "D:276", "name": "num_28", "dtype": "num", "ref": "[num_28]", "intension": "数字 28: 从 0 开始数 28 次到达的数 — 数东西时正好有 28 个的数量。"}
+{"eid": "D:277", "name": "num_29", "dtype": "num", "ref": "[num_29]", "intension": "数字 29: 质数 — 只能被 1 和它自己整除。把 29 个东西分成相等的几份, 只有 1 份或 29 份两种分法。"}
+{"eid": "D:278", "name": "num_30", "dtype": "num", "ref": "[num_30]", "intension": "数字 30: 从 0 开始数 30 次到达的数 — 数东西时正好有 30 个的数量。"}
+{"eid": "D:279", "name": "num_31", "dtype": "num", "ref": "[num_31]", "intension": "数字 31: 质数 — 只能被 1 和它自己整除。把 31 个东西分成相等的几份, 只有 1 份或 31 份两种分法。"}
+{"eid": "D:280", "name": "num_32", "dtype": "num", "ref": "[num_32]", "intension": "数字 32: 2 的 5 次方 (5 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:281", "name": "num_33", "dtype": "num", "ref": "[num_33]", "intension": "数字 33: 从 0 开始数 33 次到达的数 — 数东西时正好有 33 个的数量。"}
+{"eid": "D:282", "name": "num_34", "dtype": "num", "ref": "[num_34]", "intension": "数字 34: 从 0 开始数 34 次到达的数 — 数东西时正好有 34 个的数量。"}
+{"eid": "D:283", "name": "num_35", "dtype": "num", "ref": "[num_35]", "intension": "数字 35: 从 0 开始数 35 次到达的数 — 数东西时正好有 35 个的数量。"}
+{"eid": "D:284", "name": "num_36", "dtype": "num", "ref": "[num_36]", "intension": "数字 36: 从 0 开始数 36 次到达的数 — 数东西时正好有 36 个的数量。"}
+{"eid": "D:285", "name": "num_37", "dtype": "num", "ref": "[num_37]", "intension": "数字 37: 质数 — 只能被 1 和它自己整除。把 37 个东西分成相等的几份, 只有 1 份或 37 份两种分法。"}
+{"eid": "D:286", "name": "num_38", "dtype": "num", "ref": "[num_38]", "intension": "数字 38: 从 0 开始数 38 次到达的数 — 数东西时正好有 38 个的数量。"}
+{"eid": "D:287", "name": "num_39", "dtype": "num", "ref": "[num_39]", "intension": "数字 39: 从 0 开始数 39 次到达的数 — 数东西时正好有 39 个的数量。"}
+{"eid": "D:288", "name": "num_40", "dtype": "num", "ref": "[num_40]", "intension": "数字 40: 从 0 开始数 40 次到达的数 — 数东西时正好有 40 个的数量。"}
+{"eid": "D:289", "name": "num_41", "dtype": "num", "ref": "[num_41]", "intension": "数字 41: 质数 — 只能被 1 和它自己整除。把 41 个东西分成相等的几份, 只有 1 份或 41 份两种分法。"}
+{"eid": "D:290", "name": "num_42", "dtype": "num", "ref": "[num_42]", "intension": "数字 42: 从 0 开始数 42 次到达的数 — 数东西时正好有 42 个的数量。"}
+{"eid": "D:291", "name": "num_43", "dtype": "num", "ref": "[num_43]", "intension": "数字 43: 质数 — 只能被 1 和它自己整除。把 43 个东西分成相等的几份, 只有 1 份或 43 份两种分法。"}
+{"eid": "D:292", "name": "num_44", "dtype": "num", "ref": "[num_44]", "intension": "数字 44: 从 0 开始数 44 次到达的数 — 数东西时正好有 44 个的数量。"}
+{"eid": "D:293", "name": "num_45", "dtype": "num", "ref": "[num_45]", "intension": "数字 45: 从 0 开始数 45 次到达的数 — 数东西时正好有 45 个的数量。"}
+{"eid": "D:294", "name": "num_46", "dtype": "num", "ref": "[num_46]", "intension": "数字 46: 从 0 开始数 46 次到达的数 — 数东西时正好有 46 个的数量。"}
+{"eid": "D:295", "name": "num_47", "dtype": "num", "ref": "[num_47]", "intension": "数字 47: 质数 — 只能被 1 和它自己整除。把 47 个东西分成相等的几份, 只有 1 份或 47 份两种分法。"}
+{"eid": "D:296", "name": "num_48", "dtype": "num", "ref": "[num_48]", "intension": "数字 48: 从 0 开始数 48 次到达的数 — 数东西时正好有 48 个的数量。"}
+{"eid": "D:297", "name": "num_49", "dtype": "num", "ref": "[num_49]", "intension": "数字 49: 从 0 开始数 49 次到达的数 — 数东西时正好有 49 个的数量。"}
+{"eid": "D:298", "name": "num_50", "dtype": "num", "ref": "[num_50]", "intension": "数字 50: 从 0 开始数 50 次到达的数 — 数东西时正好有 50 个的数量。"}
+{"eid": "D:299", "name": "num_51", "dtype": "num", "ref": "[num_51]", "intension": "数字 51: 从 0 开始数 51 次到达的数 — 数东西时正好有 51 个的数量。"}
+{"eid": "D:300", "name": "num_52", "dtype": "num", "ref": "[num_52]", "intension": "数字 52: 从 0 开始数 52 次到达的数 — 数东西时正好有 52 个的数量。"}
+{"eid": "D:301", "name": "num_53", "dtype": "num", "ref": "[num_53]", "intension": "数字 53: 质数 — 只能被 1 和它自己整除。把 53 个东西分成相等的几份, 只有 1 份或 53 份两种分法。"}
+{"eid": "D:302", "name": "num_54", "dtype": "num", "ref": "[num_54]", "intension": "数字 54: 从 0 开始数 54 次到达的数 — 数东西时正好有 54 个的数量。"}
+{"eid": "D:303", "name": "num_55", "dtype": "num", "ref": "[num_55]", "intension": "数字 55: 从 0 开始数 55 次到达的数 — 数东西时正好有 55 个的数量。"}
+{"eid": "D:304", "name": "num_56", "dtype": "num", "ref": "[num_56]", "intension": "数字 56: 从 0 开始数 56 次到达的数 — 数东西时正好有 56 个的数量。"}
+{"eid": "D:305", "name": "num_57", "dtype": "num", "ref": "[num_57]", "intension": "数字 57: 从 0 开始数 57 次到达的数 — 数东西时正好有 57 个的数量。"}
+{"eid": "D:306", "name": "num_58", "dtype": "num", "ref": "[num_58]", "intension": "数字 58: 从 0 开始数 58 次到达的数 — 数东西时正好有 58 个的数量。"}
+{"eid": "D:307", "name": "num_59", "dtype": "num", "ref": "[num_59]", "intension": "数字 59: 质数 — 只能被 1 和它自己整除。把 59 个东西分成相等的几份, 只有 1 份或 59 份两种分法。"}
+{"eid": "D:308", "name": "num_60", "dtype": "num", "ref": "[num_60]", "intension": "数字 60: 从 0 开始数 60 次到达的数 — 数东西时正好有 60 个的数量。"}
+{"eid": "D:309", "name": "num_61", "dtype": "num", "ref": "[num_61]", "intension": "数字 61: 质数 — 只能被 1 和它自己整除。把 61 个东西分成相等的几份, 只有 1 份或 61 份两种分法。"}
+{"eid": "D:310", "name": "num_62", "dtype": "num", "ref": "[num_62]", "intension": "数字 62: 从 0 开始数 62 次到达的数 — 数东西时正好有 62 个的数量。"}
+{"eid": "D:311", "name": "num_63", "dtype": "num", "ref": "[num_63]", "intension": "数字 63: 从 0 开始数 63 次到达的数 — 数东西时正好有 63 个的数量。"}
+{"eid": "D:312", "name": "num_64", "dtype": "num", "ref": "[num_64]", "intension": "数字 64: 2 的 6 次方 (6 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:313", "name": "num_65", "dtype": "num", "ref": "[num_65]", "intension": "数字 65: 从 0 开始数 65 次到达的数 — 数东西时正好有 65 个的数量。"}
+{"eid": "D:314", "name": "num_66", "dtype": "num", "ref": "[num_66]", "intension": "数字 66: 从 0 开始数 66 次到达的数 — 数东西时正好有 66 个的数量。"}
+{"eid": "D:315", "name": "num_67", "dtype": "num", "ref": "[num_67]", "intension": "数字 67: 质数 — 只能被 1 和它自己整除。把 67 个东西分成相等的几份, 只有 1 份或 67 份两种分法。"}
+{"eid": "D:316", "name": "num_68", "dtype": "num", "ref": "[num_68]", "intension": "数字 68: 从 0 开始数 68 次到达的数 — 数东西时正好有 68 个的数量。"}
+{"eid": "D:317", "name": "num_69", "dtype": "num", "ref": "[num_69]", "intension": "数字 69: 从 0 开始数 69 次到达的数 — 数东西时正好有 69 个的数量。"}
+{"eid": "D:318", "name": "num_70", "dtype": "num", "ref": "[num_70]", "intension": "数字 70: 从 0 开始数 70 次到达的数 — 数东西时正好有 70 个的数量。"}
+{"eid": "D:319", "name": "num_71", "dtype": "num", "ref": "[num_71]", "intension": "数字 71: 质数 — 只能被 1 和它自己整除。把 71 个东西分成相等的几份, 只有 1 份或 71 份两种分法。"}
+{"eid": "D:320", "name": "num_72", "dtype": "num", "ref": "[num_72]", "intension": "数字 72: 从 0 开始数 72 次到达的数 — 数东西时正好有 72 个的数量。"}
+{"eid": "D:321", "name": "num_73", "dtype": "num", "ref": "[num_73]", "intension": "数字 73: 质数 — 只能被 1 和它自己整除。把 73 个东西分成相等的几份, 只有 1 份或 73 份两种分法。"}
+{"eid": "D:322", "name": "num_74", "dtype": "num", "ref": "[num_74]", "intension": "数字 74: 从 0 开始数 74 次到达的数 — 数东西时正好有 74 个的数量。"}
+{"eid": "D:323", "name": "num_75", "dtype": "num", "ref": "[num_75]", "intension": "数字 75: 从 0 开始数 75 次到达的数 — 数东西时正好有 75 个的数量。"}
+{"eid": "D:324", "name": "num_76", "dtype": "num", "ref": "[num_76]", "intension": "数字 76: 从 0 开始数 76 次到达的数 — 数东西时正好有 76 个的数量。"}
+{"eid": "D:325", "name": "num_77", "dtype": "num", "ref": "[num_77]", "intension": "数字 77: 从 0 开始数 77 次到达的数 — 数东西时正好有 77 个的数量。"}
+{"eid": "D:326", "name": "num_78", "dtype": "num", "ref": "[num_78]", "intension": "数字 78: 从 0 开始数 78 次到达的数 — 数东西时正好有 78 个的数量。"}
+{"eid": "D:327", "name": "num_79", "dtype": "num", "ref": "[num_79]", "intension": "数字 79: 质数 — 只能被 1 和它自己整除。把 79 个东西分成相等的几份, 只有 1 份或 79 份两种分法。"}
+{"eid": "D:328", "name": "num_80", "dtype": "num", "ref": "[num_80]", "intension": "数字 80: 从 0 开始数 80 次到达的数 — 数东西时正好有 80 个的数量。"}
+{"eid": "D:329", "name": "num_81", "dtype": "num", "ref": "[num_81]", "intension": "数字 81: 从 0 开始数 81 次到达的数 — 数东西时正好有 81 个的数量。"}
+{"eid": "D:330", "name": "num_82", "dtype": "num", "ref": "[num_82]", "intension": "数字 82: 从 0 开始数 82 次到达的数 — 数东西时正好有 82 个的数量。"}
+{"eid": "D:331", "name": "num_83", "dtype": "num", "ref": "[num_83]", "intension": "数字 83: 质数 — 只能被 1 和它自己整除。把 83 个东西分成相等的几份, 只有 1 份或 83 份两种分法。"}
+{"eid": "D:332", "name": "num_84", "dtype": "num", "ref": "[num_84]", "intension": "数字 84: 从 0 开始数 84 次到达的数 — 数东西时正好有 84 个的数量。"}
+{"eid": "D:333", "name": "num_85", "dtype": "num", "ref": "[num_85]", "intension": "数字 85: 从 0 开始数 85 次到达的数 — 数东西时正好有 85 个的数量。"}
+{"eid": "D:334", "name": "num_86", "dtype": "num", "ref": "[num_86]", "intension": "数字 86: 从 0 开始数 86 次到达的数 — 数东西时正好有 86 个的数量。"}
+{"eid": "D:335", "name": "num_87", "dtype": "num", "ref": "[num_87]", "intension": "数字 87: 从 0 开始数 87 次到达的数 — 数东西时正好有 87 个的数量。"}
+{"eid": "D:336", "name": "num_88", "dtype": "num", "ref": "[num_88]", "intension": "数字 88: 从 0 开始数 88 次到达的数 — 数东西时正好有 88 个的数量。"}
+{"eid": "D:337", "name": "num_89", "dtype": "num", "ref": "[num_89]", "intension": "数字 89: 质数 — 只能被 1 和它自己整除。把 89 个东西分成相等的几份, 只有 1 份或 89 份两种分法。"}
+{"eid": "D:338", "name": "num_90", "dtype": "num", "ref": "[num_90]", "intension": "数字 90: 从 0 开始数 90 次到达的数 — 数东西时正好有 90 个的数量。"}
+{"eid": "D:339", "name": "num_91", "dtype": "num", "ref": "[num_91]", "intension": "数字 91: 从 0 开始数 91 次到达的数 — 数东西时正好有 91 个的数量。"}
+{"eid": "D:340", "name": "num_92", "dtype": "num", "ref": "[num_92]", "intension": "数字 92: 从 0 开始数 92 次到达的数 — 数东西时正好有 92 个的数量。"}
+{"eid": "D:341", "name": "num_93", "dtype": "num", "ref": "[num_93]", "intension": "数字 93: 从 0 开始数 93 次到达的数 — 数东西时正好有 93 个的数量。"}
+{"eid": "D:342", "name": "num_94", "dtype": "num", "ref": "[num_94]", "intension": "数字 94: 从 0 开始数 94 次到达的数 — 数东西时正好有 94 个的数量。"}
+{"eid": "D:343", "name": "num_95", "dtype": "num", "ref": "[num_95]", "intension": "数字 95: 从 0 开始数 95 次到达的数 — 数东西时正好有 95 个的数量。"}
+{"eid": "D:344", "name": "num_96", "dtype": "num", "ref": "[num_96]", "intension": "数字 96: 从 0 开始数 96 次到达的数 — 数东西时正好有 96 个的数量。"}
+{"eid": "D:345", "name": "num_97", "dtype": "num", "ref": "[num_97]", "intension": "数字 97: 质数 — 只能被 1 和它自己整除。把 97 个东西分成相等的几份, 只有 1 份或 97 份两种分法。"}
+{"eid": "D:346", "name": "num_98", "dtype": "num", "ref": "[num_98]", "intension": "数字 98: 从 0 开始数 98 次到达的数 — 数东西时正好有 98 个的数量。"}
+{"eid": "D:347", "name": "num_99", "dtype": "num", "ref": "[num_99]", "intension": "数字 99: 从 0 开始数 99 次到达的数 — 数东西时正好有 99 个的数量。"}
+{"eid": "D:348", "name": "num_100", "dtype": "num", "ref": "[num_100]", "intension": "数字 100: 从 0 开始数 100 次到达的数 — 数东西时正好有 100 个的数量。"}
+{"eid": "D:349", "name": "num_101", "dtype": "num", "ref": "[num_101]", "intension": "数字 101: 质数 — 只能被 1 和它自己整除。把 101 个东西分成相等的几份, 只有 1 份或 101 份两种分法。"}
+{"eid": "D:350", "name": "num_102", "dtype": "num", "ref": "[num_102]", "intension": "数字 102: 从 0 开始数 102 次到达的数 — 数东西时正好有 102 个的数量。"}
+{"eid": "D:351", "name": "num_103", "dtype": "num", "ref": "[num_103]", "intension": "数字 103: 质数 — 只能被 1 和它自己整除。把 103 个东西分成相等的几份, 只有 1 份或 103 份两种分法。"}
+{"eid": "D:352", "name": "num_104", "dtype": "num", "ref": "[num_104]", "intension": "数字 104: 从 0 开始数 104 次到达的数 — 数东西时正好有 104 个的数量。"}
+{"eid": "D:353", "name": "num_105", "dtype": "num", "ref": "[num_105]", "intension": "数字 105: 从 0 开始数 105 次到达的数 — 数东西时正好有 105 个的数量。"}
+{"eid": "D:354", "name": "num_106", "dtype": "num", "ref": "[num_106]", "intension": "数字 106: 从 0 开始数 106 次到达的数 — 数东西时正好有 106 个的数量。"}
+{"eid": "D:355", "name": "num_107", "dtype": "num", "ref": "[num_107]", "intension": "数字 107: 质数 — 只能被 1 和它自己整除。把 107 个东西分成相等的几份, 只有 1 份或 107 份两种分法。"}
+{"eid": "D:356", "name": "num_108", "dtype": "num", "ref": "[num_108]", "intension": "数字 108: 从 0 开始数 108 次到达的数 — 数东西时正好有 108 个的数量。"}
+{"eid": "D:357", "name": "num_109", "dtype": "num", "ref": "[num_109]", "intension": "数字 109: 质数 — 只能被 1 和它自己整除。把 109 个东西分成相等的几份, 只有 1 份或 109 份两种分法。"}
+{"eid": "D:358", "name": "num_110", "dtype": "num", "ref": "[num_110]", "intension": "数字 110: 从 0 开始数 110 次到达的数 — 数东西时正好有 110 个的数量。"}
+{"eid": "D:359", "name": "num_111", "dtype": "num", "ref": "[num_111]", "intension": "数字 111: 从 0 开始数 111 次到达的数 — 数东西时正好有 111 个的数量。"}
+{"eid": "D:360", "name": "num_112", "dtype": "num", "ref": "[num_112]", "intension": "数字 112: 从 0 开始数 112 次到达的数 — 数东西时正好有 112 个的数量。"}
+{"eid": "D:361", "name": "num_113", "dtype": "num", "ref": "[num_113]", "intension": "数字 113: 质数 — 只能被 1 和它自己整除。把 113 个东西分成相等的几份, 只有 1 份或 113 份两种分法。"}
+{"eid": "D:362", "name": "num_114", "dtype": "num", "ref": "[num_114]", "intension": "数字 114: 从 0 开始数 114 次到达的数 — 数东西时正好有 114 个的数量。"}
+{"eid": "D:363", "name": "num_115", "dtype": "num", "ref": "[num_115]", "intension": "数字 115: 从 0 开始数 115 次到达的数 — 数东西时正好有 115 个的数量。"}
+{"eid": "D:364", "name": "num_116", "dtype": "num", "ref": "[num_116]", "intension": "数字 116: 从 0 开始数 116 次到达的数 — 数东西时正好有 116 个的数量。"}
+{"eid": "D:365", "name": "num_117", "dtype": "num", "ref": "[num_117]", "intension": "数字 117: 从 0 开始数 117 次到达的数 — 数东西时正好有 117 个的数量。"}
+{"eid": "D:366", "name": "num_118", "dtype": "num", "ref": "[num_118]", "intension": "数字 118: 从 0 开始数 118 次到达的数 — 数东西时正好有 118 个的数量。"}
+{"eid": "D:367", "name": "num_119", "dtype": "num", "ref": "[num_119]", "intension": "数字 119: 从 0 开始数 119 次到达的数 — 数东西时正好有 119 个的数量。"}
+{"eid": "D:368", "name": "num_120", "dtype": "num", "ref": "[num_120]", "intension": "数字 120: 从 0 开始数 120 次到达的数 — 数东西时正好有 120 个的数量。"}
+{"eid": "D:369", "name": "num_121", "dtype": "num", "ref": "[num_121]", "intension": "数字 121: 从 0 开始数 121 次到达的数 — 数东西时正好有 121 个的数量。"}
+{"eid": "D:370", "name": "num_122", "dtype": "num", "ref": "[num_122]", "intension": "数字 122: 从 0 开始数 122 次到达的数 — 数东西时正好有 122 个的数量。"}
+{"eid": "D:371", "name": "num_123", "dtype": "num", "ref": "[num_123]", "intension": "数字 123: 从 0 开始数 123 次到达的数 — 数东西时正好有 123 个的数量。"}
+{"eid": "D:372", "name": "num_124", "dtype": "num", "ref": "[num_124]", "intension": "数字 124: 从 0 开始数 124 次到达的数 — 数东西时正好有 124 个的数量。"}
+{"eid": "D:373", "name": "num_125", "dtype": "num", "ref": "[num_125]", "intension": "数字 125: 从 0 开始数 125 次到达的数 — 数东西时正好有 125 个的数量。"}
+{"eid": "D:374", "name": "num_126", "dtype": "num", "ref": "[num_126]", "intension": "数字 126: 从 0 开始数 126 次到达的数 — 数东西时正好有 126 个的数量。"}
+{"eid": "D:375", "name": "num_127", "dtype": "num", "ref": "[num_127]", "intension": "数字 127: 质数 — 只能被 1 和它自己整除。把 127 个东西分成相等的几份, 只有 1 份或 127 份两种分法。"}
+{"eid": "D:376", "name": "num_128", "dtype": "num", "ref": "[num_128]", "intension": "数字 128: 2 的 7 次方 (7 个 2 相乘)。二进制里是 1 后面一串 0, 计算机里常按这个大小分块。"}
+{"eid": "D:377", "name": "num_129", "dtype": "num", "ref": "[num_129]", "intension": "数字 129: 从 0 开始数 129 次到达的数 — 数东西时正好有 129 个的数量。"}
+{"eid": "D:378", "name": "num_130", "dtype": "num", "ref": "[num_130]", "intension": "数字 130: 从 0 开始数 130 次到达的数 — 数东西时正好有 130 个的数量。"}
+{"eid": "D:379", "name": "num_131", "dtype": "num", "ref": "[num_131]", "intension": "数字 131: 质数 — 只能被 1 和它自己整除。把 131 个东西分成相等的几份, 只有 1 份或 131 份两种分法。"}
+{"eid": "D:380", "name": "num_132", "dtype": "num", "ref": "[num_132]", "intension": "数字 132: 从 0 开始数 132 次到达的数 — 数东西时正好有 132 个的数量。"}
+{"eid": "D:381", "name": "num_133", "dtype": "num", "ref": "[num_133]", "intension": "数字 133: 从 0 开始数 133 次到达的数 — 数东西时正好有 133 个的数量。"}
+{"eid": "D:382", "name": "num_134", "dtype": "num", "ref": "[num_134]", "intension": "数字 134: 从 0 开始数 134 次到达的数 — 数东西时正好有 134 个的数量。"}
+{"eid": "D:383", "name": "num_135", "dtype": "num", "ref": "[num_135]", "intension": "数字 135: 从 0 开始数 135 次到达的数 — 数东西时正好有 135 个的数量。"}
+{"eid": "D:384", "name": "num_136", "dtype": "num", "ref": "[num_136]", "intension": "数字 136: 从 0 开始数 136 次到达的数 — 数东西时正好有 136 个的数量。"}
+{"eid": "D:385", "name": "num_137", "dtype": "num", "ref": "[num_137]", "intension": "数字 137: 质数 — 只能被 1 和它自己整除。把 137 个东西分成相等的几份, 只有 1 份或 137 份两种分法。"}
+{"eid": "D:386", "name": "num_138", "dtype": "num", "ref": "[num_138]", "intension": "数字 138: 从 0 开始数 138 次到达的数 — 数东西时正好有 138 个的数量。"}
+{"eid": "D:387", "name": "num_139", "dtype": "num", "ref": "[num_139]", "intension": "数字 139: 质数 — 只能被 1 和它自己整除。把 139 个东西分成相等的几份, 只有 1 份或 139 份两种分法。"}
+{"eid": "D:388", "name": "num_140", "dtype": "num", "ref": "[num_140]", "intension": "数字 140: 从 0 开始数 140 次到达的数 — 数东西时正好有 140 个的数量。"}
+{"eid": "D:389", "name": "num_141", "dtype": "num", "ref": "[num_141]", "intension": "数字 141: 从 0 开始数 141 次到达的数 — 数东西时正好有 141 个的数量。"}
+{"eid": "D:390", "name": "num_142", "dtype": "num", "ref": "[num_142]", "intension": "数字 142: 从 0 开始数 142 次到达的数 — 数东西时正好有 142 个的数量。"}
+{"eid": "D:391", "name": "num_143", "dtype": "num", "ref": "[num_143]", "intension": "数字 143: 从 0 开始数 143 次到达的数 — 数东西时正好有 143 个的数量。"}
+{"eid": "D:392", "name": "num_144", "dtype": "num", "ref": "[num_144]", "intension": "数字 144: 从 0 开始数 144 次到达的数 — 数东西时正好有 144 个的数量。"}
+{"eid": "D:393", "name": "num_145", "dtype": "num", "ref": "[num_145]", "intension": "数字 145: 从 0 开始数 145 次到达的数 — 数东西时正好有 145 个的数量。"}
+{"eid": "D:394", "name": "num_146", "dtype": "num", "ref": "[num_146]", "intension": "数字 146: 从 0 开始数 146 次到达的数 — 数东西时正好有 146 个的数量。"}
+{"eid": "D:395", "name": "num_147", "dtype": "num", "ref": "[num_147]", "intension": "数字 147: 从 0 开始数 147 次到达的数 — 数东西时正好有 147 个的数量。"}
+{"eid": "D:396", "name": "num_148", "dtype": "num", "ref": "[num_148]", "intension": "数字 148: 从 0 开始数 148 次到达的数 — 数东西时正好有 148 个的数量。"}
+{"eid": "D:397", "name": "num_149", "dtype": "num", "ref": "[num_149]", "intension": "数字 149: 质数 — 只能被 1 和它自己整除。把 149 个东西分成相等的几份, 只有 1 份或 149 份两种分法。"}
+{"eid": "D:398", "name": "num_150", "dtype": "num", "ref": "[num_150]", "intension": "数字 150: 从 0 开始数 150 次到达的数 — 数东西时正好有 150 个的数量。"}
+{"eid": "D:399", "name": "num_151", "dtype": "num", "ref": "[num_151]", "intension": "数字 151: 质数 — 只能被 1 和它自己整除。把 151 个东西分成相等的几份, 只有 1 份或 151 份两种分法。"}
+{"eid": "D:400", "name": "num_152", "dtype": "num", "ref": "[num_152]", "intension": "数字 152: 从 0 开始数 152 次到达的数 — 数东西时正好有 152 个的数量。"}
+{"eid": "D:401", "name": "num_153", "dtype": "num", "ref": "[num_153]", "intension": "数字 153: 从 0 开始数 153 次到达的数 — 数东西时正好有 153 个的数量。"}
+{"eid": "D:402", "name": "num_154", "dtype": "num", "ref": "[num_154]", "intension": "数字 154: 从 0 开始数 154 次到达的数 — 数东西时正好有 154 个的数量。"}
+{"eid": "D:403", "name": "num_155", "dtype": "num", "ref": "[num_155]", "intension": "数字 155: 从 0 开始数 155 次到达的数 — 数东西时正好有 155 个的数量。"}
+{"eid": "D:404", "name": "num_156", "dtype": "num", "ref": "[num_156]", "intension": "数字 156: 从 0 开始数 156 次到达的数 — 数东西时正好有 156 个的数量。"}
+{"eid": "D:405", "name": "num_157", "dtype": "num", "ref": "[num_157]", "intension": "数字 157: 质数 — 只能被 1 和它自己整除。把 157 个东西分成相等的几份, 只有 1 份或 157 份两种分法。"}
+{"eid": "D:406", "name": "num_158", "dtype": "num", "ref": "[num_158]", "intension": "数字 158: 从 0 开始数 158 次到达的数 — 数东西时正好有 158 个的数量。"}
+{"eid": "D:407", "name": "num_159", "dtype": "num", "ref": "[num_159]", "intension": "数字 159: 从 0 开始数 159 次到达的数 — 数东西时正好有 159 个的数量。"}
+{"eid": "D:408", "name": "num_160", "dtype": "num", "ref": "[num_160]", "intension": "数字 160: 从 0 开始数 160 次到达的数 — 数东西时正好有 160 个的数量。"}
+{"eid": "D:409", "name": "num_161", "dtype": "num", "ref": "[num_161]", "intension": "数字 161: 从 0 开始数 161 次到达的数 — 数东西时正好有 161 个的数量。"}
+{"eid": "D:410", "name": "num_162", "dtype": "num", "ref": "[num_162]", "intension": "数字 162: 从 0 开始数 162 次到达的数 — 数东西时正好有 162 个的数量。"}
+{"eid": "D:411", "name": "num_163", "dtype": "num", "ref": "[num_163]", "intension": "数字 163: 质数 — 只能被 1 和它自己整除。把 163 个东西分成相等的几份, 只有 1 份或 163 份两种分法。"}
+{"eid": "D:412", "name": "num_164", "dtype": "num", "ref": "[num_164]", "intension": "数字 164: 从 0 开始数 164 次到达的数 — 数东西时正好有 164 个的数量。"}
+{"eid": "D:413", "name": "num_165", "dtype": "num", "ref": "[num_165]", "intension": "数字 165: 从 0 开始数 165 次到达的数 — 数东西时正好有 165 个的数量。"}
+{"eid": "D:414", "name": "num_166", "dtype": "num", "ref": "[num_166]", "intension": "数字 166: 从 0 开始数 166 次到达的数 — 数东西时正好有 166 个的数量。"}
+{"eid": "D:415", "name": "num_167", "dtype": "num", "ref": "[num_167]", "intension": "数字 167: 质数 — 只能被 1 和它自己整除。把 167 个东西分成相等的几份, 只有 1 份或 167 份两种分法。"}
+{"eid": "D:416", "name": "num_168", "dtype": "num", "ref": "[num_168]", "intension": "数字 168: 从 0 开始数 168 次到达的数 — 数东西时正好有 168 个的数量。"}
+{"eid": "D:417", "name": "num_169", "dtype": "num", "ref": "[num_169]", "intension": "数字 169: 从 0 开始数 169 次到达的数 — 数东西时正好有 169 个的数量。"}
+{"eid": "D:418", "name": "num_170", "dtype": "num", "ref": "[num_170]", "intension": "数字 170: 从 0 开始数 170 次到达的数 — 数东西时正好有 170 个的数量。"}
+{"eid": "D:419", "name": "num_171", "dtype": "num", "ref": "[num_171]", "intension": "数字 171: 从 0 开始数 171 次到达的数 — 数东西时正好有 171 个的数量。"}
+{"eid": "D:420", "name": "num_172", "dtype": "num", "ref": "[num_172]", "intension": "数字 172: 从 0 开始数 172 次到达的数 — 数东西时正好有 172 个的数量。"}
+{"eid": "D:421", "name": "num_173", "dtype": "num", "ref": "[num_173]", "intension": "数字 173: 质数 — 只能被 1 和它自己整除。把 173 个东西分成相等的几份, 只有 1 份或 173 份两种分法。"}
+{"eid": "D:422", "name": "num_174", "dtype": "num", "ref": "[num_174]", "intension": "数字 174: 从 0 开始数 174 次到达的数 — 数东西时正好有 174 个的数量。"}
+{"eid": "D:423", "name": "num_175", "dtype": "num", "ref": "[num_175]", "intension": "数字 175: 从 0 开始数 175 次到达的数 — 数东西时正好有 175 个的数量。"}
+{"eid": "D:424", "name": "num_176", "dtype": "num", "ref": "[num_176]", "intension": "数字 176: 从 0 开始数 176 次到达的数 — 数东西时正好有 176 个的数量。"}
+{"eid": "D:425", "name": "num_177", "dtype": "num", "ref": "[num_177]", "intension": "数字 177: 从 0 开始数 177 次到达的数 — 数东西时正好有 177 个的数量。"}
+{"eid": "D:426", "name": "num_178", "dtype": "num", "ref": "[num_178]", "intension": "数字 178: 从 0 开始数 178 次到达的数 — 数东西时正好有 178 个的数量。"}
+{"eid": "D:427", "name": "num_179", "dtype": "num", "ref": "[num_179]", "intension": "数字 179: 质数 — 只能被 1 和它自己整除。把 179 个东西分成相等的几份, 只有 1 份或 179 份两种分法。"}
+{"eid": "D:428", "name": "num_180", "dtype": "num", "ref": "[num_180]", "intension": "数字 180: 从 0 开始数 180 次到达的数 — 数东西时正好有 180 个的数量。"}
+{"eid": "D:429", "name": "num_181", "dtype": "num", "ref": "[num_181]", "intension": "数字 181: 质数 — 只能被 1 和它自己整除。把 181 个东西分成相等的几份, 只有 1 份或 181 份两种分法。"}
+{"eid": "D:430", "name": "num_182", "dtype": "num", "ref": "[num_182]", "intension": "数字 182: 从 0 开始数 182 次到达的数 — 数东西时正好有 182 个的数量。"}
+{"eid": "D:431", "name": "num_183", "dtype": "num", "ref": "[num_183]", "intension": "数字 183: 从 0 开始数 183 次到达的数 — 数东西时正好有 183 个的数量。"}
+{"eid": "D:432", "name": "num_184", "dtype": "num", "ref": "[num_184]", "intension": "数字 184: 从 0 开始数 184 次到达的数 — 数东西时正好有 184 个的数量。"}
+{"eid": "D:433", "name": "num_185", "dtype": "num", "ref": "[num_185]", "intension": "数字 185: 从 0 开始数 185 次到达的数 — 数东西时正好有 185 个的数量。"}
+{"eid": "D:434", "name": "num_186", "dtype": "num", "ref": "[num_186]", "intension": "数字 186: 从 0 开始数 186 次到达的数 — 数东西时正好有 186 个的数量。"}
+{"eid": "D:435", "name": "num_187", "dtype": "num", "ref": "[num_187]", "intension": "数字 187: 从 0 开始数 187 次到达的数 — 数东西时正好有 187 个的数量。"}
+{"eid": "D:436", "name": "num_188", "dtype": "num", "ref": "[num_188]", "intension": "数字 188: 从 0 开始数 188 次到达的数 — 数东西时正好有 188 个的数量。"}
+{"eid": "D:437", "name": "num_189", "dtype": "num", "ref": "[num_189]", "intension": "数字 189: 从 0 开始数 189 次到达的数 — 数东西时正好有 189 个的数量。"}
+{"eid": "D:438", "name": "num_190", "dtype": "num", "ref": "[num_190]", "intension": "数字 190: 从 0 开始数 190 次到达的数 — 数东西时正好有 190 个的数量。"}
+{"eid": "D:439", "name": "num_191", "dtype": "num", "ref": "[num_191]", "intension": "数字 191: 质数 — 只能被 1 和它自己整除。把 191 个东西分成相等的几份, 只有 1 份或 191 份两种分法。"}
+{"eid": "D:440", "name": "num_192", "dtype": "num", "ref": "[num_192]", "intension": "数字 192: 从 0 开始数 192 次到达的数 — 数东西时正好有 192 个的数量。"}
+{"eid": "D:441", "name": "num_193", "dtype": "num", "ref": "[num_193]", "intension": "数字 193: 质数 — 只能被 1 和它自己整除。把 193 个东西分成相等的几份, 只有 1 份或 193 份两种分法。"}
+{"eid": "D:442", "name": "num_194", "dtype": "num", "ref": "[num_194]", "intension": "数字 194: 从 0 开始数 194 次到达的数 — 数东西时正好有 194 个的数量。"}
+{"eid": "D:443", "name": "num_195", "dtype": "num", "ref": "[num_195]", "intension": "数字 195: 从 0 开始数 195 次到达的数 — 数东西时正好有 195 个的数量。"}
+{"eid": "D:444", "name": "num_196", "dtype": "num", "ref": "[num_196]", "intension": "数字 196: 从 0 开始数 196 次到达的数 — 数东西时正好有 196 个的数量。"}
+{"eid": "D:445", "name": "num_197", "dtype": "num", "ref": "[num_197]", "intension": "数字 197: 质数 — 只能被 1 和它自己整除。把 197 个东西分成相等的几份, 只有 1 份或 197 份两种分法。"}
+{"eid": "D:446", "name": "num_198", "dtype": "num", "ref": "[num_198]", "intension": "数字 198: 从 0 开始数 198 次到达的数 — 数东西时正好有 198 个的数量。"}
+{"eid": "D:447", "name": "num_199", "dtype": "num", "ref": "[num_199]", "intension": "数字 199: 质数 — 只能被 1 和它自己整除。把 199 个东西分成相等的几份, 只有 1 份或 199 份两种分法。"}
+{"eid": "D:448", "name": "num_200", "dtype": "num", "ref": "[num_200]", "intension": "数字 200: 从 0 开始数 200 次到达的数 — 数东西时正好有 200 个的数量。"}
+{"eid": "D:449", "name": "num_201", "dtype": "num", "ref": "[num_201]", "intension": "数字 201: 从 0 开始数 201 次到达的数 — 数东西时正好有 201 个的数量。"}
+{"eid": "D:450", "name": "num_202", "dtype": "num", "ref": "[num_202]", "intension": "数字 202: 从 0 开始数 202 次到达的数 — 数东西时正好有 202 个的数量。"}
+{"eid": "D:451", "name": "num_203", "dtype": "num", "ref": "[num_203]", "intension": "数字 203: 从 0 开始数 203 次到达的数 — 数东西时正好有 203 个的数量。"}
+{"eid": "D:452", "name": "num_204", "dtype": "num", "ref": "[num_204]", "intension": "数字 204: 从 0 开始数 204 次到达的数 — 数东西时正好有 204 个的数量。"}
+{"eid": "D:453", "name": "num_205", "dtype": "num", "ref": "[num_205]", "intension": "数字 205: 从 0 开始数 205 次到达的数 — 数东西时正好有 205 个的数量。"}
+{"eid": "D:454", "name": "num_206", "dtype": "num", "ref": "[num_206]", "intension": "数字 206: 从 0 开始数 206 次到达的数 — 数东西时正好有 206 个的数量。"}
+{"eid": "D:455", "name": "num_207", "dtype": "num", "ref": "[num_207]", "intension": "数字 207: 从 0 开始数 207 次到达的数 — 数东西时正好有 207 个的数量。"}
+{"eid": "D:456", "name": "num_208", "dtype": "num", "ref": "[num_208]", "intension": "数字 208: 从 0 开始数 208 次到达的数 — 数东西时正好有 208 个的数量。"}
+{"eid": "D:457", "name": "num_209", "dtype": "num", "ref": "[num_209]", "intension": "数字 209: 从 0 开始数 209 次到达的数 — 数东西时正好有 209 个的数量。"}
+{"eid": "D:458", "name": "num_210", "dtype": "num", "ref": "[num_210]", "intension": "数字 210: 从 0 开始数 210 次到达的数 — 数东西时正好有 210 个的数量。"}
+{"eid": "D:459", "name": "num_211", "dtype": "num", "ref": "[num_211]", "intension": "数字 211: 质数 — 只能被 1 和它自己整除。把 211 个东西分成相等的几份, 只有 1 份或 211 份两种分法。"}
+{"eid": "D:460", "name": "num_212", "dtype": "num", "ref": "[num_212]", "intension": "数字 212: 从 0 开始数 212 次到达的数 — 数东西时正好有 212 个的数量。"}
+{"eid": "D:461", "name": "num_213", "dtype": "num", "ref": "[num_213]", "intension": "数字 213: 从 0 开始数 213 次到达的数 — 数东西时正好有 213 个的数量。"}
+{"eid": "D:462", "name": "num_214", "dtype": "num", "ref": "[num_214]", "intension": "数字 214: 从 0 开始数 214 次到达的数 — 数东西时正好有 214 个的数量。"}
+{"eid": "D:463", "name": "num_215", "dtype": "num", "ref": "[num_215]", "intension": "数字 215: 从 0 开始数 215 次到达的数 — 数东西时正好有 215 个的数量。"}
+{"eid": "D:464", "name": "num_216", "dtype": "num", "ref": "[num_216]", "intension": "数字 216: 从 0 开始数 216 次到达的数 — 数东西时正好有 216 个的数量。"}
+{"eid": "D:465", "name": "num_217", "dtype": "num", "ref": "[num_217]", "intension": "数字 217: 从 0 开始数 217 次到达的数 — 数东西时正好有 217 个的数量。"}
+{"eid": "D:466", "name": "num_218", "dtype": "num", "ref": "[num_218]", "intension": "数字 218: 从 0 开始数 218 次到达的数 — 数东西时正好有 218 个的数量。"}
+{"eid": "D:467", "name": "num_219", "dtype": "num", "ref": "[num_219]", "intension": "数字 219: 从 0 开始数 219 次到达的数 — 数东西时正好有 219 个的数量。"}
+{"eid": "D:468", "name": "num_220", "dtype": "num", "ref": "[num_220]", "intension": "数字 220: 从 0 开始数 220 次到达的数 — 数东西时正好有 220 个的数量。"}
+{"eid": "D:469", "name": "num_221", "dtype": "num", "ref": "[num_221]", "intension": "数字 221: 从 0 开始数 221 次到达的数 — 数东西时正好有 221 个的数量。"}
+{"eid": "D:470", "name": "num_222", "dtype": "num", "ref": "[num_222]", "intension": "数字 222: 从 0 开始数 222 次到达的数 — 数东西时正好有 222 个的数量。"}
+{"eid": "D:471", "name": "num_223", "dtype": "num", "ref": "[num_223]", "intension": "数字 223: 质数 — 只能被 1 和它自己整除。把 223 个东西分成相等的几份, 只有 1 份或 223 份两种分法。"}
+{"eid": "D:472", "name": "num_224", "dtype": "num", "ref": "[num_224]", "intension": "数字 224: 从 0 开始数 224 次到达的数 — 数东西时正好有 224 个的数量。"}
+{"eid": "D:473", "name": "num_225", "dtype": "num", "ref": "[num_225]", "intension": "数字 225: 从 0 开始数 225 次到达的数 — 数东西时正好有 225 个的数量。"}
+{"eid": "D:474", "name": "num_226", "dtype": "num", "ref": "[num_226]", "intension": "数字 226: 从 0 开始数 226 次到达的数 — 数东西时正好有 226 个的数量。"}
+{"eid": "D:475", "name": "num_227", "dtype": "num", "ref": "[num_227]", "intension": "数字 227: 质数 — 只能被 1 和它自己整除。把 227 个东西分成相等的几份, 只有 1 份或 227 份两种分法。"}
+{"eid": "D:476", "name": "num_228", "dtype": "num", "ref": "[num_228]", "intension": "数字 228: 从 0 开始数 228 次到达的数 — 数东西时正好有 228 个的数量。"}
+{"eid": "D:477", "name": "num_229", "dtype": "num", "ref": "[num_229]", "intension": "数字 229: 质数 — 只能被 1 和它自己整除。把 229 个东西分成相等的几份, 只有 1 份或 229 份两种分法。"}
+{"eid": "D:478", "name": "num_230", "dtype": "num", "ref": "[num_230]", "intension": "数字 230: 从 0 开始数 230 次到达的数 — 数东西时正好有 230 个的数量。"}
+{"eid": "D:479", "name": "num_231", "dtype": "num", "ref": "[num_231]", "intension": "数字 231: 从 0 开始数 231 次到达的数 — 数东西时正好有 231 个的数量。"}
+{"eid": "D:480", "name": "num_232", "dtype": "num", "ref": "[num_232]", "intension": "数字 232: 从 0 开始数 232 次到达的数 — 数东西时正好有 232 个的数量。"}
+{"eid": "D:481", "name": "num_233", "dtype": "num", "ref": "[num_233]", "intension": "数字 233: 质数 — 只能被 1 和它自己整除。把 233 个东西分成相等的几份, 只有 1 份或 233 份两种分法。"}
+{"eid": "D:482", "name": "num_234", "dtype": "num", "ref": "[num_234]", "intension": "数字 234: 从 0 开始数 234 次到达的数 — 数东西时正好有 234 个的数量。"}
+{"eid": "D:483", "name": "num_235", "dtype": "num", "ref": "[num_235]", "intension": "数字 235: 从 0 开始数 235 次到达的数 — 数东西时正好有 235 个的数量。"}
+{"eid": "D:484", "name": "num_236", "dtype": "num", "ref": "[num_236]", "intension": "数字 236: 从 0 开始数 236 次到达的数 — 数东西时正好有 236 个的数量。"}
+{"eid": "D:485", "name": "num_237", "dtype": "num", "ref": "[num_237]", "intension": "数字 237: 从 0 开始数 237 次到达的数 — 数东西时正好有 237 个的数量。"}
+{"eid": "D:486", "name": "num_238", "dtype": "num", "ref": "[num_238]", "intension": "数字 238: 从 0 开始数 238 次到达的数 — 数东西时正好有 238 个的数量。"}
+{"eid": "D:487", "name": "num_239", "dtype": "num", "ref": "[num_239]", "intension": "数字 239: 质数 — 只能被 1 和它自己整除。把 239 个东西分成相等的几份, 只有 1 份或 239 份两种分法。"}
+{"eid": "D:488", "name": "num_240", "dtype": "num", "ref": "[num_240]", "intension": "数字 240: 从 0 开始数 240 次到达的数 — 数东西时正好有 240 个的数量。"}
+{"eid": "D:489", "name": "num_241", "dtype": "num", "ref": "[num_241]", "intension": "数字 241: 质数 — 只能被 1 和它自己整除。把 241 个东西分成相等的几份, 只有 1 份或 241 份两种分法。"}
+{"eid": "D:490", "name": "num_242", "dtype": "num", "ref": "[num_242]", "intension": "数字 242: 从 0 开始数 242 次到达的数 — 数东西时正好有 242 个的数量。"}
+{"eid": "D:491", "name": "num_243", "dtype": "num", "ref": "[num_243]", "intension": "数字 243: 从 0 开始数 243 次到达的数 — 数东西时正好有 243 个的数量。"}
+{"eid": "D:492", "name": "num_244", "dtype": "num", "ref": "[num_244]", "intension": "数字 244: 从 0 开始数 244 次到达的数 — 数东西时正好有 244 个的数量。"}
+{"eid": "D:493", "name": "num_245", "dtype": "num", "ref": "[num_245]", "intension": "数字 245: 从 0 开始数 245 次到达的数 — 数东西时正好有 245 个的数量。"}
+{"eid": "D:494", "name": "num_246", "dtype": "num", "ref": "[num_246]", "intension": "数字 246: 从 0 开始数 246 次到达的数 — 数东西时正好有 246 个的数量。"}
+{"eid": "D:495", "name": "num_247", "dtype": "num", "ref": "[num_247]", "intension": "数字 247: 从 0 开始数 247 次到达的数 — 数东西时正好有 247 个的数量。"}
+{"eid": "D:496", "name": "num_248", "dtype": "num", "ref": "[num_248]", "intension": "数字 248: 从 0 开始数 248 次到达的数 — 数东西时正好有 248 个的数量。"}
+{"eid": "D:497", "name": "num_249", "dtype": "num", "ref": "[num_249]", "intension": "数字 249: 从 0 开始数 249 次到达的数 — 数东西时正好有 249 个的数量。"}
+{"eid": "D:498", "name": "num_250", "dtype": "num", "ref": "[num_250]", "intension": "数字 250: 从 0 开始数 250 次到达的数 — 数东西时正好有 250 个的数量。"}
+{"eid": "D:499", "name": "num_251", "dtype": "num", "ref": "[num_251]", "intension": "数字 251: 质数 — 只能被 1 和它自己整除。把 251 个东西分成相等的几份, 只有 1 份或 251 份两种分法。"}
+{"eid": "D:500", "name": "num_252", "dtype": "num", "ref": "[num_252]", "intension": "数字 252: 从 0 开始数 252 次到达的数 — 数东西时正好有 252 个的数量。"}
+{"eid": "D:501", "name": "num_253", "dtype": "num", "ref": "[num_253]", "intension": "数字 253: 从 0 开始数 253 次到达的数 — 数东西时正好有 253 个的数量。"}
+{"eid": "D:502", "name": "num_254", "dtype": "num", "ref": "[num_254]", "intension": "数字 254: 从 0 开始数 254 次到达的数 — 数东西时正好有 254 个的数量。"}
+{"eid": "D:503", "name": "num_255", "dtype": "num", "ref": "[num_255]", "intension": "数字 255: 八个二进制位全是 1 的数 — 一个字节 (8 位) 能表示的最大值。"}
+{"eid": "D:504", "name": "num_256", "dtype": "num", "ref": "[num_256]", "intension": "数字 256: 2 的 8 次方 — 一个字节能表示的状态数 (0 到 255 共 256 种), 字节空间的边界。"}
+{"eid": "D:505", "name": "num_concat", "dtype": "bool", "ref": "[num_concat]", "intension": ""}
+{"eid": "I:506", "name": "fold", "ref": "[⟳]", "intension": "折叠: 展开轴 → 周期轴 (周期化, 多对一). 环上回绕 = 溢出折叠; 与 unfold 互逆 (单射情形)"}
+{"eid": "D:507", "name": "unfold", "ref": "[⟲]", "intension": "展开: 周期轴 → 展开轴 (升维). fold 的逆方向; fold 多对一时仅单射情形可逆"}
+{"eid": "D:508", "name": "modulo", "ref": "[⟳]", "intension": "模运算: 值 → 环 ℤ/N 上的余数. 环折叠的代数化 (a = q·N + r)"}
+{"eid": "D:509", "name": "ring_addition", "ref": "[⊗]", "intension": "环上加法: 进位扩散 (低位→高位) + 溢出回绕 (模 N). 与加法 [addition] 的区别: 进位链让一位变化扩散到所有高位 — 进位扩散来源"}
+{"eid": "D:510", "name": "basepoint_move", "ref": "[⇢]", "intension": "基点移动: 参考系变换, 位置不变 (只换读数原点). 与 teleport 对偶 (互逆)"}
+{"eid": "D:511", "name": "teleport", "ref": "[⟼]", "intension": "穿折越: 对象平移 T(x) = x + f. 基点移动的对偶 — 参考系不变, 对象真搬"}
+{"eid": "D:512", "name": "involution", "ref": "[◯]", "intension": "对合: 两次应用 = 恒等 (自逆). 时间反演对称的基础"}
+{"eid": "I:513", "name": "orthogonal", "ref": "[⊥]", "intension": "正交: 轴间独立 (相位方向无关). 周期轴与计算数轴正交 (傅里叶对偶)"}
+{"eid": "D:514", "name": "self_inverse_gate", "ref": "[◯]", "intension": "自逆酉门: U² = I — 后向 = 同一门 (白嫖, 无逆操作). H/CNOT/Toffoli/CZ/X/Z 的父概念"}
+{"eid": "D:515", "name": "hadamard", "ref": "[ℱ]", "intension": "H 门: 计算基 ↔ 相位基 (2 维 QFT). 自逆 — 进/出周期轴的夹层"}
+{"eid": "D:516", "name": "cnot", "ref": "[◯]", "intension": "CNOT 门: 受控位翻转. 自逆 — 计算基与相位基下都是 CNOT 类"}
+{"eid": "D:517", "name": "toffoli", "ref": "[◯]", "intension": "Toffoli 门: 双受控翻转. 自逆 — 非线性 (通用门族), 保留控制位 (垃圾位)"}
+{"eid": "D:518", "name": "qft", "ref": "[ℱ]", "intension": "量子傅里叶变换: 位置基 → 相位基 (正交周期轴). 原生酉电路 (H + 受控旋转), 非退火"}
+{"eid": "D:519", "name": "period_axis", "ref": "[∿]", "intension": "周期轴: 相位基, 与计算数轴正交. 周期轴上的计算 = 频域乘法 (对角酉)"}
+{"eid": "D:520", "name": "measure", "ref": "[↯]", "intension": "测量: 概率幅 → 输出 (argmax). 多对一压缩 — 唯一不可逆步 (可逆门差不了的那步)"}
+{"eid": "D:521", "name": "time_reversal", "ref": "[⇄]", "intension": "时间反演: 后向 = 逆序同一门族 (全自逆, 无逆操作). 白嫖 100%; 断点 = 测量"}
+{"eid": "D:522", "name": "summon", "ref": "[☍]", "intension": "锁定召唤: 一步查表 (锁定 = 一步直达). 存储即计算的落点"}
+{"eid": "D:523", "name": "flip", "ref": "[◯]", "intension": "位置-值翻转: 关系转置 (值→位置). 对合 (转置两次 = 原); 双射时 = 逆函数 (R 定理: H∘R = id)"}
+{"eid": "I:524", "name": "storage_is_computation", "ref": "[☍]", "intension": "存储即计算: 可逆部分白嫖 (门族逆序), 不可逆部分 (压缩/测量) 靠表 — 查表 = 计算"}
+{"eid": "D:525", "name": "midpoint", "ref": "[midpoint]", "intension": "对称性降维/还原点: 对称对 (a,b) 的反射固定点 = 中点 (a+b)/2; 分子表示 self(a,b) = a+b (2N 槽环中点槽位) — 降维 = 槽位细分加倍; 连续统 = 对称性降维闭包 (R163 实证: 训练 OOD)"}
+{"eid": "D:526", "name": "relpos", "ref": "[relpos]", "intension": "双基点段信息: 对称方向 (a,b) 的段 = b − a (方向+长度); 单基点无法定义方向 (结构不可能) — 方向信息由两基点承载 (R163 实证: relpos OOD 泛化)"}
