@@ -30,6 +30,7 @@
 | zeta_zero_region_iso.lean | 零区 | 观测 |
 | zeta_rh_oddeven_iso.lean | RH 奇偶交点形式 (iso 42): rh_classical ⟺ rh_oddeven, 奇偶公共零点 ⟺ ζ 零点, 逆否: 离线公共零点 ⟺ RH 失败 | RH 等价形式 |
 | zeta_quadruple_cosh_iso.lean | 零点四元组 cosh 分解 (iso 43): Re(x^ρ+x^{1−ρ}+x^conj ρ+x^{1−conj ρ}) = 4·x^{1/2}·cosh((β−1/2)·log x)·cos(t·log x) | 显式公式项轨道分解 |
+| PhaseAlign_iso.lean | 相位对齐位置刻画 (iso 44): 相位对齐 ⟺ ζ(1−s)=conj(ζ(s)); ⟹ |χ|=1; 临界线 ⟺ s=1−conj s (复合反射不动点); 临界线 ⟹ 对齐; ζ 零点 = 平凡解 | 相位对齐位置 |
 
 | zeta_zero_order_iso.lean | 零点阶翻转方向: 局部展开 + 左右极限 + 翻转比值 (乘除法对消, 反射对称 u(σt)/u(t)→(-1)^m) | T6h |
 | zeta_stirling_iso.lean | χ 圈数渐近第一层: 乘子自反 χ(s)χ(1-s)=1 + 临界线模恒 1 | T6i |
