@@ -1,0 +1,23 @@
+{
+  "token": "multi",
+  "synth": {
+    "kind": "seq",
+    "n": 10
+  },
+  "shaper": {
+    "output": "ids",
+    "input_mode": "ids",
+    "shift": false
+  },
+  "model": {
+    "num_layers": 2,
+    "lr": 0.001,
+    "dim": 64,
+    "num_concepts": 519,
+    "input_mode": "ids",
+    "causal": false
+  },
+  "train": {
+    "epochs": 60
+  }
+}
