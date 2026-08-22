@@ -33,6 +33,11 @@ import Mathlib.Tactic.Ring
 配备对称侧和分析侧两个路径，能做到吗？...我感觉后者好一点，对称侧、
 分析侧各自逻辑连贯。" + "开始吧。"
 
+
+2026-08-22 (novelty 担忧, 用户原话): "你能都搞出来了，我感觉可能被蒸馏
+完已经证完了吧。" — 按 KNOWN 纪律: 若本内容已被他人提前发布, 不视为新
+结果 (novelty_status 如实标注)。
+
 English: Node 01 of the dual-path Riemann direction: the phase base.
 Symmetry side (state ③): full turn = 1, exp kernel 2πiℤ, reflection
 cancellation, unit-circle closure. Analysis side (state ①②): modulus
