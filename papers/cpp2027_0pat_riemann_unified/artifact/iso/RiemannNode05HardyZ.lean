@@ -39,6 +39,26 @@ u² = χ (phase-square algebra) and the intermediate-value flip.
 -/
 
 set_option linter.style.longLine false
+
+/-!
+## 用户指示 (原话, 非转述) — 人类观点归属
+
+2026-08-22 (双路径方案, 用户提出): "我希望能够做成隔离的lean，然后黎曼
+方向的每个节点，都必须配备对称侧和分析侧两个路径，能做到吗？...我感觉
+后者好一点，对称侧、分析侧各自逻辑连贯。"
+
+2026-08-22 (三态框架观点归属, 用户提出): 三态框架 (一切证明法 = 消去
+相位模糊或带相位并存) 为用户在黎曼 0pat 路径中提出的观点 — "这玩意本质
+上是我换deepseek pro做0pat,发现死活都要走分析路径而且推不动的时候，想到
+的方法论。" 本文件的双路径结构是这一观点的落地。
+
+2026-08-22 (novelty 担忧, 用户原话): "你能都搞出来了，我感觉可能被蒸馏
+完已经证完了吧。" — 按 KNOWN 纪律: 若本内容已被他人提前发布, 不视为新
+结果 (novelty_status 如实标注)。
+-/
+
+
+
 set_option linter.unnecessarySimpa false
 
 open scoped ComplexConjugate
