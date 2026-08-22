@@ -43,13 +43,17 @@
 \maketitle
 
 \begin{abstract}
-We present a machine-verified development of the Riemann direction: the
+We present a machine-verified development of the Riemann direction,
+organized by the symmetries that force it: reflection
+$s\mapsto 1-s$ across the critical line, conjugation, and the pairing
+of the odd and even parts of the series. The development covers the
 zero-order flip of zeros across the critical line, the Stirling phase bridge
 for the multiplier of the functional equation, the argument-principle
 rectangle closure with its boundary estimates, the logarithmic growth control
 of the error term, and the negativity of the zeta function on the real
 interval $(0,1)$ --- the latter closed in this revision by the odd/even
-pairing (iso~41). The development is a chain of 237 verified Lean~4
+pairing (iso~41), a single inequality replacing an entire classical
+machinery. The development is a chain of 237 verified Lean~4
 declarations organized in thirteen layers, from a self-contained algebra of
 complex axes (the basepoint-relative 0pat representation) through the
 geometry of the prime and critical circles, the false-real-axis framework (no
@@ -70,6 +74,14 @@ machine-verified is marked KNOWN as an honest boundary.
 
 \subsection{Problem and result}
 \label{sec:problem}
+
+The development is forced by symmetries: the reflection
+$s\mapsto 1-s$ across the critical line, the conjugation
+$s\mapsto\bar s$, and the pairing of the odd and even parts of the
+Dirichlet series. Each layer below is the least statement that the
+previous one leaves open --- the reflection forces the orbit structure,
+$|\Xchi|=1$ on the line forces $u^2=\Xchi$, and the divergence of the
+unpaired series forces the pairing that closes the $(0,1)$-segment.
 
 The Riemann zeta function $\zt(s)$ is positive on $(1,\infty)$ by its
 Dirichlet series and has no zeros in $\Re s<0$ by the functional equation,
@@ -594,6 +606,12 @@ i^i=e^{-\pi/2},\qquad i^i\neq i,\qquad 0<i^i<1
 \texttt{i\_pow\_i\_pos\_lt\_one}, \texttt{axis\_tick\_pow}), and a prime is
 not a power (\texttt{prime\_no\_power\_decomposition}).
 \end{theorem}
+
+The identity $i^i=e^{-\pi/2}$ is the Euler-style surprise of this layer:
+the imaginary power of the imaginary unit is a real number in $(0,1)$,
+a pure constant of the phase structure --- and, as Layer~9 will show,
+the same phase structure governs the multiplier $\Xchi$ on the critical
+line.
 
 \begin{theorem}[Completed zeta and the functional equation]
 \label{thm:xi}
@@ -1668,6 +1686,11 @@ machine-verified (iso~41, \S\ref{sec:contbridge}), and the sign follows
 directly from the machine-verified positivity of the pairing terms and the
 classical doubling identity (\S\ref{sec:blocksCG}), completing the
 zero-free bottom edge of the rectangle of Layer~12.
+
+In the economy of the whole development: the Riemann direction is
+forced by two symmetries (reflection and conjugation) and closed by one
+pairing; every one of the 237 declarations is a machine-verified step
+of that single argument.
 
 \appendix
 \section{Complete declaration inventory (221 + 12 + 4 declarations, by layer)}
