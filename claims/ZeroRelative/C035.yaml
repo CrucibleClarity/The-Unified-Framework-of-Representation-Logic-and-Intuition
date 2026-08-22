@@ -1,0 +1,118 @@
+id: C035
+title: "Hardy Z 实值性 + 翻转=零点 (缺口 1+1b) — conj(Z)=Z 共轭反射 + 中间值定理: Z 符号变化 ⟹ 临界线零点"
+status: PROVED
+novelty_status: KNOWN
+zero_role:
+  basepoint: true
+  additive_identity: false
+  bottom: false
+  seed: false
+term_ref: "R072; 观测 K/L/T (37_riemann_unified)"
+branch: basepoint_relativity
+
+statement:
+  informal: |
+    **翻转次数 = N₀(T) 的两个缺失环 (0pat 补齐, 工具清洁)**:
+    Z(t) = χ(1/2+it)^{-1/2}·ζ(1/2+it) (Hardy Z, 相位基点投影)。
+
+    **缺口 1 — Z 实值性 (对称路径, 非代数方法)**:
+    用共轭反射对称 conj(Z) = Z, 不用 Z² = |ζ|² 的 ring 重组/re-im 分析:
+    (1) χ 共轭保持: conj(χ(1/2+it)) = χ(1/2-it) (逐项共轭: cpow 实底
+        经 exp_conj, sin_conj, Gamma_conj)
+    (2) |χ(1/2+it)| = 1 (相位对乘积 χ(s)·χ(1-s) = 1 ∧ 共轭保持
+        ⟹ normSq = 1; Γ 反射 + sin 倍角, 标准)
+    (3) conj(χ^z) = conj(χ)^(conj z) (conj_cpow, χ ∈ slitPlane)
+    (4) 临界线函数方程: ζ(s) = χ(s)·conj(ζ(s)) (s = 1/2+it 时 1-s = conj s)
+    (5) conj(Z) = Z: conj 反射穿透 Z 的每个因子后, 用 χ(1/2-it) = χ^{-1}
+        (单位模) 与幂法则收拢 (对称可消)
+    ⟹ Z 实值 (conj(Z) = Z 即 im = 0, 反射对称一步)。
+
+    **缺口 1b — 翻转 = 零点 (中间值定理)**:
+    (1) Z = 0 ⟺ ζ(1/2+it) = 0 (χ ≠ 0 ⟹ χ^{-1/2} ≠ 0)
+    (2) Z 连续 (χ 临界线连续: cpow 底 2π ∈ slitPlane / Γ 在 re>0 /
+        sin; ζ 在 {1}ᶜ 可导; cpow 连续: χ ∈ slitPlane; ContinuousAt.cpow)
+    (3) Z(a) < 0 < Z(b) (两端符号相反 = 一次翻转) ⟹ ∃t ∈ (a,b), Z(t) = 0
+        (中间值定理 intermediate_value_Icc; Z 实值)
+    ⟹ 每次翻转对应一个临界线零点 — 翻转计数 = N₀(T) 的缺失环闭合。
+
+    **对称性本质 (用户洞察)**: Hardy Z = 相位对齐的代数投影 —
+    Z 的相位 = arg ζ − θ_χ/2 (χ 单位模); Z 实值 ⟺ θ_ζ − θ_χ/2 ∈ πℤ
+    = T6e 整数层结构; 等号 (=) 在对称工具族里的对应物 = 相位对齐
+    (T6d: 2Δθ_ζ = Δθ_χ)。
+
+    English: **Two missing rings of "flip count = N₀(T)" (0pat,
+    tool-clean)**: Gap 1 — Z real-valued by conjugation-reflection
+    symmetry conj(Z) = Z (not the algebraic Z² = |ζ|² route): χ
+    conjugation preservation, unit modulus |χ(1/2+it)| = 1 (phase-pair
+    product 1 + conjugation), conj_cpow in slitPlane, the critical-line
+    functional equation ζ(s) = χ(s)·conj(ζ(s)), and symmetric
+    cancellation. Gap 1b — flip = zero: Z = 0 ⟺ ζ = 0 (χ ≠ 0),
+    Z continuous (χ continuous on the line, ζ differentiable off 1,
+    cpow continuous), and Z(a) < 0 < Z(b) forces a zero by the
+    intermediate value theorem. Every flip (sign change) yields a
+    zero of ζ on the critical line.
+  formal_math: |
+    ℂ 上 (s = 1/2+it, χ(s) = 2^s·π^(s-1)·sin(πs/2)·Γ(1-s)):
+    (1) chi_pair_product: χ(s)·χ(1-s) = 1 (sin(πs) ≠ 0)
+    (2) chi_conj_symm: conj(χ(1/2+it)) = χ(1/2-it)
+    (3) chi_unit_modulus: ‖χ(1/2+it)‖ = 1
+    (4) zeta_eq_chi_conj_on_line: ζ(s) = χ(s)·conj(ζ(s))
+    (5) hardyZ_conj: conj(Z(t)) = Z(t) (hchi: χ ≠ -1)
+    (6) hardyZ_im_zero: (Z(t)).im = 0
+    (7) chi_continuousOn_line: ContinuousOn chi {s | s.re = 1/2}
+    (8) hardyZ_eq_zero_iff: Z(t) = 0 ↔ ζ(1/2+it) = 0
+    (9) hardyZ_continuousOn: ContinuousOn hardyZ (Icc a b) (∀t∈Icc, χ ≠ -1)
+    (10) hardyZ_zero_between: (Z a).re < 0 < (Z b).re ⟹ ∃t ∈ (a,b), Z(t) = 0
+
+objects:
+  - "Z(t) = χ(1/2+it)^{-1/2}·ζ(1/2+it) (Hardy Z, 相位基点投影)"
+  - "χ(s) = 2^s·π^(s-1)·sin(πs/2)·Γ(1-s) (Landau 乘子, 自包含定义)"
+  - "slitPlane (cpow 主分支区域, arg ≠ π)"
+objects_note: "全部只 import Mathlib (工具清洁: 从证明无法得知任何框架/工具的存在)"
+definitions_used: ["Complex.conj_cpow", "Complex.sin_conj", "Complex.Gamma_conj", "riemannZeta_conj", "riemannZeta_one_sub", "Complex.normSq_eq_conj_mul_self", "Complex.normSq_eq_norm_sq", "inv_eq_of_mul_eq_one_right", "continuousAt_cpow", "ContinuousAt.cpow", "differentiableAt_riemannZeta", "continuousOn_riemannZeta", "intermediate_value_Icc"]
+
+assumptions:
+  - "hchi: χ(1/2+it) ≠ -1 (cpow 分支割点, 单位模上离散点; 逐点)"
+  - "Z 连续区间内 ∀t, χ(1/2+it) ≠ -1 (hardyZ_continuousOn / hardyZ_zero_between)"
+  - "Z 实值性本身无需 χ ≠ -1 之外的假设 (ζ ≠ 0 不需要: conj_cpow 走 slitPlane)"
+conclusion: "翻转 (Z 符号变化) ⟹ 临界线零点 — 翻转计数 = N₀(T) 的两个缺失环闭合 (缺口 1: Z 实值; 缺口 1b: 中间值翻转=零点)"
+
+known_special_cases: null
+closest_known_results:
+  - "Hardy Z 函数 (经典: Z(t) = e^{iθ(t)}·ζ(1/2+it), 实数零点 = 临界线零点)"
+  - "中间值定理 (经典实数分析, mathlib intermediate_value_Icc)"
+  - "C030 (相位对齐: 2Δθ_ζ = Δθ_χ) — Z 实值是该相位对齐的代数投影; C031 (S(T) 整数层: θ_ζ - θ_χ/2 ∈ πiℤ); C033 (χ 乘子自反 + 临界线模恒 1)"
+  - "37_riemann_unified 观测 K (临界线 = χ 的单位圆, Z 实值) / L (零点只在线) / T (实值性机器验证)"
+literature_queries:
+  - "Hardy Z function real zeros intermediate value theorem"
+
+counterexample_search:
+  status: done
+  search_space: "HardyZ.lean 17 声明 (χ 定义 + 4 性质 + 3 线定理 + Z 5 定理 + 连续性 3 定理 + 中间值) 全部 Lean 验收"
+  smallest_checked_size: null
+  result: "17 声明 Lean 证明 (无 sorry), 只 import Mathlib; 全项目 lake build 0 error"
+
+formalization:
+  prover: Lean4
+  file: "formal/Formal/ZeroRelative/HardyZ.lean"
+  file_note: "自包含 0pat (只 import Mathlib, 工具清洁); 与 RPO (RiemannPhaseObservation) 同目录, 互补: RPO = 相位观测三件套 (|χ|=1 ∧ χ 相位对乘积 ∧ 零点对对称), HardyZ = 翻转缺口"
+  theorem_name: |
+    chi / chi_pair_product / chi_conj_symm / chi_unit_modulus / chi_eq_explicit /
+    zeta_eq_chi_conj_on_line / chi_mem_slitPlane_on_line / chi_ne_zero_on_line /
+    zeta_unit_sq_eq_chi / hardyZ / hardyZ_conj / hardyZ_im_zero /
+    chi_continuousOn_line / hardyZ_eq_zero_iff / hardyZ_continuousAt /
+    hardyZ_continuousOn / hardyZ_zero_between
+  status: proved
+  sorry_free: true
+
+failure_modes:
+  - "KNOWN: χ 单位模/共轭保持/函数方程/中间值全是经典事实"
+  - "cpow 分支: χ = -1 处 conj_cpow 条件 (arg ≠ π) 不适用 — 逐点假设 hchi; 单位模上 χ = -1 是离散点 (χ 解析), 区间论证按段"
+  - "RH 本身未涉及: 翻转 ⟹ 零点已证, 但 '全部零点都在线上' (无离线零点) 仍需零点计数/Backlund 拼装 (C034 参数原理 + RvM 主体)"
+evidence_for:
+  - "Lean: HardyZ.lean 17 声明全证 (无 sorry), 只 import Mathlib; formal 项目 lake build 0 error"
+evidence_against: []
+
+next_action: "(1) 翻转次数 = N₀(T) 总装 (C030 相位对齐 + C031 整数层 + C034 参数原理 + C035 翻转=零点 的计数链拼装); (2) Backlund 拼装 (χ 圈数显式); (3) S(T) 控制 (振荡, 诚实边界)"
+
+notes: "用户指示 (原话, 非转述): 2026-08-22 '注意，你可以用工具先形式化，但不要发布，发布的内容必须是工具清洁的。然后其次，你需要思考下这叫什么hardyz的玩意，在对称性视角下本质是什么。我理解本质可能就是相位对齐？毕竟等号这玩意看着太像范畴的箭头了，而对称工具族里只有相位对齐表达这个意思对吧。' + '然后我觉得你又犯错误了，是不是又用代数方法了？' — 对称方法 (conj(Z)=Z 共轭反射) 替代代数方法 (Z²=|ζ|² ring 重组); 工具清洁: HardyZ.lean 只 import Mathlib, 从证明无法得知工具存在。"
