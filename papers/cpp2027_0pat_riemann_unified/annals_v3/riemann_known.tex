@@ -75,14 +75,6 @@ machine-verified is marked KNOWN as an honest boundary.
 \subsection{Problem and result}
 \label{sec:problem}
 
-The development is forced by symmetries: the reflection
-$s\mapsto 1-s$ across the critical line, the conjugation
-$s\mapsto\bar s$, and the pairing of the odd and even parts of the
-Dirichlet series. Each layer below is the least statement that the
-previous one leaves open --- the reflection forces the orbit structure,
-$|\Xchi|=1$ on the line forces $u^2=\Xchi$, and the divergence of the
-unpaired series forces the pairing that closes the $(0,1)$-segment.
-
 The Riemann zeta function $\zt(s)$ is positive on $(1,\infty)$ by its
 Dirichlet series and has no zeros in $\Re s<0$ by the functional equation,
 apart from the trivial zeros $s=-2,-4,\dots$ (the only zeros on the
@@ -608,10 +600,8 @@ not a power (\texttt{prime\_no\_power\_decomposition}).
 \end{theorem}
 
 The identity $i^i=e^{-\pi/2}$ is the Euler-style surprise of this layer:
-the imaginary power of the imaginary unit is a real number in $(0,1)$,
-a pure constant of the phase structure --- and, as Layer~9 will show,
-the same phase structure governs the multiplier $\Xchi$ on the critical
-line.
+the imaginary power of the imaginary unit is a real number in $(0,1)$ ---
+a pure constant of the phase structure.
 
 \begin{theorem}[Completed zeta and the functional equation]
 \label{thm:xi}
@@ -726,10 +716,9 @@ real (\texttt{hardyZ\_real}); and the positional theorems
 locate the orbit of a zero under reflection.\end{sloppypar}
 \end{theorem}
 
-On the critical line $\zt$ is real up to the multiplier phase: the Hardy
-$Z$-function is real (\texttt{hardyZ\_real}, Layer~8), so the phase of
-$\zt$ on the line is determined by the sign of $Z$ and the phase of
-$\Xchi$; the phase structure of $\Xchi$ itself is the subject of this layer.
+On the critical line the Hardy $Z$-function is real
+(\texttt{hardyZ\_real}, Layer~8); the phase structure of $\Xchi$ itself
+is the subject of this layer.
 
 \section{Layer 9: the critical-line phase layer}
 \label{sec:L9}
@@ -1200,6 +1189,8 @@ Thus the continuity of $\zt$ on $(0,1)$ rests on the same odd/even pairing
 that underlies Layer 5 and the period-pair cancellation of Layer 6: two
 divergent discrete superpositions cancel in pairs and leave a continuous
 function, the discrete superposition converging to the continuous limit.
+What appeared in Layer~6 as an obstruction --- the divergence of each part
+--- is here the mechanism itself.
 The odd/even pairing moreover gives the \emph{sign} of $\zt$ on $(0,1)$
 directly, without the Euler--Maclaurin machinery.
 
