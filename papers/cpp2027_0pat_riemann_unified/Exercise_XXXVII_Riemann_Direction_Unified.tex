@@ -533,16 +533,21 @@ imaginary axis, the trigonometric origin of the trivial zeros, the
 observation that the critical line is exactly the locus of the
 divergence factor $n^{-1/2}$, the machine-checked fact that the
 function $Z(t) = \chi(1/2+it)^{-1/2}\zeta(1/2+it)$ is real-valued,
-and the intermediate-value direction of the flip count: a sign change
-of $Z$ between $a$ and $b$ forces a zero of $\zeta$ on the critical
-line (\texttt{hardyZ\_zero\_between}). The Riemann hypothesis is
-equivalent to all zeros of $Z$ being real; that statement is not
-claimed. Proving that $Z$ has no non-real zeros requires the
-converse direction of the zero counting --- that every critical-line
-zero is counted by a flip and that the total count matches the
-argument-principle count $N(T)$ --- which is beyond the
-machine-checked content of this exercise. The Riemann hypothesis
-remains open.
+and the flip-count chain: a sign change of $Z$ forces a critical-line
+zero (\texttt{hardyZ\_zero\_between}, intermediate value); the flip
+count equals the $\chi$ winding number minus an integer layer
+(\texttt{flip\_count\_from\_theta\_lifts}); the integer-layer
+structure of $S(T)$ (\texttt{zeta\_lift\_half\_chi\_lift\_pi\_int});
+the finite--infinite bridge of the error sequence
+(\texttt{poly\_error\_ratio}: $e(2n)/e(n) = 2^{1-s}$, measuring
+once predicts all); and the rectangle closure
+(\texttt{completedZeta$\_0$\_log\_reflection},
+\texttt{zeta\_zero\_iff\_completedZeta$\_0$\_one\_over\_sum})
+with its boundary estimates. The Riemann hypothesis is equivalent to
+$N_0(T) = N(T)$ for all $T$, i.e. to the absence of off-line zeros;
+that statement is not claimed, and the off-line orbit structure
+(\texttt{zero\_orbit\_counting}: four-point orbits off the line)
+remains the honest boundary. The Riemann hypothesis remains open.
 
 \section*{Artifact}
 
